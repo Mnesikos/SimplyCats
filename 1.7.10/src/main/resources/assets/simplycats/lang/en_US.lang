@@ -1,0 +1,55 @@
+< Item Names
+item.catMint.name=Catnip
+item.catLitter.name=Kitty Litter
+item.catFood.name=Cat Food
+item.petCarrier.empty.name=Pet Carrier (Empty)
+item.petCarrier.full.name=Pet Carrier (Full)
+
+< Item Tooltips
+tooltip.catFood.fishy.desc=Something's fishy...
+tooltip.catFood.salmon.desc=Salmon heaven.
+tooltip.catFood.chicken.desc=Chicken delight!
+tooltip.catFood.beef.desc=For the red meat fanatics.
+tooltip.catFood.null.desc=What flavor is this?
+tooltip.pet_carrier.empty=This carrier is empty.
+tooltip.pet_carrier.adopt_cat=Adopt a Cat!
+tooltip.pet_carrier.adopt_dog=Adopt a Dog!
+tooltip.pet_carrier.owner=Owned by
+
+< Block Names
+tile.bowl.name=Bowl
+container.bowl=Food Bowl Contents
+
+< Creative Tab Name
+itemGroup.myMod=Simply Cats
+
+< Egg and Entity Names
+entity.simplycats.Cat.name=Cat
+
+< Cat Type Names
+cat.type.3.name=Black and White Male Cat
+cat.sex.0b.name=Female
+cat.sex.1b.name=Male
+cat.base.0.name=Black
+cat.base.1.name=Grey
+cat.base.2.name=Red
+cat.base.3.name=Cream
+cat.tabby.name=Mackerel Tabby
+cat.white.name=and White
+
+< Command Usage
+command.beckon=See /beckon help
+command.beckon.usage=/beckon <male|female> <base color: 0-3> <eye color: 0-4> <tabby: true|false> <white: 0-6>
+command.beckon.help=Use "x" for random. Also see /beckon help <base|eyes|white>
+command.beckon.help.base=0 = Black; 1 = Grey; 2 = Red; 3 = Cream
+command.beckon.help.eyes=0 = Copper; 1 = Yellow; 2 = Hazel; 3 = Green; 4 = Blue
+command.beckon.help.white=0 = no white markings; 6 = completely white
+command.beckon.help.fail=Incorrect argument, try again?
+command.beckon.success=Beckoning cat...
+command.beckon.fail=Incorrect usage of command, see /beckon help
+
+< Chat Messages
+chat.pet_carrier.empty=This carrier is empty.
+chat.pet_carrier.full=This carrier is already full!
+chat.pet_carrier.retrieve_pet=Pet Retrieved!
+chat.pet_carrier.release_pet=Pet Released!

@@ -1,0 +1,38 @@
+[21:24:08] [main/INFO]: Logging in with username & password
+[21:24:13] [main/INFO]: Setting user: Mnesikos
+[21:24:15] [Client thread/INFO]: LWJGL Version: 2.9.1
+[21:24:32] [Client thread/INFO]: Reloading ResourceManager: Default, FMLFileResourcePack:Forge Mod Loader, FMLFileResourcePack:Minecraft Forge, FMLFileResourcePack:Simply Cats Mod
+[21:24:35] [Sound Library Loader/INFO]: Sound engine started
+[21:24:37] [Client thread/INFO]: Created: 16x16 textures/blocks-atlas
+[21:24:37] [Client thread/INFO]: Created: 16x16 textures/items-atlas
+[21:24:37] [Client thread/INFO]: Reloading ResourceManager: Default, FMLFileResourcePack:Forge Mod Loader, FMLFileResourcePack:Minecraft Forge, FMLFileResourcePack:Simply Cats Mod
+[21:24:38] [Client thread/INFO]: Created: 512x256 textures/blocks-atlas
+[21:24:38] [Client thread/INFO]: Created: 256x256 textures/items-atlas
+[21:24:39] [Sound Library Loader/INFO]: Sound engine started
+[21:25:17] [Server thread/INFO]: Starting integrated minecraft server version 1.7.10
+[21:25:17] [Server thread/INFO]: Generating keypair
+[21:25:17] [Server thread/INFO]: Preparing start region for level 0
+[21:25:18] [Server thread/INFO]: Changing view distance to 12, from 10
+[21:25:18] [Server thread/INFO]: Mnesikos[local:E:d5ff0a25] logged in with entity id 217 at (721.8323681838906, 4.0, 982.6859873814734)
+[21:25:18] [Server thread/INFO]: Mnesikos joined the game
+[21:25:25] [Client thread/INFO]: [CHAT] This female is pregnant. Ticks until birth: -414
+[21:25:28] [Client thread/INFO]: [CHAT] This female is pregnant. Ticks until birth: -470
+[21:25:29] [Client thread/INFO]: [CHAT] This female is pregnant. Ticks until birth: -488
+[21:25:31] [Client thread/INFO]: [CHAT] This is a male. Cooldown ticks left: 0
+[21:26:41] [Client thread/INFO]: [CHAT] This female is not in heat. Ticks until next heat: -191946
+[21:26:43] [Client thread/INFO]: [CHAT] This female is not in heat. Ticks until next heat: -191894
+[21:27:42] [Server thread/INFO]: Saving and pausing game...
+[21:27:42] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[21:27:42] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[21:27:42] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[21:28:50] [Server thread/INFO]: Saving and pausing game...
+[21:28:50] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[21:28:50] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[21:28:50] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[21:28:52] [Server thread/INFO]: Stopping server
+[21:28:52] [Server thread/INFO]: Saving players
+[21:28:52] [Server thread/INFO]: Saving worlds
+[21:28:52] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[21:28:52] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[21:28:52] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[21:28:55] [Client thread/INFO]: Stopping!

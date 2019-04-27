@@ -1,0 +1,13 @@
+package com.github.mnesikos.simplycats.init;
+
+import com.github.mnesikos.simplycats.block.BlockBowl;
+import net.minecraft.block.Block;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ModBlocks {
+    public static final List<Block> BLOCKS = new ArrayList();
+
+    public static final Block BOWL = new BlockBowl();
+}

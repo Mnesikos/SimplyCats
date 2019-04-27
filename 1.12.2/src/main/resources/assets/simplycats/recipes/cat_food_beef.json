@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "simplycatsgroup",
+  "ingredients": [
+    {
+      "item": "minecraft:beef",
+      "count": 1
+    },
+    {
+      "item": "minecraft:wheat",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "simplycats:cat_food",
+    "data": 3,
+    "count": 4
+  }
+}

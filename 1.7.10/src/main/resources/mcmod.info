@@ -1,0 +1,16 @@
+[
+{
+  "modid": "simplycats",
+  "name": "Simply Cats Mod",
+  "description": "Cats! Cats everywhere!",
+  "version": "0.0.1.0-beta1",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Mnesikos"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

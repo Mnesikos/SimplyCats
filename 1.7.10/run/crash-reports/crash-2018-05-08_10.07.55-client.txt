@@ -1,0 +1,102 @@
+---- Minecraft Crash Report ----
+// Everything's going to plan. No, really, that was supposed to happen.
+
+Time: 5/8/18 10:07 AM
+Description: Unexpected error
+
+java.lang.NullPointerException: Unexpected error
+	at com.Mnesic.ProjectC.item.ItemPetCarrier.itemInteractionForEntity(ItemPetCarrier.java:75)
+	at net.minecraft.item.ItemStack.interactWithEntity(ItemStack.java:399)
+	at net.minecraft.entity.player.EntityPlayer.interactWith(EntityPlayer.java:1276)
+	at net.minecraft.client.multiplayer.PlayerControllerMP.interactWithEntitySendPacket(PlayerControllerMP.java:472)
+	at net.minecraft.client.Minecraft.func_147121_ag(Minecraft.java:1514)
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:2045)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:1040)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:962)
+	at net.minecraft.client.main.Main.main(Main.java:164)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at net.minecraft.launchwrapper.Launch.launch(Launch.java:135)
+	at net.minecraft.launchwrapper.Launch.main(Launch.java:28)
+	at net.minecraftforge.gradle.GradleStartCommon.launch(Unknown Source)
+	at GradleStart.main(Unknown Source)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at com.Mnesic.ProjectC.item.ItemPetCarrier.itemInteractionForEntity(ItemPetCarrier.java:75)
+	at net.minecraft.item.ItemStack.interactWithEntity(ItemStack.java:399)
+	at net.minecraft.entity.player.EntityPlayer.interactWith(EntityPlayer.java:1276)
+	at net.minecraft.client.multiplayer.PlayerControllerMP.interactWithEntitySendPacket(PlayerControllerMP.java:472)
+	at net.minecraft.client.Minecraft.func_147121_ag(Minecraft.java:1514)
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 1 total; [EntityClientPlayerMP['Mnesikos'/137, l='MpServer', x=1458.50, y=5.62, z=-749.36]]
+	Chunk stats: MultiplayerChunkCache: 625, 625
+	Level seed: 0
+	Level generator: ID 01 - flat, ver 0. Features enabled: false
+	Level generator options: 
+	Level spawn location: World: (1484,4,-741), Chunk: (at 12,0,11 in 92,-47; contains blocks 1472,0,-752 to 1487,255,-737), Region: (2,-2; contains chunks 64,-64 to 95,-33, blocks 1024,0,-1024 to 1535,255,-513)
+	Level time: 33933 game time, 1094 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: false
+	Forced entities: 47 total; [PCEntityCat['Cat'/68, l='MpServer', x=1469.50, y=4.00, z=-736.50], PCEntityCat['Cat'/69, l='MpServer', x=1471.50, y=4.00, z=-737.50], PCEntityCat['Cat'/70, l='MpServer', x=1458.53, y=4.00, z=-743.94], PCEntityCat['Cat'/71, l='MpServer', x=1460.75, y=4.00, z=-746.75], EntityHorse['Horse'/64, l='MpServer', x=1456.22, y=4.00, z=-823.63], PCEntityCat['Cat'/65, l='MpServer', x=1471.13, y=4.00, z=-746.44], PCEntityCat['Cat'/66, l='MpServer', x=1469.25, y=4.00, z=-742.53], PCEntityCat['Cat'/67, l='MpServer', x=1471.94, y=4.00, z=-748.41], PCEntityCat['Cat'/76, l='MpServer', x=1458.75, y=4.00, z=-746.97], EntityOcelot['Cat'/77, l='MpServer', x=1472.91, y=4.00, z=-748.63], PCEntityCat['Cat'/78, l='MpServer', x=1473.50, y=4.00, z=-747.53], PCEntityCat['Cat'/79, l='MpServer', x=1474.44, y=4.00, z=-745.50], PCEntityCat['Cat'/72, l='MpServer', x=1457.91, y=4.00, z=-744.69], PCEntityCat['Cat'/73, l='MpServer', x=1459.47, y=4.00, z=-743.47], PCEntityCat['Cat'/74, l='MpServer', x=1460.09, y=4.00, z=-743.53], PCEntityCat['Cat'/75, l='MpServer', x=1458.63, y=4.00, z=-744.94], PCEntityCat['Cat'/85, l='MpServer', x=1478.84, y=4.00, z=-741.59], PCEntityCat['Cat'/84, l='MpServer', x=1477.50, y=4.00, z=-737.50], PCEntityCat['Cat'/87, l='MpServer', x=1475.75, y=4.00, z=-748.94], PCEntityCat['Cat'/86, l='MpServer', x=1475.34, y=4.00, z=-741.41], PCEntityCat['Cat'/81, l='MpServer', x=1472.78, y=4.00, z=-747.81], PCEntityCat['Cat'/80, l='MpServer', x=1474.53, y=4.00, z=-742.97], PCEntityCat['Cat'/83, l='MpServer', x=1474.50, y=4.00, z=-736.50], PCEntityCat['Cat'/82, l='MpServer', x=1474.22, y=4.00, z=-746.78], EntityHorse['Horse'/93, l='MpServer', x=1520.72, y=4.00, z=-825.78], EntityPig['Pig'/95, l='MpServer', x=1534.94, y=4.00, z=-824.81], EntityHorse['Horse'/94, l='MpServer', x=1526.25, y=4.00, z=-828.53], PCEntityCat['Cat'/89, l='MpServer', x=1475.59, y=4.00, z=-743.53], PCEntityCat['Cat'/88, l='MpServer', x=1477.13, y=4.00, z=-748.44], PCEntityCat['Cat'/90, l='MpServer', x=1479.69, y=4.00, z=-742.31], EntityChicken['Chicken'/34, l='MpServer', x=1382.44, y=4.00, z=-812.63], EntityCow['Cow'/35, l='MpServer', x=1389.88, y=4.00, z=-775.97], EntityCow['Cow'/32, l='MpServer', x=1383.22, y=4.00, z=-810.50], EntityPig['Pig'/33, l='MpServer', x=1391.91, y=4.00, z=-814.97], EntityCow['Cow'/42, l='MpServer', x=1391.13, y=4.00, z=-800.97], EntitySheep['Sheep'/43, l='MpServer', x=1395.75, y=4.00, z=-671.72], EntitySheep['Sheep'/40, l='MpServer', x=1398.16, y=4.00, z=-817.84], EntityVillager['Villager'/108, l='MpServer', x=1537.50, y=5.00, z=-676.16], EntityPig['Pig'/41, l='MpServer', x=1403.31, y=4.00, z=-813.16], EntityChicken['Chicken'/46, l='MpServer', x=1418.19, y=4.00, z=-788.22], EntityChicken['Chicken'/47, l='MpServer', x=1417.63, y=4.00, z=-789.59], EntityClientPlayerMP['Mnesikos'/137, l='MpServer', x=1458.50, y=5.62, z=-749.36], EntityPig['Pig'/48, l='MpServer', x=1409.66, y=4.00, z=-692.84], EntityCow['Cow'/56, l='MpServer', x=1432.81, y=4.00, z=-804.19], EntityChicken['Chicken'/63, l='MpServer', x=1459.56, y=4.00, z=-824.41], EntityHorse['Horse'/61, l='MpServer', x=1450.06, y=4.00, z=-788.16], EntityHorse['Horse'/60, l='MpServer', x=1447.22, y=4.00, z=-823.44]]
+	Retry entities: 0 total; []
+	Server brand: fml,forge
+	Server type: Integrated singleplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.addWorldInfoToCrashReport(WorldClient.java:415)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:2567)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:991)
+	at net.minecraft.client.main.Main.main(Main.java:164)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at net.minecraft.launchwrapper.Launch.launch(Launch.java:135)
+	at net.minecraft.launchwrapper.Launch.main(Launch.java:28)
+	at net.minecraftforge.gradle.GradleStartCommon.launch(Unknown Source)
+	at GradleStart.main(Unknown Source)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Windows 8.1 (amd64) version 6.3
+	Java Version: 1.7.0_80, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 288620344 bytes (275 MB) / 721420288 bytes (688 MB) up to 2837446656 bytes (2706 MB)
+	JVM Flags: 0 total; 
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 0, tallocated: 0
+	FML: MCP v9.05 FML v7.10.99.99 Minecraft Forge 10.13.4.1614 5 mods loaded, 5 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+	UCHIJAAAA	mcp{9.05} [Minecraft Coder Pack] (minecraft.jar) 
+	UCHIJAAAA	FML{7.10.99.99} [Forge Mod Loader] (forgeSrc-1.7.10-10.13.4.1614-1.7.10.jar) 
+	UCHIJAAAA	Forge{10.13.4.1614} [Minecraft Forge] (forgeSrc-1.7.10-10.13.4.1614-1.7.10.jar) 
+	UCHIJAAAA	ProjectC{0.0.1} [Project Cats] (bin) 
+	UCHIJAAAA	examplemod{1.0} [Example Mod] (bin) 
+	GL info: ' Vendor: 'NVIDIA Corporation' Version: '4.6.0 NVIDIA 391.24' Renderer: 'GeForce GT 750M/PCIe/SSE2'
+	Launched Version: 1.7.10
+	LWJGL: 2.9.1
+	OpenGL: GeForce GT 750M/PCIe/SSE2 GL version 4.6.0 NVIDIA 391.24, NVIDIA Corporation
+	GL Caps: Using GL 1.3 multitexturing.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Anisotropic filtering is supported and maximum anisotropy is 16.
+Shaders are available because OpenGL 2.1 is supported.
+
+	Is Modded: Definitely; Client brand changed to 'fml,forge'
+	Type: Client (map_client.txt)
+	Resource Packs: []
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Anisotropic Filtering: Off (1)
