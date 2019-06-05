@@ -19,6 +19,7 @@ public class RenderCat extends RenderLiving<EntityCat> {
 
     private static final List<ResourceLocation> BASES = Lists.newArrayList();
     protected static final List<ResourceLocation> TABBY = Lists.newArrayList();
+    protected static final List<ResourceLocation> TORTIE = Lists.newArrayList();
     protected static final List<ResourceLocation> WHITE = Lists.newArrayList();
     protected static final List<ResourceLocation> EYES = Lists.newArrayList();
 
@@ -28,6 +29,8 @@ public class RenderCat extends RenderLiving<EntityCat> {
             BASES.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/base/base_" + (i + 1) + ".png"));
         for (int i = 0; i < 4; i++)
             TABBY.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/tabby/mackerel_" + (i + 1) + ".png"));
+        for (int i = 0; i < 2; i++)
+            TORTIE.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/tabby/tortiemack_" + (i + 1) + ".png"));
         for (int i = 0; i < 6; i++)
             WHITE.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/white/white_" + (i + 1) + ".png"));
         for (int i = 0; i < 5; i++)
@@ -49,9 +52,10 @@ public class RenderCat extends RenderLiving<EntityCat> {
     private ResourceLocation getBaseTexture(EntityCat cat, ResourceLocation baseLoc) {
         Integer b = cat.getBase();
         Integer t = cat.getMarkingNum("tabby");
+        Integer to = cat.getMarkingNum("tortie");
         Integer w = cat.getMarkingNum("white");
         Integer e = cat.getMarkingNum("eyes");
-        ResourceLocation newLoc = new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/temp/" + b + t + w + e + ".png");
+        ResourceLocation newLoc = new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/temp/" + b + t + to + w + e + ".png");
         TextureHelper.createTexture(cat, baseLoc, newLoc);
         return newLoc;
     }

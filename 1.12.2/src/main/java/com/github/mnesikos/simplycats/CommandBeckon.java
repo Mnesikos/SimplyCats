@@ -23,6 +23,7 @@ public class CommandBeckon implements ICommand {
         aliases = new ArrayList<>();
         aliases.add("beckon");
         aliases.add("bekn");
+        aliases.add("cat");
     }
 
     @Override
@@ -37,7 +38,7 @@ public class CommandBeckon implements ICommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "command.beckon.usage";
+        return new TextComponentTranslation("command.beckon.usage").getFormattedText();
     }
 
     @Override

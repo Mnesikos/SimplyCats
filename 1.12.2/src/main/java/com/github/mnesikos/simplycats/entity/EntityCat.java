@@ -1,5 +1,7 @@
 package com.github.mnesikos.simplycats.entity;
 
+import com.github.mnesikos.simplycats.entity.ai.EntityCatAIBirth;
+import com.github.mnesikos.simplycats.entity.ai.EntityCatAIMate;
 import com.google.common.base.Predicate;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
@@ -11,6 +13,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -19,7 +22,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -30,20 +33,28 @@ public class EntityCat extends EntityTameable {
     private static final DataParameter<Integer> TYPE;
     private static final DataParameter<Integer> BASE;
     private static final DataParameter<Integer> TABBY;
+    private static final DataParameter<Integer> TORTIE;
     private static final DataParameter<Integer> WHITE;
     private static final DataParameter<Integer> EYES;
     private static final DataParameter<Byte> SEX;
-    private static final DataParameter<Boolean> IS_ANGRY;
+    private static final List<String> PHENO_LIST = new ArrayList<String>(3);
+
     private static final DataParameter<Byte> IN_HEAT;
     private static final DataParameter<Byte> IS_PREGNANT;
-    private static final DataParameter<Integer> HEAT_TIMER;
-    private static final List<String> PHENO_LIST = new ArrayList<String>(3);
+    private static final DataParameter<Integer> MATE_TIMER;
+    private static final DataParameter<Integer> KITTENS;
+    private static final DataParameter<String> MOTHER;
+    private static final DataParameter<String> FATHER;
+
+    private static final DataParameter<Boolean> IS_ANGRY;
 
     public EntityCat(World world) {
         super(world);
         this.setSize(0.6F, 0.8F);
         this.setTamed(true);
         this.setCatPheno();
+        this.setParent("mother", "Unknown");
+        this.setParent("father", "Unknown");
     }
 
     @Override
@@ -52,8 +63,9 @@ public class EntityCat extends EntityTameable {
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiSit);
         this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
-        //this.tasks.addTask(3, new EntityCatAIMate(this, 0.8D));
+        this.tasks.addTask(3, new EntityCatAIMate(this, 0.8D));
         this.tasks.addTask(4, new EntityAIMoveIndoors(this));
+        this.tasks.addTask(4, new EntityCatAIBirth(this));
         this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(6, new EntityAIOcelotAttack(this));
         this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
@@ -80,13 +92,19 @@ public class EntityCat extends EntityTameable {
         this.dataManager.register(TYPE, 0);
         this.dataManager.register(BASE, 0);
         this.dataManager.register(TABBY, 0);
+        this.dataManager.register(TORTIE, 0);
         this.dataManager.register(WHITE, 0);
         this.dataManager.register(EYES, 0);
         this.dataManager.register(SEX, (byte)0);
-        this.dataManager.register(IS_ANGRY, false);
+
         this.dataManager.register(IN_HEAT, (byte)0);
         this.dataManager.register(IS_PREGNANT, (byte)0);
-        this.dataManager.register(HEAT_TIMER, 0);
+        this.dataManager.register(MATE_TIMER, 0);
+        this.dataManager.register(KITTENS, 0);
+        this.dataManager.register(MOTHER, "Unknown");
+        this.dataManager.register(FATHER, "Unknown");
+
+        this.dataManager.register(IS_ANGRY, false);
     }
 
     @Override
@@ -94,12 +112,15 @@ public class EntityCat extends EntityTameable {
         super.onUpdate();
 
         if (!this.world.isRemote && !this.isChild() && this.getSex() == 0) {
-            if (this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
-                if (this.getHeatTimer() <= 0)
-                    setHeatCycle("end", -24000 * 16);
-            if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
-                if (this.getHeatTimer() >= 0)
-                    setHeatCycle("start", 24000 * 2);
+            if (this.getBreedingStatus("inheat"))
+                if (this.getMateTimer() <= 0)
+                    setTimeCycle("end", 24000 * 16); //out of heat for 16 minecraft days
+            if (!this.getBreedingStatus("inheat")) {
+                if (this.getMateTimer() >= 0) {
+                    if (!this.getBreedingStatus("ispregnant"))
+                        setTimeCycle("start", 24000 * 2); //in heat for 2 minecraft days
+                }
+            }
         }
     }
 
@@ -108,19 +129,19 @@ public class EntityCat extends EntityTameable {
         super.onLivingUpdate();
 
         if (!this.world.isRemote && !this.isChild()) {
-            int heatTimer = this.getHeatTimer();
+            int mateTimer = this.getMateTimer();
             if (this.getSex() == 0) {
                 if (this.getBreedingStatus("inheat") || this.getBreedingStatus("ispregnant"))
-                    --heatTimer;
+                    --mateTimer;
                 else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
-                    ++heatTimer;
+                    ++mateTimer;
             } else if (this.getSex() == 1) {
-                if (heatTimer > 0)
-                    --heatTimer;
-                else if (heatTimer <= 0)
-                    heatTimer = 0;
+                if (mateTimer > 0)
+                    --mateTimer;
+                else if (mateTimer <= 0)
+                    mateTimer = 0;
             }
-            this.setHeatTimer(heatTimer);
+            this.setMateTimer(mateTimer);
         }
     }
 
@@ -153,11 +174,28 @@ public class EntityCat extends EntityTameable {
         return entity.attackEntityFrom(DamageSource.causeMobDamage(this), 3.0F);
     }
 
+    public void setParent (String parent, String name) {
+        if (parent.equals("mother"))
+            this.dataManager.set(MOTHER, name);
+        else if (parent.equals("father"))
+            this.dataManager.set(FATHER, name);
+    }
+
+    public String getParent(String parent) {
+        if (parent.equals("mother"))
+            return this.dataManager.get(MOTHER);
+        else if (parent.equals("father"))
+            return this.dataManager.get(FATHER);
+        else
+            return "Error";
+    }
+
     private void setCatPheno() {
         selectSex();
         selectType();
         setBase(this.world.rand.nextInt(4));
         PHENO_LIST.add("tabby");
+        PHENO_LIST.add("tortie");
         PHENO_LIST.add("white");
         PHENO_LIST.add("eyes");
         for (int i = 0; i < PHENO_LIST.size(); i++)
@@ -191,6 +229,8 @@ public class EntityCat extends EntityTameable {
         switch (type) {
             case "tabby":
                 this.dataManager.set(TABBY, n);
+            case "tortie":
+                this.dataManager.set(TORTIE, n);
             case "white":
                 this.dataManager.set(WHITE, n);
             case "eyes":
@@ -202,6 +242,8 @@ public class EntityCat extends EntityTameable {
         switch (type) {
             case "tabby":
                 return this.dataManager.get(TABBY);
+            case "tortie":
+                return this.dataManager.get(TORTIE);
             case "white":
                 return this.dataManager.get(WHITE);
             case "eyes":
@@ -216,18 +258,29 @@ public class EntityCat extends EntityTameable {
         if (type == null) {
             return 0;
         } else if (type.equals("tabby")) {
-            if (this.getBase() == 2)
-                num = 3;
-            else if (this.getBase() == 3)
-                num = 4;
-            else if (this.getBase() == 0 || this.getBase() == 1) {
-                int check = this.world.rand.nextInt(3);
+            if (this.getBase() == 2 || this.getBase() == 3) // red tabby || cream tabby
+                num = this.getBase() == 2 ? 3 : 4; // if red ? then red : else cream
+            else if (this.getBase() == 0 || this.getBase() == 1) { // black || grey
+                int check = this.world.rand.nextInt(4);
                 if (check > 1 && this.getBase() == 0)
-                    num = 1;
+                    num = 1; // black tabby
                 else if (check > 1 && this.getBase() == 1)
-                    num = 2;
+                    num = 2; // grey tabby
                 else
-                    num = 0;
+                    num = 0; // no tabby
+            }
+        } else if (type.equals("tortie")) {
+            // TODO
+            if (this.getSex() == 1 || this.getBase() == 2 || this.getBase() == 3) // males != tortie || full reds || full creams
+                num = 0;
+            else {
+                int check = this.world.rand.nextInt(4);
+                if (check == 0 && this.getBase() == 0)
+                    num = 1; // black tortie
+                else if (check == 0 && this.getBase() == 1)
+                    num = 2; // grey tortie
+                else
+                    num = 0; // no tortie
             }
         } else if (type.equals("white")) {
             num = this.world.rand.nextInt(7);
@@ -265,14 +318,17 @@ public class EntityCat extends EntityTameable {
         return this.dataManager.get(IS_ANGRY);
     }
 
-    protected void setHeatCycle(String s, int time) {
+    public void setTimeCycle(String s, int time) {
         if (s.equals("start")) {
             this.setBreedingStatus("inheat", true);
-            this.setHeatTimer(time);
+            this.setMateTimer(time);
         }
         if (s.equals("end")) {
             this.setBreedingStatus("inheat", false);
-            this.setHeatTimer(-time);
+            this.setMateTimer(-time);
+        }
+        if (s.equals("pregnancy")) {
+            this.setMateTimer(time);
         }
     }
 
@@ -299,12 +355,54 @@ public class EntityCat extends EntityTameable {
         return false;
     }
 
-    public void setHeatTimer(int time) {
-        this.dataManager.set(HEAT_TIMER, time);
+    public void setMateTimer(int time) {
+        this.dataManager.set(MATE_TIMER, time);
     }
 
-    public int getHeatTimer() {
-        return this.dataManager.get(HEAT_TIMER);
+    public int getMateTimer() {
+        return this.dataManager.get(MATE_TIMER);
+    }
+
+    public void setKittens(int kittens) {
+        if (getKittens("total") <= 0 || kittens == 0)
+            this.dataManager.set(KITTENS, kittens);
+        else if (getKittens("total") > 0)
+            this.dataManager.set(KITTENS, this.getKittens("total") + kittens);
+    }
+
+    public int getKittens(String s) {
+        return this.dataManager.get(KITTENS);
+    }
+
+    public void addFather(EntityCat father, String name) {
+        for (int i = 0; i < 5; i++) {
+            if(!this.getEntityData().hasKey("Father" + i) || (this.getEntityData().hasKey("Father" + i) && this.getEntityData().getCompoundTag("Father" + i) == null)) {
+                this.getEntityData().setTag("Father" + i, father.writeToNBT(new NBTTagCompound()));
+                this.getEntityData().setString("Father" + i + "Name", name);
+                break;
+            }
+        }
+    }
+
+    public void setFather(int i, NBTBase father, String name) {
+        if (this.getEntityData().getCompoundTag("Father" + i) != null) {
+            this.getEntityData().setTag("Father" + i, father);
+            this.getEntityData().setString("Father" + i +"Name", name);
+        }
+    }
+
+    public NBTTagCompound getFather(int i) {
+        /*NBTTagCompound father = null;
+        for(int i = 0; i < 5; i++) {
+            if(this.getEntityData().getCompoundTag("Father" + i) != null) {*/
+                return this.getEntityData().getCompoundTag("Father" + i);
+            /*}
+        }
+        return father;*/
+    }
+
+    public String getFatherName(int i) {
+        return this.getEntityData().getString("Father" + i + "Name");
     }
 
     @Override
@@ -319,8 +417,15 @@ public class EntityCat extends EntityTameable {
         if (this.getSex() == 0) {
             nbt.setBoolean("InHeat", this.getBreedingStatus("inheat"));
             nbt.setBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
+            nbt.setInteger("Kittens", this.getKittens("total"));
+            for (int i = 0; i < 5; i++) {
+                nbt.setTag("Father" + i, this.getFather(i));
+                nbt.setString("Father" + i + "Name", this.getFatherName(i));
+            }
         }
-        nbt.setInteger("Timer", this.getHeatTimer());
+        nbt.setInteger("Timer", this.getMateTimer());
+        nbt.setString("Mother", this.getParent("mother"));
+        nbt.setString("Father", this.getParent("father"));
     }
 
     @Override
@@ -335,8 +440,14 @@ public class EntityCat extends EntityTameable {
         if (this.getSex() == 0) {
             this.setBreedingStatus("inheat", nbt.getBoolean("InHeat"));
             this.setBreedingStatus("ispregnant", nbt.getBoolean("IsPregnant"));
+            this.setKittens(nbt.getInteger("Kittens"));
+            for (int i = 0; i < 5; i++) {
+                this.setFather(i, nbt.getTag("Father" + i), nbt.getString("Father" + i + "Name"));
+            }
         }
-        this.setHeatTimer(nbt.getInteger("Timer"));
+        this.setMateTimer(nbt.getInteger("Timer"));
+        this.setParent("mother", nbt.getString("Mother"));
+        this.setParent("father", nbt.getString("Father"));
     }
 
     @Override
@@ -345,24 +456,24 @@ public class EntityCat extends EntityTameable {
     }
 
     @Override
-    public boolean canMateWith(EntityAnimal entity) {
-        if (entity == this)
+    public boolean canMateWith(EntityAnimal target) {
+        if (target == this)
             return false;
-        if (!(entity instanceof EntityCat))
+        if (!(target instanceof EntityCat))
             return false;
-        if (entity.isChild())
+        if (target.isChild() || this.isChild())
             return false;
-        if (this.isSitting() || ((EntityCat) entity).isSitting())
+        if (this.isSitting() || ((EntityCat) target).isSitting())
             return false;
 
-        EntityCat mate = (EntityCat) entity;
+        EntityCat mate = (EntityCat) target;
         if (mate.getType() == 3 || this.getType() == 3)
             return false;
 
-        if ((this.getSex() == 1 && this.getHeatTimer() == 0) || (mate.getSex() == 1 && mate.getHeatTimer() == 0))
-            return ((mate.getSex() == 0 && mate.getBreedingStatus("inheat") && this.getSex() == 1) || (mate.getSex() == 1 && this.getSex() == 0 && this.getBreedingStatus("inheat")));
-
-        return false;
+        if ((this.getSex() == 1 && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
+            return (mate.getSex() == 0 && mate.getBreedingStatus("inheat")); // returns true if (mate) is female & in heat
+        else
+            return false;
     }
 
     @Override
@@ -381,39 +492,84 @@ public class EntityCat extends EntityTameable {
         int black = 0; int grey = 1; int red = 2; int cream = 3;
 
         int base = 0;
+        int tortie = 0;
         if (this.getBase() == parent2.getBase()) {
-            if (this.getBase() == black)
+            if (this.getBase() == black) // black x black = 25% grey, 75% black
                 base = quarterChance ? grey : black;
-            else if (this.getBase() == red)
+            else if (this.getBase() == red) // red x red = 25% cream, 75% red
                 base = quarterChance ? cream : red;
             else
-                base = this.getBase();
+                base = this.getBase(); // grey x grey = grey, cream x cream = cream
         }
         else if (this.getBase() == black || parent2.getBase() == black) {
-            if (this.getBase() == grey || parent2.getBase() == grey)
+            if (this.getBase() == grey || parent2.getBase() == grey) // black x grey = 50% black, 50% grey
                 base = halfChance ? black : grey;
-            else if ((this.getBase() == red && this.getSex() == 0) || (parent2.getBase() == red && parent2.getSex() == 0))
-                base = quarterChance ? cream : red; // TODO: TORTIE
-            else if ((this.getBase() == red && this.getSex() == 1) || (parent2.getBase() == red && parent2.getSex() == 1))
+            else if ((this.getBase() == red && this.getSex() == 0) || (parent2.getBase() == red && parent2.getSex() == 0)) {
+                // black x female red = 25% cream boys, 75% red boys, 25% cream tortie girls, 75% red tortie girls
+                if (child.getSex() == 1)
+                    base = quarterChance ? cream : red;
+                else {
+                    base = quarterChance ? grey : black;
+                    tortie = base == grey ? 2 : 1;
+                }
+            }
+            else if ((this.getBase() == red && this.getSex() == 1) || (parent2.getBase() == red && parent2.getSex() == 1)) {
+                // black x male red = 25% grey boys, 75% black boys, 25% cream tortie girls, 75% red tortie girls
                 base = quarterChance ? grey : black;
-            else if ((this.getBase() == cream && this.getSex() == 0) || (parent2.getBase() == cream && parent2.getSex() == 0))
-                base = halfChance ? cream : red;
-            else if ((this.getBase() == cream && this.getSex() == 1) || (parent2.getBase() == cream && parent2.getSex() == 1))
+                if (child.getSex() == 0)
+                    tortie = base == grey ? 2 : 1;
+            }
+            else if ((this.getBase() == cream && this.getSex() == 0) || (parent2.getBase() == cream && parent2.getSex() == 0)) {
+                // black x female cream = 50% cream boys, 50% red boys, 50% cream tortie girls, 50% red tortie girls
+                if (child.getSex() == 1)
+                    base = halfChance ? cream : red;
+                else {
+                    base = halfChance ? grey : black;
+                    tortie = base == grey ? 2 : 1;
+                }
+            }
+            else if ((this.getBase() == cream && this.getSex() == 1) || (parent2.getBase() == cream && parent2.getSex() == 1)) {
+                // black x male cream = 50% grey boys, 50% black boys, 50% cream tortie girls, 50% red tortie girls
                 base = halfChance ? grey : black;
+                if (child.getSex() == 0)
+                    tortie = base == grey ? 2 : 1;
+            }
         }
         else if (this.getBase() == grey || parent2.getBase() == grey) {
-            if ((this.getBase() == red && this.getSex() == 0) || (parent2.getBase() == red && parent2.getSex() == 0))
-                base = halfChance ? red : cream;
-            else if ((this.getBase() == red && this.getSex() == 1) || (parent2.getBase() == red && parent2.getSex() == 1))
+            if ((this.getBase() == red && this.getSex() == 0) || (parent2.getBase() == red && parent2.getSex() == 0)) {
+                // grey x female red = 50/50 red/cream boys, 50/50 red/cream tortie girls
+                if (child.getSex() == 1)
+                    base = halfChance ? red : cream;
+                else {
+                    base = halfChance ? black : grey;
+                    tortie = base == grey ? 2 : 1;
+                }
+            }
+            else if ((this.getBase() == red && this.getSex() == 1) || (parent2.getBase() == red && parent2.getSex() == 1)) {
+                // grey x male red = 50/50 black/grey boys, 50/50 red/cream tortie girls
                 base = halfChance ? black : grey;
-            else if ((this.getBase() == cream && this.getSex() == 0) || (parent2.getBase() == cream && parent2.getSex() == 0))
-                base = cream;
-            else if ((this.getBase() == cream && this.getSex() == 1) || (parent2.getBase() == cream && parent2.getSex() == 1))
+                if (child.getSex() == 0)
+                    tortie = base == grey ? 2 : 1;
+            }
+            else if ((this.getBase() == cream && this.getSex() == 0) || (parent2.getBase() == cream && parent2.getSex() == 0)) {
+                // grey x female cream = 100% cream boys, 100% cream tortie girls
+                if (child.getSex() == 1)
+                    base = cream;
+                else {
+                    base = grey;
+                    tortie = 2;
+                }
+            }
+            else if ((this.getBase() == cream && this.getSex() == 1) || (parent2.getBase() == cream && parent2.getSex() == 1)) {
+                // grey x male cream = 100% grey boys, 100% cream tortie girls
                 base = grey;
+                if (child.getSex() == 0)
+                    tortie = 2;
+            }
         }
         else if (this.getBase() == red || parent2.getBase() == red) {
-            if (this.getBase() == cream || parent2.getBase() == cream)
-                base = quarterChance ? red : cream;
+            if (this.getBase() == cream || parent2.getBase() == cream) // red x cream = 50/50 red/cream
+                base = halfChance ? red : cream;
         }
 
         int tabby = base + 1;
@@ -450,13 +606,14 @@ public class EntityCat extends EntityTameable {
             eyesMax = parent2.getMarkingNum("eyes");
         }
         eyesMin = eyesMin < 0 ? 0 : eyesMin;
-        eyesMax = eyesMax > 4 ? 4 : eyesMax;
-        eyesMax = eyesMax == 4 ? (child.getMarkingNum("white") < 5 ? (eyesMin < 3 ? eyesMin+1 : 3) : eyesMax) : eyesMax;
+        eyesMax = eyesMax > 4 ? 4 : (child.getMarkingNum("white") >= 5 ? 4 : eyesMax); // check for blue-eye compat based on child's white despite parent's
+        eyesMax = eyesMax == 4 ? (child.getMarkingNum("white") < 5 ? (eyesMin < 3 ? eyesMin+1 : 3) : eyesMax) : eyesMax; // removes blue eyed child possibility based on white
         int eyes = rand.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
         eyes = this.getMarkingNum("eyes") == 4 ? (parent2.getMarkingNum("eyes") == 4 ? 4 : eyes) : eyes;
 
         child.setBase(base);
         child.setMarkings("tabby", tabby);
+        child.setMarkings("tortie", tortie);
         child.setMarkings("white", white);
         child.setMarkings("eyes", eyes);
         child.setOwnerId(this.getOwnerId());
@@ -482,20 +639,37 @@ public class EntityCat extends EntityTameable {
                     } else if (stack.getItem() == Items.FISH && this.getHealth() == this.getMaxHealth() && this.getSex() == 0 && !this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant")) {
                         if (!player.capabilities.isCreativeMode)
                             stack.shrink(1);
-                        this.setHeatTimer(-60);
+                        this.setMateTimer(-60);
                         if (stack.getCount() <= 0)
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                         return true;
                     }
-                } else if (stack.getItem() == Items.STICK /*&& !this.isChild()*/) {
-                    if (this.world.isRemote && this.getSex() == 0 && this.getBreedingStatus("ispregnant"))
-                        player.sendMessage(new TextComponentString("This female is pregnant. Ticks until birth: " + this.getHeatTimer()));
-                    else if (this.world.isRemote && this.getSex() == 0 && this.getBreedingStatus("inheat"))
-                        player.sendMessage(new TextComponentString("This female is in heat. Ticks left: " + this.getHeatTimer()));
-                    else if (this.world.isRemote && this.getSex() == 0 && !this.getBreedingStatus("inheat"))
-                        player.sendMessage(new TextComponentString("This female is not in heat. Ticks until next heat: " + this.getHeatTimer()));
-                    else if (this.world.isRemote && this.getSex() == 1)
-                        player.sendMessage(new TextComponentString("This is a male. Cooldown ticks left: " + this.getHeatTimer()));
+                } else if (stack.getItem() == Items.STICK) {
+                    if (this.world.isRemote) {
+                        String pregnant = new TextComponentTranslation("chat.info.pregnant").getFormattedText();
+                        String inheat = new TextComponentTranslation("chat.info.in_heat").getFormattedText();
+                        String noheat = new TextComponentTranslation("chat.info.not_in_heat").getFormattedText();
+                        String male = new TextComponentTranslation("chat.info.male").getFormattedText();
+                        String parents = new TextComponentTranslation("chat.info.parents").getFormattedText();
+                        if (this.getSex() == 0 && this.getBreedingStatus("ispregnant")) {
+                            if (!this.getBreedingStatus("inheat"))
+                                player.sendMessage(new TextComponentString(pregnant + this.getMateTimer() + parents + this.getParent("mother") + "/" + this.getParent("father")));
+                            else
+                                player.sendMessage(new TextComponentString("This cat is pregnant, but still in heat for: " + this.getMateTimer()));
+                        }
+                        else if (this.getSex() == 0 && this.getBreedingStatus("inheat"))
+                            player.sendMessage(new TextComponentTranslation(inheat + this.getMateTimer() + parents + this.getParent("mother") + "/" + this.getParent("father")));
+                        else if (this.getSex() == 0 && !this.getBreedingStatus("inheat"))
+                            player.sendMessage(new TextComponentTranslation(noheat + this.getMateTimer() + parents + this.getParent("mother") + "/" + this.getParent("father")));
+                        else if (this.getSex() == 1)
+                            player.sendMessage(new TextComponentTranslation(male + this.getMateTimer() + parents + this.getParent("mother") + "/" + this.getParent("father")));
+                    }
+                    return true;
+                } else if (stack.getItem() == Items.BONE) {
+                    if (this.world.isRemote) {
+                        if (this.getSex() == 0 && this.getBreedingStatus("ispregnant"))
+                            player.sendMessage(new TextComponentString("Kitten count: " + this.getKittens("total")));
+                    }
                     return true;
                 }
             }
@@ -561,19 +735,25 @@ public class EntityCat extends EntityTameable {
         if (this.hasCustomName())
             return this.getCustomNameTag();
         else
-            return this.isTamed() ? I18n.translateToLocal("entity.Cat.name") : super.getName();
+            return this.isTamed() ? new TextComponentTranslation("entity.Cat.name").toString() : super.getName();
     }
 
     static {
         TYPE = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
         BASE = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
         TABBY = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
+        TORTIE = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
         WHITE = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
         EYES = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
         SEX = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
-        IS_ANGRY = EntityDataManager.createKey(EntityCat.class, DataSerializers.BOOLEAN);
+
         IN_HEAT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
         IS_PREGNANT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
-        HEAT_TIMER = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
+        MATE_TIMER = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
+        KITTENS = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
+        MOTHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.STRING);
+        FATHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.STRING);
+
+        IS_ANGRY = EntityDataManager.createKey(EntityCat.class, DataSerializers.BOOLEAN);
     }
 }

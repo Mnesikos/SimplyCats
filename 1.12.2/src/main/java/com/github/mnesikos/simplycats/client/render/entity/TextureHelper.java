@@ -25,12 +25,14 @@ public class TextureHelper {
     private static class LayerTexture extends AbstractTexture {
         protected final ResourceLocation BASE_TEX;
         protected final ResourceLocation TABBY_TEX;
+        protected final ResourceLocation TORTIE_TEX;
         protected final ResourceLocation WHITE_TEX;
         protected final ResourceLocation EYES_TEX;
 
         public LayerTexture(EntityCat cat, ResourceLocation base, ResourceLocation eyes) {
             this.BASE_TEX = base;
             this.TABBY_TEX = getOverlay("tabby", cat.getMarkingNum("tabby"));
+            this.TORTIE_TEX = getOverlay("tortie", cat.getMarkingNum("tortie"));
             this.WHITE_TEX = getOverlay("white", cat.getMarkingNum("white"));
             this.EYES_TEX = eyes;
         }
@@ -40,6 +42,7 @@ public class TextureHelper {
             this.deleteGlTexture();
             InputStream inputstreamBase = null;
             InputStream inputstreamTabby = null;
+            InputStream inputStreamTortie = null;
             InputStream inputstreamWhite = null;
             InputStream inputstreamEyes = null;
 
@@ -56,7 +59,7 @@ public class TextureHelper {
                 Image eyes = ImageIO.read(inputstreamEyes);
 
                 try {
-                    if (this.TABBY_TEX == null && this.WHITE_TEX == null) {
+                    if (this.TABBY_TEX == null && this.WHITE_TEX == null && this.TORTIE_TEX == null) {
                         BufferedImage selfCombined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
                         Graphics g = selfCombined.getGraphics();
                         g.drawImage(base, 0, 0, null);
@@ -77,6 +80,21 @@ public class TextureHelper {
                             }
                         } catch (Exception e) {
                             System.out.println(e + ": Failed combining tabby overlay: " + TABBY_TEX);
+                        }
+                        try {
+                            if (this.TORTIE_TEX != null) {
+                                IResource iresource_tortie = resManager.getResource(this.TORTIE_TEX);
+                                inputStreamTortie = iresource_tortie.getInputStream();
+                                Image tortie = ImageIO.read(inputStreamTortie);
+
+                                BufferedImage tortieAdded = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                                Graphics g2 = tortieAdded.getGraphics();
+                                g2.drawImage(base, 0, 0, null);
+                                g2.drawImage(tortie, 0, 0, null);
+                                base = tortieAdded;
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e + ": Failed combining tortie overlay: " + TORTIE_TEX);
                         }
                         try {
                             if (this.WHITE_TEX != null) {
@@ -132,6 +150,9 @@ public class TextureHelper {
                 if (inputstreamTabby != null) {
                     inputstreamTabby.close();
                 }
+                if (inputStreamTortie != null) {
+                    inputStreamTortie.close();
+                }
                 if (inputstreamWhite != null) {
                     inputstreamWhite.close();
                 }
@@ -166,6 +187,12 @@ public class TextureHelper {
         else if (i > 0 && type.equals("tabby")) {
             loc = RenderCat.TABBY.get((i - 1));
             if (loc == null) { return getOverlay("tabby", i); }
+        }
+        else if (i > 0 && type.equals("tortie")) {
+            loc = RenderCat.TORTIE.get((i - 1));
+            if (loc == null) {
+                return getOverlay("tortie", i);
+            }
         }
         else if (i > 0 && type.equals("white")) {
             loc = RenderCat.WHITE.get((i - 1));
