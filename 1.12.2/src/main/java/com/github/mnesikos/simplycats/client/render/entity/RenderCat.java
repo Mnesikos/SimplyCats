@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.client.render.entity;
 
-import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.client.model.entity.ModelCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.google.common.collect.Lists;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class RenderCat extends RenderLiving<EntityCat> {
-    private static final ResourceLocation MAV = new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/maverick.png");
+    private static final ResourceLocation MAV = new ResourceLocation(Ref.MODID + ":textures/entity/cat/maverick.png");
 
     private static final List<ResourceLocation> BASES = Lists.newArrayList();
     protected static final List<ResourceLocation> TABBY = Lists.newArrayList();
@@ -26,15 +26,15 @@ public class RenderCat extends RenderLiving<EntityCat> {
     public RenderCat(RenderManager render) {
         super(render, new ModelCat(), 0.2F);
         for (int i = 0; i < 4; i++)
-            BASES.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/base/base_" + (i + 1) + ".png"));
+            BASES.add(i, new ResourceLocation(Ref.MODID + ":textures/entity/cat/base/base_" + (i + 1) + ".png"));
         for (int i = 0; i < 4; i++)
-            TABBY.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/tabby/mackerel_" + (i + 1) + ".png"));
+            TABBY.add(i, new ResourceLocation(Ref.MODID + ":textures/entity/cat/tabby/mackerel_" + (i + 1) + ".png"));
         for (int i = 0; i < 2; i++)
-            TORTIE.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/tabby/tortiemack_" + (i + 1) + ".png"));
+            TORTIE.add(i, new ResourceLocation(Ref.MODID + ":textures/entity/cat/tabby/tortiemack_" + (i + 1) + ".png"));
         for (int i = 0; i < 6; i++)
-            WHITE.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/white/white_" + (i + 1) + ".png"));
+            WHITE.add(i, new ResourceLocation(Ref.MODID + ":textures/entity/cat/white/white_" + (i + 1) + ".png"));
         for (int i = 0; i < 5; i++)
-            EYES.add(i, new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/base/eyes_" + (i) + ".png"));
+            EYES.add(i, new ResourceLocation(Ref.MODID + ":textures/entity/cat/base/eyes_" + (i) + ".png"));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class RenderCat extends RenderLiving<EntityCat> {
         Integer to = cat.getMarkingNum("tortie");
         Integer w = cat.getMarkingNum("white");
         Integer e = cat.getMarkingNum("eyes");
-        ResourceLocation newLoc = new ResourceLocation(SimplyCats.MODID + ":textures/entity/cat/temp/" + b + t + to + w + e + ".png");
+        ResourceLocation newLoc = new ResourceLocation(Ref.MODID + ":textures/entity/cat/temp/" + b + t + to + w + e + ".png");
         TextureHelper.createTexture(cat, baseLoc, newLoc);
         return newLoc;
     }

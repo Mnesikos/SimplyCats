@@ -3,7 +3,7 @@
   "modid": "simplycats",
   "name": "Simply Cats Mod",
   "description": "Cats! Cats everywhere!",
-  "version": "0.0.1.0-beta1",
+  "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
@@ -11,6 +11,6 @@
   "credits": "",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["forge"]
 }
 ]

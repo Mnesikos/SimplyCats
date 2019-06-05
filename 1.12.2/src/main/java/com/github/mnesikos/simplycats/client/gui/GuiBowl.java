@@ -1,11 +1,9 @@
 package com.github.mnesikos.simplycats.client.gui;
 
-import com.github.mnesikos.simplycats.SimplyCats;
-import com.github.mnesikos.simplycats.inventory.ContainerBowl;
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -18,7 +16,7 @@ public class GuiBowl extends GuiContainer {
 
     public GuiBowl(Container inventorySlotsIn) {
         super(inventorySlotsIn);
-        texture = new ResourceLocation(SimplyCats.MODID + ":textures/gui/bowl_gui.png");
+        texture = new ResourceLocation(Ref.MODID + ":textures/gui/bowl_gui.png");
         //inventory = player.inventory;
         //this.te = te;
     }

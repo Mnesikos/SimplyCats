@@ -22,7 +22,6 @@ public class CommandBeckon implements ICommand {
     public CommandBeckon() {
         aliases = new ArrayList<>();
         aliases.add("beckon");
-        aliases.add("bekn");
         aliases.add("cat");
     }
 

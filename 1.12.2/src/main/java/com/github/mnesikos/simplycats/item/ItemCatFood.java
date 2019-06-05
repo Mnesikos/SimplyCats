@@ -1,11 +1,12 @@
 package com.github.mnesikos.simplycats.item;
 
+import com.github.mnesikos.simplycats.SimplyCats;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,6 +21,7 @@ public class ItemCatFood extends ModItemBase {
         super("cat_food");
         setHasSubtypes(true);
         setMaxDamage(0);
+        setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
     }
 
     @Override @SideOnly(Side.CLIENT)
@@ -32,7 +34,7 @@ public class ItemCatFood extends ModItemBase {
     @Override @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         int i = MathHelper.clamp(stack.getItemDamage(), 0, 3);
-        tooltip.add(I18n.translateToLocal("tooltip.cat_food." + TYPES[i] + ".desc"));
+        tooltip.add(I18n.format("tooltip.cat_food." + TYPES[i] + ".desc"));
     }
 
 }

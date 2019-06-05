@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.proxy;
 
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -36,7 +37,7 @@ public class CommonProxy implements IGuiHandler {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        SIMPLYCATS = new CreativeTabs(SimplyCats.MODID + ".tab") {
+        SIMPLYCATS = new CreativeTabs(Ref.MODID + ".tab") {
             @Override @SideOnly(Side.CLIENT)
             public ItemStack getTabIconItem() {
                 return new ItemStack(ModItems.PET_CARRIER);
@@ -45,8 +46,8 @@ public class CommonProxy implements IGuiHandler {
 
         //GameRegistry.registerTileEntity(TileEntityBowl.class, "tebowl");
 
-        int modEntityID = 0;
-        EntityRegistry.registerModEntity(new ResourceLocation(SimplyCats.MODID + ":cat"), EntityCat.class, "Cat", modEntityID++, SimplyCats.instance, 80, 3, false);
+        int entityID = 0;
+        EntityRegistry.registerModEntity(new ResourceLocation(Ref.MODID + ":cat"), EntityCat.class, "Cat", entityID++, SimplyCats.instance, 80, 1, true);
     }
 
     @Mod.EventHandler
@@ -58,7 +59,7 @@ public class CommonProxy implements IGuiHandler {
 
         ModProfessions.associateCareersAndTrades();
         VillagerRegistry.instance().registerVillageCreationHandler(new VillagePetShelterHandler());
-        MapGenStructureIO.registerStructureComponent(ComponentPetShelter.class, SimplyCats.MODID + ":PetShelterStructure");
+        MapGenStructureIO.registerStructureComponent(ComponentPetShelter.class, Ref.MODID + ":PetShelterStructure");
     }
 
     @Mod.EventHandler

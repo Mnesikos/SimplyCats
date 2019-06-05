@@ -36,18 +36,20 @@ cat.base.1.name=Grey
 cat.base.2.name=Red
 cat.base.3.name=Cream
 cat.tabby.name=Mackerel Tabby
+cat.tortie.name=Tortie
+cat.calico.name=Calico
 cat.white.name=and White
 
 < Command Usage
-command.beckon=See /beckon help
-command.beckon.usage=/beckon <male|female> <base color: 0-3> <eye color: 0-4> <tabby: true|false> <white: 0-6>
+command.beckon.usage=See /beckon or /beckon help for more info
+command.beckon=/beckon <male|female> <base color: 0-3> <eye color: 0-4> <tabby: true|false> <white: 0-6>
 command.beckon.help=Use "x" for random. Also see /beckon help <base|eyes|white>
 command.beckon.help.base=0 = Black; 1 = Grey; 2 = Red; 3 = Cream
 command.beckon.help.eyes=0 = Copper; 1 = Yellow; 2 = Hazel; 3 = Green; 4 = Blue
 command.beckon.help.white=0 = no white markings; 6 = completely white
 command.beckon.help.fail=Incorrect argument, try again?
 command.beckon.success=Beckoning cat...
-command.beckon.fail=Incorrect usage of command, see /beckon help
+command.beckon.fail=Incorrect usage of command, see /beckon
 
 < Chat Messages
 chat.pet_carrier.empty=This carrier is empty.

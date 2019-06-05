@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.item;
 
+import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.client.util.ITooltipFlag;
@@ -39,6 +40,7 @@ public class ItemPetCarrier extends ModItemBase {
         super("pet_carrier");
         this.setMaxStackSize(1);
         this.setHasSubtypes(true);
+        this.setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
     }
 
     @Override

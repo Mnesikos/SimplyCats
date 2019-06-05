@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.init;
 
-import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.Ref;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
@@ -17,21 +17,21 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Random;
 
-@GameRegistry.ObjectHolder(SimplyCats.MODID)
+@GameRegistry.ObjectHolder(Ref.MODID)
 public class ModProfessions {
     public final static VillagerProfession SHELTER_STAFF = null;
 
     public static VillagerCareer KENNEL_WORKER;
 
-    @Mod.EventBusSubscriber(modid = SimplyCats.MODID)
+    @Mod.EventBusSubscriber(modid = Ref.MODID)
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void onEvent(final RegistryEvent.Register<VillagerProfession> event) {
             final IForgeRegistry<VillagerProfession> registry = event.getRegistry();
 
-            registry.register(new VillagerProfession(SimplyCats.MODID+":shelter_staff",
-                    SimplyCats.MODID+":textures/entity/npcs/shelter_worker.png",
-                    SimplyCats.MODID+":textures/entity/npcs/shelter_worker_zombie.png")
+            registry.register(new VillagerProfession(Ref.MODID+":shelter_staff",
+                    Ref.MODID+":textures/entity/npcs/shelter_worker.png",
+                    Ref.MODID+":textures/entity/npcs/shelter_worker_zombie.png")
             );
         }
     }
