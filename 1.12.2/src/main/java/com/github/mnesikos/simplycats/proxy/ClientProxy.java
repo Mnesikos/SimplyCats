@@ -1,7 +1,6 @@
 package com.github.mnesikos.simplycats.proxy;
 
-import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.util.Ref;
 import com.github.mnesikos.simplycats.client.render.entity.RenderCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;

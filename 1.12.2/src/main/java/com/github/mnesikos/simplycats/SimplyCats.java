@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats;
 
 import com.github.mnesikos.simplycats.proxy.CommonProxy;
+import com.github.mnesikos.simplycats.util.Ref;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

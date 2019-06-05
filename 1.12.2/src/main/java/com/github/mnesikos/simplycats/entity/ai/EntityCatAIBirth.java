@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.entity.ai;
 
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -52,17 +53,17 @@ public class EntityCatAIBirth extends EntityAIBase {
         for (int i = 0; i < this.MOTHER.getKittens("total"); i++) {
             this.FATHER = new EntityCat(this.WORLD);
             FATHER.readFromNBT(this.MOTHER.getFather(i));
-            this.MOTHER.setFather(i, null, "");
 
-            this.spawnBaby(this.FATHER, this.MOTHER.getFatherName(i));
+            this.spawnBaby(this.FATHER);
+            this.MOTHER.getEntityData().removeTag("Father" + i); // deletes just used father data
         }
 
-        this.MOTHER.setKittens(0);
-        this.MOTHER.setBreedingStatus("ispregnant", false);
-        this.MOTHER.setTimeCycle("end", 24000 * 16); // sets out of heat for 16 minecraft days after birth
+        this.MOTHER.setKittens(0); // resets kitten counter
+        this.MOTHER.setBreedingStatus("ispregnant", false); // ends pregnancy
+        this.MOTHER.setTimeCycle("end", SimplyCatsConfig.heatCooldown); // sets out of heat timer
     }
 
-    private void spawnBaby(EntityCat father, String fatherName) {
+    private void spawnBaby(EntityCat father) {
         EntityCat child = this.MOTHER.createChild(father);
 
         final net.minecraftforge.event.entity.living.BabyEntitySpawnEvent event = new net.minecraftforge.event.entity.living.BabyEntitySpawnEvent(MOTHER, father, child);
@@ -71,7 +72,7 @@ public class EntityCatAIBirth extends EntityAIBase {
         if (child != null) {
             child.setGrowingAge(-24000);
             child.setLocationAndAngles(this.MOTHER.posX, this.MOTHER.posY, this.MOTHER.posZ, 0.0F, 0.0F);
-            child.setParent("father", fatherName);
+            child.setParent("father", this.FATHER.getCustomNameTag());
             child.setParent("mother", this.MOTHER.getCustomNameTag());
             this.WORLD.spawnEntity(child);
 

@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.entity;
 
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.ai.EntityCatAIBirth;
 import com.github.mnesikos.simplycats.entity.ai.EntityCatAIMate;
 import com.google.common.base.Predicate;
@@ -37,7 +38,7 @@ public class EntityCat extends EntityTameable {
     private static final DataParameter<Integer> WHITE;
     private static final DataParameter<Integer> EYES;
     private static final DataParameter<Byte> SEX;
-    private static final List<String> PHENO_LIST = new ArrayList<String>(3);
+    private static final List<String> PHENO_LIST = new ArrayList<>(4);
 
     private static final DataParameter<Byte> IN_HEAT;
     private static final DataParameter<Byte> IS_PREGNANT;
@@ -111,14 +112,18 @@ public class EntityCat extends EntityTameable {
     public void onUpdate() {
         super.onUpdate();
 
-        if (!this.world.isRemote && !this.isChild() && this.getSex() == 0) {
-            if (this.getBreedingStatus("inheat"))
-                if (this.getMateTimer() <= 0)
-                    setTimeCycle("end", 24000 * 16); //out of heat for 16 minecraft days
-            if (!this.getBreedingStatus("inheat")) {
-                if (this.getMateTimer() >= 0) {
-                    if (!this.getBreedingStatus("ispregnant"))
-                        setTimeCycle("start", 24000 * 2); //in heat for 2 minecraft days
+        if (!this.world.isRemote && !this.isChild() && this.getSex() == 0) { //if female & adult
+            if (this.getBreedingStatus("inheat")) //if in heat
+                if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
+                    if (!this.getBreedingStatus("ispregnant")) //and not pregnant
+                        setTimeCycle("end", SimplyCatsConfig.heatCooldown); //sets out of heat for 16 minecraft days
+                    else //or if IS pregnant
+                        setTimeCycle("pregnant", SimplyCatsConfig.prengancyTimer); //and heat time runs out, starts pregnancy timer for birth
+                }
+            if (!this.getBreedingStatus("inheat")) { //if not in heat
+                if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
+                    if (!this.getBreedingStatus("ispregnant")) //and not pregnant
+                        setTimeCycle("start", SimplyCatsConfig.heatTimer); //sets in heat for 2 minecraft days
                 }
             }
         }
@@ -374,35 +379,22 @@ public class EntityCat extends EntityTameable {
         return this.dataManager.get(KITTENS);
     }
 
-    public void addFather(EntityCat father, String name) {
+    public void addFather(EntityCat father) {
         for (int i = 0; i < 5; i++) {
             if(!this.getEntityData().hasKey("Father" + i) || (this.getEntityData().hasKey("Father" + i) && this.getEntityData().getCompoundTag("Father" + i) == null)) {
                 this.getEntityData().setTag("Father" + i, father.writeToNBT(new NBTTagCompound()));
-                this.getEntityData().setString("Father" + i + "Name", name);
                 break;
             }
         }
     }
 
-    public void setFather(int i, NBTBase father, String name) {
-        if (this.getEntityData().getCompoundTag("Father" + i) != null) {
+    public void setFather(int i, NBTBase father) {
+        if (this.getEntityData().getCompoundTag("Father" + i) != null)
             this.getEntityData().setTag("Father" + i, father);
-            this.getEntityData().setString("Father" + i +"Name", name);
-        }
     }
 
     public NBTTagCompound getFather(int i) {
-        /*NBTTagCompound father = null;
-        for(int i = 0; i < 5; i++) {
-            if(this.getEntityData().getCompoundTag("Father" + i) != null) {*/
-                return this.getEntityData().getCompoundTag("Father" + i);
-            /*}
-        }
-        return father;*/
-    }
-
-    public String getFatherName(int i) {
-        return this.getEntityData().getString("Father" + i + "Name");
+        return this.getEntityData().getCompoundTag("Father" + i);
     }
 
     @Override
@@ -418,10 +410,8 @@ public class EntityCat extends EntityTameable {
             nbt.setBoolean("InHeat", this.getBreedingStatus("inheat"));
             nbt.setBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
             nbt.setInteger("Kittens", this.getKittens("total"));
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 5; i++)
                 nbt.setTag("Father" + i, this.getFather(i));
-                nbt.setString("Father" + i + "Name", this.getFatherName(i));
-            }
         }
         nbt.setInteger("Timer", this.getMateTimer());
         nbt.setString("Mother", this.getParent("mother"));
@@ -442,7 +432,7 @@ public class EntityCat extends EntityTameable {
             this.setBreedingStatus("ispregnant", nbt.getBoolean("IsPregnant"));
             this.setKittens(nbt.getInteger("Kittens"));
             for (int i = 0; i < 5; i++) {
-                this.setFather(i, nbt.getTag("Father" + i), nbt.getString("Father" + i + "Name"));
+                this.setFather(i, nbt.getTag("Father" + i));
             }
         }
         this.setMateTimer(nbt.getInteger("Timer"));
@@ -485,86 +475,105 @@ public class EntityCat extends EntityTameable {
     public EntityCat createChild(EntityAgeable parParent2) {
         EntityCat parent2 = (EntityCat) parParent2;
         EntityCat child = new EntityCat(this.world);
+        boolean parent1Tortie = this.getMarkingNum("tortie") != 0;
+        boolean parent2Tortie = parent2.getMarkingNum("tortie") != 0;
 
         int chance = this.rand.nextInt(4);
-        boolean quarterChance = chance == 0;
-        boolean halfChance = chance <= 1;
-        int black = 0; int grey = 1; int red = 2; int cream = 3;
+        final boolean quarterChance = chance == 0;
+        final boolean halfChance = chance <= 1;
+        final int black = 0; final int grey = 1; final int red = 2; final int cream = 3;
 
         int base = 0;
         int tortie = 0;
         if (this.getBase() == parent2.getBase()) {
-            if (this.getBase() == black) // black x black = 25% grey, 75% black
-                base = quarterChance ? grey : black;
+            if (this.getBase() == black) {
+                base = quarterChance ? grey : black; // black x black = 25% grey, 75% black
+                if (parent1Tortie || parent2Tortie) { // black male x tortie mother adds half chance red boys, half chance tortie girls
+                    if (child.getSex() == 1 && halfChance)
+                        base = quarterChance ? cream : red;
+                    if (child.getSex() == 0 && halfChance)
+                        tortie = base == grey ? 2 : 1;
+                }
+            }
             else if (this.getBase() == red) // red x red = 25% cream, 75% red
                 base = quarterChance ? cream : red;
-            else
+            else {
                 base = this.getBase(); // grey x grey = grey, cream x cream = cream
+                if (parent1Tortie || parent2Tortie) { // grey male x tortie mother adds half chance red boys, half chance tortie girls
+                    if (child.getSex() == 1 && halfChance)
+                        base = cream;
+                    if (child.getSex() == 0 && halfChance)
+                        tortie = 2;
+                }
+            }
         }
         else if (this.getBase() == black || parent2.getBase() == black) {
             if (this.getBase() == grey || parent2.getBase() == grey) // black x grey = 50% black, 50% grey
                 base = halfChance ? black : grey;
-            else if ((this.getBase() == red && this.getSex() == 0) || (parent2.getBase() == red && parent2.getSex() == 0)) {
-                // black x female red = 25% cream boys, 75% red boys, 25% cream tortie girls, 75% red tortie girls
-                if (child.getSex() == 1)
-                    base = quarterChance ? cream : red;
-                else {
+            else if (this.getBase() == red || parent2.getBase() == red) {
+                if (this.getSex() == 0 || parent2.getSex() == 0) {
+                    // black x female red = 25% cream boys, 75% red boys, 25% cream tortie girls, 75% red tortie girls
+                    if (child.getSex() == 1)
+                        base = quarterChance ? cream : red;
+                    else {
+                        base = quarterChance ? grey : black;
+                        tortie = base == grey ? 2 : 1;
+                    }
+                } else if (this.getSex() == 1 || parent2.getSex() == 1) {
+                    // black x male red = 25% grey boys, 75% black boys, 25% cream tortie girls, 75% red tortie girls
                     base = quarterChance ? grey : black;
-                    tortie = base == grey ? 2 : 1;
+                    if (child.getSex() == 0)
+                        tortie = base == grey ? 2 : 1;
                 }
             }
-            else if ((this.getBase() == red && this.getSex() == 1) || (parent2.getBase() == red && parent2.getSex() == 1)) {
-                // black x male red = 25% grey boys, 75% black boys, 25% cream tortie girls, 75% red tortie girls
-                base = quarterChance ? grey : black;
-                if (child.getSex() == 0)
-                    tortie = base == grey ? 2 : 1;
-            }
-            else if ((this.getBase() == cream && this.getSex() == 0) || (parent2.getBase() == cream && parent2.getSex() == 0)) {
-                // black x female cream = 50% cream boys, 50% red boys, 50% cream tortie girls, 50% red tortie girls
-                if (child.getSex() == 1)
-                    base = halfChance ? cream : red;
-                else {
+            else if (this.getBase() == cream|| parent2.getBase() == cream) {
+                if (this.getSex() == 0 || parent2.getSex() == 0) {
+                    // black x female cream = 50/50 cream/red boys, 50/50 cream/red tortie girls
+                    if (child.getSex() == 1)
+                        base = halfChance ? cream : red;
+                    else {
+                        base = halfChance ? grey : black;
+                        tortie = base == grey ? 2 : 1;
+                    }
+                } else if (this.getSex() == 1 || parent2.getSex() == 1) {
+                    // black x male cream = 50/50 grey/black boys, 50/50 cream/red tortie girls
                     base = halfChance ? grey : black;
-                    tortie = base == grey ? 2 : 1;
+                    if (child.getSex() == 0)
+                        tortie = base == grey ? 2 : 1;
                 }
-            }
-            else if ((this.getBase() == cream && this.getSex() == 1) || (parent2.getBase() == cream && parent2.getSex() == 1)) {
-                // black x male cream = 50% grey boys, 50% black boys, 50% cream tortie girls, 50% red tortie girls
-                base = halfChance ? grey : black;
-                if (child.getSex() == 0)
-                    tortie = base == grey ? 2 : 1;
             }
         }
         else if (this.getBase() == grey || parent2.getBase() == grey) {
-            if ((this.getBase() == red && this.getSex() == 0) || (parent2.getBase() == red && parent2.getSex() == 0)) {
-                // grey x female red = 50/50 red/cream boys, 50/50 red/cream tortie girls
-                if (child.getSex() == 1)
-                    base = halfChance ? red : cream;
-                else {
+            if (this.getBase() == red || parent2.getBase() == red) {
+                if (this.getSex() == 0 || parent2.getSex() == 0) {
+                    // grey x female red = 50/50 red/cream boys, 50/50 red/cream tortie girls
+                    if (child.getSex() == 1)
+                        base = halfChance ? red : cream;
+                    else {
+                        base = halfChance ? black : grey;
+                        tortie = base == grey ? 2 : 1;
+                    }
+                } else if (this.getSex() == 1 || parent2.getSex() == 1) {
+                    // grey x male red = 50/50 black/grey boys, 50/50 red/cream tortie girls
                     base = halfChance ? black : grey;
-                    tortie = base == grey ? 2 : 1;
+                    if (child.getSex() == 0)
+                        tortie = base == grey ? 2 : 1;
                 }
-            }
-            else if ((this.getBase() == red && this.getSex() == 1) || (parent2.getBase() == red && parent2.getSex() == 1)) {
-                // grey x male red = 50/50 black/grey boys, 50/50 red/cream tortie girls
-                base = halfChance ? black : grey;
-                if (child.getSex() == 0)
-                    tortie = base == grey ? 2 : 1;
-            }
-            else if ((this.getBase() == cream && this.getSex() == 0) || (parent2.getBase() == cream && parent2.getSex() == 0)) {
-                // grey x female cream = 100% cream boys, 100% cream tortie girls
-                if (child.getSex() == 1)
-                    base = cream;
-                else {
+            } else if (this.getBase() == cream || parent2.getBase() == cream) {
+                if (this.getSex() == 0 || parent2.getSex() == 0) {
+                    // grey x female cream = 100% cream boys, 100% cream tortie girls
+                    if (child.getSex() == 1)
+                        base = cream;
+                    else {
+                        base = grey;
+                        tortie = 2;
+                    }
+                } else if (this.getSex() == 1 || parent2.getSex() == 1) {
+                    // grey x male cream = 100% grey boys, 100% cream tortie girls
                     base = grey;
-                    tortie = 2;
+                    if (child.getSex() == 0)
+                        tortie = 2;
                 }
-            }
-            else if ((this.getBase() == cream && this.getSex() == 1) || (parent2.getBase() == cream && parent2.getSex() == 1)) {
-                // grey x male cream = 100% grey boys, 100% cream tortie girls
-                base = grey;
-                if (child.getSex() == 0)
-                    tortie = 2;
             }
         }
         else if (this.getBase() == red || parent2.getBase() == red) {
@@ -606,10 +615,10 @@ public class EntityCat extends EntityTameable {
             eyesMax = parent2.getMarkingNum("eyes");
         }
         eyesMin = eyesMin < 0 ? 0 : eyesMin;
-        eyesMax = eyesMax > 4 ? 4 : (child.getMarkingNum("white") >= 5 ? 4 : eyesMax); // check for blue-eye compat based on child's white despite parent's
+        eyesMax = eyesMax > 4 ? 4 : eyesMax;
         eyesMax = eyesMax == 4 ? (child.getMarkingNum("white") < 5 ? (eyesMin < 3 ? eyesMin+1 : 3) : eyesMax) : eyesMax; // removes blue eyed child possibility based on white
         int eyes = rand.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
-        eyes = this.getMarkingNum("eyes") == 4 ? (parent2.getMarkingNum("eyes") == 4 ? 4 : eyes) : eyes;
+        eyes = this.getMarkingNum("eyes") == 4 && parent2.getMarkingNum("eyes") == 4 ? (child.getMarkingNum("white") >= 5 ? 4 : this.world.rand.nextInt(4)) : eyes;
 
         child.setBase(base);
         child.setMarkings("tabby", tabby);
@@ -629,17 +638,15 @@ public class EntityCat extends EntityTameable {
             if (stack != null) {
                 if (stack.getItem() instanceof ItemFood) {
                     ItemFood food = (ItemFood) stack.getItem();
-                    if (stack.getItem() == Items.FISH && this.getHealth() < this.getMaxHealth()) {
+                    if (stack.getItem() == Items.FISH) {
+                        if (this.getHealth() < this.getMaxHealth()) {
+                            this.heal((float) food.getHealAmount(stack));
+                        } else if (this.getMateTimer() > 0)
+                            this.setMateTimer(600);
+                        else if (this.getMateTimer() < 0)
+                            this.setMateTimer(-600);
                         if (!player.capabilities.isCreativeMode)
                             stack.shrink(1);
-                        this.heal((float) food.getHealAmount(stack));
-                        if (stack.getCount() <= 0)
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                        return true;
-                    } else if (stack.getItem() == Items.FISH && this.getHealth() == this.getMaxHealth() && this.getSex() == 0 && !this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant")) {
-                        if (!player.capabilities.isCreativeMode)
-                            stack.shrink(1);
-                        this.setMateTimer(-60);
                         if (stack.getCount() <= 0)
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                         return true;

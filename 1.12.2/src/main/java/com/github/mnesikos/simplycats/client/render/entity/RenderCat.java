@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.client.render.entity;
 
-import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.util.Ref;
 import com.github.mnesikos.simplycats.client.model.entity.ModelCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.google.common.collect.Lists;

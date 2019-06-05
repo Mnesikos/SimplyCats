@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.util.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.item.Item;

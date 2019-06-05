@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.init;
 
-import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.util.Ref;
 import com.github.mnesikos.simplycats.item.ItemCatFood;
 import com.github.mnesikos.simplycats.item.ItemPetCarrier;
 import com.github.mnesikos.simplycats.item.ModItemBase;

@@ -1,4 +1,4 @@
-package com.github.mnesikos.simplycats;
+package com.github.mnesikos.simplycats.util;
 
 public class Ref {
     public static final String MODID = "simplycats";

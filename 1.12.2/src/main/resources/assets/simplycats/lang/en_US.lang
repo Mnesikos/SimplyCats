@@ -51,6 +51,17 @@ command.beckon.help.fail=Incorrect argument, try again?
 command.beckon.success=Beckoning cat...
 command.beckon.fail=Incorrect usage of command, see /beckon
 
+< Config
+config.simplycats.title=Simply Cats Config
+config.simplycats.pregnancy_timer=Pregnancy Timer
+config.simplycats.pregnancy_timer.tooltip=Number of minecraft ticks before a pregnant cat will give birth. Default is 4 full minecraft days.
+config.simplycats.heat_timer=Heat Timer
+config.simplycats.heat_timer.tooltip=Number of minecraft ticks that a cat will be in heat. Default is 2 full minecraft days.
+config.simplycats.heat_cooldown=Heat Cooldown
+config.simplycats.heat_cooldown.tooltip=Number of minecraft ticks that a cat will not go into heat. Default is 16 full minecraft days.
+config.simplycats.male_cooldown=Male Cooldown
+config.simplycats.male_cooldown.tooltip=Number of minecraft ticks that a male cat will not try to breed after breeding once already. Default is 1/4th a minecraft day.
+
 < Chat Messages
 chat.pet_carrier.empty=This carrier is empty.
 chat.pet_carrier.full=This carrier is already full!

@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.entity.ai;
 
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -63,7 +64,7 @@ public class EntityCatAIMate extends EntityAIBase {
         if (this.MATE_DELAY >= 60 && this.CAT.getDistanceSq(this.TARGET) < 9.0D) {
             if (this.WORLD.rand.nextInt(4) <= 2) //75% chance of success
                 this.startPregnancy();
-            this.CAT.setMateTimer(24000); // starts male cooldown
+            this.CAT.setMateTimer(SimplyCatsConfig.maleCooldown); // starts male cooldown
         }
     }
 
@@ -96,41 +97,11 @@ public class EntityCatAIMate extends EntityAIBase {
         }
         this.TARGET.setBreedingStatus("ispregnant", true);
         this.TARGET.setKittens(litterSize);
-        this.TARGET.addFather(this.CAT, this.CAT.getCustomNameTag()); // save father nbt data to mother cat
+        this.TARGET.addFather(this.CAT); // save father nbt data to mother cat
 
         if (litterSize == 6 || this.TARGET.getKittens("total") == 6 || this.WORLD.rand.nextInt(4) == 0) { // full litter OR 25% chance ends heat
             this.TARGET.setBreedingStatus("inheat", false);
-            this.TARGET.setTimeCycle("pregnancy", 100); // starts pregnancy timer, 4 minecraft days
+            this.TARGET.setTimeCycle("pregnancy", SimplyCatsConfig.prengancyTimer); // starts pregnancy timer
         }
-        /*for (int i = 0; i < litterSize; i++)
-            this.spawnBaby();*/
     }
-
-    /*private void spawnBaby() {
-        EntityCat child = this.CAT.createChild(this.TARGET);
-
-        final net.minecraftforge.event.entity.living.BabyEntitySpawnEvent event = new net.minecraftforge.event.entity.living.BabyEntitySpawnEvent(CAT, TARGET, child);
-        child = (EntityCat) event.getChild();
-
-        if (child != null) {
-            child.setGrowingAge(-24000);
-            child.setLocationAndAngles(this.CAT.posX, this.CAT.posY, this.CAT.posZ, 0.0F, 0.0F);
-            child.setParent("mother", this.TARGET.getCustomNameTag());
-            child.setParent("father", this.CAT.getCustomNameTag());
-            this.WORLD.spawnEntity(child);
-
-            Random random = this.CAT.getRNG();
-            for (int i = 0; i < 7; ++i) {
-                double d0 = random.nextGaussian() * 0.02D;
-                double d1 = random.nextGaussian() * 0.02D;
-                double d2 = random.nextGaussian() * 0.02D;
-                this.WORLD.spawnParticle(EnumParticleTypes.HEART, this.CAT.posX + (double) (random.nextFloat() * this.CAT.width * 2.0F) - (double) this.CAT.width, this.CAT.posY + 0.5D + (double) (random.nextFloat() * this.CAT.height), this.CAT.posZ + (double) (random.nextFloat() * this.CAT.width * 2.0F) - (double) this.CAT.width, d0, d1, d2);
-            }
-
-            if (this.WORLD.getGameRules().getBoolean("doMobLoot")) {
-                this.WORLD.spawnEntity(new EntityXPOrb(this.WORLD, this.CAT.posX, this.CAT.posY, this.CAT.posZ, random.nextInt(7) + 1));
-            }
-        }
-    }*/
-
 }
