@@ -1,8 +1,10 @@
 package com.github.mnesikos.simplycats.item;
 
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
@@ -14,20 +16,23 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemCatFood extends ModItemBase {
+public class ItemCatFood extends Item {
     private static final String[] TYPES = new String[] { "fishy", "salmon", "chicken", "beef" };
 
     public ItemCatFood() {
-        super("cat_food");
+        setUnlocalizedName("cat_food");
+        setRegistryName(Ref.MODID + ":cat_food");
+        setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
         setHasSubtypes(true);
         setMaxDamage(0);
-        setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
     }
 
     @Override @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        for (int meta = 0; meta < 4; meta++) {
-            items.add(new ItemStack(this, 1, meta));
+        if (tab == this.getCreativeTab()) {
+            for (int meta = 0; meta < 4; meta++) {
+                items.add(new ItemStack(this, 1, meta));
+            }
         }
     }
 

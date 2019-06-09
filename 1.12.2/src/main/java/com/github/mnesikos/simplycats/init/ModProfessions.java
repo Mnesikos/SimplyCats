@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.init;
 
-import com.github.mnesikos.simplycats.util.Ref;
+import com.github.mnesikos.simplycats.Ref;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;

@@ -1,9 +1,9 @@
 package com.github.mnesikos.simplycats.init;
 
-import com.github.mnesikos.simplycats.util.Ref;
+import com.github.mnesikos.simplycats.item.ItemBase;
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.item.ItemCatFood;
 import com.github.mnesikos.simplycats.item.ItemPetCarrier;
-import com.github.mnesikos.simplycats.item.ModItemBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -14,16 +14,16 @@ public class ModItems {
     public static final List<Item> ITEMS = new ArrayList<>();
 
     @GameRegistry.ObjectHolder(Ref.MODID + ":pet_carrier")
-    public static final Item PET_CARRIER = new ItemPetCarrier();
+    public static Item PET_CARRIER = new ItemPetCarrier();
 
     @GameRegistry.ObjectHolder(Ref.MODID + ":cat_food")
-    public static final Item CAT_FOOD = new ItemCatFood();
+    public static Item CAT_FOOD = new ItemCatFood();
 
     @GameRegistry.ObjectHolder(Ref.MODID + ":cat_litter")
-    public static final Item CAT_LITTER = new ModItemBase("cat_litter");
+    public static Item CAT_LITTER = new ItemBase("cat_litter");
 
     @GameRegistry.ObjectHolder(Ref.MODID + ":cat_mint")
-    public static final Item CAT_MINT = new ModItemBase("cat_mint");
+    public static Item CAT_MINT = new ItemBase("cat_mint");
 
 
     public static void registerOres() {

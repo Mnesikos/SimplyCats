@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.proxy;
 
-import com.github.mnesikos.simplycats.util.Ref;
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -26,31 +26,26 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 
 @Mod.EventBusSubscriber
 public class CommonProxy implements IGuiHandler {
-    public static CreativeTabs SIMPLYCATS;
+    public final CreativeTabs SIMPLYCATS = new CreativeTabs(Ref.MODID + ".tab") {
+        @Override
+        public ItemStack getTabIconItem() {
+            return new ItemStack(ModItems.PET_CARRIER);
+        }
+    };
 
-    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        SIMPLYCATS = new CreativeTabs(Ref.MODID + ".tab") {
-            @Override @SideOnly(Side.CLIENT)
-            public ItemStack getTabIconItem() {
-                return new ItemStack(ModItems.PET_CARRIER);
-            }
-        };
-
         //GameRegistry.registerTileEntity(TileEntityBowl.class, "tebowl");
 
         int entityID = 0;
         EntityRegistry.registerModEntity(new ResourceLocation(Ref.MODID + ":cat"), EntityCat.class, "Cat", entityID++, SimplyCats.instance, 80, 1, true);
     }
 
-    @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
         ModItems.registerOres();
         ModRecipes.init();
@@ -62,14 +57,26 @@ public class CommonProxy implements IGuiHandler {
         MapGenStructureIO.registerStructureComponent(ComponentPetShelter.class, Ref.MODID + ":PetShelterStructure");
     }
 
-    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
 
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(ModItems.ITEMS.toArray(new Item[0]));
+        try {
+            for (Field f : ModItems.class.getDeclaredFields()) {
+                Object obj = f.get(null);
+                if (obj instanceof Item) {
+                    event.getRegistry().register((Item) obj);
+                } else if (obj instanceof Item[]) {
+                    for (Item item : (Item[]) obj) {
+                        event.getRegistry().register(item);
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SubscribeEvent

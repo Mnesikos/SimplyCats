@@ -59,18 +59,24 @@ public class CommandBeckon implements ICommand {
 
                 else if (args[0].equals("help") || args[0].equals("?")) {
                     if (args.length == 1) {
-                        this.getUsage(sender);
+                        player.sendMessage(new TextComponentTranslation("command.beckon.usage"));
                         player.sendMessage(new TextComponentTranslation("command.beckon.help"));
                     }
-                    else if (args.length > 1) {
-                        if (args[1].equals("base"))
-                            player.sendMessage(new TextComponentTranslation("command.beckon.help.base"));
-                        else if (args[1].equals("eyes"))
-                            player.sendMessage(new TextComponentTranslation("command.beckon.help.eyes"));
-                        else if (args[1].equals("white"))
-                            player.sendMessage(new TextComponentTranslation("command.beckon.help.white"));
-                        else
-                            player.sendMessage(new TextComponentTranslation(TextFormatting.RED + "command.beckon.help.fail"));
+                    else {
+                        switch (args[1]) {
+                            case "base":
+                                player.sendMessage(new TextComponentTranslation("command.beckon.help.base"));
+                                break;
+                            case "eyes":
+                                player.sendMessage(new TextComponentTranslation("command.beckon.help.eyes"));
+                                break;
+                            case "white":
+                                player.sendMessage(new TextComponentTranslation("command.beckon.help.white"));
+                                break;
+                            default:
+                                player.sendMessage(new TextComponentTranslation(TextFormatting.RED + "command.beckon.help.fail"));
+                                break;
+                        }
                     }
                 }
 
@@ -89,6 +95,9 @@ public class CommandBeckon implements ICommand {
                         int base = Integer.parseInt(args[1]);
                         if (base >= 0 && base <= 3)
                             cat.setBase(base);
+                        else
+                            cat.setBase(world.rand.nextInt(4));
+                        cat.setMarkings("tortie", cat.selectMarkings("tortie"));
                     }
 
                     if (args[3].equals("true") || args[3].equals("false")) {
@@ -103,6 +112,8 @@ public class CommandBeckon implements ICommand {
                         int white = Integer.parseInt(args[4]);
                         if (white >= 0 && white <= 6)
                             cat.setMarkings("white", white);
+                        else
+                            cat.setMarkings("white", cat.selectMarkings("white"));
                     }
 
                     if (args[2].equals("x"))
@@ -111,12 +122,13 @@ public class CommandBeckon implements ICommand {
                         int eyes = Integer.parseInt(args[2]);
                         if (eyes >= 0 && eyes <= 3)
                             cat.setMarkings("eyes", eyes);
-                        else if (eyes >= 4) {
+                        else if (eyes == 4) {
                             if (cat.getMarkingNum("white") >= 5)
                                 cat.setMarkings("eyes", eyes);
                             else if (cat.getMarkingNum("white") < 5)
                                 cat.setMarkings("eyes", cat.selectMarkings("eyes"));
-                        }
+                        } else
+                            cat.setMarkings("eyes", cat.selectMarkings("eyes"));
                     }
 
                     player.sendMessage(new TextComponentTranslation("command.beckon.success"));

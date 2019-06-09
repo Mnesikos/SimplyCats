@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.proxy;
 
-import com.github.mnesikos.simplycats.util.Ref;
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.client.render.entity.RenderCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -14,10 +14,8 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
-//TODO
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber
 public class ClientProxy extends CommonProxy {
     public static int RENDER_BOWL_ID;
 
@@ -36,8 +34,7 @@ public class ClientProxy extends CommonProxy {
     public static void registerItemModels(ModelRegistryEvent e) {
         for (Item item : ModItems.ITEMS)
             ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
-        /*ModelLoader.setCustomModelResourceLocation(ModItems.CAT_MINT, 0, new ModelResourceLocation(Ref.MODID + ":cat_mint"));
-        ModelLoader.setCustomModelResourceLocation(ModItems.CAT_LITTER, 0, new ModelResourceLocation(Ref.MODID + ":cat_litter"));*/
+
         for (int i = 0; i < 4; i++)
             ModelLoader.setCustomModelResourceLocation(ModItems.CAT_FOOD, i, new ModelResourceLocation(Ref.MODID + ":cat_food"));
         for (int i = 0; i < 5; i++)

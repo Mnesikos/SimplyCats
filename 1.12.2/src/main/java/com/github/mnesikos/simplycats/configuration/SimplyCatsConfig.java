@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.configuration;
 
-import com.github.mnesikos.simplycats.util.Ref;
+import com.github.mnesikos.simplycats.Ref;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.*;
 import net.minecraftforge.common.config.ConfigManager;

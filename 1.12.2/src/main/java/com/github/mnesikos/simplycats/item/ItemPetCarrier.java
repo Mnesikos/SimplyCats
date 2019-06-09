@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.item;
 
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -11,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
@@ -34,13 +36,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ItemPetCarrier extends ModItemBase {
+public class ItemPetCarrier extends Item {
 
     public ItemPetCarrier() {
-        super("pet_carrier");
+        setUnlocalizedName("pet_carrier");
+        setRegistryName(Ref.MODID + ":pet_carrier");
+        setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
         this.setMaxStackSize(1);
         this.setHasSubtypes(true);
-        this.setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
     }
 
     @Override
@@ -190,11 +193,13 @@ public class ItemPetCarrier extends ModItemBase {
 
     @Override @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList) {
-        ItemStack cat = new ItemStack(ModItems.PET_CARRIER, 1);
-        cat.setTagCompound(new NBTTagCompound());
-        cat.setItemDamage(3);
-        itemList.add(cat);
-        itemList.add(new ItemStack(ModItems.PET_CARRIER, 1, 0));
+        if (tab == this.getCreativeTab()) {
+            ItemStack cat = new ItemStack(ModItems.PET_CARRIER, 1);
+            cat.setTagCompound(new NBTTagCompound());
+            cat.setItemDamage(3);
+            itemList.add(cat);
+            itemList.add(new ItemStack(ModItems.PET_CARRIER, 1, 0));
+        }
     }
 
     @SideOnly(Side.CLIENT)

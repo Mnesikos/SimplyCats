@@ -41,8 +41,8 @@ cat.calico.name=Calico
 cat.white.name=and White
 
 < Command Usage
-command.beckon.usage=See /beckon or /beckon help for more info
-command.beckon=/beckon <male|female> <base color: 0-3> <eye color: 0-4> <tabby: true|false> <white: 0-6>
+command.beckon=See /beckon help for more info
+command.beckon.usage=/beckon <male|female> <base color: 0-3> <eye color: 0-4> <tabby: true|false> <white: 0-6>
 command.beckon.help=Use "x" for random. Also see /beckon help <base|eyes|white>
 command.beckon.help.base=0 = Black; 1 = Grey; 2 = Red; 3 = Cream
 command.beckon.help.eyes=0 = Copper; 1 = Yellow; 2 = Hazel; 3 = Green; 4 = Blue

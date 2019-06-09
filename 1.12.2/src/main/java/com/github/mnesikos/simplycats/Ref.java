@@ -1,4 +1,4 @@
-package com.github.mnesikos.simplycats.util;
+package com.github.mnesikos.simplycats;
 
 public class Ref {
     public static final String MODID = "simplycats";
@@ -7,5 +7,5 @@ public class Ref {
     public static final String ACCEPTED_VERSIONS = "[1.12.2]";
 
     public static final String CLIENT_PROXY = "com.github.mnesikos.simplycats.proxy.ClientProxy";
-    public static final String SERVER_PROXY = "com.github.mnesikos.simplycats.proxy.ServerProxy";
+    public static final String SERVER_PROXY = "com.github.mnesikos.simplycats.proxy.CommonProxy";
 }

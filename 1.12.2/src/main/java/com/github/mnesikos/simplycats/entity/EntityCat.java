@@ -275,17 +275,9 @@ public class EntityCat extends EntityTameable {
                     num = 0; // no tabby
             }
         } else if (type.equals("tortie")) {
-            // TODO
-            if (this.getSex() == 1 || this.getBase() == 2 || this.getBase() == 3) // males != tortie || full reds || full creams
-                num = 0;
-            else {
-                int check = this.world.rand.nextInt(4);
-                if (check == 0 && this.getBase() == 0)
-                    num = 1; // black tortie
-                else if (check == 0 && this.getBase() == 1)
-                    num = 2; // grey tortie
-                else
-                    num = 0; // no tortie
+            if (this.getSex() != 1 || this.getBase() != 2 || this.getBase() != 3) { // males != tortie || full reds || full creams
+                if (this.world.rand.nextInt(4) == 0)
+                    num = this.getBase() == 0 ? 1 : 2; // if black based ? then black tortie : else (grey based) grey tortie
             }
         } else if (type.equals("white")) {
             num = this.world.rand.nextInt(7);
@@ -472,95 +464,119 @@ public class EntityCat extends EntityTameable {
     }
 
     @Override
-    public EntityCat createChild(EntityAgeable parParent2) {
-        EntityCat parent2 = (EntityCat) parParent2;
+    public EntityCat createChild(EntityAgeable parFather) {
+        EntityCat father = (EntityCat) parFather;
         EntityCat child = new EntityCat(this.world);
-        boolean parent1Tortie = this.getMarkingNum("tortie") != 0;
-        boolean parent2Tortie = parent2.getMarkingNum("tortie") != 0;
+        boolean momTortie = this.getMarkingNum("tortie") != 0;
 
-        int chance = this.rand.nextInt(4);
-        final boolean quarterChance = chance == 0;
-        final boolean halfChance = chance <= 1;
+        /*int chance = this.rand.nextInt(4);
+        boolean quarterChance = chance == 0;
+        boolean halfChance = chance <= 1;*/
         final int black = 0; final int grey = 1; final int red = 2; final int cream = 3;
 
         int base = 0;
         int tortie = 0;
-        if (this.getBase() == parent2.getBase()) {
+        if (this.getBase() == father.getBase()) {
             if (this.getBase() == black) {
-                base = quarterChance ? grey : black; // black x black = 25% grey, 75% black
-                if (parent1Tortie || parent2Tortie) { // black male x tortie mother adds half chance red boys, half chance tortie girls
-                    if (child.getSex() == 1 && halfChance)
-                        base = quarterChance ? cream : red;
-                    if (child.getSex() == 0 && halfChance)
+                base = this.rand.nextInt(4) == 0 ? grey : black; // black x black = 25% grey, 75% black
+                if (momTortie && this.rand.nextInt(4) <= 1) {
+                    // black male x tortie mother adds half chance red/cream boys, half chance tortie girls
+                    if (child.getSex() == 1)
+                        base = this.rand.nextInt(4) == 0 ? cream : red;
+                    else
                         tortie = base == grey ? 2 : 1;
                 }
             }
             else if (this.getBase() == red) // red x red = 25% cream, 75% red
-                base = quarterChance ? cream : red;
+                base = this.rand.nextInt(4) == 0 ? cream : red;
             else {
                 base = this.getBase(); // grey x grey = grey, cream x cream = cream
-                if (parent1Tortie || parent2Tortie) { // grey male x tortie mother adds half chance red boys, half chance tortie girls
-                    if (child.getSex() == 1 && halfChance)
+                if (momTortie && this.rand.nextInt(4) <= 1) {
+                    // grey male x tortie mother adds half chance red/cream boys, half chance tortie girls
+                    if (child.getSex() == 1)
                         base = cream;
-                    if (child.getSex() == 0 && halfChance)
+                    else
                         tortie = 2;
                 }
             }
         }
-        else if (this.getBase() == black || parent2.getBase() == black) {
-            if (this.getBase() == grey || parent2.getBase() == grey) // black x grey = 50% black, 50% grey
-                base = halfChance ? black : grey;
-            else if (this.getBase() == red || parent2.getBase() == red) {
-                if (this.getSex() == 0 || parent2.getSex() == 0) {
-                    // black x female red = 25% cream boys, 75% red boys, 25% cream tortie girls, 75% red tortie girls
+        else if (this.getBase() == black || father.getBase() == black) {
+            if (this.getBase() == grey || father.getBase() == grey) { // black x grey = 50% black, 50% grey
+                base = this.rand.nextInt(4) <= 1 ? grey : black;
+                if (momTortie && this.rand.nextInt(4) <= 1) {
+                    // black male x tortie mother = half chance red/cream boys, half chance tortie girls
                     if (child.getSex() == 1)
-                        base = quarterChance ? cream : red;
-                    else {
-                        base = quarterChance ? grey : black;
-                        tortie = base == grey ? 2 : 1;
-                    }
-                } else if (this.getSex() == 1 || parent2.getSex() == 1) {
-                    // black x male red = 25% grey boys, 75% black boys, 25% cream tortie girls, 75% red tortie girls
-                    base = quarterChance ? grey : black;
-                    if (child.getSex() == 0)
+                        base = this.rand.nextInt(4) <= 1 ? cream : red;
+                    else
                         tortie = base == grey ? 2 : 1;
                 }
             }
-            else if (this.getBase() == cream|| parent2.getBase() == cream) {
-                if (this.getSex() == 0 || parent2.getSex() == 0) {
-                    // black x female cream = 50/50 cream/red boys, 50/50 cream/red tortie girls
+            else if (this.getBase() == red || father.getBase() == red) {
+                if (this.getBase() == red) {
+                    // black x female red = 25% cream boys, 75% red boys, 25% cream tortie girls, 75% red tortie girls
                     if (child.getSex() == 1)
-                        base = halfChance ? cream : red;
+                        base = this.rand.nextInt(4) == 0 ? cream : red;
                     else {
-                        base = halfChance ? grey : black;
+                        base = this.rand.nextInt(4) == 0 ? grey : black;
                         tortie = base == grey ? 2 : 1;
                     }
-                } else if (this.getSex() == 1 || parent2.getSex() == 1) {
-                    // black x male cream = 50/50 grey/black boys, 50/50 cream/red tortie girls
-                    base = halfChance ? grey : black;
+                } else {
+                    // black x male red = 25% grey boys, 75% black boys, 25% cream tortie girls, 75% red tortie girls
+                    base = this.rand.nextInt(4) == 0 ? grey : black;
                     if (child.getSex() == 0)
                         tortie = base == grey ? 2 : 1;
+                    if (momTortie && this.rand.nextInt(4) <= 1) {
+                        // black tortie x male red adds half chance full red/cream boys and girls
+                        base = this.rand.nextInt(4) == 0 ? cream : red;
+                        tortie = 0;
+                    }
+                }
+            }
+            else if (this.getBase() == cream|| father.getBase() == cream) {
+                if (this.getBase() == red) {
+                    // black x female cream = 50/50 cream/red boys, 50/50 cream/red tortie girls
+                    if (child.getSex() == 1)
+                        base = this.rand.nextInt(4) <= 1 ? cream : red;
+                    else {
+                        base = this.rand.nextInt(4) <= 1 ? grey : black;
+                        tortie = base == grey ? 2 : 1;
+                    }
+                } else {
+                    // black x male cream = 50/50 grey/black boys, 50/50 cream/red tortie girls
+                    base = this.rand.nextInt(4) <= 1 ? grey : black;
+                    if (child.getSex() == 0)
+                        tortie = base == grey ? 2 : 1;
+                    if (momTortie && this.rand.nextInt(4) <= 1) {
+                        // black tortie x male cream adds half chance full red/cream boys and girls
+                        base = this.rand.nextInt(4) <= 1 ? cream : red;
+                        tortie = 0;
+                    }
                 }
             }
         }
-        else if (this.getBase() == grey || parent2.getBase() == grey) {
-            if (this.getBase() == red || parent2.getBase() == red) {
-                if (this.getSex() == 0 || parent2.getSex() == 0) {
+        else if (this.getBase() == grey || father.getBase() == grey) {
+            if (this.getBase() == red || father.getBase() == red) {
+                if (this.getBase() == red) {
                     // grey x female red = 50/50 red/cream boys, 50/50 red/cream tortie girls
                     if (child.getSex() == 1)
-                        base = halfChance ? red : cream;
+                        base = this.rand.nextInt(4) <= 1 ? red : cream;
                     else {
-                        base = halfChance ? black : grey;
+                        base = this.rand.nextInt(4) <= 1 ? black : grey;
                         tortie = base == grey ? 2 : 1;
                     }
-                } else if (this.getSex() == 1 || parent2.getSex() == 1) {
+                } else {
                     // grey x male red = 50/50 black/grey boys, 50/50 red/cream tortie girls
-                    base = halfChance ? black : grey;
+                    base = this.rand.nextInt(4) <= 1 ? grey : black;
                     if (child.getSex() == 0)
                         tortie = base == grey ? 2 : 1;
+                    if (momTortie && this.rand.nextInt(4) <= 1) {
+                        // grey tortie x male red adds half chance full red/cream boys and girls
+                        base = this.rand.nextInt(4) <= 1 ? cream : red;
+                        tortie = 0;
+                    }
                 }
-            } else if (this.getBase() == cream || parent2.getBase() == cream) {
-                if (this.getSex() == 0 || parent2.getSex() == 0) {
+            } else if (this.getBase() == cream || father.getBase() == cream) {
+                if (this.getBase() == cream) {
                     // grey x female cream = 100% cream boys, 100% cream tortie girls
                     if (child.getSex() == 1)
                         base = cream;
@@ -568,38 +584,43 @@ public class EntityCat extends EntityTameable {
                         base = grey;
                         tortie = 2;
                     }
-                } else if (this.getSex() == 1 || parent2.getSex() == 1) {
+                } else {
                     // grey x male cream = 100% grey boys, 100% cream tortie girls
                     base = grey;
                     if (child.getSex() == 0)
                         tortie = 2;
+                    if (momTortie && this.rand.nextInt(4) <= 1) {
+                        // grey tortie x male cream adds half chance full cream boys and girls
+                        base = cream;
+                        tortie = 0;
+                    }
                 }
             }
         }
-        else if (this.getBase() == red || parent2.getBase() == red) {
-            if (this.getBase() == cream || parent2.getBase() == cream) // red x cream = 50/50 red/cream
-                base = halfChance ? red : cream;
+        else if (this.getBase() == red || father.getBase() == red) {
+            if (this.getBase() == cream || father.getBase() == cream) // red x cream = 50/50 red/cream
+                base = this.rand.nextInt(4) <= 1 ? red : cream;
         }
 
         int tabby = base + 1;
-        if (this.getMarkingNum("tabby") != 0 || parent2.getMarkingNum("tabby") != 0) {
-            if (this.getMarkingNum("tabby") != 0 && parent2.getMarkingNum("tabby") != 0)
-                tabby = quarterChance ? 0 : tabby;
-            else if (this.getMarkingNum("tabby") == 0 || parent2.getMarkingNum("tabby") == 0)
-                tabby = halfChance ? 0 : tabby;
-        } else if (this.getMarkingNum("tabby") == 0 && parent2.getMarkingNum("tabby") == 0)
+        if (this.getMarkingNum("tabby") != 0 || father.getMarkingNum("tabby") != 0) {
+            if (this.getMarkingNum("tabby") != 0 && father.getMarkingNum("tabby") != 0)
+                tabby = this.rand.nextInt(4) == 0 ? 0 : tabby;
+            else if (this.getMarkingNum("tabby") == 0 || father.getMarkingNum("tabby") == 0)
+                tabby = this.rand.nextInt(4) <= 1 ? 0 : tabby;
+        } else if (this.getMarkingNum("tabby") == 0 && father.getMarkingNum("tabby") == 0)
             tabby = 0;
         tabby = base == 2 || base == 3 ? base + 1 : tabby;
 
         Random rand = new Random();
         int whiteMin = 0;
         int whiteMax = 6;
-        if (this.getMarkingNum("white") > parent2.getMarkingNum("white")) {
-            whiteMin = parent2.getMarkingNum("white") - 1;
+        if (this.getMarkingNum("white") > father.getMarkingNum("white")) {
+            whiteMin = father.getMarkingNum("white") - 1;
             whiteMax = this.getMarkingNum("white");
-        } else if (this.getMarkingNum("white") < parent2.getMarkingNum("white") || this.getMarkingNum("white") == parent2.getMarkingNum("white")) {
+        } else if (this.getMarkingNum("white") < father.getMarkingNum("white") || this.getMarkingNum("white") == father.getMarkingNum("white")) {
             whiteMin = this.getMarkingNum("white") - 1;
-            whiteMax = parent2.getMarkingNum("white");
+            whiteMax = father.getMarkingNum("white");
         }
         whiteMin = whiteMin < 0 ? 0 : whiteMin;
         whiteMax = whiteMax > 6 ? 6 : whiteMax;
@@ -607,18 +628,18 @@ public class EntityCat extends EntityTameable {
 
         int eyesMin = 0;
         int eyesMax = 4;
-        if (this.getMarkingNum("eyes") > parent2.getMarkingNum("eyes")) {
-            eyesMin = parent2.getMarkingNum("eyes") - 1;
+        if (this.getMarkingNum("eyes") > father.getMarkingNum("eyes")) {
+            eyesMin = father.getMarkingNum("eyes") - 1;
             eyesMax = this.getMarkingNum("eyes");
-        } else if (this.getMarkingNum("eyes") < parent2.getMarkingNum("eyes") || this.getMarkingNum("eyes") == parent2.getMarkingNum("eyes")) {
+        } else if (this.getMarkingNum("eyes") < father.getMarkingNum("eyes") || this.getMarkingNum("eyes") == father.getMarkingNum("eyes")) {
             eyesMin = this.getMarkingNum("eyes") - 1;
-            eyesMax = parent2.getMarkingNum("eyes");
+            eyesMax = father.getMarkingNum("eyes");
         }
         eyesMin = eyesMin < 0 ? 0 : eyesMin;
         eyesMax = eyesMax > 4 ? 4 : eyesMax;
         eyesMax = eyesMax == 4 ? (child.getMarkingNum("white") < 5 ? (eyesMin < 3 ? eyesMin+1 : 3) : eyesMax) : eyesMax; // removes blue eyed child possibility based on white
         int eyes = rand.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
-        eyes = this.getMarkingNum("eyes") == 4 && parent2.getMarkingNum("eyes") == 4 ? (child.getMarkingNum("white") >= 5 ? 4 : this.world.rand.nextInt(4)) : eyes;
+        eyes = this.getMarkingNum("eyes") == 4 && father.getMarkingNum("eyes") == 4 ? (child.getMarkingNum("white") >= 5 ? 4 : this.world.rand.nextInt(4)) : eyes;
 
         child.setBase(base);
         child.setMarkings("tabby", tabby);

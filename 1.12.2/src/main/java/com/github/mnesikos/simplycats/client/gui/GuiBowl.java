@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.client.gui;
 
-import com.github.mnesikos.simplycats.util.Ref;
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
