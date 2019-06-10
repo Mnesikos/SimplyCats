@@ -20,7 +20,7 @@ public class ItemCatFood extends Item {
     private static final String[] TYPES = new String[] { "fishy", "salmon", "chicken", "beef" };
 
     public ItemCatFood() {
-        setUnlocalizedName("cat_food");
+        setTranslationKey("cat_food");
         setRegistryName(Ref.MODID + ":cat_food");
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
         setHasSubtypes(true);

@@ -8,7 +8,7 @@ import net.minecraft.item.Item;
 public class ItemBase extends Item {
 
     public ItemBase(String name) {
-        setUnlocalizedName(name);
+        setTranslationKey(name);
         setRegistryName(Ref.MODID + ":" + name);
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
         ModItems.ITEMS.add(this);

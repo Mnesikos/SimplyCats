@@ -122,7 +122,7 @@ public class TextureHelper {
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println(e + ":Failed combining any images, base texture: " + BASE_TEX);
+                    System.out.println(e + ": Failed combining any images.");
                 }
 
                 boolean flag = false;
@@ -190,9 +190,7 @@ public class TextureHelper {
         }
         else if (i > 0 && type.equals("tortie")) {
             loc = RenderCat.TORTIE.get((i - 1));
-            if (loc == null) {
-                return getOverlay("tortie", i);
-            }
+            if (loc == null) { return getOverlay("tortie", i); }
         }
         else if (i > 0 && type.equals("white")) {
             loc = RenderCat.WHITE.get((i - 1));

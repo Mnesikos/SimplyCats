@@ -21,11 +21,14 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -63,7 +66,8 @@ public class EntityCat extends EntityTameable {
         this.aiSit = new EntityAISit(this);
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiSit);
-        this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
+        if (!this.isSitting())
+            this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
         this.tasks.addTask(3, new EntityCatAIMate(this, 0.8D));
         this.tasks.addTask(4, new EntityAIMoveIndoors(this));
         this.tasks.addTask(4, new EntityCatAIBirth(this));
@@ -109,6 +113,15 @@ public class EntityCat extends EntityTameable {
     }
 
     @Override
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+        if (!this.world.isRemote)
+            this.aiSit.setSitting(!this.isSitting());
+        if (this.getSex() == 0)
+            this.setTimeCycle("end", this.world.rand.nextInt(SimplyCatsConfig.heatCooldown));
+        return super.onInitialSpawn(difficulty, livingdata);
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
 
@@ -133,11 +146,21 @@ public class EntityCat extends EntityTameable {
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if (!this.world.isRemote && !this.isChild()) {
+        if (!this.isChild()) {
             int mateTimer = this.getMateTimer();
             if (this.getSex() == 0) {
-                if (this.getBreedingStatus("inheat") || this.getBreedingStatus("ispregnant"))
+                if (this.getBreedingStatus("inheat") || this.getBreedingStatus("ispregnant")) {
                     --mateTimer;
+                    if (!this.getBreedingStatus("ispregnant")) {
+                        if (mateTimer % 10 == 0) {
+
+                            double d0 = this.rand.nextGaussian() * 0.02D;
+                            double d1 = this.rand.nextGaussian() * 0.02D;
+                            double d2 = this.rand.nextGaussian() * 0.02D;
+                            this.world.spawnParticle(EnumParticleTypes.HEART, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 0.5D + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d0, d1, d2);
+                        }
+                    }
+                }
                 else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
                     ++mateTimer;
             } else if (this.getSex() == 1) {
@@ -266,16 +289,11 @@ public class EntityCat extends EntityTameable {
             if (this.getBase() == 2 || this.getBase() == 3) // red tabby || cream tabby
                 num = this.getBase() == 2 ? 3 : 4; // if red ? then red : else cream
             else if (this.getBase() == 0 || this.getBase() == 1) { // black || grey
-                int check = this.world.rand.nextInt(4);
-                if (check > 1 && this.getBase() == 0)
-                    num = 1; // black tabby
-                else if (check > 1 && this.getBase() == 1)
-                    num = 2; // grey tabby
-                else
-                    num = 0; // no tabby
+                if (this.world.rand.nextInt(4) > 1 && this.getBase() <= 1)
+                    num = this.getBase() == 0 ? 1 : 2; // if black ? then black : else grey
             }
         } else if (type.equals("tortie")) {
-            if (this.getSex() != 1 || this.getBase() != 2 || this.getBase() != 3) { // males != tortie || full reds || full creams
+            if (this.getSex() != 1 && (this.getBase() <= 1)) { // males != tortie && only black or grey bases
                 if (this.world.rand.nextInt(4) == 0)
                     num = this.getBase() == 0 ? 1 : 2; // if black based ? then black tortie : else (grey based) grey tortie
             }
@@ -476,8 +494,8 @@ public class EntityCat extends EntityTameable {
 
         int base = 0;
         int tortie = 0;
-        if (this.getBase() == father.getBase()) {
-            if (this.getBase() == black) {
+        if (this.getBase() == black || father.getBase() == black) {
+            if (this.getBase() == black && father.getBase() == black) {
                 base = this.rand.nextInt(4) == 0 ? grey : black; // black x black = 25% grey, 75% black
                 if (momTortie && this.rand.nextInt(4) <= 1) {
                     // black male x tortie mother adds half chance red/cream boys, half chance tortie girls
@@ -487,21 +505,7 @@ public class EntityCat extends EntityTameable {
                         tortie = base == grey ? 2 : 1;
                 }
             }
-            else if (this.getBase() == red) // red x red = 25% cream, 75% red
-                base = this.rand.nextInt(4) == 0 ? cream : red;
-            else {
-                base = this.getBase(); // grey x grey = grey, cream x cream = cream
-                if (momTortie && this.rand.nextInt(4) <= 1) {
-                    // grey male x tortie mother adds half chance red/cream boys, half chance tortie girls
-                    if (child.getSex() == 1)
-                        base = cream;
-                    else
-                        tortie = 2;
-                }
-            }
-        }
-        else if (this.getBase() == black || father.getBase() == black) {
-            if (this.getBase() == grey || father.getBase() == grey) { // black x grey = 50% black, 50% grey
+            else if (this.getBase() == grey || father.getBase() == grey) { // black x grey = 50% black, 50% grey
                 base = this.rand.nextInt(4) <= 1 ? grey : black;
                 if (momTortie && this.rand.nextInt(4) <= 1) {
                     // black male x tortie mother = half chance red/cream boys, half chance tortie girls
@@ -555,7 +559,17 @@ public class EntityCat extends EntityTameable {
             }
         }
         else if (this.getBase() == grey || father.getBase() == grey) {
-            if (this.getBase() == red || father.getBase() == red) {
+            if (this.getBase() == grey && father.getBase() == grey) {
+                base = this.getBase(); // grey x grey = grey
+                if (momTortie && this.rand.nextInt(4) <= 1) {
+                    // grey male x tortie mother adds half chance red/cream boys, half chance tortie girls
+                    if (child.getSex() == 1)
+                        base = cream;
+                    else
+                        tortie = 2;
+                }
+            }
+            else if (this.getBase() == red || father.getBase() == red) {
                 if (this.getBase() == red) {
                     // grey x female red = 50/50 red/cream boys, 50/50 red/cream tortie girls
                     if (child.getSex() == 1)
@@ -598,8 +612,13 @@ public class EntityCat extends EntityTameable {
             }
         }
         else if (this.getBase() == red || father.getBase() == red) {
-            if (this.getBase() == cream || father.getBase() == cream) // red x cream = 50/50 red/cream
-                base = this.rand.nextInt(4) <= 1 ? red : cream;
+            if (this.getBase() == red && father.getBase() == red) // red x red = 25% cream, 75% red
+                base = this.rand.nextInt(4) == 0 ? cream : red;
+            else if (this.getBase() == cream || father.getBase() == cream) // red x cream = 50/50 cream/red
+                base = this.rand.nextInt(4) <= 1 ? cream : red;
+        }
+        else if (this.getBase() == cream && father.getBase() == cream) {
+            base = this.getBase(); // cream x cream = cream
         }
 
         int tabby = base + 1;

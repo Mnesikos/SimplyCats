@@ -9,6 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,7 +40,7 @@ import java.util.Map;
 public class ItemPetCarrier extends Item {
 
     public ItemPetCarrier() {
-        setUnlocalizedName("pet_carrier");
+        setTranslationKey("pet_carrier");
         setRegistryName(Ref.MODID + ":pet_carrier");
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
         this.setMaxStackSize(1);
@@ -176,6 +177,7 @@ public class ItemPetCarrier extends Item {
             pet.rotationYawHead = pet.rotationYaw;
             pet.renderYawOffset = pet.rotationYaw;
             world.spawnEntity(pet);
+            pet.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(pet)), (IEntityLivingData)null);
             pet.setTamed(true);
             pet.setOwnerId(player.getUniqueID());
             float health = pet.getMaxHealth();
