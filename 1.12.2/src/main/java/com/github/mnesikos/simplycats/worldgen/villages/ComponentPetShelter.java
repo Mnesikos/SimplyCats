@@ -1,28 +1,54 @@
 package com.github.mnesikos.simplycats.worldgen.villages;
 
+import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModProfessions;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
+import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 
 import java.util.List;
 import java.util.Random;
 
 public class ComponentPetShelter extends StructureVillagePieces.Village {
-    private int averageGroundLevel = -1;
+    private int AVG_GROUND_LEVEL = -1;
+    private int CATS_SPAWNED;
+    private int DOGS_SPAWNED;
+
+    public ComponentPetShelter() {
+
+    }
 
     public ComponentPetShelter(StructureVillagePieces.Start parStart, int parType, Random parRand, StructureBoundingBox parStructBB, EnumFacing facing) {
-        super();
+        super(parStart, parType);
         this.setCoordBaseMode(facing);
         this.boundingBox = parStructBB;
+    }
+
+    @Override
+    protected void writeStructureToNBT(NBTTagCompound tagCompound) {
+        super.writeStructureToNBT(tagCompound);
+        tagCompound.setInteger("CatsSpawned", this.CATS_SPAWNED);
+        tagCompound.setInteger("DogsSpawned", this.DOGS_SPAWNED);
+    }
+
+    @Override
+    protected void readStructureFromNBT(NBTTagCompound tagCompound, TemplateManager p_143011_2_) {
+        super.readStructureFromNBT(tagCompound, p_143011_2_);
+        this.CATS_SPAWNED = tagCompound.getInteger("CatsSpawned");
+        this.DOGS_SPAWNED = tagCompound.getInteger("DogsSpawned");
     }
 
     public static ComponentPetShelter buildComponent(StructureVillagePieces.Start villagePiece, List pieces, Random random, int x, int y, int z, EnumFacing facing, int p5) {
@@ -32,13 +58,13 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
 
     @Override
     public boolean addComponentParts(World world, Random rand, StructureBoundingBox structureBoundingBox) {
-        if (this.averageGroundLevel < 0) {
-            this.averageGroundLevel = this.getAverageGroundLevel(world, structureBoundingBox);
+        if (this.AVG_GROUND_LEVEL < 0) {
+            this.AVG_GROUND_LEVEL = this.getAverageGroundLevel(world, structureBoundingBox);
 
-            if (this.averageGroundLevel < 0)
+            if (this.AVG_GROUND_LEVEL < 0)
                 return true;
 
-            this.boundingBox.offset(0, this.averageGroundLevel - this.boundingBox.maxY + 4, 0);
+            this.boundingBox.offset(0, this.AVG_GROUND_LEVEL - this.boundingBox.maxY + 4, 0);
         }
 
         /**
@@ -181,6 +207,8 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         this.placeTorch(world, EnumFacing.SOUTH, 5, 4, 12, structureBoundingBox);
         //this.placeBlockAtCurrentPosition(world, Blocks.torch, getMetadataWithOffset(Blocks.torch, 2), 5, 4, 2, structureBoundingBox);
         this.placeTorch(world, EnumFacing.NORTH, 5, 4, 2, structureBoundingBox);
+        this.placeTorch(world, EnumFacing.EAST, 3, 3, 5, structureBoundingBox);
+        this.placeTorch(world, EnumFacing.EAST, 3, 3, 9, structureBoundingBox);
         this.fillWithBlocks(world, structureBoundingBox, 8, 2, 10, 8, 2, 12, cobble, cobble, false);
         this.fillWithBlocks(world, structureBoundingBox, 8, 2, 6, 8, 2, 8, cobble, cobble, false);
         this.fillWithBlocks(world, structureBoundingBox, 8, 3, 11, 8, 4, 12, planks, planks, false);
@@ -192,6 +220,8 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         // Pet Room
         this.fillWithBlocks(world, structureBoundingBox, 11, 2, 9, 15, 2, 9, fence, fence, false);
         this.fillWithBlocks(world, structureBoundingBox, 11, 2, 6, 11, 2, 12, fence, fence, false);
+        this.placeTorch(world, EnumFacing.EAST, 9, 6, 9, structureBoundingBox);
+        this.placeTorch(world, EnumFacing.WEST, 15, 5, 9, structureBoundingBox);
         //this.setBlockState(world, Blocks.fence_gate, getMetadataWithOffset(Blocks.fence_gate, 3), 11, 2, 7, structureBoundingBox);
         this.setBlockState(world, getBiomeSpecificBlockState(Blocks.OAK_FENCE_GATE.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST)), 11, 2, 7, structureBoundingBox);
         //this.setBlockState(world, Blocks.fence_gate, getMetadataWithOffset(Blocks.fence_gate, 3), 11, 2, 11, structureBoundingBox);
@@ -276,9 +306,9 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                 this.replaceAirAndLiquidDownwards(world, cobble, i1, -1, l, structureBoundingBox);
             }
         }
-        this.spawnVillagers(world, structureBoundingBox, 2, 1, 2, 1);
-        //       this.spawnCats();
-        //       this.spawnDogs();
+        this.spawnVillagers(world, structureBoundingBox, 2, 2, 2, 1);
+        this.spawnCats(world, structureBoundingBox, 14, 2, 11);
+        this.spawnDogs(world, structureBoundingBox, 14, 2, 7);
 
         return true;
     }
@@ -288,4 +318,75 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         return super.chooseForgeProfession(1, ModProfessions.SHELTER_STAFF);
     }
 
+    private void spawnCats(World world, StructureBoundingBox structureBoundingBoxIn, int x, int y, int z) {
+        int count = world.rand.nextInt(3) + 1;
+        if (this.CATS_SPAWNED < count) {
+            for (int i = this.CATS_SPAWNED; i < count; ++i) {
+                int offX = this.getXWithOffset(x - i, z);
+                int offY = this.getYWithOffset(y);
+                int offZ = this.getZWithOffset(x - i, z);
+
+                if (!structureBoundingBoxIn.isVecInside(new BlockPos(offX, offY, offZ))) {
+                    break;
+                }
+
+                System.out.println("CATS: " + this.CATS_SPAWNED + " < " + count);
+                ++this.CATS_SPAWNED;
+                System.out.println("CATS_SPAWNED is at: " + this.CATS_SPAWNED);
+
+                if (world.rand.nextInt(4) == 0) {
+                    EntityCat kitten = new EntityCat(world);
+                    kitten.setGrowingAge(-24000);
+                    kitten.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
+                    kitten.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitten)), null);
+                    kitten.enablePersistence();
+                    world.spawnEntity(kitten);
+                    System.out.println("Trying to spawn kitten with location of " + kitten.posX + ", " + kitten.posY + ", " + kitten.posZ);
+                } else {
+                    EntityCat cat = new EntityCat(world);
+                    cat.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
+                    cat.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), null);
+                    cat.enablePersistence();
+                    world.spawnEntity(cat);
+                    System.out.println("Trying to spawn cat with location of " + cat.posX + ", " + cat.posY + ", " + cat.posZ);
+                }
+            }
+        }
+    }
+
+    private void spawnDogs(World world, StructureBoundingBox structureBoundingBoxIn, int x, int y, int z) {
+        int count = world.rand.nextInt(2) + 1;
+        if (this.DOGS_SPAWNED < count) {
+            for (int i = this.DOGS_SPAWNED; i < count; ++i) {
+                int offX = this.getXWithOffset(x - i, z);
+                int offY = this.getYWithOffset(y);
+                int offZ = this.getZWithOffset(x - i, z);
+
+                if (!structureBoundingBoxIn.isVecInside(new BlockPos(offX, offY, offZ))) {
+                    break;
+                }
+
+                System.out.println("DOGS: " + this.DOGS_SPAWNED + " < " + count);
+                ++this.DOGS_SPAWNED;
+                System.out.println("DOGS_SPAWNED is at: " + this.DOGS_SPAWNED);
+
+                if (world.rand.nextInt(4) == 0) {
+                    EntityWolf puppy = new EntityWolf(world);
+                    puppy.setGrowingAge(-24000);
+                    puppy.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
+                    puppy.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(puppy)), null);
+                    puppy.enablePersistence();
+                    world.spawnEntity(puppy);
+                    System.out.println("Trying to spawn puppy with location of " + puppy.posX + ", " + puppy.posY + ", " + puppy.posZ);
+                } else {
+                    EntityWolf dog = new EntityWolf(world);
+                    dog.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
+                    dog.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(dog)), null);
+                    dog.enablePersistence();
+                    world.spawnEntity(dog);
+                    System.out.println("Trying to spawn dog with location of " + dog.posX + ", " + dog.posY + ", " + dog.posZ);
+                }
+            }
+        }
+    }
 }

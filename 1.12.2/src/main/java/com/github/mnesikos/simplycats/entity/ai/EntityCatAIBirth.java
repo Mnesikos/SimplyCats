@@ -27,7 +27,7 @@ public class EntityCatAIBirth extends EntityAIBase {
         if (this.MOTHER.getSex() == 1 || !this.MOTHER.getBreedingStatus("ispregnant") || this.MOTHER.getBreedingStatus("inheat"))
             return false;
 
-        else if (this.MOTHER.getMateTimer() >= 0)
+        else if (this.MOTHER.getMateTimer() > 0)
             return false;
 
         else

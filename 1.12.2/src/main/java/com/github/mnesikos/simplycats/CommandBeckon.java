@@ -81,6 +81,7 @@ public class CommandBeckon implements ICommand {
                     }
                 }
 
+                // TODO add optional argument for a player to set as owner
                 else if (args.length == 5){
                     EntityCat cat = new EntityCat(world);
                     cat.setType(0);
@@ -115,14 +116,12 @@ public class CommandBeckon implements ICommand {
                     if (args[3].equals("x"))
                         cat.setMarkings("tabby", cat.selectMarkings("tabby"));
                     else {
-                        if (args[3].equals("false"))
-                            cat.setMarkings("tabby", 0);
-                        else if (args[3].equals("true")) {
-                            if (cat.getBase() == 0 || cat.getBase() == 1)
-                                cat.setMarkings("tabby", cat.getBase() + 1);
-                        }
-                        if (cat.getBase() == 2 || cat.getBase() == 3) // red || cream are always tabby
+                        if (args[3].equals("true"))
                             cat.setMarkings("tabby", cat.getBase() + 1);
+                        else if (cat.getBase() == 2 || cat.getBase() == 3) // red || cream are always tabby
+                            cat.setMarkings("tabby", cat.getBase() + 1);
+                        else
+                            cat.setMarkings("tabby", 0);
                     }
 
                     // SET WHITE MARKINGS
@@ -155,9 +154,9 @@ public class CommandBeckon implements ICommand {
                     player.sendMessage(new TextComponentTranslation("command.beckon.success"));
                     cat.setPosition(Minecraft.getMinecraft().objectMouseOver.getBlockPos().getX(), Minecraft.getMinecraft().objectMouseOver.getBlockPos().getY() + 1, Minecraft.getMinecraft().objectMouseOver.getBlockPos().getZ());
                     world.spawnEntity(cat);
-                    cat.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), (IEntityLivingData)null);
                     cat.setTamed(true);
                     cat.setOwnerId(player.getUniqueID());
+                    cat.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), null);
                 } else {
                     TextComponentTranslation beckonFailMsg = new TextComponentTranslation("command.beckon.fail" + TextFormatting.RED);
                     player.sendMessage(beckonFailMsg);

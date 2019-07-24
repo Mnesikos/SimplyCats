@@ -53,6 +53,8 @@ command.beckon.fail=Incorrect usage of command, see /beckon
 
 < Config
 config.simplycats.title=Simply Cats Config
+config.simplycats.command_beckon=Enable Beckon Command
+config.simplycats.adopt_a_dog=Enable Adopt-a-Dog
 config.simplycats.pregnancy_timer=Pregnancy Timer
 config.simplycats.pregnancy_timer.tooltip=Number of minecraft ticks before a pregnant cat will give birth. Default is 4 full minecraft days.
 config.simplycats.heat_timer=Heat Timer
@@ -67,7 +69,13 @@ chat.pet_carrier.empty=This carrier is empty.
 chat.pet_carrier.full=This carrier is already full!
 chat.pet_carrier.retrieve_pet=Pet Retrieved!
 chat.pet_carrier.release_pet=Pet Released!
+chat.info.success_fixed_female=has successfully been spayed.
+chat.info.success_fixed_male=has successfully been neutered.
+chat.info.fixed_female=This female is spayed! She cannot go into heat, mate, or give birth.
+chat.info.fixed_male=This male is neutered! He cannot mate.
 chat.info.pregnant=This female is pregnant. Ticks until birth:
+chat.info.pregnant_heat=This cat is pregnant, but still in heat for:
+chat.info.kitten_count=Kitten count:
 chat.info.in_heat=This female is in heat. Ticks left:
 chat.info.not_in_heat=This female is not in heat. Ticks until next heat:
 chat.info.male=This is a male. Cooldown ticks left:

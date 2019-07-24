@@ -9,8 +9,7 @@ and this project adheres to
 ## [Unreleased]
 ### Added
 - Cats!
-- Pet Carrier and cat food items.
-- Cat food bowl block.
+- Pet Carrier and cat food items (that do nothing yet lol).
 - Pet Shelter structure and new villager.
 ### Changed
 ### Deprecated

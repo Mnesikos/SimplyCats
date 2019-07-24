@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats;
 
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -34,6 +35,7 @@ public class SimplyCats {
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandBeckon());
+        if (SimplyCatsConfig.COMMAND_BECKON)
+            event.registerServerCommand(new CommandBeckon());
     }
 }

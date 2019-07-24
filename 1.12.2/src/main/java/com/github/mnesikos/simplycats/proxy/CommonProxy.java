@@ -42,8 +42,8 @@ public class CommonProxy implements IGuiHandler {
     public void preInit(FMLPreInitializationEvent e) {
         //GameRegistry.registerTileEntity(TileEntityBowl.class, "tebowl");
 
-        int entityID = 0;
-        EntityRegistry.registerModEntity(new ResourceLocation(Ref.MODID + ":cat"), EntityCat.class, "Cat", entityID++, SimplyCats.instance, 80, 1, true);
+        int ENTITY_ID = 0;
+        EntityRegistry.registerModEntity(new ResourceLocation(Ref.MODID + ":cat"), EntityCat.class, "Cat", ENTITY_ID++, SimplyCats.instance, 80, 1, true);
     }
 
     public void init(FMLInitializationEvent e) {

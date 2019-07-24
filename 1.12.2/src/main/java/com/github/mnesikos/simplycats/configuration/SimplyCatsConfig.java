@@ -13,6 +13,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class SimplyCatsConfig {
     private static final String PREFIX = "config." + Ref.MODID;
 
+    @Name("Enable Beckon Command")
+    @Comment({
+            "ONLY enable this if you know what you're doing.",
+            "This command can and will corrupt your world if used incorrectly."
+    })
+    @LangKey(PREFIX + ".command_beckon")
+    public static boolean COMMAND_BECKON = false;
+
+    @Name("Enable Adopt-a-Dog")
+    @Comment("Disabling this will remove the villager trade to get a one-time-use pet carrier containing a dog.")
+    @LangKey(PREFIX + ".adopt_a_dog")
+    public static boolean ADOPT_A_DOG = true;
+
     @Name("Pregnancy Timer")
     @Comment({
             "Number of minecraft ticks before a pregnant cat will give birth.",

@@ -177,9 +177,9 @@ public class ItemPetCarrier extends Item {
             pet.rotationYawHead = pet.rotationYaw;
             pet.renderYawOffset = pet.rotationYaw;
             world.spawnEntity(pet);
-            pet.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(pet)), (IEntityLivingData)null);
             pet.setTamed(true);
             pet.setOwnerId(player.getUniqueID());
+            pet.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(pet)), null);
             float health = pet.getMaxHealth();
             pet.setHealth(health);
         }

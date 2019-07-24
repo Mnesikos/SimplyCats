@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.init;
 
 import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
@@ -37,7 +38,10 @@ public class ModProfessions {
     }
 
     public static void associateCareersAndTrades() {
-        KENNEL_WORKER = (new VillagerCareer(SHELTER_STAFF, "kennel_worker")).addTrade(1, new AdoptACat()).addTrade(1, new AdoptADog());
+        if (SimplyCatsConfig.ADOPT_A_DOG)
+            KENNEL_WORKER = (new VillagerCareer(SHELTER_STAFF, "kennel_worker")).addTrade(1, new AdoptACat()).addTrade(1, new AdoptADog());
+        else
+            KENNEL_WORKER = (new VillagerCareer(SHELTER_STAFF, "kennel_worker")).addTrade(1, new AdoptACat());
     }
 
     public static class AdoptACat implements EntityVillager.ITradeList {

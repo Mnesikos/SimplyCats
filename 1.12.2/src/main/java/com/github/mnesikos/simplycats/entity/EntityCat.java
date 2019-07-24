@@ -8,6 +8,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -43,6 +44,7 @@ public class EntityCat extends EntityTameable {
     private static final DataParameter<Byte> SEX;
     private static final List<String> PHENO_LIST = new ArrayList<>(4);
 
+    private static final DataParameter<Boolean> FIXED;
     private static final DataParameter<Byte> IN_HEAT;
     private static final DataParameter<Byte> IS_PREGNANT;
     private static final DataParameter<Integer> MATE_TIMER;
@@ -55,7 +57,7 @@ public class EntityCat extends EntityTameable {
     public EntityCat(World world) {
         super(world);
         this.setSize(0.6F, 0.8F);
-        this.setTamed(true);
+        //this.setTamed(true);
         this.setCatPheno();
         this.setParent("mother", "Unknown");
         this.setParent("father", "Unknown");
@@ -66,8 +68,7 @@ public class EntityCat extends EntityTameable {
         this.aiSit = new EntityAISit(this);
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiSit);
-        if (!this.isSitting())
-            this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
+        this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
         this.tasks.addTask(3, new EntityCatAIMate(this, 0.8D));
         this.tasks.addTask(4, new EntityAIMoveIndoors(this));
         this.tasks.addTask(4, new EntityCatAIBirth(this));
@@ -78,7 +79,12 @@ public class EntityCat extends EntityTameable {
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityCat.class, 5.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
-        this.targetTasks.addTask(1, new EntityAITargetNonTamed(this, EntityChicken.class, false, (Predicate)null));
+        this.targetTasks.addTask(1, new EntityAITargetNonTamed<>(this, EntityAnimal.class, false, new Predicate<Entity>() {
+            @Override
+            public boolean apply(@Nullable Entity input) {
+                return input instanceof EntityChicken || input instanceof EntityRabbit;
+            }
+        }));
     }
 
     @Override
@@ -102,6 +108,7 @@ public class EntityCat extends EntityTameable {
         this.dataManager.register(EYES, 0);
         this.dataManager.register(SEX, (byte)0);
 
+        this.dataManager.register(FIXED, false);
         this.dataManager.register(IN_HEAT, (byte)0);
         this.dataManager.register(IS_PREGNANT, (byte)0);
         this.dataManager.register(MATE_TIMER, 0);
@@ -115,8 +122,9 @@ public class EntityCat extends EntityTameable {
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
         if (!this.world.isRemote)
-            this.aiSit.setSitting(!this.isSitting());
-        if (this.getSex() == 0)
+            if (this.isTamed())
+                this.aiSit.setSitting(!this.isSitting());
+        if (!this.isChild() && this.getSex() == 0)
             this.setTimeCycle("end", this.world.rand.nextInt(SimplyCatsConfig.heatCooldown));
         return super.onInitialSpawn(difficulty, livingdata);
     }
@@ -125,7 +133,7 @@ public class EntityCat extends EntityTameable {
     public void onUpdate() {
         super.onUpdate();
 
-        if (!this.world.isRemote && !this.isChild() && this.getSex() == 0) { //if female & adult
+        if (!this.world.isRemote && !this.isChild() && this.getSex() == 0 && !this.isFixed()) { //if female & adult
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
@@ -146,7 +154,7 @@ public class EntityCat extends EntityTameable {
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if (!this.isChild()) {
+        if (!this.isChild() && !this.isFixed()) {
             int mateTimer = this.getMateTimer();
             if (this.getSex() == 0) {
                 if (this.getBreedingStatus("inheat") || this.getBreedingStatus("ispregnant")) {
@@ -333,6 +341,14 @@ public class EntityCat extends EntityTameable {
         return this.dataManager.get(IS_ANGRY);
     }
 
+    public void setFixed(boolean fixed) {
+        this.dataManager.set(FIXED, fixed);
+    }
+
+    public boolean isFixed() {
+        return this.dataManager.get(FIXED);
+    }
+
     public void setTimeCycle(String s, int time) {
         if (s.equals("start")) {
             this.setBreedingStatus("inheat", true);
@@ -416,6 +432,7 @@ public class EntityCat extends EntityTameable {
         for (int i = 0; i < PHENO_LIST.size(); i++)
             nbt.setInteger(PHENO_LIST.get(i), this.getMarkingNum(PHENO_LIST.get(i)));
         nbt.setByte("Sex", this.getSex());
+        nbt.setBoolean("Fixed", this.isFixed());
         if (this.getSex() == 0) {
             nbt.setBoolean("InHeat", this.getBreedingStatus("inheat"));
             nbt.setBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
@@ -437,6 +454,7 @@ public class EntityCat extends EntityTameable {
         for (int i = 0; i < PHENO_LIST.size(); i++)
             this.setMarkings(PHENO_LIST.get(i), nbt.getInteger(PHENO_LIST.get(i)));
         this.setSex(nbt.getByte("Sex"));
+        this.setFixed(nbt.getBoolean("Fixed"));
         if (this.getSex() == 0) {
             this.setBreedingStatus("inheat", nbt.getBoolean("InHeat"));
             this.setBreedingStatus("ispregnant", nbt.getBoolean("IsPregnant"));
@@ -468,6 +486,9 @@ public class EntityCat extends EntityTameable {
 
         EntityCat mate = (EntityCat) target;
         if (mate.getType() == 3 || this.getType() == 3)
+            return false;
+
+        if (this.isFixed() || mate.isFixed())
             return false;
 
         if ((this.getSex() == 1 && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
@@ -688,34 +709,46 @@ public class EntityCat extends EntityTameable {
                         if (!player.capabilities.isCreativeMode)
                             stack.shrink(1);
                         if (stack.getCount() <= 0)
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                         return true;
                     }
-                } else if (stack.getItem() == Items.STICK) {
+                } else if (stack.getItem() == Items.STICK && player.isSneaking()) {
                     if (this.world.isRemote) {
-                        String pregnant = new TextComponentTranslation("chat.info.pregnant").getFormattedText();
-                        String inheat = new TextComponentTranslation("chat.info.in_heat").getFormattedText();
-                        String noheat = new TextComponentTranslation("chat.info.not_in_heat").getFormattedText();
-                        String male = new TextComponentTranslation("chat.info.male").getFormattedText();
-                        String parents = new TextComponentTranslation("chat.info.parents").getFormattedText();
-                        if (this.getSex() == 0 && this.getBreedingStatus("ispregnant")) {
-                            if (!this.getBreedingStatus("inheat"))
-                                player.sendMessage(new TextComponentString(pregnant + this.getMateTimer() + parents + this.getParent("mother") + "/" + this.getParent("father")));
+                        //String parents = new TextComponentTranslation("chat.info.parents").getFormattedText();
+                        if (this.isFixed()) {
+                            if (this.getSex() == 0)
+                                player.sendMessage(new TextComponentTranslation("chat.info.fixed_female"));
                             else
-                                player.sendMessage(new TextComponentString("This cat is pregnant, but still in heat for: " + this.getMateTimer()));
+                                player.sendMessage(new TextComponentTranslation("chat.info.fixed_male"));
+                        }
+                        else if (this.getSex() == 0 && this.getBreedingStatus("ispregnant")) {
+                            if (!this.getBreedingStatus("inheat"))
+                                player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.pregnant").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
+                            else
+                                player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.pregnant_heat").getFormattedText() + " " + this.getMateTimer()));
                         }
                         else if (this.getSex() == 0 && this.getBreedingStatus("inheat"))
-                            player.sendMessage(new TextComponentTranslation(inheat + this.getMateTimer() + parents + this.getParent("mother") + "/" + this.getParent("father")));
+                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                         else if (this.getSex() == 0 && !this.getBreedingStatus("inheat"))
-                            player.sendMessage(new TextComponentTranslation(noheat + this.getMateTimer() + parents + this.getParent("mother") + "/" + this.getParent("father")));
+                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.not_in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                         else if (this.getSex() == 1)
-                            player.sendMessage(new TextComponentTranslation(male + this.getMateTimer() + parents + this.getParent("mother") + "/" + this.getParent("father")));
+                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.male").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                     }
                     return true;
                 } else if (stack.getItem() == Items.BONE) {
                     if (this.world.isRemote) {
                         if (this.getSex() == 0 && this.getBreedingStatus("ispregnant"))
-                            player.sendMessage(new TextComponentString("Kitten count: " + this.getKittens("total")));
+                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.kitten_count").getFormattedText() + " " + this.getKittens("total")));
+                    }
+                    return true;
+                } else if (stack.getItem() == Items.SHEARS && player.isSneaking()) {
+                    if (!this.isFixed()) {
+                        this.setFixed(true);
+                        if (this.world.isRemote) {
+                            String FIXED_FEMALE = new TextComponentTranslation("chat.info.success_fixed_female").getFormattedText();
+                            String FIXED_MALE = new TextComponentTranslation("chat.info.success_fixed_male").getFormattedText();
+                            player.sendMessage(new TextComponentString(this.getName() + " " + (this.getSex() == 0 ? FIXED_FEMALE : FIXED_MALE)));
+                        }
                     }
                     return true;
                 }
@@ -782,7 +815,7 @@ public class EntityCat extends EntityTameable {
         if (this.hasCustomName())
             return this.getCustomNameTag();
         else
-            return this.isTamed() ? new TextComponentTranslation("entity.Cat.name").toString() : super.getName();
+            return this.isTamed() ? new TextComponentTranslation("entity.Cat.name").getFormattedText() : super.getName();
     }
 
     static {
@@ -794,6 +827,7 @@ public class EntityCat extends EntityTameable {
         EYES = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
         SEX = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
 
+        FIXED = EntityDataManager.createKey(EntityCat.class, DataSerializers.BOOLEAN);
         IN_HEAT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
         IS_PREGNANT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
         MATE_TIMER = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
