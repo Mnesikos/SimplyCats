@@ -9,7 +9,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -187,10 +186,12 @@ public class ItemPetCarrier extends Item {
 
     @Override
     public String getItemStackDisplayName(ItemStack item) {
+        String unlocalizedName = this.getUnlocalizedNameInefficiently(item);
         if (!item.hasTagCompound() || item.getItemDamage() == 0)
-            return I18n.format(this.getUnlocalizedNameInefficiently(item) + ".empty.name");
+            unlocalizedName += ".empty.name";
         else
-            return I18n.format(this.getUnlocalizedNameInefficiently(item) + ".full.name");
+            unlocalizedName += ".full.name";
+        return I18n.translateToLocal(unlocalizedName).trim();
     }
 
     @Override @SideOnly(Side.CLIENT)
@@ -208,21 +209,21 @@ public class ItemPetCarrier extends Item {
     public void addInformation(ItemStack item, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         NBTTagCompound nbt = item.getTagCompound();
         if (nbt != null) {
-            String cat = I18n.format("tooltip.pet_carrier.adopt_cat");
-            String dog = I18n.format("tooltip.pet_carrier.adopt_dog");
+            String cat = I18n.translateToLocalFormatted("tooltip.pet_carrier.adopt_cat");
+            String dog = I18n.translateToLocalFormatted("tooltip.pet_carrier.adopt_dog");
             if (item.getItemDamage() == 3)
                 tooltip.add(TextFormatting.ITALIC + cat);
             else if (item.getItemDamage() == 4)
                 tooltip.add(TextFormatting.ITALIC + dog);
 
             else if (item.getItemDamage() != 0) {
-                String species = I18n.format("entity." + nbt.getString("id") + ".name");
-                String specificCat = I18n.format("cat.type." + nbt.getInteger("Type") + ".name");
-                String catSex = I18n.format("cat.sex." + nbt.getByte("Sex") + "b.name");
+                String species = I18n.translateToLocalFormatted("entity." + nbt.getString("id") + ".name");
+                String specificCat = I18n.translateToLocalFormatted("cat.type." + nbt.getInteger("Type") + ".name");
+                String catSex = I18n.translateToLocalFormatted("cat.sex." + nbt.getByte("Sex") + "b.name");
 
-                String base = I18n.format("cat.base." + nbt.getInteger("Base") + ".name");
-                String tabby = I18n.format("cat.tabby.name");
-                String white = I18n.format("cat.white.name");
+                String base = I18n.translateToLocalFormatted("cat.base." + nbt.getInteger("Base") + ".name");
+                String tabby = I18n.translateToLocalFormatted("cat.tabby.name");
+                String white = I18n.translateToLocalFormatted("cat.white.name");
                 String catPheno;
 
                 if (nbt.getInteger("tabby") != 0 || nbt.getInteger("white") != 0) {
@@ -235,7 +236,7 @@ public class ItemPetCarrier extends Item {
                 } else
                     catPheno = base;
 
-                String owner = I18n.format("tooltip.pet_carrier.owner");
+                String owner = I18n.translateToLocalFormatted("tooltip.pet_carrier.owner");
                 if (nbt.hasKey("customName"))
                     tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("customName") + "\"");
                 tooltip.add(TextFormatting.ITALIC + (item.getItemDamage() == 2 ? species : (item.getItemDamage() == 1 && nbt.getInteger("Type") == 3 ? specificCat : (item.getItemDamage() == 1 ? catPheno + " " + catSex + " " + species : null))));
@@ -243,7 +244,7 @@ public class ItemPetCarrier extends Item {
             } else
                 return;
         } else {
-            String empty = I18n.format("tooltip.pet_carrier.empty");
+            String empty = I18n.translateToLocalFormatted("tooltip.pet_carrier.empty");
             tooltip.add(TextFormatting.AQUA + empty);
         }
     }
