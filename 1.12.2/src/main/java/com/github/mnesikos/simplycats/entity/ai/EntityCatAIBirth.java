@@ -19,7 +19,7 @@ public class EntityCatAIBirth extends EntityAIBase {
     public EntityCatAIBirth(EntityCat entityCat) {
         this.MOTHER = entityCat;
         this.WORLD = entityCat.world;
-        this.setMutexBits(3);
+        this.setMutexBits(8);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class EntityCatAIBirth extends EntityAIBase {
         if (this.MOTHER.getSex() == 1 || !this.MOTHER.getBreedingStatus("ispregnant") || this.MOTHER.getBreedingStatus("inheat"))
             return false;
 
-        else if (this.MOTHER.getMateTimer() > 0)
+        else if (this.MOTHER.getMateTimer() >= 0)
             return false;
 
         else

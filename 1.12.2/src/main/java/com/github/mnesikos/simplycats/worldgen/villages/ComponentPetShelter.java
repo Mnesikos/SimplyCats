@@ -330,9 +330,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                     break;
                 }
 
-                System.out.println("CATS: " + this.CATS_SPAWNED + " < " + count);
                 ++this.CATS_SPAWNED;
-                System.out.println("CATS_SPAWNED is at: " + this.CATS_SPAWNED);
 
                 if (world.rand.nextInt(4) == 0) {
                     EntityCat kitten = new EntityCat(world);
@@ -341,14 +339,12 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                     kitten.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitten)), null);
                     kitten.enablePersistence();
                     world.spawnEntity(kitten);
-                    System.out.println("Trying to spawn kitten with location of " + kitten.posX + ", " + kitten.posY + ", " + kitten.posZ);
                 } else {
                     EntityCat cat = new EntityCat(world);
                     cat.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
                     cat.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), null);
                     cat.enablePersistence();
                     world.spawnEntity(cat);
-                    System.out.println("Trying to spawn cat with location of " + cat.posX + ", " + cat.posY + ", " + cat.posZ);
                 }
             }
         }
@@ -366,9 +362,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                     break;
                 }
 
-                System.out.println("DOGS: " + this.DOGS_SPAWNED + " < " + count);
                 ++this.DOGS_SPAWNED;
-                System.out.println("DOGS_SPAWNED is at: " + this.DOGS_SPAWNED);
 
                 if (world.rand.nextInt(4) == 0) {
                     EntityWolf puppy = new EntityWolf(world);
@@ -377,14 +371,12 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                     puppy.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(puppy)), null);
                     puppy.enablePersistence();
                     world.spawnEntity(puppy);
-                    System.out.println("Trying to spawn puppy with location of " + puppy.posX + ", " + puppy.posY + ", " + puppy.posZ);
                 } else {
                     EntityWolf dog = new EntityWolf(world);
                     dog.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
                     dog.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(dog)), null);
                     dog.enablePersistence();
                     world.spawnEntity(dog);
-                    System.out.println("Trying to spawn dog with location of " + dog.posX + ", " + dog.posY + ", " + dog.posZ);
                 }
             }
         }

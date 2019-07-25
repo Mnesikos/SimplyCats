@@ -31,9 +31,6 @@ public class EntityCatAIMate extends EntityAIBase {
         if (this.CAT.getSex() == 0)
             return false;
 
-        else if (this.CAT.isFixed())
-            return false;
-
         else if ((this.TARGET != null && !this.TARGET.getBreedingStatus("inheat")) || (this.CAT.getMateTimer() > 0))
             return false;
 
@@ -47,7 +44,7 @@ public class EntityCatAIMate extends EntityAIBase {
     public boolean shouldContinueExecuting() {
         boolean maleCooldownCheck = this.CAT.getSex() == 1 && this.CAT.getMateTimer() == 0;
         boolean femaleHeatCheck = this.TARGET.getSex() == 0 && this.TARGET.getBreedingStatus("inheat");
-        return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && !this.CAT.isFixed() && !this.TARGET.isFixed();
+        return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60;
     }
 
     @Override
