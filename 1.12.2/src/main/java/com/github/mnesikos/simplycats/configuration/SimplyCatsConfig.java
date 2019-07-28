@@ -26,6 +26,11 @@ public class SimplyCatsConfig {
     @LangKey(PREFIX + ".adopt_a_dog")
     public static boolean ADOPT_A_DOG = true;
 
+    @Name("Cats in Area Breeding Limit")
+    @Comment("This number is used to limit cat breeding; if more than this amount of cats are nearby, automatic breeding will be disabled.")
+    @LangKey(PREFIX + ".breeding_limit")
+    public static int BREEDING_LIMIT = 12;
+
     @Name("Pregnancy Timer")
     @Comment({
             "Number of minecraft ticks before a pregnant cat will give birth.",

@@ -50,8 +50,15 @@ public class ItemCertificate extends Item {
                     if (player.world.isRemote)
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.adopt_usage").getFormattedText() + " " + target.getName() + "!"));
                     this.playTameEffect(true, target.world, (EntityTameable)target);
+
+                    if (!player.capabilities.isCreativeMode) {
+                        stack.shrink(1);
+                        if (stack.getCount() <= 0)
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                    }
                 }
                 return true;
+
             } else if (stack.getMetadata() == 1) {
                 if (((EntityTameable) target).isOwner(player)) {
                     ((EntityTameable) target).setTamed(false);
@@ -59,6 +66,12 @@ public class ItemCertificate extends Item {
                     if (player.world.isRemote)
                         player.sendMessage(new TextComponentString(target.getName() + " " + new TextComponentTranslation("chat.info.release_usage").getFormattedText()));
                     this.playTameEffect(false, target.world, (EntityTameable)target);
+
+                    if (!player.capabilities.isCreativeMode) {
+                        stack.shrink(1);
+                        if (stack.getCount() <= 0)
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                    }
                 }
                 return true;
             }

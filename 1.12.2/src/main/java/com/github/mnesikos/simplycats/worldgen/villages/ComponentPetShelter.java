@@ -336,12 +336,14 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                     EntityCat kitten = new EntityCat(world);
                     kitten.setGrowingAge(-24000);
                     kitten.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
+                    kitten.setFixed((byte)1);
                     kitten.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitten)), null);
                     kitten.enablePersistence();
                     world.spawnEntity(kitten);
                 } else {
                     EntityCat cat = new EntityCat(world);
                     cat.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
+                    cat.setFixed((byte)1);
                     cat.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), null);
                     cat.enablePersistence();
                     world.spawnEntity(cat);

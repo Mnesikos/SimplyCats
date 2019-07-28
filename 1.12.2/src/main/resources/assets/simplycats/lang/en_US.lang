@@ -1,7 +1,7 @@
 < Item Names
 item.certificate.adopt.name=Adoption Certificate
 item.certificate.release.name=Release Certificate
-item.cat_mint.name=Catnip
+item.catnip.name=Catnip
 item.cat_litter.name=Kitty Litter
 item.cat_food.name=Cat Food
 item.pet_carrier.empty.name=Pet Carrier (Empty)
@@ -59,6 +59,7 @@ command.beckon.fail=Incorrect usage of command, see /beckon
 config.simplycats.title=Simply Cats Config
 config.simplycats.command_beckon=Enable Beckon Command
 config.simplycats.adopt_a_dog=Enable Adopt-a-Dog
+config.simplycats.breeding_limit=Cats in Area Breeding Limit
 config.simplycats.pregnancy_timer=Pregnancy Timer
 config.simplycats.pregnancy_timer.tooltip=Number of minecraft ticks before a pregnant cat will give birth. Default is 4 full minecraft days.
 config.simplycats.heat_timer=Heat Timer

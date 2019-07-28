@@ -24,7 +24,7 @@ minecraft {
     version = "${mc_version}-${forge_version}"
     runDir = "run"
     
-    replace "@VERSION", project.version
+    replace "@VERSION@", project.version
     replaceIn "Ref.java"
     
     // the mappings can be changed at any time, and must be in the following format.

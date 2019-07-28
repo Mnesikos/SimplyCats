@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "simplycats:item/cat_food"
+    "layer0": "simplycats:item/kibble_beef"
   }
 }

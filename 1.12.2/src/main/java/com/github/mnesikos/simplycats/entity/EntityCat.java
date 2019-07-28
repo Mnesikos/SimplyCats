@@ -140,9 +140,11 @@ public class EntityCat extends EntityTameable {
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("end", SimplyCatsConfig.heatCooldown); //sets out of heat for 16 minecraft days
-                    else //or if IS pregnant
+                        setTimeCycle("end", SimplyCatsConfig.heatCooldown); //sets out of heat for 16 (default) minecraft days
+                    else { //or if IS pregnant
                         setTimeCycle("pregnant", SimplyCatsConfig.prengancyTimer); //and heat time runs out, starts pregnancy timer for birth
+                        this.setBreedingStatus("inheat", false); //sets out of heat
+                    }
                 }
             if (!this.getBreedingStatus("inheat")) { //if not in heat
                 if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
@@ -337,7 +339,7 @@ public class EntityCat extends EntityTameable {
         }
     }
 
-    public void setFixed(byte fixed) {
+    public void setFixed(byte fixed) { // 1 = fixed, 0 = intact
         this.dataManager.set(FIXED, fixed);
     }
 
@@ -748,19 +750,15 @@ public class EntityCat extends EntityTameable {
                 if (stack.getItem() == Items.BLAZE_POWDER && player.isSneaking()) {
                     if (player.capabilities.isCreativeMode && !this.isFixed() && this.getMateTimer() > 0)
                         this.setMateTimer(600); // creative tool / testing purposes only, speeds up heat timer, pregnancy, & male cooldown
-                    else if (!this.isFixed() && this.getMateTimer() < 0 && this.getMateTimer() < -600)
+                    else if (!this.isFixed() && this.getSex() == 0 && this.getMateTimer() < 0 && this.getMateTimer() < -600) {
                         this.setMateTimer(-600); // heat inducer, used on females not in heat to quicken the process
-                    if (!player.capabilities.isCreativeMode)
-                        stack.shrink(1);
-                    if (stack.getCount() <= 0)
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                        if (!player.capabilities.isCreativeMode)
+                            stack.shrink(1);
+                        if (stack.getCount() <= 0)
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                    }
                     return true;
 
-                }
-
-                if (!this.world.isRemote && !this.isBreedingItem(stack) && !this.isFoodItem(stack)) {
-                    this.aiSit.setSitting(!this.isSitting());
-                    this.setAttackTarget(null);
                 }
             }
 
@@ -817,14 +815,16 @@ public class EntityCat extends EntityTameable {
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.kitten_count").getFormattedText() + " " + this.getKittens("total")));
                 }
                 return true;
+
+            } else if (!this.world.isRemote && !this.isBreedingItem(stack) && !this.isFoodItem(stack) && !player.isSneaking()) {
+                this.aiSit.setSitting(!this.isSitting());
+                this.setAttackTarget(null);
             }
         }
 
         if (!this.PURR && this.rand.nextInt(10) == 0) { // 1/10th chance an interaction will result in purrs
             this.PURR = true;
             this.PURR_TIMER = (this.rand.nextInt(61) + 30) * 20; // random range of 600 to 1800 ticks (0.5 to 1.5 IRL minutes)
-            if (this.world.isRemote)
-                System.out.println(this.PURR + "- Purr timer: " + PURR_TIMER);
         }
 
         return super.processInteract(player, hand);
