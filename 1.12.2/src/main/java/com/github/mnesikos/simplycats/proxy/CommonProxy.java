@@ -34,7 +34,7 @@ import java.lang.reflect.Field;
 public class CommonProxy implements IGuiHandler {
     public final CreativeTabs SIMPLYCATS = new CreativeTabs(Ref.MODID + ".tab") {
         @Override
-        public ItemStack getTabIconItem() {
+        public ItemStack createIcon() {
             return new ItemStack(ModItems.PET_CARRIER);
         }
     };

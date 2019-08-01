@@ -102,7 +102,7 @@ public class ItemCertificate extends Item {
         }
     }
 
-/*    @Override
+    @Override
     public String getTranslationKey(ItemStack stack) {
         int meta = stack.getMetadata();
         switch (meta) {
@@ -112,7 +112,7 @@ public class ItemCertificate extends Item {
             case 1:
                 return "item.certificate." + TYPES[1];
         }
-    }*/
+    }
 
     @Override @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
