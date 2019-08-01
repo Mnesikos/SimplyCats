@@ -39,7 +39,7 @@ import java.util.Map;
 public class ItemPetCarrier extends Item {
 
     public ItemPetCarrier() {
-        setTranslationKey("pet_carrier");
+        setUnlocalizedName("pet_carrier");
         setRegistryName(Ref.MODID + ":pet_carrier");
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
         this.setMaxStackSize(1);

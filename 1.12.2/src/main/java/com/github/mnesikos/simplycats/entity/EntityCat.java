@@ -40,7 +40,6 @@ public class EntityCat extends EntityTameable {
     private static final DataParameter<Integer> EYES;
     private static final DataParameter<Byte> SEX;
     private static final List<String> PHENO_LIST = new ArrayList<>(4);
-
     private static final DataParameter<Byte> FIXED;
     private static final DataParameter<Byte> IN_HEAT;
     private static final DataParameter<Byte> IS_PREGNANT;
@@ -428,7 +427,7 @@ public class EntityCat extends EntityTameable {
     }
 
     public void setFather(int i, NBTBase father) {
-        if (this.getEntityData().getCompoundTag("Father" + i) != null)
+        if (this.getEntityData().hasKey("Father" + i))
             this.getEntityData().setTag("Father" + i, father);
     }
 
