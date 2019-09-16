@@ -99,10 +99,6 @@ public class ModelCat extends ModelBase {
     public void render(Entity entity, float parSpeed, float parWalkSpeed, float par4, float parHeadAngleY, float parHeadAngleX, float par7) {
         this.setRotationAngles(parSpeed, parWalkSpeed, par4, parHeadAngleY, parHeadAngleX, par7, entity);
 
-        EntityCat cat = (EntityCat)entity;
-        int varType = cat.getType();
-        boolean varMav = varType == 3;
-
         if(this.isChild) {
             float var8 = 2.0F;
             GL11.glPushMatrix();
@@ -123,18 +119,6 @@ public class ModelCat extends ModelBase {
             this.body.render(par7);
             GL11.glPopMatrix();
 
-        } else if (varMav) {
-            this.head.render(par7);
-            GL11.glPushMatrix();
-            GL11.glTranslatef(this.body.offsetX, this.body.offsetY, this.body.offsetZ);
-            GL11.glTranslatef(this.body.rotationPointX * par7, this.body.rotationPointY * par7, this.body.rotationPointZ * par7);
-            GL11.glScaled(1.4D, 1.1D, 1.0D);
-            GL11.glTranslatef(-this.body.offsetX, -this.body.offsetY, -this.body.offsetZ);
-            GL11.glTranslatef(-this.body.rotationPointX * par7, -this.body.rotationPointY * par7, -this.body.rotationPointZ * par7);
-            this.body.render(par7);
-            GL11.glPopMatrix();
-            this.tail.render(par7);
-
         } else {
             GL11.glPushMatrix();
             GL11.glScaled(1.01D, 1.01D, 1.01D); // scaling head slightly larger for no texture clip hopefully
@@ -152,40 +136,46 @@ public class ModelCat extends ModelBase {
     }
 
     public void setLivingAnimations(EntityLivingBase entity, float parSpeed, float parWalkSpeed, float f4) {
-        EntityCat cat = (EntityCat)entity;
+        if (entity instanceof EntityCat) {
+            EntityCat cat = (EntityCat) entity;
 
-        if (cat.getIsAngry()) {
-            this.lear.rotateAngleX = (float) (67 / (180 /Math.PI)); this.lear.rotateAngleY = (float) (-145 / (180 / Math.PI));
-            this.rear.rotateAngleX = (float) (67 / (180 /Math.PI)); this.rear.rotateAngleY = (float) (145 / (180 / Math.PI));
-        } else {
-            this.lear.rotateAngleX = 0.0F; this.lear.rotateAngleY = 0.0F;
-            this.rear.rotateAngleX = 0.0F; this.rear.rotateAngleY = 0.0F;
-        }
-
-        if (cat.isSitting()) {
-            if(this.isChild) {
-                this.tail.rotationPointY = 23.5F;
+            if (cat.getIsAngry()) {
+                this.lear.rotateAngleX = (float) (67 / (180 / Math.PI));
+                this.lear.rotateAngleY = (float) (-145 / (180 / Math.PI));
+                this.rear.rotateAngleX = (float) (67 / (180 / Math.PI));
+                this.rear.rotateAngleY = (float) (145 / (180 / Math.PI));
             } else {
-                this.tail.rotationPointY = 21.5F;
+                this.lear.rotateAngleX = 0.0F;
+                this.lear.rotateAngleY = 0.0F;
+                this.rear.rotateAngleX = 0.0F;
+                this.rear.rotateAngleY = 0.0F;
             }
-            this.head.rotationPointZ = -4.5F;
-            this.body.rotateAngleX = (float) (-28 / (180 /Math.PI));
-            this.fleftleg.rotateAngleX = this.frightleg.rotateAngleX = (float) (28 / (180 /Math.PI));
-            this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = (float) (-62.5 / (180 /Math.PI));
-            this.bleftleg.rotateAngleX = this.brightleg.rotateAngleX = 0.0F;
-            this.tail.rotateAngleX = (float) (79 / (180 /Math.PI));
 
-        } else {
-            this.head.rotationPointZ = -6.5F;
-            this.body.rotateAngleX = 0.0F;
-            this.fleftlegpoint.rotateAngleX = this.frightlegpoint.rotateAngleX = 0.0F;
-            this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = 0.0F;
-            this.fleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
-            this.brightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
-            this.frightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
-            this.bleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
-            this.tail.rotationPointY = 15.0F;
-            this.tail.rotateAngleX = (float) (180 / (180 /Math.PI));
+            if (cat.isSitting()) {
+                if (this.isChild) {
+                    this.tail.rotationPointY = 23.5F;
+                } else {
+                    this.tail.rotationPointY = 21.5F;
+                }
+                this.head.rotationPointZ = -4.5F;
+                this.body.rotateAngleX = (float) (-28 / (180 / Math.PI));
+                this.fleftleg.rotateAngleX = this.frightleg.rotateAngleX = (float) (28 / (180 / Math.PI));
+                this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = (float) (-62.5 / (180 / Math.PI));
+                this.bleftleg.rotateAngleX = this.brightleg.rotateAngleX = 0.0F;
+                this.tail.rotateAngleX = (float) (79 / (180 / Math.PI));
+
+            } else {
+                this.head.rotationPointZ = -6.5F;
+                this.body.rotateAngleX = 0.0F;
+                this.fleftlegpoint.rotateAngleX = this.frightlegpoint.rotateAngleX = 0.0F;
+                this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = 0.0F;
+                this.fleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
+                this.brightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
+                this.frightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
+                this.bleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
+                this.tail.rotationPointY = 15.0F;
+                this.tail.rotateAngleX = (float) (180 / (180 / Math.PI));
+            }
         }
     }
 

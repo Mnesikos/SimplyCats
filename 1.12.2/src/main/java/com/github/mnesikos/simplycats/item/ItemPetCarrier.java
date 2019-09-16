@@ -118,7 +118,7 @@ public class ItemPetCarrier extends Item {
             tags.setTag("Rotation", this.newFloatNBTList(MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F));
             tags.setTag("Motion", this.newDoubleNBTList(0.0, 0.0, 0.0));
             tags.setFloat("FallDistance", 0.0f);
-            tags.setString("customName", tags.getString("customName")); // rewrites custom entity name since it gets deleted otherwise for some reason
+            //tags.setString("customName", tags.getString("customName")); // todo rewrites custom entity name since it gets deleted otherwise for some reason
 
             if (item.getItemDamage() == 1 || item.getItemDamage() == 2) {
                 Entity entity = EntityList.createEntityByIDFromName(new ResourceLocation(tags.getString("Entity")), world);

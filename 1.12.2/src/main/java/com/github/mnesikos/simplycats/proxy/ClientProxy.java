@@ -35,8 +35,6 @@ public class ClientProxy extends CommonProxy {
         for (Item item : ModItems.ITEMS)
             ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 
-        for (int i = 0; i < 4; i++)
-            ModelLoader.setCustomModelResourceLocation(ModItems.CAT_FOOD, i, new ModelResourceLocation(Ref.MODID + ":cat_food_" + i));
         for (int i = 0; i < 5; i++)
             ModelLoader.setCustomModelResourceLocation(ModItems.PET_CARRIER, i, new ModelResourceLocation(Ref.MODID + ":pet_carrier"));
 

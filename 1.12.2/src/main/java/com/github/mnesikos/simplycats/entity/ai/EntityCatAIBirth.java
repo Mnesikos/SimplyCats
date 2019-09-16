@@ -2,6 +2,7 @@ package com.github.mnesikos.simplycats.entity.ai;
 
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
+import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.util.EnumParticleTypes;
@@ -24,7 +25,7 @@ public class EntityCatAIBirth extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        if (this.MOTHER.getSex() == 1 || !this.MOTHER.getBreedingStatus("ispregnant") || this.MOTHER.getBreedingStatus("inheat"))
+        if (this.MOTHER.getSex().equals(Genetics.Sex.FEMALE.getName()) || !this.MOTHER.getBreedingStatus("ispregnant") || this.MOTHER.getBreedingStatus("inheat"))
             return false;
 
         else if (this.MOTHER.getMateTimer() >= 0)

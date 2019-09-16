@@ -2,19 +2,12 @@
 item.certificate.adopt.name=Adoption Certificate
 item.certificate.release.name=Release Certificate
 item.catnip.name=Catnip
-item.cat_litter.name=Kitty Litter
-item.cat_food.name=Cat Food
 item.pet_carrier.empty.name=Pet Carrier (Empty)
 item.pet_carrier.full.name=Pet Carrier (Full)
 
 < Item Tooltips
 tooltip.certificate.adopt.desc=Right click on an unowned pet to adopt them!
 tooltip.certificate.release.desc=Right click on your pet to release ownership.
-tooltip.cat_food.fishy.desc=Something's fishy...
-tooltip.cat_food.salmon.desc=Salmon heaven.
-tooltip.cat_food.chicken.desc=Chicken delight!
-tooltip.cat_food.beef.desc=For the red meat fanatics.
-tooltip.cat_food.null.desc=What flavor is this?
 tooltip.pet_carrier.empty=This carrier is empty.
 tooltip.pet_carrier.adopt_cat=Adopt a Cat!
 tooltip.pet_carrier.adopt_dog=Adopt a Dog!

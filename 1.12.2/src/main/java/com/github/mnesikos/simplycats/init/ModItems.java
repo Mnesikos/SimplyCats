@@ -2,7 +2,6 @@ package com.github.mnesikos.simplycats.init;
 
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.item.ItemBase;
-import com.github.mnesikos.simplycats.item.ItemCatFood;
 import com.github.mnesikos.simplycats.item.ItemCertificate;
 import com.github.mnesikos.simplycats.item.ItemPetCarrier;
 import net.minecraft.item.Item;
@@ -19,12 +18,6 @@ public class ModItems {
 
     @GameRegistry.ObjectHolder(Ref.MODID + ":certificate")
     public static Item CERTIFICATE = new ItemCertificate();
-
-    @GameRegistry.ObjectHolder(Ref.MODID + ":cat_food")
-    public static Item CAT_FOOD = new ItemCatFood();
-
-    /*@GameRegistry.ObjectHolder(Ref.MODID + ":cat_litter")
-    public static Item CAT_LITTER = new ItemBase("cat_litter");*/
 
     @GameRegistry.ObjectHolder(Ref.MODID + ":catnip")
     public static Item CAT_MINT = new ItemBase("catnip");

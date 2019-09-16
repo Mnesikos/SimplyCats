@@ -2,6 +2,7 @@ package com.github.mnesikos.simplycats.entity.ai;
 
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
+import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.world.World;
 
@@ -28,7 +29,7 @@ public class EntityCatAIMate extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        if (this.CAT.getSex() == 0)
+        if (this.CAT.getSex().equals(Genetics.Sex.FEMALE.getName()))
             return false;
 
         this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
@@ -46,8 +47,8 @@ public class EntityCatAIMate extends EntityAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        boolean maleCooldownCheck = this.CAT.getSex() == 1 && this.CAT.getMateTimer() == 0;
-        boolean femaleHeatCheck = this.TARGET.getSex() == 0 && this.TARGET.getBreedingStatus("inheat");
+        boolean maleCooldownCheck = this.CAT.getSex().equals(Genetics.Sex.MALE.getName()) && this.CAT.getMateTimer() == 0;
+        boolean femaleHeatCheck = this.TARGET.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.TARGET.getBreedingStatus("inheat");
         this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
         return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SimplyCatsConfig.BREEDING_LIMIT;
     }
@@ -81,7 +82,7 @@ public class EntityCatAIMate extends EntityAIBase {
         EntityCat entityCat = null;
         Iterator<?> iterator = list.iterator();
 
-        if (this.CAT.getSex() == 1)
+        if (this.CAT.getSex().equals(Genetics.Sex.MALE.getName()))
             while (iterator.hasNext()) {
                 EntityCat cat1 = (EntityCat) iterator.next();
 

@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.proxy;
 
+import com.github.mnesikos.simplycats.CatDataFixer;
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
@@ -14,9 +15,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
+import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -32,6 +36,8 @@ import java.lang.reflect.Field;
 
 @Mod.EventBusSubscriber
 public class CommonProxy implements IGuiHandler {
+    public static final int FIXER_VERSION = 2;
+
     public final CreativeTabs SIMPLYCATS = new CreativeTabs(Ref.MODID + ".tab") {
         @Override
         public ItemStack createIcon() {
@@ -49,6 +55,9 @@ public class CommonProxy implements IGuiHandler {
     public void init(FMLInitializationEvent e) {
         ModItems.registerOres();
         ModRecipes.init();
+
+        ModFixs fixer = FMLCommonHandler.instance().getDataFixer().init(Ref.MODID, FIXER_VERSION);
+        fixer.registerFix(FixTypes.ENTITY, new CatDataFixer());
 
         NetworkRegistry.INSTANCE.registerGuiHandler(SimplyCats.instance, SimplyCats.PROXY);
 
