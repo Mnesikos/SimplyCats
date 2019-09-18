@@ -134,41 +134,53 @@ public class CatDataFixer implements IFixableData {
         compound.setString("WhitePaws_2", "");
         compound.setString("WhitePaws_3", "");
 
-        if (compound.getString("White").contains(Genetics.White.DOMINANT.getAllele())) {
-            base = 6;
-            body = 1;
-            face = 0;
-            tail = 0;
-
-        } else if (compound.getString("White").equals(Genetics.White.NONE.getAllele() + "-" + Genetics.White.NONE.getAllele())) { //w-w
-            base = 0;
-            body = 0;
-            face = 0;
-            tail = 0;
-
-        } else if (compound.getString("White").equals(Genetics.White.SPOTTING.getAllele() + "-" + Genetics.White.SPOTTING.getAllele())) { //Ws-Ws
-            base = rand.nextInt(3) + 4; //4-6
-            if (base == 5) {
-                body = rand.nextInt(4) + 1;
-                face = rand.nextInt(6) + 1;
-                if (body > 1)
-                    tail = rand.nextInt(3) + 1;
-            }
-
-            if (base == 4) {
+        switch (compound.getString("White")) {
+            case "Wd-Wd": case "Wd-w": case "Wd-Ws":
+            case "w-Wd": case "Ws-Wd":
+                base = 6;
                 body = 1;
-                face = rand.nextInt(5) + 1;
-            }
+                face = 0;
+                tail = 0;
+                break;
 
-        } else { //Ws-w && w-Ws
-            base = rand.nextInt(4) + 1; //1-4
-            body = 1;
-            if (base == 2 || base == 3)
-                this.setWhitePaws(compound, base);
+            case "w-w":
+                base = 0;
+                body = 0;
+                face = 0;
+                tail = 0;
+                break;
 
-            if (base == 3 || base == 4) {
-                face = rand.nextInt(5) + 1;
-            }
+            case "Ws-Ws":
+                base = rand.nextInt(2) + 4; //4-5
+                if (base == 5) {
+                    body = rand.nextInt(4) + 1;
+                    face = rand.nextInt(6) + 1;
+                    if (body > 1)
+                        tail = rand.nextInt(3) + 1;
+                }
+                else if (base == 4) {
+                    body = 1;
+                    face = rand.nextInt(5) + 1;
+                }
+                if (rand.nextInt(10) == 0) { //10% chance for solid white
+                    base = 6;
+                    body = 1;
+                    face = 0;
+                    tail = 0;
+                }
+                break;
+
+            case "Ws-w": case "w-Ws":
+                base = rand.nextInt(3) + 1; //1-3
+                body = 1;
+                if (base == 2 || base == 3)
+                    this.setWhitePaws(compound, base);
+                if (base == 3)
+                    face = rand.nextInt(5) + 1;
+                break;
+
+            default:
+                throw new IllegalArgumentException("Error selecting white markings; " + compound.getString("White"));
         }
 
         compound.setString("White_0", (body == 0 ? "" : "white_" + base + "_body" + body));
