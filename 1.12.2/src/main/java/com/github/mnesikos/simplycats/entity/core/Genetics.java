@@ -69,10 +69,10 @@ public class Genetics {
         public static String init() {
             Random rand = new Random();
             float chance = rand.nextFloat();
-            if (chance <= 0.50f)
-                return SHORT.getAllele(); // 50% chance
+            if (chance <= 0.75f)
+                return SHORT.getAllele(); // 75% chance
             else
-                return LONG.getAllele(); // 50% chance
+                return LONG.getAllele(); // 25% chance
         }
 
         public static String getPhenotype(String furLength) {
@@ -142,10 +142,10 @@ public class Genetics {
             Random rand = new Random();
             float chance1 = rand.nextFloat();
             String allele1;
-            if (chance1 <= 0.50f)
-                allele1 = NOT_RED.getAllele(); // 50% chance
+            if (chance1 <= 0.75f)
+                allele1 = NOT_RED.getAllele(); // 75% chance
             else
-                allele1 = RED.getAllele(); // 50% chance
+                allele1 = RED.getAllele(); // 25% chance
             float chance2 = rand.nextFloat();
             String allele2;
             if (allele1.equals(NOT_RED.getAllele())) {
@@ -193,10 +193,10 @@ public class Genetics {
         public static String init() {
             Random rand = new Random();
             float chance = rand.nextFloat();
-            if (chance <= 0.75f)
-                return NON_DILUTE.getAllele(); // 75% chance
+            if (chance <= 0.60f)
+                return NON_DILUTE.getAllele(); // 60% chance
             else
-                return DILUTE.getAllele(); // 25% chance
+                return DILUTE.getAllele(); // 40% chance
         }
 
         public static String getPhenotype(String dilution) {
@@ -257,10 +257,10 @@ public class Genetics {
         public static String init() {
             Random rand = new Random();
             float chance = rand.nextFloat();
-            if (chance <= 0.50f)
-                return SOLID.getAllele(); // 50% chance
+            if (chance <= 0.80f)
+                return SOLID.getAllele(); // 80% chance
             else
-                return TABBY.getAllele(); // 50% chance
+                return TABBY.getAllele(); // 20% chance
         }
 
         public static String getPhenotype(String agouti) {
@@ -446,12 +446,12 @@ public class Genetics {
         public static String init() {
             Random rand = new Random();
             float chance = rand.nextFloat();
-            if (chance <= 0.40F)
-                return NONE.getAllele(); // 40% chance
-            else if (chance > 0.40F && chance <= 0.90F)
-                return SPOTTING.getAllele(); // 50% chance
+            if (chance <= 0.49F)
+                return NONE.getAllele(); // 49% chance
+            else if (chance > 0.49F && chance <= 0.98F)
+                return SPOTTING.getAllele(); // 49% chance
             else
-                return DOMINANT.getAllele(); // 10% chance
+                return DOMINANT.getAllele(); // 2% chance
         }
 
         public static String getPhenotype(String white) {

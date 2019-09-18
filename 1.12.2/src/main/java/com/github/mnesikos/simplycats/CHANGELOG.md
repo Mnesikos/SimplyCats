@@ -18,10 +18,12 @@ and this project adheres to
 ### Added
 - Tons of new cat textures!!
 ### Changed
+- Updated forge version
 - Entire genetics system has been reworked!
 ### Removed
 - Cat kibble items (they're bad for your cats anyways)
 ### Fixed
+- Good riddance breeding crash on newer versions of forge (thanks to SoggyMustache) 
 - Village Shelter structure edited a tad
 
 

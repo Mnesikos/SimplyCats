@@ -3,6 +3,8 @@ package com.github.mnesikos.simplycats.entity;
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -13,10 +15,12 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +37,6 @@ public abstract class AbstractCat extends EntityTameable {
     private static final DataParameter<String> TICKED;
     private static final DataParameter<String> COLORPOINT;
     private static final DataParameter<String> WHITE;
-    private static final List<DataParameter<String>> GENES = new ArrayList<>(12);
     private static final DataParameter<String> WHITE_0;
     private static final DataParameter<String> WHITE_1;
     private static final DataParameter<String> WHITE_2;
@@ -49,18 +52,6 @@ public abstract class AbstractCat extends EntityTameable {
 
     public AbstractCat(World world) {
         super(world);
-        GENES.add(EYE_COLOR);
-        GENES.add(FUR_LENGTH);
-        GENES.add(EUMELANIN);
-        GENES.add(PHAEOMELANIN);
-        GENES.add(DILUTION);
-        GENES.add(DILUTE_MOD);
-        GENES.add(AGOUTI);
-        GENES.add(TABBY);
-        GENES.add(SPOTTED);
-        GENES.add(TICKED);
-        GENES.add(COLORPOINT);
-        GENES.add(WHITE);
         setPhenotype();
     }
 
@@ -114,7 +105,7 @@ public abstract class AbstractCat extends EntityTameable {
         return color;
     }
 
-    private void selectWhiteMarkings() {
+    void selectWhiteMarkings() {
         int base;
         int body = 0;
         int face = 0;
@@ -125,41 +116,53 @@ public abstract class AbstractCat extends EntityTameable {
             this.setWhitePawTextures(j, "");
         }
 
-        if (getPhenotype(WHITE).equalsIgnoreCase(White.DOMINANT.toString())) {
-            base = 6;
-            body = 1;
-            face = 0;
-            tail = 0;
-
-        } else if (getPhenotype(WHITE).equalsIgnoreCase(White.NONE.toString())) {
-            base = 0;
-            body = 0;
-            face = 0;
-            tail = 0;
-
-        } else if (getGenotype(WHITE).equals(White.SPOTTING.getAllele() + "-" + White.SPOTTING.getAllele())) { //Ws-Ws
-            base = rand.nextInt(3) + 4; //4-6
-            if (base == 5) {
-                body = rand.nextInt(4) + 1;
-                face = rand.nextInt(6) + 1;
-                if (body > 1)
-                    tail = rand.nextInt(3) + 1;
-            }
-
-            if (base == 4) {
+        switch (this.getGenotype(WHITE)) {
+            case "Wd-Wd": case "Wd-w": case "Wd-Ws":
+            case "w-Wd": case "Ws-Wd":
+                base = 6;
                 body = 1;
-                face = rand.nextInt(5) + 1;
-            }
+                face = 0;
+                tail = 0;
+                break;
 
-        } else { //Ws-w && w-Ws
-            base = rand.nextInt(4) + 1; //1-4
-            body = 1;
-            if (base == 2 || base == 3)
-                this.selectWhitePaws(base);
+            case "w-w":
+                base = 0;
+                body = 0;
+                face = 0;
+                tail = 0;
+                break;
 
-            if (base == 3 || base == 4) {
-                face = rand.nextInt(5) + 1;
-            }
+            case "Ws-Ws":
+                base = rand.nextInt(2) + 4; //4-5
+                if (base == 5) {
+                    body = rand.nextInt(4) + 1;
+                    face = rand.nextInt(6) + 1;
+                    if (body > 1)
+                        tail = rand.nextInt(3) + 1;
+                }
+                else if (base == 4) {
+                    body = 1;
+                    face = rand.nextInt(5) + 1;
+                }
+                if (rand.nextInt(10) == 0) { //10% chance for solid white
+                    base = 6;
+                    body = 1;
+                    face = 0;
+                    tail = 0;
+                }
+                break;
+
+            case "Ws-w": case "w-Ws":
+                base = rand.nextInt(3) + 1; //1-3
+                body = 1;
+                if (base == 2 || base == 3)
+                    this.selectWhitePaws(base);
+                if (base == 3)
+                    face = rand.nextInt(5) + 1;
+                break;
+
+            default:
+                throw new IllegalArgumentException("Error selecting white markings; " + this.getGenotype(WHITE));
         }
 
         this.whiteTexturesArray[0] = body == 0 ? "" : "white_" + base + "_body" + body;
@@ -177,8 +180,6 @@ public abstract class AbstractCat extends EntityTameable {
             this.whitePawTexturesArray[0] = "white_" + base + "_paw1";
             this.setWhitePawTextures(0, whitePawTexturesArray[0]);
         }
-        /*else
-            this.whitePawTexturesArray[0] = "";*/
 
         if (rand.nextInt(4) <= 2) {
             this.whitePawTexturesArray[1] = "white_" + base + "_paw2";
@@ -259,7 +260,7 @@ public abstract class AbstractCat extends EntityTameable {
         return this.dataManager.get(parameter);
     }
 
-    private void setGenotype(DataParameter<String> parameter, String value) {
+    void setGenotype(DataParameter<String> parameter, String value) {
         this.dataManager.set(parameter, value);
     }
 
@@ -397,9 +398,10 @@ public abstract class AbstractCat extends EntityTameable {
         this.catTexturesArray[11] = Ref.MODID + ":textures/entity/cat/eyes/" + this.getPhenotype(EYE_COLOR) + ".png";
         this.texturePrefix = "cat/" + solid + tabby + tortie + colorpoint +
                 this.getWhiteTextures(0) + this.getWhiteTextures(1) + this.getWhiteTextures(2) +
-                this.getWhitePawTextures(0) + this.getWhitePawTextures(1) +this.getWhitePawTextures(2) +this.getWhitePawTextures(3) +
+                this.getWhitePawTextures(0) + this.getWhitePawTextures(1) +
+                this.getWhitePawTextures(2) + this.getWhitePawTextures(3) +
                 getPhenotype(EYE_COLOR);
-        //System.out.println(this.texturePrefix);
+        // todo System.out.println(this.texturePrefix);
     }
 
     @SideOnly(Side.CLIENT)
@@ -446,12 +448,110 @@ public abstract class AbstractCat extends EntityTameable {
                     player.sendMessage(new TextComponentString(this.getGenotype(TICKED) + ": " + getPhenotype(TICKED)));
                     player.sendMessage(new TextComponentString(this.getGenotype(COLORPOINT) + ": " + getPhenotype(COLORPOINT)));
                     player.sendMessage(new TextComponentString(this.getGenotype(WHITE) + ": " + getPhenotype(WHITE)));
+                    player.sendMessage(new TextComponentString(this.getWhiteTextures(0) + ", " + this.getWhiteTextures(1)
+                            + ", " + this.getWhiteTextures(2)));
+                    player.sendMessage(new TextComponentString(this.getWhitePawTextures(0) + ", " + this.getWhitePawTextures(1)
+                            + ", " + this.getWhitePawTextures(2) + ", " + this.getWhitePawTextures(3)));
                 }
                 return true;
             }
         }
 
         return super.processInteract(player, hand);
+    }
+
+    @Nullable
+    @Override
+    public EntityAgeable createChild(EntityAgeable parFather) {
+        EntityDataManager father = parFather.getDataManager();
+        EntityDataManager mother = this.getDataManager();
+        EntityCat child = new EntityCat(this.world);
+
+        String[] matFur = mother.get(FUR_LENGTH).split("-");
+        String[] patFur = father.get(FUR_LENGTH).split("-");
+        String fur = matFur[rand.nextInt(2)] + "-" + patFur[rand.nextInt(2)];
+
+        String[] matEum = mother.get(EUMELANIN).split("-");
+        String[] patEum = father.get(EUMELANIN).split("-");
+        String eum = matEum[rand.nextInt(2)] + "-" + patEum[rand.nextInt(2)];
+
+        String[] matPhae = mother.get(PHAEOMELANIN).split("-");
+        String[] patPhae = father.get(PHAEOMELANIN).split("-");
+        String phae = matPhae[rand.nextInt(2)] + "-" + patPhae[rand.nextInt(2)];
+
+        String[] matDil = mother.get(DILUTION).split("-");
+        String[] patDil = father.get(DILUTION).split("-");
+        String dil = matDil[rand.nextInt(2)] + "-" + patDil[rand.nextInt(2)];
+
+        String[] matDilm = mother.get(DILUTE_MOD).split("-");
+        String[] patDilm = father.get(DILUTE_MOD).split("-");
+        String dilm = matDilm[rand.nextInt(2)] + "-" + patDilm[rand.nextInt(2)];
+
+        String[] matAgo = mother.get(AGOUTI).split("-");
+        String[] patAgo = father.get(AGOUTI).split("-");
+        String ago = matAgo[rand.nextInt(2)] + "-" + patAgo[rand.nextInt(2)];
+
+        String[] matTab = mother.get(TABBY).split("-");
+        String[] patTab = father.get(TABBY).split("-");
+        String tab = matTab[rand.nextInt(2)] + "-" + patTab[rand.nextInt(2)];
+
+        String[] matSpot = mother.get(SPOTTED).split("-");
+        String[] patSpot = father.get(SPOTTED).split("-");
+        String spot = matSpot[rand.nextInt(2)] + "-" + patSpot[rand.nextInt(2)];
+
+        String[] matTick = mother.get(TICKED).split("-");
+        String[] patTick = father.get(TICKED).split("-");
+        String tick = matTick[rand.nextInt(2)] + "-" + patTick[rand.nextInt(2)];
+
+        String[] matPoint = mother.get(COLORPOINT).split("-");
+        String[] patPoint = father.get(COLORPOINT).split("-");
+        String point = matPoint[rand.nextInt(2)] + "-" + patPoint[rand.nextInt(2)];
+
+        String[] matWhite = mother.get(WHITE).split("-");
+        String[] patWhite = father.get(WHITE).split("-");
+        String white = matWhite[rand.nextInt(2)] + "-" + patWhite[rand.nextInt(2)];
+
+        child.setGenotype(FUR_LENGTH, fur);
+        child.setGenotype(EUMELANIN, eum);
+        child.setGenotype(PHAEOMELANIN, phae);
+        child.setGenotype(DILUTION, dil);
+        child.setGenotype(DILUTE_MOD, dilm);
+        child.setGenotype(AGOUTI, ago);
+        child.setGenotype(TABBY, tab);
+        child.setGenotype(SPOTTED, spot);
+        child.setGenotype(TICKED, tick);
+        child.setGenotype(COLORPOINT, point);
+        child.setGenotype(WHITE, white);
+        child.selectWhiteMarkings();
+
+        int eyesMin;
+        int eyesMax;
+        int matEye = EyeColor.valueOf(mother.get(EYE_COLOR).toUpperCase()).ordinal();
+        int patEye = EyeColor.valueOf(father.get(EYE_COLOR).toUpperCase()).ordinal();
+        if (matEye > patEye) {
+            eyesMin = patEye - 1;
+            eyesMax = matEye;
+        } else {
+            eyesMin = matEye - 1;
+            eyesMax = patEye;
+        }
+        eyesMin = eyesMin < 0 ? 0 : eyesMin;
+        if (white.contains(White.DOMINANT.getAllele()))
+            eyesMax = 4;
+        else
+            eyesMax = eyesMax >= 4 ? (eyesMin < 3 ? eyesMin+1 : 3) : eyesMax;
+        int eyes = rand.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
+        String eye = EyeColor.init(matEye == 4 && patEye == 4 ? (eyesMax == 4 ? 4 : rand.nextInt(4)) : eyes);
+        if (point.contentEquals(Colorpoint.COLORPOINT.getAllele() + "-" + Colorpoint.COLORPOINT.getAllele()))
+            eye = EyeColor.init(4);
+
+        child.setGenotype(EYE_COLOR, eye);
+
+        child.setTamed(this.isTamed());
+        if (this.isTamed())
+            child.setOwnerId(this.getOwnerId());
+
+        return child;
     }
 
     static {

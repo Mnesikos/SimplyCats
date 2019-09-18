@@ -25,8 +25,9 @@ public class EntityCatAIBirth extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        if (this.MOTHER.getSex().equals(Genetics.Sex.FEMALE.getName()) || !this.MOTHER.getBreedingStatus("ispregnant") || this.MOTHER.getBreedingStatus("inheat"))
+        if (!this.MOTHER.getSex().equals(Genetics.Sex.FEMALE.getName()) || !this.MOTHER.getBreedingStatus("ispregnant") || this.MOTHER.getBreedingStatus("inheat")) {
             return false;
+        }
 
         else if (this.MOTHER.getMateTimer() >= 0)
             return false;
@@ -51,7 +52,7 @@ public class EntityCatAIBirth extends EntityAIBase {
         /*++KITTEN_DELAY;
         if (KITTEN_DELAY >= 60)*/
 
-        for (int i = 0; i < this.MOTHER.getKittens("total"); i++) {
+        for (int i = 0; i < this.MOTHER.getKittens(); i++) {
             this.FATHER = new EntityCat(this.WORLD); // create the father entity for kitten referencing
             FATHER.readFromNBT(this.MOTHER.getFather(i)); // set the saved father nbt data to new FATHER entity
 

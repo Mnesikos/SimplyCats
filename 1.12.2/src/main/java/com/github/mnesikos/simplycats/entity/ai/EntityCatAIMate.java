@@ -97,16 +97,16 @@ public class EntityCatAIMate extends EntityAIBase {
 
     private void startPregnancy() {
         int litterSize;
-        if (this.TARGET.getKittens("total") <= 0) {
+        if (this.TARGET.getKittens() <= 0) {
             litterSize = this.WORLD.rand.nextInt(6) + 1; // at least 1 kitten, max of 6
         } else {
-            litterSize = this.WORLD.rand.nextInt(6 - this.TARGET.getKittens("total")) + 1; // max of 6, minus already accrued kittens
+            litterSize = this.WORLD.rand.nextInt(6 - this.TARGET.getKittens()) + 1; // max of 6, minus already accrued kittens
         }
         this.TARGET.setBreedingStatus("ispregnant", true);
         this.TARGET.setKittens(litterSize);
-        this.TARGET.addFather(this.CAT); // save father nbt data to mother cat
+        this.TARGET.addFather(this.CAT, this.TARGET.getKittens()); // save father nbt data to mother cat for each kitten added to litterSize
 
-        if (litterSize == 6 || this.TARGET.getKittens("total") == 6 || this.WORLD.rand.nextInt(4) == 0) { // full litter OR 25% chance ends heat
+        if (litterSize == 6 || this.TARGET.getKittens() == 6 || this.WORLD.rand.nextInt(4) == 0) { // full litter OR 25% chance ends heat
             this.TARGET.setBreedingStatus("inheat", false);
             this.TARGET.setTimeCycle("pregnancy", SimplyCatsConfig.prengancyTimer); // starts pregnancy timer
         }
