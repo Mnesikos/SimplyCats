@@ -6,18 +6,10 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
-## [Unreleased]
-### Added
-### Changed
-### Deprecated
-### Removed
-### Fixed
-### Security
-
-## [1.12.2-0.0.2.0] - YYYY/MM/DD
+## [1.12.2-0.0.2.0] - 2019/09/21
 ### Added
 - Tons of new cat textures!!
-- Treat Bag item! Shift + use this on a cat to set/unset their home point! Cats will also follow you...
+- Treat Bag item! Shift + use this on a cat to set/unset their home point! Cats will also follow you... (Thank you for the texture, Fisk!!)
 ### Changed
 - Updated forge version
 - Entire genetics system has been reworked!
@@ -54,3 +46,11 @@ and this project adheres to
 - Added food items compatible with ore dictionary - only use atm is for healing.
 - Chance of purring sounds with each interaction.
 - Two certificate items for adoption and releasing, thank you so much to Captain for the textures!!
+
+## [Unreleased] - YYYY/MM/DD
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
