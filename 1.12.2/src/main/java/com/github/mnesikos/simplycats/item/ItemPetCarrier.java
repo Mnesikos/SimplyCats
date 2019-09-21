@@ -4,7 +4,6 @@ import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -26,6 +25,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -213,7 +213,7 @@ public class ItemPetCarrier extends Item {
             unlocalizedName += ".empty.name";
         else
             unlocalizedName += ".full.name";
-        return I18n.format(unlocalizedName).trim();
+        return I18n.translateToLocal(unlocalizedName).trim();
     }
 
     @Override @SideOnly(Side.CLIENT)
@@ -231,15 +231,15 @@ public class ItemPetCarrier extends Item {
     public void addInformation(ItemStack item, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         NBTTagCompound nbt = item.getTagCompound();
         if (nbt != null) {
-            String cat = I18n.format("tooltip.pet_carrier.adopt_cat");
-            String dog = I18n.format("tooltip.pet_carrier.adopt_dog");
+            String cat = I18n.translateToLocalFormatted("tooltip.pet_carrier.adopt_cat");
+            String dog = I18n.translateToLocalFormatted("tooltip.pet_carrier.adopt_dog");
             if (item.getItemDamage() == 3)
                 tooltip.add(TextFormatting.ITALIC + cat);
             else if (item.getItemDamage() == 4)
                 tooltip.add(TextFormatting.ITALIC + dog);
 
             else if (item.getItemDamage() != 0) {
-                String species = I18n.format("entity." + nbt.getString("id") + ".name");
+                String species = I18n.translateToLocalFormatted("entity." + nbt.getString("id") + ".name");
                 /*String specificCat = I18n.format("cat.type." + nbt.getInteger("Type") + ".name");
                 String catSex = I18n.format("cat.sex." + nbt.getByte("Sex") + "b.name");
 
@@ -258,14 +258,14 @@ public class ItemPetCarrier extends Item {
                 } else
                     catPheno = base;*/
 
-                String owner = I18n.format("tooltip.pet_carrier.owner");
+                String owner = I18n.translateToLocalFormatted("tooltip.pet_carrier.owner");
                 if (nbt.hasKey("CustomName"))
                     tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("CustomName") + "\"");
                 tooltip.add(TextFormatting.ITALIC + (item.getItemDamage() == 2 || item.getItemDamage() == 1 ? species : null));
                 tooltip.add(owner + " " + nbt.getString("ownerName"));
             }
         } else {
-            String empty = I18n.format("tooltip.pet_carrier.empty");
+            String empty = I18n.translateToLocalFormatted("tooltip.pet_carrier.empty");
             tooltip.add(TextFormatting.AQUA + empty);
         }
     }
