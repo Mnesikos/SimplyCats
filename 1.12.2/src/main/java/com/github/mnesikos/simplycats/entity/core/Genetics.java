@@ -210,7 +210,7 @@ public class Genetics {
 
     public enum DiluteMod {
         NORMAL("dm"),
-        CARMELIZED("Dm");
+        CARAMELIZED("Dm");
 
         private String allele;
 
@@ -228,13 +228,13 @@ public class Genetics {
             if (chance <= 0.96f)
                 return NORMAL.getAllele(); // 96% chance
             else
-                return CARMELIZED.getAllele(); // 4% chance
+                return CARAMELIZED.getAllele(); // 4% chance
         }
 
         public static String getPhenotype(String diluteMod) {
             String[] value = diluteMod.split("-");
             if (value[0].equals("Dm") || value[1].equals("Dm"))
-                return CARMELIZED.toString().toLowerCase();
+                return CARAMELIZED.toString().toLowerCase();
             else
                 return NORMAL.toString().toLowerCase();
         }
