@@ -45,6 +45,7 @@ public class ItemCertificate extends Item {
                     return false;
                 } else {
                     ((EntityTameable) target).setTamed(true);
+                    ((EntityTameable) target).getNavigator().clearPath();
                     ((EntityTameable) target).setOwnerId(player.getUniqueID());
                     target.setHealth(target.getMaxHealth());
                     if (player.world.isRemote)
@@ -62,6 +63,7 @@ public class ItemCertificate extends Item {
             } else if (stack.getMetadata() == 1) {
                 if (((EntityTameable) target).isOwner(player)) {
                     ((EntityTameable) target).setTamed(false);
+                    ((EntityTameable) target).getNavigator().clearPath();
                     ((EntityTameable) target).setOwnerId(null);
                     if (player.world.isRemote)
                         player.sendMessage(new TextComponentString(target.getName() + " " + new TextComponentTranslation("chat.info.release_usage").getFormattedText()));

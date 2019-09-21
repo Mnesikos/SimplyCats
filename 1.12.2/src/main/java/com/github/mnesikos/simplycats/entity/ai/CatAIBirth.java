@@ -10,14 +10,14 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class EntityCatAIBirth extends EntityAIBase {
+public class CatAIBirth extends EntityAIBase {
 
     private final EntityCat MOTHER;
     private EntityCat FATHER;
     World WORLD;
     //int KITTEN_DELAY; // might include later, thinking one kitten spawns at a time
 
-    public EntityCatAIBirth(EntityCat entityCat) {
+    public CatAIBirth(EntityCat entityCat) {
         this.MOTHER = entityCat;
         this.WORLD = entityCat.world;
         this.setMutexBits(8);
@@ -53,8 +53,8 @@ public class EntityCatAIBirth extends EntityAIBase {
         if (KITTEN_DELAY >= 60)*/
 
         for (int i = 0; i < this.MOTHER.getKittens(); i++) {
-            this.FATHER = new EntityCat(this.WORLD); // create the father entity for kitten referencing
-            FATHER.readFromNBT(this.MOTHER.getFather(i)); // set the saved father nbt data to new FATHER entity
+            this.FATHER = new EntityCat(this.WORLD); // create the father cat for kitten referencing
+            FATHER.readFromNBT(this.MOTHER.getFather(i)); // set the saved father nbt data to new FATHER cat
 
             this.spawnBaby(this.FATHER);
             this.MOTHER.getEntityData().removeTag("Father" + i); // deletes just used father data

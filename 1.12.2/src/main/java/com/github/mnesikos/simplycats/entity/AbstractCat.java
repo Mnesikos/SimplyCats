@@ -1,10 +1,11 @@
 package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
+import com.google.common.base.Optional;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -14,15 +15,13 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class AbstractCat extends EntityTameable {
     private static final DataParameter<String> EYE_COLOR;
@@ -49,6 +48,8 @@ public abstract class AbstractCat extends EntityTameable {
 
     private String texturePrefix;
     private final String[] catTexturesArray = new String[12];
+
+    private static final DataParameter<Optional<BlockPos>> HOME_POSITION;
 
     public AbstractCat(World world) {
         super(world);
@@ -77,6 +78,8 @@ public abstract class AbstractCat extends EntityTameable {
         this.dataManager.register(WHITE_PAWS_1, "");
         this.dataManager.register(WHITE_PAWS_2, "");
         this.dataManager.register(WHITE_PAWS_3, "");
+
+        this.dataManager.register(HOME_POSITION, Optional.absent());
     }
 
     private void setPhenotype() {
@@ -268,6 +271,22 @@ public abstract class AbstractCat extends EntityTameable {
         return this.dataManager.get(PHAEOMELANIN).contains(Phaeomelanin.MALE.getAllele()) ? Sex.MALE.getName() : Sex.FEMALE.getName();
     }
 
+    public boolean hasHomePos() {
+        return this.dataManager.get(HOME_POSITION).isPresent();
+    }
+
+    public BlockPos getHomePos() {
+        return this.dataManager.get(HOME_POSITION).or(this.getPosition());
+    }
+
+    public void setHomePos(BlockPos position) {
+        this.dataManager.set(HOME_POSITION, Optional.of(position));
+    }
+
+    public void resetHomePos() {
+        this.dataManager.set(HOME_POSITION, Optional.absent());
+    }
+
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
@@ -287,6 +306,11 @@ public abstract class AbstractCat extends EntityTameable {
             compound.setString("White_" + i, this.getWhiteTextures(i));
         for (int i = 0; i <= 3; i++)
             compound.setString("WhitePaws_" + i, this.getWhitePawTextures(i));
+        if (this.hasHomePos()) {
+            compound.setInteger("HomePosX", this.getHomePos().getX());
+            compound.setInteger("HomePosY", this.getHomePos().getY());
+            compound.setInteger("HomePosZ", this.getHomePos().getZ());
+        }
     }
 
     @Override
@@ -308,6 +332,8 @@ public abstract class AbstractCat extends EntityTameable {
             this.setWhiteTextures(i, compound.getString("White_" + i));
         for (int i = 0; i <= 3; i++)
             this.setWhitePawTextures(i, compound.getString("WhitePaws_" + i));
+        if (compound.hasKey("HomePosX"))
+            this.setHomePos(new BlockPos(compound.getInteger("HomePosX"), compound.getInteger("HomePosY"), compound.getInteger("HomePosZ")));
     }
 
     private String getPhenotype(DataParameter<String> dataParameter) {
@@ -335,6 +361,13 @@ public abstract class AbstractCat extends EntityTameable {
             return Genetics.White.getPhenotype(this.getGenotype(dataParameter));
         else // EYES
             return this.getGenotype(EYE_COLOR);
+    }
+
+    public boolean canWander() {
+        if (this.hasHomePos())
+            return this.getDistanceSq(this.getHomePos()) < SimplyCatsConfig.WANDER_AREA_LIMIT;
+        else
+            return true;
     }
 
     private void resetTexturePrefix() {
@@ -574,5 +607,7 @@ public abstract class AbstractCat extends EntityTameable {
         WHITE_PAWS_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
         WHITE_PAWS_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
         WHITE_PAWS_3 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+
+        HOME_POSITION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.OPTIONAL_BLOCK_POS);
     }
 }

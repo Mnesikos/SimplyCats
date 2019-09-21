@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import java.util.Iterator;
 import java.util.List;
 
-public class EntityCatAIMate extends EntityAIBase {
+public class CatAIMate extends EntityAIBase {
 
     private final EntityCat CAT;
     private EntityCat TARGET;
@@ -20,7 +20,7 @@ public class EntityCatAIMate extends EntityAIBase {
     private List<EntityCat> LIST;
     private double NEARBY_SIZE_CHECK = 16.0D;
 
-    public EntityCatAIMate(EntityCat entityCat, double d) {
+    public CatAIMate(EntityCat entityCat, double d) {
         this.CAT = entityCat;
         this.WORLD = entityCat.world;
         this.MOVE_SPEED = d;

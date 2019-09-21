@@ -19,6 +19,9 @@ public class ModItems {
     @GameRegistry.ObjectHolder(Ref.MODID + ":certificate")
     public static Item CERTIFICATE = new ItemCertificate();
 
+    @GameRegistry.ObjectHolder(Ref.MODID + ":treat_bag")
+    public static Item TREAT_BAG = new ItemBase("treat_bag");
+
     @GameRegistry.ObjectHolder(Ref.MODID + ":catnip")
     public static Item CAT_MINT = new ItemBase("catnip");
 

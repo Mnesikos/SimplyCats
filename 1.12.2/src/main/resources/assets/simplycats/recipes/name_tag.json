@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    "S  ",
+    " I ",
+    "  I"
+  ],
+  "key": {
+    "I": [
+      {"type": "forge:ore_dict",
+        "ore": "ingotIron"},
+      {"type": "forge:ore_dict",
+        "ore": "ingotGold"}
+    ],
+    "S": [
+      {"item": "minecraft:string"}
+    ]
+  },
+  "result": {
+    "item": "minecraft:name_tag"
+  }
+}

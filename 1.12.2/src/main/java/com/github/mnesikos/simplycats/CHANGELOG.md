@@ -17,6 +17,7 @@ and this project adheres to
 ## [1.12.2-0.0.2.0] - YYYY/MM/DD
 ### Added
 - Tons of new cat textures!!
+- Treat Bag item! Shift + use this on a cat to set/unset their home point! Cats will also follow you...
 ### Changed
 - Updated forge version
 - Entire genetics system has been reworked!

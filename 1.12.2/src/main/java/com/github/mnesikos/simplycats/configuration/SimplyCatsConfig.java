@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class SimplyCatsConfig {
     private static final String PREFIX = "config." + Ref.MODID;
 
-    @Name("Enable Beckon Command")
+    @Name("Beckon Command")
     @Comment({
             "ONLY enable this if you know what you're doing.",
             "This command can and will corrupt your world if used incorrectly."
@@ -21,15 +21,25 @@ public class SimplyCatsConfig {
     @LangKey(PREFIX + ".command_beckon")
     public static boolean COMMAND_BECKON = false;
 
-    @Name("Enable Adopt-a-Dog")
+    /*@Name("Name Tag Recipe")
+    @Comment("You can easily disable the name tag recipe added by this mod by setting this value to false.")
+    @LangKey(PREFIX + ".name_tag_recipe")
+    public static boolean NAME_TAG_RECIPE = true;*/
+
+    @Name("Adopt-a-Dog")
     @Comment("Disabling this will remove the villager trade to get a one-time-use pet carrier containing a dog.")
     @LangKey(PREFIX + ".adopt_a_dog")
     public static boolean ADOPT_A_DOG = true;
 
+    @Name("Wander Area Limit") @RangeDouble(min = 10.0D, max = 600.0D)
+    @Comment("When a cat's home is set, this is the distance in blocks they are allowed to roam.")
+    @LangKey(PREFIX + ".wander_area_limit") @RequiresMcRestart
+    public static double WANDER_AREA_LIMIT = 400.0D;
+
     @Name("Cats in Area Breeding Limit")
     @Comment("This number is used to limit cat breeding; if more than this amount of cats are nearby, automatic breeding will be disabled.")
     @LangKey(PREFIX + ".breeding_limit")
-    public static int BREEDING_LIMIT = 12;
+    public static int BREEDING_LIMIT = 20;
 
     @Name("Pregnancy Timer")
     @Comment({

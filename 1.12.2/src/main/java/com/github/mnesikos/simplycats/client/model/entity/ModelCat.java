@@ -139,7 +139,18 @@ public class ModelCat extends ModelBase {
         if (entity instanceof EntityCat) {
             EntityCat cat = (EntityCat) entity;
 
-            if (cat.getIsAngry()) {
+            this.head.rotationPointZ = -6.5F;
+            this.body.rotateAngleX = 0.0F;
+            this.fleftlegpoint.rotateAngleX = this.frightlegpoint.rotateAngleX = 0.0F;
+            this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = 0.0F;
+            this.fleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
+            this.brightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
+            this.frightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
+            this.bleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
+            this.tail.rotationPointY = 15.0F;
+            this.tail.rotateAngleX = (float) (180 / (180 / Math.PI));
+
+            /*if (cat.isAngry()) {
                 this.lear.rotateAngleX = (float) (67 / (180 / Math.PI));
                 this.lear.rotateAngleY = (float) (-145 / (180 / Math.PI));
                 this.rear.rotateAngleX = (float) (67 / (180 / Math.PI));
@@ -149,7 +160,7 @@ public class ModelCat extends ModelBase {
                 this.lear.rotateAngleY = 0.0F;
                 this.rear.rotateAngleX = 0.0F;
                 this.rear.rotateAngleY = 0.0F;
-            }
+            }*/
 
             if (cat.isSitting()) {
                 if (this.isChild) {
@@ -164,17 +175,6 @@ public class ModelCat extends ModelBase {
                 this.bleftleg.rotateAngleX = this.brightleg.rotateAngleX = 0.0F;
                 this.tail.rotateAngleX = (float) (79 / (180 / Math.PI));
 
-            } else {
-                this.head.rotationPointZ = -6.5F;
-                this.body.rotateAngleX = 0.0F;
-                this.fleftlegpoint.rotateAngleX = this.frightlegpoint.rotateAngleX = 0.0F;
-                this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = 0.0F;
-                this.fleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
-                this.brightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
-                this.frightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
-                this.bleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
-                this.tail.rotationPointY = 15.0F;
-                this.tail.rotateAngleX = (float) (180 / (180 / Math.PI));
             }
         }
     }

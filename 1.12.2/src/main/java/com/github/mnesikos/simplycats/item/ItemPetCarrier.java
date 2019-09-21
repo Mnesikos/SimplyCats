@@ -4,6 +4,7 @@ import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -22,9 +23,9 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -68,7 +69,7 @@ public class ItemPetCarrier extends Item {
                         }
                     }
                     if (target.hasCustomName())
-                        tags.setString("customName", target.getCustomNameTag());
+                        tags.setString("CustomName", target.getCustomNameTag());
                     tags.setString("ownerName", player.getDisplayNameString());
                     if (target.world.isRemote)
                         player.sendMessage(new TextComponentTranslation("chat.pet_carrier.retrieve_pet"));
@@ -118,7 +119,7 @@ public class ItemPetCarrier extends Item {
             tags.setTag("Rotation", this.newFloatNBTList(MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F));
             tags.setTag("Motion", this.newDoubleNBTList(0.0, 0.0, 0.0));
             tags.setFloat("FallDistance", 0.0f);
-            //tags.setString("customName", tags.getString("customName")); // todo rewrites custom entity name since it gets deleted otherwise for some reason
+            tags.setString("CustomName", tags.getString("CustomName")); // todo rewrites custom cat name since it gets deleted otherwise for some reason
 
             if (item.getItemDamage() == 1 || item.getItemDamage() == 2) {
                 Entity entity = EntityList.createEntityByIDFromName(new ResourceLocation(tags.getString("Entity")), world);
@@ -177,6 +178,27 @@ public class ItemPetCarrier extends Item {
             pet.renderYawOffset = pet.rotationYaw;
             world.spawnEntity(pet);
             pet.setTamed(true);
+
+            if (world.isRemote) {
+                for (int i = 0; i < 7; ++i) {
+                    double d0 = world.rand.nextGaussian() * 0.02D;
+                    double d1 = world.rand.nextGaussian() * 0.02D;
+                    double d2 = world.rand.nextGaussian() * 0.02D;
+                    world.spawnParticle(EnumParticleTypes.HEART,
+                            pet.posX + (double) (world.rand.nextFloat() * pet.width * 2.0F) - (double) pet.width,
+                            pet.posY + 0.5D + (double) (world.rand.nextFloat() * pet.height),
+                            pet.posZ + (double) (world.rand.nextFloat() * pet.width * 2.0F) - (double) pet.width,
+                            d0, d1, d2);
+                }
+            }
+
+            if (pet instanceof EntityCat) {
+                ((EntityCat) pet).setHomePos(new BlockPos(x, y, z));
+                player.sendMessage(new TextComponentString(pet.getName() +
+                        new TextComponentTranslation("chat.info.set_home").getFormattedText() +
+                        " " + x + ", " + y + ", " + z));
+            }
+            pet.getNavigator().clearPath();
             pet.setOwnerId(player.getUniqueID());
             pet.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(pet)), null);
             float health = pet.getMaxHealth();
@@ -191,7 +213,7 @@ public class ItemPetCarrier extends Item {
             unlocalizedName += ".empty.name";
         else
             unlocalizedName += ".full.name";
-        return I18n.translateToLocal(unlocalizedName).trim();
+        return I18n.format(unlocalizedName).trim();
     }
 
     @Override @SideOnly(Side.CLIENT)
@@ -209,24 +231,24 @@ public class ItemPetCarrier extends Item {
     public void addInformation(ItemStack item, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         NBTTagCompound nbt = item.getTagCompound();
         if (nbt != null) {
-            String cat = I18n.translateToLocalFormatted("tooltip.pet_carrier.adopt_cat");
-            String dog = I18n.translateToLocalFormatted("tooltip.pet_carrier.adopt_dog");
+            String cat = I18n.format("tooltip.pet_carrier.adopt_cat");
+            String dog = I18n.format("tooltip.pet_carrier.adopt_dog");
             if (item.getItemDamage() == 3)
                 tooltip.add(TextFormatting.ITALIC + cat);
             else if (item.getItemDamage() == 4)
                 tooltip.add(TextFormatting.ITALIC + dog);
 
             else if (item.getItemDamage() != 0) {
-                String species = I18n.translateToLocalFormatted("entity." + nbt.getString("id") + ".name");
-                String specificCat = I18n.translateToLocalFormatted("cat.type." + nbt.getInteger("Type") + ".name");
-                String catSex = I18n.translateToLocalFormatted("cat.sex." + nbt.getByte("Sex") + "b.name");
+                String species = I18n.format("entity." + nbt.getString("id") + ".name");
+                /*String specificCat = I18n.format("cat.type." + nbt.getInteger("Type") + ".name");
+                String catSex = I18n.format("cat.sex." + nbt.getByte("Sex") + "b.name");
 
-                String base = I18n.translateToLocalFormatted("cat.base." + nbt.getInteger("Base") + ".name");
-                String tabby = I18n.translateToLocalFormatted("cat.tabby.name");
-                String white = I18n.translateToLocalFormatted("cat.white.name");
-                String catPheno;
+                String base = I18n.format("cat.base." + nbt.getInteger("Base") + ".name");
+                String tabby = I18n.format("cat.tabby.name");
+                String white = I18n.format("cat.white.name");
+                String catPheno;*/
 
-                if (nbt.getInteger("tabby") != 0 || nbt.getInteger("white") != 0) {
+                /*if (nbt.getInteger("tabby") != 0 || nbt.getInteger("white") != 0) {
                     if (nbt.getInteger("white") == 0)
                         catPheno = base + " " + tabby;
                     else if (nbt.getInteger("tabby") == 0)
@@ -234,17 +256,16 @@ public class ItemPetCarrier extends Item {
                     else
                         catPheno = base + " " + tabby + " " + white;
                 } else
-                    catPheno = base;
+                    catPheno = base;*/
 
-                String owner = I18n.translateToLocalFormatted("tooltip.pet_carrier.owner");
-                if (nbt.hasKey("customName"))
-                    tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("customName") + "\"");
-                tooltip.add(TextFormatting.ITALIC + (item.getItemDamage() == 2 ? species : (item.getItemDamage() == 1 && nbt.getInteger("Type") == 3 ? specificCat : (item.getItemDamage() == 1 ? catPheno + " " + catSex + " " + species : null))));
+                String owner = I18n.format("tooltip.pet_carrier.owner");
+                if (nbt.hasKey("CustomName"))
+                    tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("CustomName") + "\"");
+                tooltip.add(TextFormatting.ITALIC + (item.getItemDamage() == 2 || item.getItemDamage() == 1 ? species : null));
                 tooltip.add(owner + " " + nbt.getString("ownerName"));
-            } else
-                return;
+            }
         } else {
-            String empty = I18n.translateToLocalFormatted("tooltip.pet_carrier.empty");
+            String empty = I18n.format("tooltip.pet_carrier.empty");
             tooltip.add(TextFormatting.AQUA + empty);
         }
     }
