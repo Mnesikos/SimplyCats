@@ -6,6 +6,19 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
+## [1.12.2-0.0.2.2] - 2019/09/28
+### Added
+- Kittens now get the home position of their mother.
+### Changed
+- Readjusted how white paws are chosen (all 4 white paws are now more common than just 1-3).
+- Blaze powder now cuts timers in half on each use instead of a hardcoded set.
+### Fixed
+- Method change for how carriers save data. Fixes kitten issue.
+
+## [1.12.2-0.0.2.1] - 2019/09/21
+### Fixed
+- Hotfix for older forge versions. This mod is built with Forge 2847 and is meant to run on that version.
+
 ## [1.12.2-0.0.2.0] - 2019/09/21
 ### Added
 - Tons of new cat textures!!
