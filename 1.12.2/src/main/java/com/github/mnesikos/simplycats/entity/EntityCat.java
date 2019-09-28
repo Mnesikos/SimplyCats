@@ -407,10 +407,8 @@ public class EntityCat extends AbstractCat {
         if (stack != null) {
             if (this.isTamed() && this.isOwner(player)) {
                 if (stack.getItem() == Items.BLAZE_POWDER && player.isSneaking()) {
-                    if (player.capabilities.isCreativeMode && !this.isFixed() && this.getMateTimer() > 0 && this.getMateTimer() > 800)
-                        this.setMateTimer(600); // creative tool / testing purposes only, speeds up heat timer, pregnancy, & male cooldown
-                    else if (!this.isFixed() && this.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.getMateTimer() < 0 && this.getMateTimer() < -800) {
-                        this.setMateTimer(-600); // heat inducer, used on females not in heat to quicken the process
+                    if (!this.isFixed() && this.getMateTimer() != 0) {
+                        this.setMateTimer(this.getMateTimer() / 2); // heat inducer, used on females not in heat to quicken the process
                         if (!player.capabilities.isCreativeMode)
                             stack.shrink(1);
                         if (stack.getCount() <= 0)

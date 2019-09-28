@@ -179,22 +179,28 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     private void selectWhitePaws(int base) {
-        if (rand.nextInt(4) <= 2) {
+        /*
+         * boolean all is set so all 4 paws are white
+         * making it more common than only random 1-4 white paws
+         */
+        boolean all = rand.nextInt(4) <= 2;
+
+        if (all || rand.nextInt(4) <= 2) {
             this.whitePawTexturesArray[0] = "white_" + base + "_paw1";
             this.setWhitePawTextures(0, whitePawTexturesArray[0]);
         }
 
-        if (rand.nextInt(4) <= 2) {
+        if (all || rand.nextInt(4) <= 2) {
             this.whitePawTexturesArray[1] = "white_" + base + "_paw2";
             this.setWhitePawTextures(1, whitePawTexturesArray[1]);
         }
 
-        if (rand.nextInt(4) <= 2) {
+        if (all || rand.nextInt(4) <= 2) {
             this.whitePawTexturesArray[2] = "white_" + base + "_paw3";
             this.setWhitePawTextures(2, whitePawTexturesArray[2]);
         }
 
-        if (rand.nextInt(4) <= 2) {
+        if (all || rand.nextInt(4) <= 2) {
             this.whitePawTexturesArray[3] = "white_" + base + "_paw4";
             this.setWhitePawTextures(3, whitePawTexturesArray[3]);
         }
@@ -581,8 +587,11 @@ public abstract class AbstractCat extends EntityTameable {
         child.setGenotype(EYE_COLOR, eye);
 
         child.setTamed(this.isTamed());
-        if (this.isTamed())
+        if (this.isTamed()) {
             child.setOwnerId(this.getOwnerId());
+            if (this.hasHomePos())
+                child.setHomePos(this.getHomePos());
+        }
 
         return child;
     }
