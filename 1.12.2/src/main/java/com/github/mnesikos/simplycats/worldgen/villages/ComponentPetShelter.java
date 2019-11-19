@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.worldgen.villages;
 
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModProfessions;
 import net.minecraft.block.BlockCarpet;
@@ -334,7 +335,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
 
                 if (world.rand.nextInt(4) == 0) {
                     EntityCat kitten = new EntityCat(world);
-                    kitten.setGrowingAge(-24000);
+                    kitten.setGrowingAge(-SimplyCatsConfig.KITTEN_MATURE_TIMER);
                     kitten.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
                     kitten.setFixed((byte)1);
                     kitten.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitten)), null);

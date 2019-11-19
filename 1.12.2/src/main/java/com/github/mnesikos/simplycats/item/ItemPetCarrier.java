@@ -235,7 +235,7 @@ public class ItemPetCarrier extends Item {
             else if (item.getItemDamage() == 4)
                 tooltip.add(TextFormatting.ITALIC + dog);
 
-            else if (item.getItemDamage() != 0) {
+            else if (item.getItemDamage() != 0) { // todo
                 String species = I18n.translateToLocalFormatted("entity." + nbt.getString("id") + ".name");
                 /*String specificCat = I18n.format("cat.type." + nbt.getInteger("Type") + ".name");
                 String catSex = I18n.format("cat.sex." + nbt.getByte("Sex") + "b.name");

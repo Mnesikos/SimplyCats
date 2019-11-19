@@ -71,7 +71,7 @@ public class CatAIMate extends EntityAIBase {
         if (this.MATE_DELAY >= 60 && this.CAT.getDistanceSq(this.TARGET) < 9.0D) {
             if (this.WORLD.rand.nextInt(4) <= 2) // 75% chance of success
                 this.startPregnancy();
-            this.CAT.setMateTimer(SimplyCatsConfig.maleCooldown); // starts male cooldown
+            this.CAT.setMateTimer(SimplyCatsConfig.MALE_COOLDOWN); // starts male cooldown
         }
     }
 
@@ -108,7 +108,7 @@ public class CatAIMate extends EntityAIBase {
 
         if (litterSize == 6 || this.TARGET.getKittens() == 6 || this.WORLD.rand.nextInt(4) == 0) { // full litter OR 25% chance ends heat
             this.TARGET.setBreedingStatus("inheat", false);
-            this.TARGET.setTimeCycle("pregnancy", SimplyCatsConfig.prengancyTimer); // starts pregnancy timer
+            this.TARGET.setTimeCycle("pregnancy", SimplyCatsConfig.PREGNANCY_TIMER); // starts pregnancy timer
         }
     }
 }

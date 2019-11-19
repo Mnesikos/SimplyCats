@@ -41,13 +41,21 @@ public class SimplyCatsConfig {
     @LangKey(PREFIX + ".breeding_limit")
     public static int BREEDING_LIMIT = 20;
 
+    @Name("Kitten Mature Timer")
+    @Comment({
+            "Number of minecraft ticks before a kitten becomes an adult.",
+            "Default: 168000 (7 full minecraft days)"
+    })
+    @LangKey(PREFIX + ".kitten_mature_timer")
+    public static int KITTEN_MATURE_TIMER = 24000 * 7;
+
     @Name("Pregnancy Timer")
     @Comment({
             "Number of minecraft ticks before a pregnant cat will give birth.",
             "Default: 96000 (4 full minecraft days)"
     })
     @LangKey(PREFIX + ".pregnancy_timer")
-    public static int prengancyTimer = 24000 * 4;
+    public static int PREGNANCY_TIMER = 24000 * 4;
 
     @Name("Heat Timer")
     @Comment({
@@ -55,7 +63,7 @@ public class SimplyCatsConfig {
             "Default: 48000 (2 full minecraft days)"
     })
     @LangKey(PREFIX + ".heat_timer")
-    public static int heatTimer = 24000 * 2;
+    public static int HEAT_TIMER = 24000 * 2;
 
     @Name("Heat Cooldown")
     @Comment({
@@ -63,7 +71,7 @@ public class SimplyCatsConfig {
             "Default: 384000 (16 full minecraft days)"
     })
     @LangKey(PREFIX + ".heat_cooldown")
-    public static int heatCooldown = 24000 * 16;
+    public static int HEAT_COOLDOWN = 24000 * 16;
 
     @Name("Male Cooldown")
     @Comment({
@@ -71,7 +79,7 @@ public class SimplyCatsConfig {
             "Default: 6000 (1/4th minecraft day)"
     })
     @LangKey(PREFIX + ".male_cooldown")
-    public static int maleCooldown = 24000 / 4;
+    public static int MALE_COOLDOWN = 24000 / 4;
 
     @Mod.EventBusSubscriber(modid = Ref.MODID)
     private static class EventHandler {
