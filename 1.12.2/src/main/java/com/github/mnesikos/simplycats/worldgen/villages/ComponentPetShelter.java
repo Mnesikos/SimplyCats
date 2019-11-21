@@ -6,7 +6,6 @@ import com.github.mnesikos.simplycats.init.ModProfessions;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;

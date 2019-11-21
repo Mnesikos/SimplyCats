@@ -45,9 +45,6 @@ public class EntityCat extends AbstractCat {
 
     private EntityAITempt aiTempt;
 
-    private boolean PURR;
-    private int PURR_TIMER;
-
     public EntityCat(World world) {
         super(world);
         this.setSize(0.6F, 0.8F);
@@ -112,13 +109,6 @@ public class EntityCat extends AbstractCat {
     public void onUpdate() {
         super.onUpdate();
 
-        if (this.PURR) {
-            if (PURR_TIMER == 0) {
-                this.PURR = false;
-                this.PURR_TIMER = 0;
-            }
-        }
-
         if (!this.world.isRemote && !this.isChild() && !this.isFixed() && this.getSex().equals(Genetics.Sex.FEMALE.getName())) { //if female & adult & not fixed
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
@@ -141,10 +131,6 @@ public class EntityCat extends AbstractCat {
     @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
-
-        if (this.PURR && PURR_TIMER > 0) {
-            --PURR_TIMER;
-        }
 
         if (!this.isChild() && !this.isFixed()) { //if not a child & not fixed
             int mateTimer = this.getMateTimer();
@@ -404,7 +390,7 @@ public class EntityCat extends AbstractCat {
     public boolean processInteract(EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
 
-        if (stack != null) {
+        if (!stack.isEmpty()) {
             if (this.isTamed() && this.isOwner(player)) {
                 if (stack.getItem() == Items.BLAZE_POWDER && player.isSneaking()) {
                     if (!this.isFixed() && this.getMateTimer() != 0) {
@@ -493,71 +479,18 @@ public class EntityCat extends AbstractCat {
                             player.sendMessage(new TextComponentString(getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
                 }
 
-            } else if (!this.world.isRemote && this.isOwner(player) && !this.isBreedingItem(stack) && !this.isFoodItem(stack) && !player.isSneaking()) {
+            }
+        }
+
+        if (!this.world.isRemote && this.isOwner(player) && !player.isSneaking()) {
+            if (stack.isEmpty() || (!this.isBreedingItem(stack) && !this.isFoodItem(stack))) {
                 this.aiSit.setSitting(!this.isSitting());
                 this.navigator.clearPath();
                 this.setAttackTarget(null);
             }
         }
 
-        if (!this.PURR && this.rand.nextInt(10) == 0) { // 1/10th chance an interaction will result in purrs
-            this.PURR = true;
-            this.PURR_TIMER = (this.rand.nextInt(61) + 30) * 20; // random range of 600 to 1800 ticks (0.5 to 1.5 IRL minutes)
-        }
-
         return super.processInteract(player, hand);
-    }
-
-    @Override
-    public void fall(float distance, float damageMultiplier) {
-    }
-
-    @Override
-    protected boolean canTriggerWalking() {
-        return false;
-    }
-
-    @Override
-    protected SoundEvent getAmbientSound() {
-        /*if (this.isAngry()) {
-            if (this.rand.nextInt(10) == 0)
-                return SoundEvents.ENTITY_CAT_HISS;
-            else
-                return null;
-        } else*/ if (this.isInLove() || this.PURR) {
-            return SoundEvents.ENTITY_CAT_PURR;
-        } else {
-            if (this.rand.nextInt(10) == 0) {
-                if (this.rand.nextInt(10) == 0)
-                    return SoundEvents.ENTITY_CAT_PURREOW;
-                else
-                    return SoundEvents.ENTITY_CAT_AMBIENT;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return SoundEvents.ENTITY_CAT_HURT;
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_CAT_DEATH;
-    }
-
-    @Override
-    protected float getSoundVolume() {
-        return 0.4F;
-    }
-
-    @Override
-    public String getName() {
-        if (this.hasCustomName())
-            return this.getCustomNameTag();
-        else
-            return this.isTamed() ? new TextComponentTranslation("entity.Cat.name").getFormattedText() : super.getName();
     }
 
     static {

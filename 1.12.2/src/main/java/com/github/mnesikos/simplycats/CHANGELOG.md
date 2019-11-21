@@ -6,6 +6,15 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
+## [1.12.2-0.0.3.0] - 
+### Added
+- Creepers will now avoid SC cats exactly like their vanilla counterparts.
+- Witches are suddenly pacifists with SC cats around!
+### Changed
+- Kittens are smaller for longer, yay! (This time is also configurable.)
+### Fixed
+- Cats can no longer mate through walls or even 1x1 gaps.
+
 ## [1.12.2-0.0.2.2] - 2019/09/28
 ### Added
 - Kittens now get the home position of their mother.

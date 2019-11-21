@@ -20,10 +20,10 @@ public class CatAIMate extends EntityAIBase {
     private List<EntityCat> LIST;
     private double NEARBY_SIZE_CHECK = 16.0D;
 
-    public CatAIMate(EntityCat entityCat, double d) {
+    public CatAIMate(EntityCat entityCat, double speed) {
         this.CAT = entityCat;
         this.WORLD = entityCat.world;
-        this.MOVE_SPEED = d;
+        this.MOVE_SPEED = speed;
         this.setMutexBits(3);
     }
 
@@ -41,7 +41,7 @@ public class CatAIMate extends EntityAIBase {
 
         else {
             this.TARGET = this.getNearbyMate();
-            return this.TARGET != null;
+            return this.TARGET != null && this.CAT.getEntitySenses().canSee(this.TARGET);
         }
     }
 
@@ -50,7 +50,7 @@ public class CatAIMate extends EntityAIBase {
         boolean maleCooldownCheck = this.CAT.getSex().equals(Genetics.Sex.MALE.getName()) && this.CAT.getMateTimer() == 0;
         boolean femaleHeatCheck = this.TARGET.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.TARGET.getBreedingStatus("inheat");
         this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
-        return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SimplyCatsConfig.BREEDING_LIMIT;
+        return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SimplyCatsConfig.BREEDING_LIMIT && this.CAT.getEntitySenses().canSee(this.TARGET);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CatAIMate extends EntityAIBase {
         this.TARGET.getNavigator().tryMoveToEntityLiving(this.CAT, this.MOVE_SPEED);
         ++this.MATE_DELAY;
 
-        if (this.MATE_DELAY >= 60 && this.CAT.getDistanceSq(this.TARGET) < 9.0D) {
+        if (this.MATE_DELAY >= 60 && this.CAT.getDistanceSq(this.TARGET) < 4.0D) {
             if (this.WORLD.rand.nextInt(4) <= 2) // 75% chance of success
                 this.startPregnancy();
             this.CAT.setMateTimer(SimplyCatsConfig.MALE_COOLDOWN); // starts male cooldown
@@ -76,7 +76,6 @@ public class CatAIMate extends EntityAIBase {
     }
 
     private EntityCat getNearbyMate() {
-        float f = 8.0F;
         List<EntityCat> list = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
         double d0 = Double.MAX_VALUE;
         EntityCat entityCat = null;

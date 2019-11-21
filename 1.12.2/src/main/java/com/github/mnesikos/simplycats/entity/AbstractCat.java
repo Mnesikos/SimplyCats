@@ -6,17 +6,24 @@ import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.google.common.base.Optional;
 import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,10 +57,19 @@ public abstract class AbstractCat extends EntityTameable {
     private final String[] catTexturesArray = new String[12];
 
     private static final DataParameter<Optional<BlockPos>> HOME_POSITION;
+    private boolean PURR;
+    private int PURR_TIMER;
 
     public AbstractCat(World world) {
         super(world);
         setPhenotype();
+    }
+
+    @Nullable
+    @Override
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+        this.setPhenotype();
+        return super.onInitialSpawn(difficulty, livingdata);
     }
 
     @Override
@@ -463,6 +479,13 @@ public abstract class AbstractCat extends EntityTameable {
     public void onUpdate() {
         super.onUpdate();
 
+        if (this.PURR) {
+            if (PURR_TIMER == 0) {
+                this.PURR = false;
+                this.PURR_TIMER = 0;
+            }
+        }
+
         if (this.world.isRemote && this.dataManager.isDirty()) {
             this.dataManager.setClean();
             this.resetTexturePrefix();
@@ -470,9 +493,22 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     @Override
+    public void onLivingUpdate() {
+        super.onLivingUpdate();
+
+        if (this.PURR && PURR_TIMER > 0) {
+            --PURR_TIMER;
+        }
+
+        if (!this.world.isRemote && this.getAttackTarget() == null && this.isAngry()) {
+            this.setAngry(false);
+        }
+    }
+
+    @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (stack != null) {
+        if (!stack.isEmpty()) {
             if (stack.getItem() == Items.STRING && player.isSneaking()) {
                 if (this.world.isRemote) {
                     player.sendMessage(new TextComponentString(this.getGenotype(EYE_COLOR)));
@@ -496,7 +532,12 @@ public abstract class AbstractCat extends EntityTameable {
             }
         }
 
-        return super.processInteract(player, hand);
+        if (!this.PURR && this.rand.nextInt(10) == 0) { // 1/10th chance an interaction will result in purrs
+            this.PURR = true;
+            this.PURR_TIMER = (this.rand.nextInt(61) + 30) * 20; // random range of 600 to 1800 ticks (0.5 to 1.5 IRL minutes)
+        }
+
+        return false;
     }
 
     @Nullable
@@ -594,6 +635,77 @@ public abstract class AbstractCat extends EntityTameable {
         }
 
         return child;
+    }
+
+    @Override
+    public void fall(float distance, float damageMultiplier) {
+    }
+
+    @Override
+    protected boolean canTriggerWalking() {
+        return false;
+    }
+
+    public boolean isAngry() {
+        return ((this.dataManager.get(TAMED)) & 2) != 0;
+    }
+
+    public void setAngry(boolean angry) {
+        byte b0 = this.dataManager.get(TAMED);
+
+        if (angry)
+            this.dataManager.set(TAMED, (byte)(b0 | 2));
+        else
+            this.dataManager.set(TAMED, (byte)(b0 & -3));
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        if (this.isAngry()) {
+            if (this.rand.nextInt(10) == 0)
+                return SoundEvents.ENTITY_CAT_HISS;
+            else
+                return null;
+        } else if (this.isInLove() || this.PURR) {
+            return SoundEvents.ENTITY_CAT_PURR;
+        } else {
+            if (this.rand.nextInt(10) == 0) {
+                if (this.rand.nextInt(10) == 0)
+                    return SoundEvents.ENTITY_CAT_PURREOW;
+                else
+                    return SoundEvents.ENTITY_CAT_AMBIENT;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+        return SoundEvents.ENTITY_CAT_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.ENTITY_CAT_DEATH;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.4F;
+    }
+
+    @Override
+    public String getName() {
+        if (this.hasCustomName())
+            return this.getCustomNameTag();
+        else
+            return this.isTamed() ? new TextComponentTranslation("entity.Cat.name").getFormattedText() : super.getName();
+    }
+
+    @Nullable
+    @Override
+    protected ResourceLocation getLootTable() {
+        return null;
     }
 
     static {
