@@ -25,18 +25,38 @@ itemGroup.simplycats.tab=Simply Cats
 entity.simplycats.Cat.name=Cat
 entity.Villager.kennel_worker=Shelter Worker
 
-< Cat Type Names
-cat.type.3.name=Black and White Male Cat
-cat.sex.0b.name=Female
-cat.sex.1b.name=Male
-cat.base.0.name=Black
-cat.base.1.name=Grey
-cat.base.2.name=Red
-cat.base.3.name=Cream
-cat.tabby.name=Mackerel Tabby
-cat.tortie.name=Tortie
-cat.calico.name=Calico
-cat.white.name=and White
+< Cat Phenotypes
+cat.sex.female.name=♀
+cat.sex.male.name=♂
+cat.base.red.name=Red
+cat.base.red_dilute.name=Cream
+cat.base.red_caramelized.name=Apricot
+cat.base.black.name=Black
+cat.base.black_tortoiseshell.name=Black Tortoiseshell
+cat.base.black_not_red_dilute.name=Blue
+cat.base.black_tortoiseshell_dilute.name=Blue Tortoiseshell
+cat.base.black_not_red_caramelized.name=Caramel
+cat.base.black_tortoiseshell_caramelized.name=Caramel Tortoiseshell
+cat.base.chocolate.name=Chocolate
+cat.base.chocolate_tortoiseshell.name=Chocolate Tortoiseshell
+cat.base.chocolate_not_red_dilute.name=Lilac
+cat.base.chocolate_tortoiseshell_dilute.name=Lilac Tortoiseshell
+cat.base.chocolate_not_red_caramelized.name=Taupe
+cat.base.chocolate_tortoiseshell_caramelized.name=Taupe Tortoiseshell
+cat.base.cinnamon.name=Cinnamon
+cat.base.cinnamon_tortoiseshell.name=Cinnamon Tortoiseshell
+cat.base.cinnamon_not_red_dilute.name=Fawn
+cat.base.cinnamon_tortoiseshell_dilute.name=Fawn Tortoiseshell
+cat.base.cinnamon_not_red_caramelized.name=Fawn-Caramel
+cat.base.cinnamon_tortoiseshell_caramelized.name=Fawn-Caramel Tortoiseshell
+cat.tabby.classic.name=Classic Tabby
+cat.tabby.mackerel.name=Mackerel Tabby
+cat.tabby.broken.name=Broken Tabby
+cat.tabby.spotted.name=Spotted Tabby
+cat.tabby.ticked.name=Ticked Tabby
+cat.point.colorpoint.name=Colorpoint
+cat.point.mink.name=Mink
+cat.point.sepia.name=Sepia
 
 < Command Usage
 command.beckon=See /beckon help for more info

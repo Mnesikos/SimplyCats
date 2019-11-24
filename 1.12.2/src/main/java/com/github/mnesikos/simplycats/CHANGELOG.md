@@ -10,6 +10,7 @@ and this project adheres to
 ### Added
 - Creepers will now avoid SC cats exactly like their vanilla counterparts.
 - Witches are suddenly pacifists with SC cats around!
+- Cats will hiss when undead are nearby.
 ### Changed
 - Kittens are smaller for longer, yay! (This time is also configurable.)
 ### Fixed

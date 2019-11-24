@@ -3,6 +3,7 @@ package com.github.mnesikos.simplycats.item;
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
+import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -25,7 +26,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -210,7 +210,7 @@ public class ItemPetCarrier extends Item {
             unlocalizedName += ".empty.name";
         else
             unlocalizedName += ".full.name";
-        return I18n.translateToLocal(unlocalizedName).trim();
+        return new TextComponentTranslation(unlocalizedName).getUnformattedText();
     }
 
     @Override @SideOnly(Side.CLIENT)
@@ -228,15 +228,15 @@ public class ItemPetCarrier extends Item {
     public void addInformation(ItemStack item, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         NBTTagCompound nbt = item.getTagCompound();
         if (nbt != null) {
-            String cat = I18n.translateToLocalFormatted("tooltip.pet_carrier.adopt_cat");
-            String dog = I18n.translateToLocalFormatted("tooltip.pet_carrier.adopt_dog");
+            TextComponentTranslation cat = new TextComponentTranslation("tooltip.pet_carrier.adopt_cat");
+            TextComponentTranslation dog = new TextComponentTranslation("tooltip.pet_carrier.adopt_dog");
             if (item.getItemDamage() == 3)
-                tooltip.add(TextFormatting.ITALIC + cat);
+                tooltip.add(TextFormatting.ITALIC + cat.getFormattedText());
             else if (item.getItemDamage() == 4)
-                tooltip.add(TextFormatting.ITALIC + dog);
+                tooltip.add(TextFormatting.ITALIC + dog.getFormattedText());
 
             else if (item.getItemDamage() != 0) { // todo
-                String species = I18n.translateToLocalFormatted("entity." + nbt.getString("id") + ".name");
+                TextComponentTranslation species = new TextComponentTranslation("entity." + nbt.getString("id") + ".name");
                 /*String specificCat = I18n.format("cat.type." + nbt.getInteger("Type") + ".name");
                 String catSex = I18n.format("cat.sex." + nbt.getByte("Sex") + "b.name");
 
@@ -255,15 +255,63 @@ public class ItemPetCarrier extends Item {
                 } else
                     catPheno = base;*/
 
-                String owner = I18n.translateToLocalFormatted("tooltip.pet_carrier.owner");
+
+                TextComponentTranslation owner = new TextComponentTranslation("tooltip.pet_carrier.owner");
+                TextComponentTranslation sex = new TextComponentTranslation("cat.sex." + (nbt.getString("Phaeomelanin").contains(Genetics.Phaeomelanin.MALE.getAllele()) ? "male" : "female") + ".name");
                 if (nbt.hasKey("CustomName"))
-                    tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("CustomName") + "\"");
-                tooltip.add(TextFormatting.ITALIC + (item.getItemDamage() == 2 || item.getItemDamage() == 1 ? species : null));
-                tooltip.add(owner + " " + nbt.getString("ownerName"));
+                    tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("CustomName") + "\"" + " " + sex.getFormattedText());
+                if (item.getItemDamage() == 2)
+                    tooltip.add(TextFormatting.ITALIC + species.getUnformattedText());
+                else if (item.getItemDamage() == 1) {
+                    String eumelanin = Genetics.Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
+                    String phaeomelanin = Genetics.Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
+                    String dilution = Genetics.Dilution.getPhenotype(nbt.getString("Dilution"));
+                    String diluteMod = Genetics.DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
+                    TextComponentTranslation base = new TextComponentTranslation("cat.base." + eumelanin + (phaeomelanin.equals(Genetics.Phaeomelanin.NOT_RED.toString().toLowerCase()) ? "" : "_" + phaeomelanin) + ".name");
+                    if (dilution.equals(Genetics.Dilution.DILUTE.toString().toLowerCase())) {
+                        base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + dilution + ".name");
+                        if (diluteMod.equals(Genetics.DiluteMod.CARAMELIZED.toString().toLowerCase()))
+                            base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + diluteMod + ".name");
+                    }
+                    if (phaeomelanin.equals(Genetics.Phaeomelanin.RED.toString().toLowerCase())) {
+                        base = new TextComponentTranslation("cat.base." + phaeomelanin + ".name");
+                        if (dilution.equals(Genetics.Dilution.DILUTE.toString().toLowerCase())) {
+                            base = new TextComponentTranslation("cat.base." + phaeomelanin + "_" + dilution + ".name");
+                            if (diluteMod.equals(Genetics.DiluteMod.CARAMELIZED.toString().toLowerCase()))
+                                base = new TextComponentTranslation("cat.base." + phaeomelanin + "_" + diluteMod + ".name");
+                        }
+                    }
+
+                    String agouti = Genetics.Agouti.getPhenotype(nbt.getString("Agouti"));
+                    String tabby1 = Genetics.Tabby.getPhenotype(nbt.getString("Tabby"));
+                    String spotted = Genetics.Spotted.getPhenotype(nbt.getString("Spotted"));
+                    String ticked = Genetics.Ticked.getPhenotype(nbt.getString("Ticked"));
+                    TextComponentTranslation tabby = new TextComponentTranslation("");
+                    if (agouti.equals(Genetics.Agouti.TABBY.toString().toLowerCase()) || phaeomelanin.equals(Genetics.Phaeomelanin.RED.toString().toLowerCase())) {
+                        tabby = new TextComponentTranslation("cat.tabby." + tabby1 + ".name");
+                        if (spotted.equals(Genetics.Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Genetics.Spotted.SPOTTED.toString().toLowerCase()))
+                            tabby = new TextComponentTranslation("cat.tabby." + spotted + ".name");
+                        if (ticked.equals(Genetics.Ticked.TICKED.toString().toLowerCase()))
+                            tabby = new TextComponentTranslation("cat.tabby." + ticked + ".name");
+                    }
+
+                    String colorpoint = Genetics.Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
+                    TextComponentTranslation point = new TextComponentTranslation("");
+                    if (!colorpoint.equals(Genetics.Colorpoint.NOT_POINTED.toString().toLowerCase())) {
+                        point = new TextComponentTranslation("cat.point." + colorpoint + ".name");
+                    }
+
+                    tooltip.add(TextFormatting.ITALIC + base.getUnformattedText() +
+                            (tabby.getUnformattedText().equals("") ? "" : " " + tabby.getUnformattedText()) +
+                            (point.getUnformattedText().equals("") ? "" : " " + point.getUnformattedText()) +
+                            " " + species.getFormattedText());
+                }
+
+                tooltip.add(owner.getUnformattedText() + " " + nbt.getString("ownerName"));
             }
         } else {
-            String empty = I18n.translateToLocalFormatted("tooltip.pet_carrier.empty");
-            tooltip.add(TextFormatting.AQUA + empty);
+            TextComponentTranslation empty = new TextComponentTranslation("tooltip.pet_carrier.empty");
+            tooltip.add(TextFormatting.AQUA + empty.getFormattedText());
         }
     }
 }

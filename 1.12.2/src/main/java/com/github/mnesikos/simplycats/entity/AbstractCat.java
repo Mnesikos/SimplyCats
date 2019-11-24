@@ -7,6 +7,8 @@ import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.google.common.base.Optional;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.monster.AbstractSkeleton;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -29,6 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class AbstractCat extends EntityTameable {
     private static final DataParameter<String> EYE_COLOR;
@@ -486,6 +489,14 @@ public abstract class AbstractCat extends EntityTameable {
             }
         }
 
+        if (this.getAttackTarget() == null) {
+            List<EntityZombie> zombies = this.world.getEntitiesWithinAABB(EntityZombie.class, this.getEntityBoundingBox().grow(4.0D, 3.0D, 4.0D));
+            List<AbstractSkeleton> skeletons = this.world.getEntitiesWithinAABB(AbstractSkeleton.class, this.getEntityBoundingBox().grow(4.0D, 3.0D, 4.0D));
+            if ((!zombies.isEmpty() || !skeletons.isEmpty()) && this.rand.nextInt(400) == 0) {
+                this.playSound(SoundEvents.ENTITY_CAT_HISS, this.getSoundVolume() / 2.0F, this.getSoundPitch());
+            }
+        }
+
         if (this.world.isRemote && this.dataManager.isDirty()) {
             this.dataManager.setClean();
             this.resetTexturePrefix();
@@ -498,10 +509,6 @@ public abstract class AbstractCat extends EntityTameable {
 
         if (this.PURR && PURR_TIMER > 0) {
             --PURR_TIMER;
-        }
-
-        if (!this.world.isRemote && this.getAttackTarget() == null && this.isAngry()) {
-            this.setAngry(false);
         }
     }
 

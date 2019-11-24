@@ -1,10 +1,7 @@
 package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
-import com.github.mnesikos.simplycats.entity.ai.CatAIBirth;
-import com.github.mnesikos.simplycats.entity.ai.CatAIMate;
-import com.github.mnesikos.simplycats.entity.ai.CatAIWander;
-import com.github.mnesikos.simplycats.entity.ai.CatAIWanderAvoidWater;
+import com.github.mnesikos.simplycats.entity.ai.*;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.entity.*;
@@ -12,7 +9,6 @@ import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
