@@ -71,7 +71,7 @@ public abstract class AbstractCat extends EntityTameable {
     @Nullable
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
-        this.setPhenotype();
+        //this.setPhenotype();
         return super.onInitialSpawn(difficulty, livingdata);
     }
 

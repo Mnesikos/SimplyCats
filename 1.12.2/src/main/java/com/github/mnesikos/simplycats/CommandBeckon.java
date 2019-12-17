@@ -1,16 +1,20 @@
 package com.github.mnesikos.simplycats;
 
 import com.github.mnesikos.simplycats.entity.EntityCat;
+import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -18,7 +22,11 @@ import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+
+import static net.minecraft.command.CommandBase.*;
 
 public class CommandBeckon implements ICommand {
     private final List<String> aliases;
@@ -51,21 +59,22 @@ public class CommandBeckon implements ICommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        /*if (sender instanceof EntityPlayer) {
+        // beckon <owner> <age> <eye color> LL BB XOXO DD DmDm AA McMc SpSp TaTa CC WsWs
+        if (sender instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) sender;
             World world = player.getEntityWorld();
             if (!world.isRemote) {
-                if (args.length == 0)
-                    player.sendMessage(new TextComponentTranslation("command.beckon"));
+                if (args.length <= 0)
+                    throw new WrongUsageException("command.beckon.usage", new Object[0]);
 
                 else if (args[0].equals("help") || args[0].equals("?")) {
                     if (args.length == 1) {
-                        player.sendMessage(new TextComponentTranslation("command.beckon.usage"));
+                        player.sendMessage(new TextComponentString(getUsage(sender)));
                         player.sendMessage(new TextComponentTranslation("command.beckon.help"));
                     }
                     else {
-                        switch (args[1]) {
-                            case "base":
+                        switch (args[1]) { // further info via /beckon help x
+                            /*case "base":
                                 player.sendMessage(new TextComponentTranslation("command.beckon.help.base"));
                                 break;
                             case "eyes":
@@ -73,7 +82,7 @@ public class CommandBeckon implements ICommand {
                                 break;
                             case "white":
                                 player.sendMessage(new TextComponentTranslation("command.beckon.help.white"));
-                                break;
+                                break;*/
                             default:
                                 player.sendMessage(new TextComponentTranslation(TextFormatting.RED + "command.beckon.help.fail"));
                                 break;
@@ -81,8 +90,49 @@ public class CommandBeckon implements ICommand {
                     }
                 }
 
-                // TODO add optional argument for a player to set as owner
-                else if (args.length == 5){
+                else {
+                    BlockPos spawnPos = new BlockPos(Minecraft.getMinecraft().objectMouseOver.getBlockPos().getX(), Minecraft.getMinecraft().objectMouseOver.getBlockPos().getY() + 1, Minecraft.getMinecraft().objectMouseOver.getBlockPos().getZ());
+                    if (!world.isBlockLoaded(spawnPos))
+                        throw new CommandException("command.beckon.outOfWorld", new Object[0]);
+                    else {
+                        EntityCat entityCat = new EntityCat(world);
+
+                        // OWNER
+                        boolean ownerArg = false;
+                        if (args[0] != null && server.getPlayerList().getPlayerByUsername(args[0]) != null) {
+                            EntityPlayer owner = getPlayer(server, sender, args[0]);
+                            entityCat.setTamed(true);
+                            entityCat.setOwnerId(owner.getUniqueID());
+                            ownerArg = true;
+                        }
+
+                        // AGE TODO
+                        // EYE COLOR TODO
+                        // FUR LENGTH TODO
+                        // EUMELANIN TODO
+                        // PHAEOMELANIN TODO
+                        // DILUTION TODO
+                        // DILUTE MOD TODO
+                        // AGOUTI TODO
+                        // TABBY TODO
+                        // SPOTTED TODO
+                        // TICKED TODO
+                        // COLORPOINT TODO
+                        // WHITE TODO
+
+                        Entity cat = AnvilChunkLoader.readWorldEntityPos(entityCat.serializeNBT(), world, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), true);
+
+                        if (cat == null) {
+                            throw new CommandException("command.beckon.fail", new Object[0]);
+                        } else {
+                            cat.setLocationAndAngles(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), cat.rotationYaw, cat.rotationPitch);
+                            //((EntityCat)cat).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), (IEntityLivingData)null);
+
+                            notifyCommandListener(sender, this, "command.beckon.success", new Object[0]);
+                        }
+                    }
+                }
+                /*else if (args.length == 5){
                     EntityCat cat = new EntityCat(world);
                     cat.setType(0);
 
@@ -157,12 +207,9 @@ public class CommandBeckon implements ICommand {
                     cat.setTamed(true);
                     cat.setOwnerId(player.getUniqueID());
                     cat.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), null);
-                } else {
-                    TextComponentTranslation beckonFailMsg = new TextComponentTranslation("command.beckon.fail" + TextFormatting.RED);
-                    player.sendMessage(beckonFailMsg);
-                }
+                }*/
             }
-        }*/
+        }
     }
 
     @Override
@@ -176,11 +223,11 @@ public class CommandBeckon implements ICommand {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return null;
+        return Collections.<String>emptyList();
     }
 
     @Override
     public boolean isUsernameIndex(String[] args, int index) {
-        return false;
+        return args.length > 0 && index == 0;
     }
 }
