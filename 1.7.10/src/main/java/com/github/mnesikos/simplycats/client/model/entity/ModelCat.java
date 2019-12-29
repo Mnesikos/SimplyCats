@@ -12,7 +12,7 @@ import net.minecraft.util.MathHelper;
 
 public class ModelCat extends ModelBase {
     private ModelRenderer body;
-    public ModelRenderer head;
+    private ModelRenderer head;
     private ModelRenderer tail;
     private ModelRenderer frightlegpoint;
     private ModelRenderer fleftlegpoint;
@@ -31,7 +31,7 @@ public class ModelCat extends ModelBase {
 	public ModelCat() {
         this.textureWidth = 64;
         this.textureHeight = 32;
-		
+
         this.head = new ModelRenderer(this, 0, 0);
         this.head.setRotationPoint(0.0F, 14.0F, -6.5F);
         this.head.addBox(-2.5F, -2.0F, -5.0F, 5, 4, 5, 0.0F);
@@ -82,58 +82,42 @@ public class ModelCat extends ModelBase {
         this.tail2.setRotationPoint(0.0F, 7.8F, 0.0F);
         this.tail2.addBox(-1.0F, 0.0F, -1.0F, 2, 3, 2, 0.0F);
         this.setRotateAngle(tail2, (float) (10 / (180 / Math.PI)), -0.0F, 0.0F);
-		
+
         this.head.addChild(this.nose); this.nose.addChild(this.whiskers);
         this.head.addChild(this.lear);
         this.head.addChild(this.rear);
-        
+
         this.body.addChild(this.fleftlegpoint); this.fleftlegpoint.addChild(this.fleftleg);
         this.body.addChild(this.frightlegpoint); this.frightlegpoint.addChild(this.frightleg);
         this.body.addChild(this.bleftlegpoint); this.bleftlegpoint.addChild(this.bleftleg);
         this.body.addChild(this.brightlegpoint); this.brightlegpoint.addChild(this.brightleg);
-        
+
         this.tail.addChild(this.tail2);
 	}
 
     @Override
     public void render(Entity entity, float parSpeed, float parWalkSpeed, float par4, float parHeadAngleY, float parHeadAngleX, float par7) { 
     	this.setRotationAngles(parSpeed, parWalkSpeed, par4, parHeadAngleY, parHeadAngleX, par7, entity);
-    	
-    	EntityCat cat = (EntityCat)entity;
-    	int varType = cat.getType();
-    	boolean varMav = varType == 3;
 
 		if(this.isChild) {
-    		float var8 = 2.0F;
-    		GL11.glPushMatrix();
-    		GL11.glScalef(1.25F / var8, 1.25F / var8, 1.25F / var8);
-    		GL11.glTranslatef(0.0F, 15.6F * par7, 2.5F * par7);
-    		this.head.render(par7);
-    		GL11.glPopMatrix();
-            
-    		GL11.glPushMatrix();
-    		GL11.glScalef(0.7F / var8, 0.7F / var8, 0.7F / var8);
-    		GL11.glTranslatef(0.0F, 41.0F * par7, 1.4F * par7);
+            float var8 = 2.0F;
+            GL11.glPushMatrix();
+            GL11.glScalef(1.25F / var8, 1.25F / var8, 1.25F / var8);
+            GL11.glTranslatef(0.0F, 15.6F * par7, 2.5F * par7);
+            this.head.render(par7);
+            GL11.glPopMatrix();
+
+            GL11.glPushMatrix();
+            GL11.glScalef(0.7F / var8, 0.7F / var8, 0.7F / var8);
+            GL11.glTranslatef(0.0F, 41.0F * par7, 1.4F * par7);
             this.tail.render(par7);
-    		GL11.glPopMatrix();
-    		
-    		GL11.glPushMatrix();
+            GL11.glPopMatrix();
+
+            GL11.glPushMatrix();
             GL11.glScalef(1.0F / var8, 1.0F / var8, 0.8F / var8);
             GL11.glTranslatef(0.0F, 24.0F * par7, 0.0F);
             this.body.render(par7);
             GL11.glPopMatrix();
-
-    	} else if (varMav) {
-            this.head.render(par7);
-            GL11.glPushMatrix();
-            GL11.glTranslatef(this.body.offsetX, this.body.offsetY, this.body.offsetZ);
-            GL11.glTranslatef(this.body.rotationPointX * par7, this.body.rotationPointY * par7, this.body.rotationPointZ * par7);
-            GL11.glScaled(1.4D, 1.1D, 1.0D);
-            GL11.glTranslatef(-this.body.offsetX, -this.body.offsetY, -this.body.offsetZ);
-            GL11.glTranslatef(-this.body.rotationPointX * par7, -this.body.rotationPointY * par7, -this.body.rotationPointZ * par7);
-            this.body.render(par7);
-            GL11.glPopMatrix();
-            this.tail.render(par7);
 
     	} else {
     		GL11.glPushMatrix();
@@ -147,46 +131,52 @@ public class ModelCat extends ModelBase {
 	
 	public void setRotationAngles(float parSpeed, float parWalkSpeed, float par4, float parHeadAngleY, float parHeadAngleX, float par7, Entity parEntity) {
 		super.setRotationAngles(parSpeed, parWalkSpeed, par4, parHeadAngleY, parHeadAngleX, par7, parEntity);
-		this.head.rotateAngleX = parHeadAngleX / (180F / (float)Math.PI);
-		this.head.rotateAngleY = parHeadAngleY / (180F / (float)Math.PI);
+        this.head.rotateAngleX = parHeadAngleX / (180F / (float)Math.PI);
+        this.head.rotateAngleY = parHeadAngleY / (180F / (float)Math.PI);
 	}
 
 	public void setLivingAnimations(EntityLivingBase entity, float parSpeed, float parWalkSpeed, float f4) {
-		EntityCat cat = (EntityCat)entity;
-		
-		if (cat.getIsAngry()) {
-			this.lear.rotateAngleX = (float) (67 / (180 /Math.PI)); this.lear.rotateAngleY = (float) (-145 / (180 / Math.PI));
-			this.rear.rotateAngleX = (float) (67 / (180 /Math.PI)); this.rear.rotateAngleY = (float) (145 / (180 / Math.PI));
-		} else {
-			this.lear.rotateAngleX = 0.0F; this.lear.rotateAngleY = 0.0F;
-			this.rear.rotateAngleX = 0.0F; this.rear.rotateAngleY = 0.0F;
-		}
+        if (entity instanceof EntityCat) {
+            EntityCat cat = (EntityCat) entity;
 
-		if (cat.isSitting()) {
-			if(this.isChild) {
-				this.tail.rotationPointY = 23.5F;
-			} else {
-				this.tail.rotationPointY = 21.5F;
-			}
-			this.head.rotationPointZ = -4.5F;
-			this.body.rotateAngleX = (float) (-28 / (180 /Math.PI));
-			this.fleftleg.rotateAngleX = this.frightleg.rotateAngleX = (float) (28 / (180 /Math.PI));
-			this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = (float) (-62.5 / (180 /Math.PI));
-			this.bleftleg.rotateAngleX = this.brightleg.rotateAngleX = 0.0F;
-			this.tail.rotateAngleX = (float) (79 / (180 /Math.PI));
+            this.head.rotationPointZ = -6.5F;
+            this.body.rotateAngleX = 0.0F;
+            this.fleftlegpoint.rotateAngleX = this.frightlegpoint.rotateAngleX = 0.0F;
+            this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = 0.0F;
+            this.fleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
+            this.brightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
+            this.frightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
+            this.bleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
+            this.tail.rotationPointY = 15.0F;
+            this.tail.rotateAngleX = (float) (180 / (180 / Math.PI));
 
-		} else {
-			this.head.rotationPointZ = -6.5F;
-			this.body.rotateAngleX = 0.0F;
-			this.fleftlegpoint.rotateAngleX = this.frightlegpoint.rotateAngleX = 0.0F;
-			this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = 0.0F;
-			this.fleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
-			this.brightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
-			this.frightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
-			this.bleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
-			this.tail.rotationPointY = 15.0F;
-			this.tail.rotateAngleX = (float) (180 / (180 /Math.PI));
-		}
+        /*if (cat.isAngry()) {
+            this.lear.rotateAngleX = (float) (67 / (180 / Math.PI));
+            this.lear.rotateAngleY = (float) (-145 / (180 / Math.PI));
+            this.rear.rotateAngleX = (float) (67 / (180 / Math.PI));
+            this.rear.rotateAngleY = (float) (145 / (180 / Math.PI));
+        } else {
+            this.lear.rotateAngleX = 0.0F;
+            this.lear.rotateAngleY = 0.0F;
+            this.rear.rotateAngleX = 0.0F;
+            this.rear.rotateAngleY = 0.0F;
+        }*/
+
+            if (cat.isSitting()) {
+                if (this.isChild) {
+                    this.tail.rotationPointY = 23.5F;
+                } else {
+                    this.tail.rotationPointY = 21.5F;
+                }
+                this.head.rotationPointZ = -4.5F;
+                this.body.rotateAngleX = (float) (-28 / (180 / Math.PI));
+                this.fleftleg.rotateAngleX = this.frightleg.rotateAngleX = (float) (28 / (180 / Math.PI));
+                this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = (float) (-62.5 / (180 / Math.PI));
+                this.bleftleg.rotateAngleX = this.brightleg.rotateAngleX = 0.0F;
+                this.tail.rotateAngleX = (float) (79 / (180 / Math.PI));
+
+            }
+        }
 	}
 
     private void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {

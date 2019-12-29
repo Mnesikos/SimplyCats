@@ -388,12 +388,12 @@ public abstract class AbstractCat extends EntityTameable {
             return this.getGenotype(EYE_COLOR);
     }
 
-    public boolean canWander() {
+    /*public boolean canWander() {
         if (this.hasHomePos())
             return this.getDistanceSq(this.getHomePos()) < SimplyCatsConfig.WANDER_AREA_LIMIT;
         else
             return true;
-    }
+    }*/
 
     private void resetTexturePrefix() {
         this.texturePrefix = null;

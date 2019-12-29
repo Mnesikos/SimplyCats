@@ -5,23 +5,31 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
 public final class ModRecipes {
 	public static final void init() {
-		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.CAT_FOOD, 4, 0), new Object[]
-	            {new ItemStack(Items.fish, 1, 0), Items.wheat});
-        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.CAT_FOOD, 4, 1), new Object[]
-        		{new ItemStack(Items.fish, 1, 1), Items.wheat});
-        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.CAT_FOOD, 4, 2), new Object[]
-        		{new ItemStack(Items.chicken, 1, 0), Items.wheat});
-        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.CAT_FOOD, 4, 3), new Object[]
-        		{new ItemStack(Items.beef, 1, 0), Items.wheat});
-        
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.CERTIFICATE, 1, 0), new Object[]
+				{new ItemStack(Items.dye, 1, 0), Items.paper});
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.CERTIFICATE, 1, 1), new Object[]
+				{new ItemStack(ModItems.CERTIFICATE, 1, 0)});
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.CERTIFICATE, 1, 0), new Object[]
+				{new ItemStack(ModItems.CERTIFICATE, 1, 1)});
+
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.TREAT_BAG, 1), new Object[]
+				{Items.leather, Items.iron_ingot});
+
+        GameRegistry.addRecipe(new ItemStack(Items.name_tag, 1), new Object[]{
+			"S  ",
+			" I ",
+			"  I",
+			'S', Items.string, 'I', Items.iron_ingot, 'I', Items.gold_ingot});
         GameRegistry.addRecipe(new ItemStack(ModItems.PET_CARRIER, 1), new Object[]{
     		"ISI",
     		"SBS",
     		"ISI",
-    		'I', Items.iron_ingot, 'B', Blocks.iron_bars, 'S', Blocks.stained_hardened_clay});
+    		'I', Items.iron_ingot, 'B', Blocks.iron_bars, 'S', Blocks.hardened_clay});
+
         GameRegistry.addRecipe(new ItemStack(ModBlocks.BOWL, 1), new Object[]{
         	"I I",
         	"III",

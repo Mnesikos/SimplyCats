@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.proxy;
 
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.worldgen.villages.ComponentPetShelter;
 import com.github.mnesikos.simplycats.worldgen.villages.VillagePetShelterHandler;
@@ -40,7 +41,7 @@ public class CommonProxy implements IGuiHandler {
         VillagerRegistry.instance().registerVillagerId(28643);
         VillagerRegistry.instance().registerVillageTradeHandler(28643, new VillagePetShelterHandler());
         VillagerRegistry.instance().registerVillageCreationHandler(new VillagePetShelterHandler());
-        MapGenStructureIO.func_143031_a(ComponentPetShelter.class, SimplyCats.MODID+":PetShopStructure");
+        MapGenStructureIO.func_143031_a(ComponentPetShelter.class, Ref.MODID+":PetShopStructure");
     }
 
     public void init(FMLInitializationEvent e) {

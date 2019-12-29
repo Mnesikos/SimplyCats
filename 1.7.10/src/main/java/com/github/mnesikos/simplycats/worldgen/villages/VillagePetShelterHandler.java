@@ -40,8 +40,8 @@ public class VillagePetShelterHandler implements IVillageCreationHandler, IVilla
 	{
 		int dogPrice = 8;
 		int catPrice = 8;
-		ItemStack cat = new ItemStack(ModItems.petCarrier, 1); cat.setTagCompound(new NBTTagCompound()); cat.setItemDamage(3);
-		ItemStack dog = new ItemStack(ModItems.petCarrier, 1); dog.setTagCompound(new NBTTagCompound()); dog.setItemDamage(4);
+		ItemStack cat = new ItemStack(ModItems.PET_CARRIER, 1); cat.setTagCompound(new NBTTagCompound()); cat.setItemDamage(3);
+		ItemStack dog = new ItemStack(ModItems.PET_CARRIER, 1); dog.setTagCompound(new NBTTagCompound()); dog.setItemDamage(4);
 		
 		if (villager.getProfession() == 28643)
 		{

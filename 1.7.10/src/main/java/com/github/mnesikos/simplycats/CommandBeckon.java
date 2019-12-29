@@ -3,11 +3,10 @@ package com.github.mnesikos.simplycats;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mnesikos.simplycats.entity.EntityCat;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
@@ -77,7 +76,7 @@ public class CommandBeckon implements ICommand {
 				} 
 				
 				else if (args.length == 5){
-					EntityCat cat = new EntityCat(world);
+					/*EntityCat cat = new EntityCat(world);
 					cat.setType(0);
 					if (args[0].equals("male") || args[0].equals("female")) {
 						int sex = args[0].equals("female") ? 0 : 1;
@@ -125,7 +124,8 @@ public class CommandBeckon implements ICommand {
 					cat.setPosition(Minecraft.getMinecraft().objectMouseOver.blockX, Minecraft.getMinecraft().objectMouseOver.blockY + 1, Minecraft.getMinecraft().objectMouseOver.blockZ);
 					world.spawnEntityInWorld(cat);
 					cat.setTamed(true);
-			        cat.func_152115_b(((EntityPlayer) player).getUniqueID().toString());
+			        cat.func_152115_b(((EntityPlayer) player).getUniqueID().toString());*/
+					player.addChatMessage(new ChatComponentText("Stop"));
 				} else {
 					ChatComponentTranslation beckonFailMsg = new ChatComponentTranslation("command.beckon.fail");
 					beckonFailMsg.getChatStyle().setColor(EnumChatFormatting.RED);

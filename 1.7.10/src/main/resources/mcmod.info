@@ -3,14 +3,14 @@
   "modid": "simplycats",
   "name": "Simply Cats Mod",
   "description": "Cats! Cats everywhere!",
-  "version": "0.0.1.0-beta1",
+  "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
   "authorList": ["Mnesikos"],
-  "credits": "",
+  "credits": "Thank you Captain and fisk for the extra texture help! <3 Also big thanks to Ms. Random and Soggy for dealing with my lack of proper coding know-how. (:",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["forge"]
 }
 ]

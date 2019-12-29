@@ -17,13 +17,16 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.0.1.0-beta1"
-group= "com.github.mnesikos.simplycats" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "simplycats"
+version = "${mc_version}-${mod_version}"
+group = package_group
+archivesBaseName = mod_name
 
 minecraft {
-    version = "1.7.10-10.13.4.1614-1.7.10"
-    runDir = "eclipse"
+    version = "${mc_version}-${forge_version}"
+    runDir = "run"
+
+    replace "@VERSION@", project.version
+    replaceIn "Ref.java"
 }
 
 dependencies {
@@ -42,8 +45,7 @@ dependencies {
 
 }
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version

@@ -3,6 +3,7 @@ package com.github.mnesikos.simplycats.block;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.init.ModItems;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.proxy.ClientProxy;
@@ -59,7 +60,7 @@ public class BlockBowl extends BlockContainer {
 	
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegistry) {
-		this.bowlIcon = iconRegistry.registerIcon(SimplyCats.MODID + ":bowl_texture");
+		this.bowlIcon = iconRegistry.registerIcon(Ref.MODID + ":bowl_texture");
 	}
 	
 	@Override

@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.proxy;
 
-import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.client.gui.GuiBowl;
 import com.github.mnesikos.simplycats.client.model.entity.ModelCat;
 import com.github.mnesikos.simplycats.client.renderer.block.RenderBowl;
@@ -21,7 +21,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 
 public class ClientProxy extends CommonProxy {
-	private static final ResourceLocation NPC_PET_SHOP = new ResourceLocation(SimplyCats.MODID +":textures/entity/npcs/pet_shop.png");
+	private static final ResourceLocation NPC_PET_SHOP = new ResourceLocation(Ref.MODID +":textures/entity/npcs/pet_shop.png");
 	
 	public static int RENDER_BOWL_ID;
 	

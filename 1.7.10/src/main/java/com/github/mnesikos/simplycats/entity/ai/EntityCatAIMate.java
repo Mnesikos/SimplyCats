@@ -2,10 +2,10 @@ package com.github.mnesikos.simplycats.entity.ai;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
+import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.world.World;
 
 import com.github.mnesikos.simplycats.entity.EntityCat;
@@ -15,93 +15,98 @@ public class EntityCatAIMate extends EntityAIBase {
 	private EntityCat CAT;
 	private EntityCat TARGET;
 	private World WORLD;
-	private double MOVEMENT_SPEED;
-	private int BABY_DELAY;
+	private double MOVE_SPEED;
+	private int MATE_DELAY;
 
-	public EntityCatAIMate(EntityCat entityCat, double d) {
+	private double NEARBY_SIZE_CHECK = 16.0D;
+
+	public EntityCatAIMate(EntityCat entityCat, double speed) {
 		this.CAT = entityCat;
 		this.WORLD = entityCat.worldObj;
-		this.MOVEMENT_SPEED = d;
+		this.MOVE_SPEED = speed;
 		this.setMutexBits(3);
 	}
 
 	@Override
 	public boolean shouldExecute() {
-		if ((this.CAT.getSex() == 0) || (this.CAT.getSex() == 1 && this.TARGET != null && !this.TARGET.getBreedingStatus("inheat")) || (this.CAT.getSex() == 1 && this.CAT.getHeatTimer() > 0)) {
+		if (this.CAT.getSex().equals(Genetics.Sex.FEMALE.getName()))
 			return false;
-		} else
+
+		List LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getBoundingBox().expand(NEARBY_SIZE_CHECK, NEARBY_SIZE_CHECK, NEARBY_SIZE_CHECK));
+		if (LIST.size() >= SimplyCatsConfig.BREEDING_LIMIT)
+			return false;
+
+		else if ((this.TARGET != null && !this.TARGET.getBreedingStatus("inheat")) || (this.CAT.getMateTimer() > 0))
+			return false;
+
+		else {
 			this.TARGET = this.getNearbyMate();
-			return this.TARGET != null;
-	}
-
-	private EntityCat getNearbyMate() {
-		float f = 8.0F;
-		List<?> list = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.boundingBox.expand((double) f, (double) f, (double) f));
-		double d0 = Double.MAX_VALUE;
-		EntityCat cat = null;
-		Iterator<?> iterator = list.iterator();
-
-		if (this.CAT.getSex() == 1)
-			while (iterator.hasNext()) {
-				EntityCat cat1 = (EntityCat) iterator.next();
-	
-				if (this.CAT.canMateWith(cat1) && this.CAT.getDistanceSqToEntity(cat1) < d0) {
-					cat = cat1;
-					d0 = this.CAT.getDistanceSqToEntity(cat1);
-				}
-			}
-
-		return cat;
+			return this.TARGET != null && this.CAT.getEntitySenses().canSee(this.TARGET);
+		}
 	}
 
 	@Override
 	public boolean continueExecuting() {
-		boolean maleCooldownCheck = this.CAT.getSex() == 1 && this.CAT.getHeatTimer() == 0;
-		boolean femaleHeatCheck = this.TARGET.getSex() == 0 && this.TARGET.getBreedingStatus("inheat");
-		return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.BABY_DELAY < 60;
+		boolean maleCooldownCheck = this.CAT.getSex().equals(Genetics.Sex.MALE.getName()) && this.CAT.getMateTimer() == 0;
+		boolean femaleHeatCheck = this.TARGET.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.TARGET.getBreedingStatus("inheat");
+		List LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getBoundingBox().expand(NEARBY_SIZE_CHECK, NEARBY_SIZE_CHECK, NEARBY_SIZE_CHECK));
+		return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && LIST.size() < SimplyCatsConfig.BREEDING_LIMIT && this.CAT.getEntitySenses().canSee(this.TARGET);
 	}
 
 	@Override
 	public void resetTask() {
 		this.TARGET = null;
-		this.BABY_DELAY = 0;
+		this.MATE_DELAY = 0;
 	}
 
 	@Override
 	public void updateTask() {
 		this.CAT.getLookHelper().setLookPositionWithEntity(this.TARGET, 10.0F, (float) this.CAT.getVerticalFaceSpeed());
 		this.TARGET.getLookHelper().setLookPositionWithEntity(this.CAT, 10.0F, (float) this.TARGET.getVerticalFaceSpeed());
-		this.CAT.getNavigator().tryMoveToEntityLiving(this.TARGET, this.MOVEMENT_SPEED);
-		this.TARGET.getNavigator().tryMoveToEntityLiving(this.CAT, this.MOVEMENT_SPEED);
-		++this.BABY_DELAY;
+		this.CAT.getNavigator().tryMoveToEntityLiving(this.TARGET, this.MOVE_SPEED);
+		this.TARGET.getNavigator().tryMoveToEntityLiving(this.CAT, this.MOVE_SPEED);
+		++this.MATE_DELAY;
 
-		if (this.BABY_DELAY >= 60 && this.CAT.getDistanceSqToEntity(this.TARGET) < 9.0D) {
-			int litterSize = this.WORLD.rand.nextInt(6) + 1; //at least 1 kitten, max of 6
-			for (int i = 0; i < litterSize; i++)
-				this.spawnBaby();
-			this.CAT.setHeatTimer(24000);
+		if (this.MATE_DELAY >= 60 && this.CAT.getDistanceSqToEntity(this.TARGET) < 4.0D) {
+			if (this.WORLD.rand.nextInt(4) <= 2) // 75% chance of success
+				this.startPregnancy();
+			this.CAT.setMateTimer(SimplyCatsConfig.MALE_COOLDOWN); // starts male cooldown
 		}
 	}
 
-	private void spawnBaby() {
-		EntityCat child = this.CAT.createChild(this.TARGET);
+	private EntityCat getNearbyMate() {
+		List<?> list = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.boundingBox.expand(NEARBY_SIZE_CHECK, NEARBY_SIZE_CHECK, NEARBY_SIZE_CHECK));
+		double d0 = Double.MAX_VALUE;
+		EntityCat entityCat = null;
+		Iterator<?> iterator = list.iterator();
 
-		if (child != null) {
-			child.setGrowingAge(-24000);
-			child.setLocationAndAngles(this.CAT.posX, this.CAT.posY, this.CAT.posZ, 0.0F, 0.0F);
-			this.WORLD.spawnEntityInWorld(child);
-
-			Random random = this.CAT.getRNG();
-			for (int i = 0; i < 7; ++i) {
-				double d0 = random.nextGaussian() * 0.02D;
-				double d1 = random.nextGaussian() * 0.02D;
-				double d2 = random.nextGaussian() * 0.02D;
-				this.WORLD.spawnParticle("heart", this.CAT.posX + (double) (random.nextFloat() * this.CAT.width * 2.0F) - (double) this.CAT.width, this.CAT.posY + 0.5D + (double) (random.nextFloat() * this.CAT.height), this.CAT.posZ + (double) (random.nextFloat() * this.CAT.width * 2.0F) - (double) this.CAT.width, d0, d1, d2);
+		if (this.CAT.getSex().equals(Genetics.Sex.MALE.getName()))
+			while (iterator.hasNext()) {
+				EntityCat cat1 = (EntityCat) iterator.next();
+	
+				if (this.CAT.canMateWith(cat1) && this.CAT.getDistanceSqToEntity(cat1) < d0) {
+					entityCat = cat1;
+					d0 = this.CAT.getDistanceSqToEntity(cat1);
+				}
 			}
 
-			if (this.WORLD.getGameRules().getGameRuleBooleanValue("doMobLoot")) {
-				this.WORLD.spawnEntityInWorld(new EntityXPOrb(this.WORLD, this.CAT.posX, this.CAT.posY, this.CAT.posZ, random.nextInt(7) + 1));
-			}
+		return entityCat;
+	}
+
+	private void startPregnancy() {
+		int litterSize;
+		if (this.TARGET.getKittens() <= 0) {
+			litterSize = this.WORLD.rand.nextInt(6) + 1; // at least 1 kitten, max of 6
+		} else {
+			litterSize = this.WORLD.rand.nextInt(6 - this.TARGET.getKittens()) + 1; // max of 6, minus already accrued kittens
+		}
+		this.TARGET.setBreedingStatus("ispregnant", true);
+		this.TARGET.setKittens(litterSize);
+		this.TARGET.addFather(this.CAT, this.TARGET.getKittens()); // save father nbt data to mother cat for each kitten added to litterSize
+
+		if (litterSize == 6 || this.TARGET.getKittens() == 6 || this.WORLD.rand.nextInt(4) == 0) { // full litter OR 25% chance ends heat
+			this.TARGET.setBreedingStatus("inheat", false);
+			this.TARGET.setTimeCycle("pregnancy", SimplyCatsConfig.PREGNANCY_TIMER); // starts pregnancy timer
 		}
 	}
 

@@ -2,10 +2,13 @@ package com.github.mnesikos.simplycats.entity.ai;
 
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
@@ -22,7 +25,7 @@ public class CatAIWander extends EntityAIBase {
     public CatAIWander(EntityCat cat, double speed) {
         this.cat = cat;
         this.speed = speed;
-        this.executionChance = 60;
+        this.executionChance = 45; // todo activeness level should effect this
         this.setMutexBits(1);
     }
 
@@ -31,8 +34,6 @@ public class CatAIWander extends EntityAIBase {
         if (this.cat.getIdleTime() >= 100)
             return false;
         else if (this.cat.getRNG().nextInt(this.executionChance) != 0)
-            return false;
-        else if (!this.cat.canWander())
             return false;
 
         Vec3d vec3d = this.getPosition();
@@ -49,41 +50,70 @@ public class CatAIWander extends EntityAIBase {
 
     @Nullable
     protected Vec3d getPosition() {
+        PathNavigate pathnavigate = cat.getNavigator();
+        Random random = cat.getRNG();
+        boolean outsideBounds;
+
+        int xzRange = 10;
+        int yRange = 3;
+
         if (cat.hasHomePos()) {
-            if (cat.getPosition().distanceSq(cat.getHomePos().getX(), cat.getHomePos().getY(), cat.getHomePos().getZ())
-                    > SimplyCatsConfig.WANDER_AREA_LIMIT) {
-                return new Vec3d(cat.getHomePos().getX(), cat.getHomePos().getY(), cat.getHomePos().getZ());
+            double d0 = cat.getHomePos().distanceSq((double) MathHelper.floor(cat.posX), (double)MathHelper.floor(cat.posY), (double)MathHelper.floor(cat.posZ)) + 4.0D;
+            double d1 = (SimplyCatsConfig.WANDER_AREA_LIMIT + (float)xzRange);
+            outsideBounds = d0 < d1 * d1;
+        }
+        else
+            outsideBounds = false;
 
-            } else {
-                PathNavigate pathNavigate = cat.getNavigator();
-                Random rand = cat.getRNG();
+        boolean flag1 = false;
+        float f = -99999.0F;
+        int k1 = 0;
+        int i = 0;
+        int j = 0;
 
-                int xzRange = 5;
-                int yRange = 3;
+        for (int k = 0; k < 10; ++k) {
+            int l = random.nextInt(2 * xzRange + 1) - xzRange;
+            int i1 = random.nextInt(2 * yRange + 1) - yRange;
+            int j1 = random.nextInt(2 * xzRange + 1) - xzRange;
 
-                float bestWeight = -99999.0F;
-                BlockPos bestPos = cat.getHomePos();
+            if (cat.hasHomePos() /*&& xzRange > 1*/) {
+                BlockPos blockpos = cat.getHomePos();
 
-                for (int attempt = 0; attempt < 10; attempt++) {
-                    int l = rand.nextInt(2 * xzRange + 1) - xzRange;
-                    int i1 = rand.nextInt(2 * yRange + 1) - yRange;
-                    int j1 = rand.nextInt(2 * xzRange + 1) - xzRange;
+                if (cat.posX > (double)blockpos.getX())
+                    l -= random.nextInt(xzRange / 2);
+                else
+                    l += random.nextInt(xzRange / 2);
 
-                    BlockPos testPos = cat.getHomePos().add(l, i1, j1);
-
-                    if (pathNavigate.canEntityStandOnPos(testPos)) {
-                        float weight = cat.getBlockPathWeight(testPos);
-                        if (weight > bestWeight) {
-                            bestWeight = weight;
-                            bestPos = testPos;
-                        }
-                    }
-                }
-                return new Vec3d(bestPos.getX(), bestPos.getY(), bestPos.getZ());
+                if (cat.posZ > (double)blockpos.getZ())
+                    j1 -= random.nextInt(xzRange / 2);
+                else
+                    j1 += random.nextInt(xzRange / 2);
             }
 
-        } else
-            return RandomPositionGenerator.findRandomTarget(cat, 10, 7);
+            BlockPos blockpos1 = new BlockPos((double)l + cat.posX, (double)i1 + cat.posY, (double)j1 + cat.posZ);
+
+            if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SimplyCatsConfig.WANDER_AREA_LIMIT*SimplyCatsConfig.WANDER_AREA_LIMIT))) && pathnavigate.canEntityStandOnPos(blockpos1)) {
+                blockpos1 = moveAboveSolid(blockpos1, cat);
+
+                if (isWaterDestination(blockpos1, cat))
+                    continue; //todo avoid water
+
+                float f1 = cat.getBlockPathWeight(blockpos1);
+
+                if (f1 > f) {
+                    f = f1;
+                    k1 = l;
+                    i = i1;
+                    j = j1;
+                    flag1 = true;
+                }
+            }
+        }
+
+        if (flag1)
+            return new Vec3d((double)k1 + cat.posX, (double)i + cat.posY, (double)j + cat.posZ);
+        else
+            return null;
     }
 
     /**
@@ -100,5 +130,23 @@ public class CatAIWander extends EntityAIBase {
     @Override
     public void startExecuting() {
         this.cat.getNavigator().tryMoveToXYZ(this.x, this.y, this.z, this.speed);
+    }
+
+
+    private static BlockPos moveAboveSolid(BlockPos blockPos, EntityCreature entityCreature) {
+        if (!entityCreature.world.getBlockState(blockPos).getMaterial().isSolid())
+            return blockPos;
+        else {
+            BlockPos blockpos;
+
+            for (blockpos = blockPos.up(); blockpos.getY() < entityCreature.world.getHeight() && entityCreature.world.getBlockState(blockpos).getMaterial().isSolid(); blockpos = blockpos.up())
+                ;
+
+            return blockpos;
+        }
+    }
+
+    private static boolean isWaterDestination(BlockPos blockPos, EntityCreature entityCreature) {
+        return entityCreature.world.getBlockState(blockPos).getMaterial() == Material.WATER;
     }
 }

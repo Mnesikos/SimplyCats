@@ -9,18 +9,13 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 
-@Mod(modid = SimplyCats.MODID, name = SimplyCats.MODNAME, version = SimplyCats.VERSION,
-        acceptedMinecraftVersions = "1.7.10")
+@Mod(modid = Ref.MODID, name = Ref.MODNAME, version = Ref.VERSION,
+        acceptedMinecraftVersions = Ref.ACCEPTED_VERSIONS)
 public class SimplyCats {
-    public static final String MODID = "simplycats";
-    public static final String MODNAME = "Simply Cats";
-    public static final String VERSION = "1.7.10-0.0.1.0-beta1";
-
     @Mod.Instance
     public static SimplyCats instance;
 
-    @SidedProxy(clientSide="com.github.mnesikos.simplycats.proxy.ClientProxy",
-            serverSide="com.github.mnesikos.simplycats.proxy.ServerProxy")
+    @SidedProxy(clientSide=Ref.CLIENT_PROXY, serverSide=Ref.SERVER_PROXY)
     public static CommonProxy proxy;
 
     @EventHandler
@@ -40,6 +35,7 @@ public class SimplyCats {
 
     @EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandBeckon());
+        //if (SimplyCatsConfig.COMMAND_BECKON)
+            event.registerServerCommand(new CommandBeckon());
     }
 }
