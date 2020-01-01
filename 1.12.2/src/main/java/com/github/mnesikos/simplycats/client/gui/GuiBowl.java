@@ -1,41 +1,32 @@
 package com.github.mnesikos.simplycats.client.gui;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
-import net.minecraft.client.Minecraft;
+import com.github.mnesikos.simplycats.init.ModBlocks;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-// TODO
+import net.minecraft.util.text.TextComponentTranslation;
+
 public class GuiBowl extends GuiContainer {
-    private ResourceLocation texture;
+    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(Ref.MODID + ":textures/gui/bowl_gui.png");
 
-    //private InventoryPlayer inventory;
-    private TileEntityBowl te;
-
-    public GuiBowl(Container inventorySlotsIn) {
-        super(inventorySlotsIn);
-        texture = new ResourceLocation(Ref.MODID + ":textures/gui/bowl_gui.png");
-        //inventory = player.inventory;
-        //this.te = te;
+    public GuiBowl(Container container) {
+        super(container);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
+        GlStateManager.color(1, 1, 1, 1);
+        mc.getTextureManager().bindTexture(BG_TEXTURE);
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
-
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        //fontRendererObj.drawString(I18n.format(te.getInventoryName()), (xSize / 2) - (fontRendererObj.getStringWidth(I18n.format(te.getInventoryName())) / 2), 6, 4210752, false);
-        //fontRendererObj.drawString(I18n.format(inventory.getInventoryName()), 8, ySize - 96 + 2, 4210752);
+        String name = new TextComponentTranslation(ModBlocks.BOWL.getTranslationKey() + ".name").getFormattedText();
+        fontRenderer.drawString(name, xSize / 2 - fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     }
 }

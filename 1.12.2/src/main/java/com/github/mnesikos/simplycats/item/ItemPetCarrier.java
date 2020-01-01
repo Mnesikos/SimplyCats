@@ -1,6 +1,5 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
@@ -13,7 +12,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
@@ -37,14 +35,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ItemPetCarrier extends Item {
+public class ItemPetCarrier extends ItemBase {
 
     public ItemPetCarrier() {
-        setTranslationKey("pet_carrier");
-        setRegistryName(Ref.MODID + ":pet_carrier");
-        setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
+        super("pet_carrier");
         this.setMaxStackSize(1);
         this.setHasSubtypes(true);
+    }
+
+    @Override
+    public void registerItemModel() {
+        for (int i = 0; i < 5; i++)
+            SimplyCats.PROXY.registerItemRenderer(this, i, name);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.client.resources.I18n;
@@ -10,9 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
@@ -26,15 +23,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemCertificate extends Item {
+public class ItemCertificate extends ItemBase {
     private static final String[] TYPES = new String[] { "adopt", "release" };
+    protected String name;
 
-    public ItemCertificate() {
-        setRegistryName(Ref.MODID + ":certificate");
-        setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
+    public ItemCertificate(String name) {
+        super(name);
+        this.name = name;
         setHasSubtypes(true);
         setMaxDamage(0);
         setMaxStackSize(1);
+    }
+
+    @Override
+    public void registerItemModel() {
+        SimplyCats.PROXY.registerItemRenderer(this, 0, (name + "_adopt"));
+        SimplyCats.PROXY.registerItemRenderer(this, 1, (name + "_release"));
     }
 
     @Override

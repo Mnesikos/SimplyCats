@@ -5,6 +5,7 @@ item.pet_carrier.empty.name=Pet Carrier (Empty)
 item.pet_carrier.full.name=Pet Carrier (Full)
 item.treat_bag.name=Treat Bag
 item.catnip.name=Catnip
+item.catnip_seeds.name=Catnip Seeds
 
 < Item Tooltips
 tooltip.certificate.adopt.desc=Right click on an unowned pet to adopt them!
@@ -15,8 +16,8 @@ tooltip.pet_carrier.adopt_dog=Adopt a Dog!
 tooltip.pet_carrier.owner=Owned by
 
 < Block Names
-tile.bowl.name=Bowl
-container.bowl=Food Bowl Contents
+tile.cat_bowl.name=Cat Bowl
+container.bowl=Food Bowl
 
 < Creative Tab Name
 itemGroup.simplycats.tab=Simply Cats

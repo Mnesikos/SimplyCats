@@ -1,95 +1,106 @@
 package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.SimplyCats;
-import com.github.mnesikos.simplycats.init.ModBlocks;
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
-import java.util.Random;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 
-// TODO
-public class BlockBowl extends BlockContainer {
-    private static final String name = "bowl";
-    public static int guiID = 0;
-    private final Random rand = new Random();
-    //private IIcon bowlIcon;
+public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
+    protected String name;
+    public static final int GUI_ID = 0;
     float min = 0.34375F; float max = 0.65625F;
 
-    public BlockBowl() {
-        super(Material.WOOD);
-        /*setBlockName(name);
-        setBlockBounds(min, 0.0F, min, max, 0.125F, max);*/
-        setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
-        ModBlocks.BLOCKS.add(this);
-    }
-
-    /*@Override
-    public boolean isOpaqueCube() {
-        return false;
+    public BlockBowl(String name) {
+        super(Material.ROCK, name);
+        this.name = name;
     }
 
     @Override
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
-
-    @Override
-    public int getRenderType() {
-        return ClientProxy.RENDER_BOWL_ID;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        return this.bowlIcon;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegistry) {
-        this.bowlIcon = iconRegistry.registerIcon(SimplyCats.MODID + ":bowl_texture");
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float lx, float ly, float lz) {
-        if (world.isRemote) return true;
-
-        TileEntity tileentity = world.getTileEntity(x, y, z);
-        if (tileentity != null && tileentity instanceof TileEntityBowl) {
-            player.openGui(SimplyCats.instance, guiID, world, x, y, z);
-            return true;
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (!world.isRemote) {
+            TileEntity tile = getTileEntity(world, pos);
+            IItemHandler itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+            if (player.isSneaking() && !player.getHeldItemMainhand().isEmpty()) {
+                player.setHeldItem(hand, itemHandler.insertItem(0, player.getHeldItemMainhand(), false));
+                tile.markDirty();
+            } else
+                player.openGui(SimplyCats.instance, GUI_ID, world, pos.getX(), pos.getY(), pos.getZ());
         }
-        return false;
+        return true;
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int par6) {
-        if (world.isRemote) return;
-
-        ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
-
-        TileEntity te = world.getTileEntity(x, y, z);
-
-        if (te != null && te instanceof TileEntityBowl) {
-            TileEntityBowl teBowl = (TileEntityBowl) te;
-
-            for (int i = 0; i < teBowl.getSizeInventory(); i++) {
-                ItemStack stack = teBowl.getStackInSlot(i);
-
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        ArrayList<ItemStack> drops = new ArrayList<>();
+        TileEntityBowl te = getTileEntity(world, pos);
+        if (te != null) {
+            for (int i = 0; i < te.getSizeInventory(); i++) {
+                ItemStack stack = te.getStackInSlot(i);
                 if (stack != null) drops.add(stack.copy());
             }
         }
 
         for (int i = 0; i < drops.size(); i++) {
-            EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, drops.get(i));
-            item.setVelocity((rand.nextDouble() - 0.5) * 0.25, rand.nextDouble() * 0.5 * 0.25, (rand.nextDouble() - 0.5) * 0.25);
-            world.spawnEntityInWorld(item);
+            EntityItem item = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), drops.get(i));
+            world.spawnEntity(item);
         }
-    }*/
 
-    public TileEntity createNewTileEntity(World world, int par2) {
+        super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public Class<TileEntityBowl> getTileEntityClass() {
+        return TileEntityBowl.class;
+    }
+
+    @Nullable
+    @Override
+    public TileEntityBowl createTileEntity(World world, IBlockState state) {
         return new TileEntityBowl();
     }
 
+    /*@SideOnly(Side.CLIENT)
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.SOLID;
+    }*/
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
+        return false;
+    }
+
+    /*@Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
+    }*/
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return new AxisAlignedBB(min, 0.0F, min, max, 0.125F, max);
+    }
 }

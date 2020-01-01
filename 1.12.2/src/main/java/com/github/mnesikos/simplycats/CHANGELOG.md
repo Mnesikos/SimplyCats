@@ -11,6 +11,8 @@ and this project adheres to
 - Creepers will now avoid SC cats exactly like their vanilla counterparts.
 - Witches are suddenly pacifists with SC cats around!
 - Cats will hiss when undead are nearby.
+- Catnip crop... almost- corn art in as placeholder
+- Cat food bowl with inventory
 ### Changed
 - Kittens are smaller for longer, yay! (This time is also configurable.)
 ### Fixed

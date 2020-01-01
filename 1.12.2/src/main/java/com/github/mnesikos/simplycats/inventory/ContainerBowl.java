@@ -2,138 +2,80 @@ package com.github.mnesikos.simplycats.inventory;
 
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.*;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
-import java.awt.*;
-// TODO
-public class ContainerBowl extends Container {/*
-    private TileEntityBowl te;
-
-    public ContainerBowl(TileEntityBowl te, EntityPlayer player) {
-        this.te = te;
+public class ContainerBowl extends Container {
+    public ContainerBowl(InventoryPlayer player, final TileEntityBowl bowl) {
+        IItemHandler inventory = bowl.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
 
         //Bowl Storage
-        for (int i = 0; i < 2; i++)
-            for (int j = 0; j < 5; j++)
-                addSlotToContainer(new Slot(te, j + i * 5, 44 + j * 18, 17 + i * 18));
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 5; j++) {
+                 addSlotToContainer(new SlotItemHandler(inventory, j + i * 5, 44 + j * 18, 21 + i * 18) {
+                    @Override
+                    public void onSlotChanged() {
+                        bowl.markDirty();
+                    }
+                });
+            }
+        }
 
         //Player Inventory
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 9; j++)
-                addSlotToContainer(new Slot(player.inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+                addSlotToContainer(new Slot(player, j + i * 9 + 9, 8 + j * 18, 74 + i * 18));
 
         //Hotbar
         for (int i = 0; i < 9; i++)
-            addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 142));
+            addSlotToContainer(new Slot(player, i, 8 + i * 18, 132));
     }
 
-    @Override
-    protected boolean mergeItemStack(ItemStack itemstack, int startIndex, int endIndex, boolean reverseDirection){
-        boolean flag = false;
-        int i = startIndex;
-        if (reverseDirection) i = endIndex - 1;
 
-        if (itemstack.isStackable()){
-            while (itemstack.stackSize > 0 && (!reverseDirection && i < endIndex || reverseDirection && i >= startIndex)){
-                Slot slot = (Slot)this.inventorySlots.get(i);
-                ItemStack stackInSlot = slot.getStack();
-                int maxLimit = Math.min(itemstack.getMaxStackSize(), slot.getSlotStackLimit());
-
-                if (stackInSlot != null && ItemStack.areItemStacksEqual(itemstack, stackInSlot)){
-                    int j = stackInSlot.stackSize + itemstack.stackSize;
-                    if (j <= maxLimit){
-                        itemstack.stackSize = 0;
-                        stackInSlot.stackSize = j;
-                        slot.onSlotChanged();
-                        flag = true;
-
-                    }else if (stackInSlot.stackSize < maxLimit){
-                        itemstack.stackSize -= maxLimit - stackInSlot.stackSize;
-                        stackInSlot.stackSize = maxLimit;
-                        slot.onSlotChanged();
-                        flag = true;
-                    }
-                }
-                if (reverseDirection){
-                    --i;
-                }else ++i;
-            }
-        }
-        if (itemstack.stackSize > 0){
-            if (reverseDirection){
-                i = endIndex - 1;
-            }else i = startIndex;
-
-            while (!reverseDirection && i < endIndex || reverseDirection && i >= startIndex){
-                Slot slot1 = (Slot)this.inventorySlots.get(i);
-                ItemStack itemstack1 = slot1.getStack();
-
-                if (itemstack1 == null && slot1.isItemValid(itemstack)){ // Forge: Make sure to respect isItemValid in the slot.
-                    if(itemstack.stackSize <= slot1.getSlotStackLimit()){
-                        slot1.putStack(itemstack.copy());
-                        slot1.onSlotChanged();
-                        itemstack.stackSize = 0;
-                        flag = true;
-                        break;
-                    }else{
-                        itemstack1 = itemstack.copy();
-                        itemstack.stackSize -= slot1.getSlotStackLimit();
-                        itemstack1.stackSize = slot1.getSlotStackLimit();
-                        slot1.putStack(itemstack1);
-                        slot1.onSlotChanged();
-                        flag = true;
-                    }
-                }
-                if (reverseDirection){
-                    --i;
-                }else ++i;
-            }
-        }
-        return flag;
-    }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int parSlot) {
-        ItemStack itemstack = null;
-        Slot slot = (Slot)this.inventorySlots.get(parSlot);
+    public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack()) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
 
-            // If itemstack is in bowl inventory
-            if (parSlot < 10) {
-                // try to place in player inventory / action bar;
-                // mergeItemStack uses < index, so the last slot in the inventory won't get checked if you don't add 1
-                if (!this.mergeItemStack(itemstack1, 10, 45+1, false))
-                    return null;
+            int containerSlots = inventorySlots.size() - player.inventory.mainInventory.size();
 
-                slot.onSlotChange(itemstack1, itemstack);
-            }
-            // itemstack is in player inventory, try to place in bowl inventory
-            else if (parSlot > 9) {
-                // try to place in bowl inventory; add 1 to final input slot because mergeItemStack uses < index
-                if (!this.mergeItemStack(itemstack1, 0, 9+1, false))
-                    return null;
+            if (index < containerSlots) {
+                if (!this.mergeItemStack(itemstack1, containerSlots, inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.mergeItemStack(itemstack1, 0, containerSlots, false)) {
+                return ItemStack.EMPTY;
             }
 
-            if (itemstack1.stackSize == 0)
-                slot.putStack((ItemStack)null);
-            else
+            if (itemstack1.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
                 slot.onSlotChanged();
+            }
 
-            if (itemstack1.stackSize == itemstack.stackSize)
-                return null;
+            if (itemstack1.getCount() == itemstack.getCount()) {
+                return ItemStack.EMPTY;
+            }
 
-            slot.onPickupFromSlot(player, itemstack1);
+            slot.onTake(player, itemstack1);
         }
+
         return itemstack;
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return te.isUseableByPlayer(player);
+        return true;
     }
-*/
 }
