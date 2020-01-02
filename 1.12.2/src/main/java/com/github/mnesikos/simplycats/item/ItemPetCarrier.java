@@ -237,26 +237,8 @@ public class ItemPetCarrier extends ItemBase {
             else if (item.getItemDamage() == 4)
                 tooltip.add(TextFormatting.ITALIC + dog.getFormattedText());
 
-            else if (item.getItemDamage() != 0) { // todo
+            else if (item.getItemDamage() != 0) {
                 TextComponentTranslation species = new TextComponentTranslation("entity." + nbt.getString("id") + ".name");
-                /*String specificCat = I18n.format("cat.type." + nbt.getInteger("Type") + ".name");
-                String catSex = I18n.format("cat.sex." + nbt.getByte("Sex") + "b.name");
-
-                String base = I18n.format("cat.base." + nbt.getInteger("Base") + ".name");
-                String tabby = I18n.format("cat.tabby.name");
-                String white = I18n.format("cat.white.name");
-                String catPheno;*/
-
-                /*if (nbt.getInteger("tabby") != 0 || nbt.getInteger("white") != 0) {
-                    if (nbt.getInteger("white") == 0)
-                        catPheno = base + " " + tabby;
-                    else if (nbt.getInteger("tabby") == 0)
-                        catPheno = base + " " + white;
-                    else
-                        catPheno = base + " " + tabby + " " + white;
-                } else
-                    catPheno = base;*/
-
 
                 TextComponentTranslation owner = new TextComponentTranslation("tooltip.pet_carrier.owner");
                 TextComponentTranslation sex = new TextComponentTranslation("cat.sex." + (nbt.getString("Phaeomelanin").contains(Genetics.Phaeomelanin.MALE.getAllele()) ? "male" : "female") + ".name");

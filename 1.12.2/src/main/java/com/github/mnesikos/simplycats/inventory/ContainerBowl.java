@@ -36,8 +36,6 @@ public class ContainerBowl extends Container {
             addSlotToContainer(new Slot(player, i, 8 + i * 18, 132));
     }
 
-
-
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
@@ -72,8 +70,6 @@ public class ContainerBowl extends Container {
 
         return itemstack;
     }
-
-
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {

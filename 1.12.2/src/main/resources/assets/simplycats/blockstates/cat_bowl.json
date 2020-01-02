@@ -1,5 +1,12 @@
 {
-  "variants": {
-    "normal": { "model": "simplycats:cat_bowl" }
-  }
+  "multipart": [
+    { "apply": { "model": "simplycats:cat_bowl" } },
+
+    { "when": { "full_food": "true" },
+      "apply": { "model": "simplycats:cat_bowl_food" }
+    },
+    { "when": { "full_water": "true" },
+      "apply": { "model": "simplycats:cat_bowl_water" }
+    }
+  ]
 }

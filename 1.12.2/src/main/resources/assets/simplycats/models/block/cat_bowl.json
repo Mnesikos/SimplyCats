@@ -2,7 +2,9 @@
   "ambientocclusion": false,
   "textures": {
     "particle": "blocks/hardened_clay",
-    "1": "blocks/hardened_clay"
+    "1": "blocks/hardened_clay",
+    "water": "blocks/water_still",
+    "food": "simplycats:block/cat_blocks"
   },
   "elements": [
     {
