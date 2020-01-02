@@ -16,8 +16,8 @@ tooltip.pet_carrier.adopt_dog=Adopt a Dog!
 tooltip.pet_carrier.owner=Owned by
 
 < Block Names
-tile.cat_bowl.name=Cat Bowl
-container.bowl=Food Bowl
+tile.cat_bowl.name=Cat Food Bowl
+container.cat_bowl.name=Cat Food Bowl
 
 < Creative Tab Name
 itemGroup.simplycats.tab=Simply Cats

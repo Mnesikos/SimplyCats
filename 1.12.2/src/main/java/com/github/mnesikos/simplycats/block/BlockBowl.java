@@ -2,11 +2,12 @@ package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -18,16 +19,16 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 
 public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
     protected String name;
     public static final int GUI_ID = 0;
-    float min = 0.34375F; float max = 0.65625F;
 
     public BlockBowl(String name) {
-        super(Material.ROCK, name);
+        super(Material.GROUND, name);
         this.name = name;
+        this.setSoundType(SoundType.STONE);
+        this.setHardness(0.2F);
     }
 
     @Override
@@ -46,19 +47,9 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        ArrayList<ItemStack> drops = new ArrayList<>();
         TileEntityBowl te = getTileEntity(world, pos);
-        if (te != null) {
-            for (int i = 0; i < te.getSizeInventory(); i++) {
-                ItemStack stack = te.getStackInSlot(i);
-                if (stack != null) drops.add(stack.copy());
-            }
-        }
-
-        for (int i = 0; i < drops.size(); i++) {
-            EntityItem item = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), drops.get(i));
-            world.spawnEntity(item);
-        }
+        if (te instanceof IInventory)
+            InventoryHelper.dropInventoryItems(world, pos, (IInventory)te);
 
         super.breakBlock(world, pos, state);
     }
@@ -73,11 +64,6 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
     public TileEntityBowl createTileEntity(World world, IBlockState state) {
         return new TileEntityBowl();
     }
-
-    /*@SideOnly(Side.CLIENT)
-    public BlockRenderLayer getBlockLayer() {
-        return BlockRenderLayer.SOLID;
-    }*/
 
     @Override
     public boolean isOpaqueCube(IBlockState state) {
@@ -94,13 +80,9 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
         return false;
     }
 
-    /*@Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
-    }*/
-
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        float min = 0.34375F, max = 0.65625F;
         return new AxisAlignedBB(min, 0.0F, min, max, 0.125F, max);
     }
 }

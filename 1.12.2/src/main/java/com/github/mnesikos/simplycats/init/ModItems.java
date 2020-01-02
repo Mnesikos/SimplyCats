@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.init;
 
 import com.github.mnesikos.simplycats.item.*;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;

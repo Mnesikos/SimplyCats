@@ -1,18 +1,19 @@
 package com.github.mnesikos.simplycats.client.gui;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.init.ModBlocks;
+import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
 
 public class GuiBowl extends GuiContainer {
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(Ref.MODID + ":textures/gui/bowl_gui.png");
+    private TileEntityBowl tileEntityBowl;
 
-    public GuiBowl(Container container) {
+    public GuiBowl(Container container, TileEntityBowl tileEntityBowl) {
         super(container);
+        this.tileEntityBowl = tileEntityBowl;
     }
 
     @Override
@@ -26,7 +27,13 @@ public class GuiBowl extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String name = new TextComponentTranslation(ModBlocks.BOWL.getTranslationKey() + ".name").getFormattedText();
+        String name = tileEntityBowl.getDisplayName().getUnformattedText();
         fontRenderer.drawString(name, xSize / 2 - fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 }

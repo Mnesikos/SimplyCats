@@ -6,6 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -80,12 +83,18 @@ public class TileEntityBowl extends TileEntity implements IInventory {
 
     @Override
     public String getName() {
-        return "container.bowl";
+        return "container.cat_bowl.name";
     }
 
     @Override
     public boolean hasCustomName() {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getDisplayName() {
+        return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
     }
 
     @Override
@@ -95,14 +104,14 @@ public class TileEntityBowl extends TileEntity implements IInventory {
 
     @Override
     public boolean isUsableByPlayer(EntityPlayer player) {
-        return world.getTileEntity(pos) != this ? false : player.getDistanceSq((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D) <= 64.0D;
+        return world.getTileEntity(pos) == this && player.getDistanceSq((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
-    public void openInventory(EntityPlayer player) { }
+    public void openInventory(EntityPlayer player) {}
 
     @Override
-    public void closeInventory(EntityPlayer player) { }
+    public void closeInventory(EntityPlayer player) {}
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
@@ -115,7 +124,7 @@ public class TileEntityBowl extends TileEntity implements IInventory {
     }
 
     @Override
-    public void setField(int id, int value) { }
+    public void setField(int id, int value) {}
 
     @Override
     public int getFieldCount() {
@@ -123,11 +132,16 @@ public class TileEntityBowl extends TileEntity implements IInventory {
     }
 
     @Override
-    public void clear() { }
+    public void clear() {}
 
     @Override
     public boolean isEmpty() {
-        return false;
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            if (!inventory.getStackInSlot(i).isEmpty())
+                return false;
+        }
+
+        return true;
     }
 
     @Override

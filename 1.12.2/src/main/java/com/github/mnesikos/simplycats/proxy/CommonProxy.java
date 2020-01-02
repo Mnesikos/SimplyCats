@@ -70,7 +70,7 @@ public class CommonProxy implements IGuiHandler {
     }
 
     public void postInit(FMLPostInitializationEvent e) {
-
+        Ref.registerCatFoods();
     }
 
     public void registerItemRenderer(Item item, int meta, String id) {

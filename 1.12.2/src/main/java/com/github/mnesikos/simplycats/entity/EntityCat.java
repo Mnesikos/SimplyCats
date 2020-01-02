@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.entity;
 
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.ai.*;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
@@ -348,38 +349,7 @@ public class EntityCat extends AbstractCat {
     }
 
     private boolean isFoodItem(ItemStack item) {
-        return FoodItems(item);
-    }
-
-    private static boolean FoodItems(ItemStack stack) {
-        List<Item> foods = new ArrayList<>();
-        NonNullList<ItemStack> meatrawDictionary = OreDictionary.getOres("listAllmeatraw");
-        for (ItemStack stk : meatrawDictionary) {
-            foods.add(stk.getItem());
-        }
-        NonNullList<ItemStack> meatcookedDictionary = OreDictionary.getOres("listAllmeatcooked");
-        for (ItemStack stk : meatcookedDictionary) {
-            foods.add(stk.getItem());
-        }
-        NonNullList<ItemStack> fishfreshDictionary = OreDictionary.getOres("listAllfishfresh");
-        for (ItemStack stk : fishfreshDictionary) {
-            foods.add(stk.getItem());
-        }
-        NonNullList<ItemStack> fishcookedDictionary = OreDictionary.getOres("listAllfishcooked");
-        for (ItemStack stk : fishcookedDictionary) {
-            foods.add(stk.getItem());
-        }
-        Iterator foodsItr = foods.iterator();
-        Item i;
-        do {
-            if (!foodsItr.hasNext()) {
-                return false;
-            }
-
-            i = (Item)foodsItr.next();
-        } while(stack.getItem() != i);
-
-        return true;
+        return Ref.catFoodItems(item);
     }
 
     @Override

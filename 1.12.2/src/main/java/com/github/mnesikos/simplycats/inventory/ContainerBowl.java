@@ -6,19 +6,18 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerBowl extends Container {
+    private TileEntityBowl tileEntityBowl;
+
     public ContainerBowl(InventoryPlayer player, final TileEntityBowl bowl) {
-        IItemHandler inventory = bowl.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
+        this.tileEntityBowl = bowl;
+        //IItemHandler inventory = bowl.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
 
         //Bowl Storage
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 5; j++) {
-                 addSlotToContainer(new SlotItemHandler(inventory, j + i * 5, 44 + j * 18, 21 + i * 18) {
+                 addSlotToContainer(new SlotCatFood(tileEntityBowl, j + i * 5, 44 + j * 18, 21 + i * 18) {
                     @Override
                     public void onSlotChanged() {
                         bowl.markDirty();
@@ -74,8 +73,10 @@ public class ContainerBowl extends Container {
         return itemstack;
     }
 
+
+
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return true;
+        return tileEntityBowl.isUsableByPlayer(player);
     }
 }
