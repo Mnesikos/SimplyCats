@@ -12,7 +12,7 @@ and this project adheres to
 - Witches are suddenly pacifists with SC cats around!
 - Cats will hiss when undead are nearby.
 - Catnip crop... almost- corn art in as placeholder
-- Cat food bowl complete with an inventory that will only accept food suitable for your cats.
+- New Blocks: food bowl, litter box, and scratching post!
 ### Changed
 - Kittens are smaller for longer, yay! (This time is also configurable.)
 ### Fixed

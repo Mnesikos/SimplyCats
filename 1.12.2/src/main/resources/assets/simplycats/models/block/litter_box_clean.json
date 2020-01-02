@@ -1,0 +1,18 @@
+{
+  "parent": "simplycats:block/litter_box",
+  "elements": [
+    {
+      "name": "litterClean",
+      "from": [3, 1, 1],
+      "to": [13, 2, 15],
+      "faces": {
+        "north": {"uv": [0, 0, 10, 1], "texture": "#litter"},
+        "east": {"uv": [0, 0, 14, 1], "texture": "#litter"},
+        "south": {"uv": [0, 0, 10, 1], "texture": "#litter"},
+        "west": {"uv": [0, 0, 14, 1], "texture": "#litter"},
+        "up": {"uv": [0, 0, 10, 14], "texture": "#litter"},
+        "down": {"uv": [0, 0, 10, 14], "texture": "#litter"}
+      }
+    }
+  ]
+}

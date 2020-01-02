@@ -91,8 +91,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, new IProperty[] {
-                FULL_FOOD,
-                FULL_WATER
+                FULL_FOOD, FULL_WATER
         });
     }
 

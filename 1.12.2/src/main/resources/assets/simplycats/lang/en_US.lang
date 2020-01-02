@@ -18,6 +18,8 @@ tooltip.pet_carrier.owner=Owned by
 < Block Names
 tile.cat_bowl.name=Cat Food Bowl
 container.cat_bowl.name=Cat Food Bowl
+tile.litter_box.name=Litter Box
+tile.scratching_post.name=Scratching Post
 
 < Creative Tab Name
 itemGroup.simplycats.tab=Simply Cats
