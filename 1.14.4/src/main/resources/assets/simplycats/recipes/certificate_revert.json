@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "simplycatsgroup",
+  "ingredients": [
+    {
+      "item": "simplycats:certificate",
+      "data": 1,
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "simplycats:certificate",
+    "data": 0,
+    "count": 1
+  }
+}

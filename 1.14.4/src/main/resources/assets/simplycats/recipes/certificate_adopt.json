@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "simplycatsgroup",
+  "ingredients": [
+    {
+      "item": "minecraft:paper",
+      "count": 1
+    },
+    {
+      "item": "minecraft:dye",
+      "data": 0,
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "simplycats:certificate",
+    "data": 0,
+    "count": 1
+  }
+}

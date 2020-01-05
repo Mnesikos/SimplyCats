@@ -1,0 +1,22 @@
+modLoader="javafml" #mandatory
+loaderVersion="[24,)" #mandatory
+issueTrackerURL="https://github.com/Mnesikos/SimplyCats/issues" #optional
+displayURL="https://www.curseforge.com/minecraft/mc-mods/simply-cats/" #optional
+#logoFile="simplycats.png" #optional
+credits="Thank you Captain and fisk for the extra texture help! <3 Also big thanks to Ms. Random and Soggy for dealing with my lack of proper coding know-how. (:" #optional
+authors="Mnesikos" #optional
+[[mods]] #mandatory
+modId="simplycats" #mandatory
+version="${version}" #mandatory
+displayName="Simply Cats" #mandatory
+#updateJSONURL="http://myurl.me/" #optional
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Cats! Cats everywhere!
+'''
+[[dependencies.simplycats]] #optional
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[28.1.0,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
