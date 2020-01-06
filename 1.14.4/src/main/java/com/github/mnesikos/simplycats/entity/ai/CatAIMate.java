@@ -3,13 +3,14 @@ package com.github.mnesikos.simplycats.entity.ai;
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.world.World;
 
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-public class CatAIMate extends EntityAIBase {
+public class CatAIMate extends Goal {
 
     private final EntityCat CAT;
     private EntityCat TARGET;
@@ -24,7 +25,7 @@ public class CatAIMate extends EntityAIBase {
         this.CAT = entityCat;
         this.WORLD = entityCat.world;
         this.MOVE_SPEED = speed;
-        this.setMutexBits(3);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
     @Override
@@ -32,7 +33,7 @@ public class CatAIMate extends EntityAIBase {
         if (this.CAT.getSex().equals(Genetics.Sex.FEMALE.getName()))
             return false;
 
-        this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
+        this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getBoundingBox().grow(NEARBY_SIZE_CHECK));
         if (this.LIST.size() >= SimplyCatsConfig.BREEDING_LIMIT)
             return false;
 
@@ -49,8 +50,8 @@ public class CatAIMate extends EntityAIBase {
     public boolean shouldContinueExecuting() {
         boolean maleCooldownCheck = this.CAT.getSex().equals(Genetics.Sex.MALE.getName()) && this.CAT.getMateTimer() == 0;
         boolean femaleHeatCheck = this.TARGET.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.TARGET.getBreedingStatus("inheat");
-        this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
-        return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SimplyCatsConfig.BREEDING_LIMIT && this.CAT.getEntitySenses().canSee(this.TARGET);
+        this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getBoundingBox().grow(NEARBY_SIZE_CHECK));
+        return maleCooldownCheck && this.TARGET.isAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SimplyCatsConfig.BREEDING_LIMIT && this.CAT.getEntitySenses().canSee(this.TARGET);
     }
 
     @Override
@@ -61,9 +62,9 @@ public class CatAIMate extends EntityAIBase {
     }
 
     @Override
-    public void updateTask() {
-        this.CAT.getLookHelper().setLookPositionWithEntity(this.TARGET, 10.0F, (float) this.CAT.getVerticalFaceSpeed());
-        this.TARGET.getLookHelper().setLookPositionWithEntity(this.CAT, 10.0F, (float) this.TARGET.getVerticalFaceSpeed());
+    public void tick() {
+        this.CAT.getLookController().setLookPositionWithEntity(this.TARGET, 10.0F, (float) this.CAT.getVerticalFaceSpeed());
+        this.TARGET.getLookController().setLookPositionWithEntity(this.CAT, 10.0F, (float) this.TARGET.getVerticalFaceSpeed());
         this.CAT.getNavigator().tryMoveToEntityLiving(this.TARGET, this.MOVE_SPEED);
         this.TARGET.getNavigator().tryMoveToEntityLiving(this.CAT, this.MOVE_SPEED);
         ++this.MATE_DELAY;
@@ -76,7 +77,7 @@ public class CatAIMate extends EntityAIBase {
     }
 
     private EntityCat getNearbyMate() {
-        List<EntityCat> list = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
+        List<EntityCat> list = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getBoundingBox().grow(NEARBY_SIZE_CHECK));
         double d0 = Double.MAX_VALUE;
         EntityCat entityCat = null;
         Iterator<?> iterator = list.iterator();

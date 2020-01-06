@@ -2,6 +2,7 @@ package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.Ref;
 //import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
+import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import net.minecraft.entity.AgeableEntity;
@@ -71,7 +72,7 @@ public abstract class AbstractCat extends TameableEntity {
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-        //this.setPhenotype();
+        this.setPhenotype();
         return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
@@ -552,7 +553,7 @@ public abstract class AbstractCat extends TameableEntity {
     public AgeableEntity createChild(AgeableEntity parFather) {
         EntityDataManager father = parFather.getDataManager();
         EntityDataManager mother = this.getDataManager();
-        EntityCat child = new EntityCat(this.world);
+        EntityCat child = new EntityCat(SimplyCats.CAT, this.world);
 
         String[] matFur = mother.get(FUR_LENGTH).split("-");
         String[] patFur = father.get(FUR_LENGTH).split("-");

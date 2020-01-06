@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.proxy;
 
-import com.github.mnesikos.simplycats.Ref;
+/*import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.block.BlockBowl;
 import com.github.mnesikos.simplycats.client.gui.GuiBowl;
 import com.github.mnesikos.simplycats.client.render.entity.RenderCat;
@@ -13,7 +13,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 
-/*@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber
 public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent e) {

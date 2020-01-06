@@ -3,17 +3,17 @@ package com.github.mnesikos.simplycats.entity.ai;
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
+import java.util.EnumSet;
 import java.util.Random;
 
-public class CatAIWander extends EntityAIBase {
+public class CatAIWander extends Goal {
     protected final EntityCat cat;
     protected double x;
     protected double y;
@@ -25,7 +25,7 @@ public class CatAIWander extends EntityAIBase {
         this.cat = cat;
         this.speed = speed;
         this.executionChance = 45; // todo activeness level should effect this
-        this.setMutexBits(1);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
     @Override
@@ -49,18 +49,15 @@ public class CatAIWander extends EntityAIBase {
 
     @Nullable
     protected Vec3d getPosition() {
-        PathNavigate pathnavigate = cat.getNavigator();
+        PathNavigator pathnavigate = cat.getNavigator();
         Random random = cat.getRNG();
         boolean outsideBounds;
 
         int xzRange = 10;
         int yRange = 3;
 
-        if (cat.hasHomePos()) {
-            double d0 = cat.getHomePos().distanceSq((double) MathHelper.floor(cat.posX), (double)MathHelper.floor(cat.posY), (double)MathHelper.floor(cat.posZ)) + 4.0D;
-            double d1 = (SimplyCatsConfig.WANDER_AREA_LIMIT + (float)xzRange);
-            outsideBounds = d0 < d1 * d1;
-        }
+        if (cat.hasHomePos())
+            outsideBounds = cat.getHomePos().withinDistance(cat.getPositionVec(), SimplyCatsConfig.WANDER_AREA_LIMIT);
         else
             outsideBounds = false;
 
@@ -132,7 +129,7 @@ public class CatAIWander extends EntityAIBase {
     }
 
 
-    private static BlockPos moveAboveSolid(BlockPos blockPos, EntityCreature entityCreature) {
+    private static BlockPos moveAboveSolid(BlockPos blockPos, CreatureEntity entityCreature) {
         if (!entityCreature.world.getBlockState(blockPos).getMaterial().isSolid())
             return blockPos;
         else {
@@ -145,7 +142,7 @@ public class CatAIWander extends EntityAIBase {
         }
     }
 
-    private static boolean isWaterDestination(BlockPos blockPos, EntityCreature entityCreature) {
+    private static boolean isWaterDestination(BlockPos blockPos, CreatureEntity entityCreature) {
         return entityCreature.world.getBlockState(blockPos).getMaterial() == Material.WATER;
     }
 }

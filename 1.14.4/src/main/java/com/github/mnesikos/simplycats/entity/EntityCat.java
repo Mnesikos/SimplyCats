@@ -36,7 +36,7 @@ public class EntityCat extends AbstractCat {
     private static final DataParameter<String> MOTHER;
     private static final DataParameter<String> FATHER;
 
-    private TemptGoal aiTempt;
+    private CatTemptGoal aiTempt;
 
     public EntityCat(EntityType<? extends EntityCat> entityType, World world) {
         super(entityType, world);
@@ -47,7 +47,7 @@ public class EntityCat extends AbstractCat {
     @Override
     protected void registerGoals() {
         this.sitGoal = new SitGoal(this);
-        this.aiTempt = new TemptGoal(this, 1.2D, ModItems.TREAT_BAG, false);
+        this.aiTempt = new CatTemptGoal(this, 1.2D, ModItems.TREAT_BAG, false);
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, this.sitGoal);
         this.goalSelector.addGoal(3, this.aiTempt);

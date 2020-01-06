@@ -1,10 +1,14 @@
 package com.github.mnesikos.simplycats.entity.ai;
 
+import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -48,12 +52,12 @@ public class CatAIBirth extends Goal {
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         /*++KITTEN_DELAY;
         if (KITTEN_DELAY >= 60)*/
 
         for (int i = 0; i < this.MOTHER.getKittens(); i++) {
-            this.FATHER = new EntityCat(this.WORLD); // create the father cat for kitten referencing
+            this.FATHER = new EntityCat(SimplyCats.CAT, this.WORLD); // create the father cat for kitten referencing
             FATHER.read(this.MOTHER.getFather(i)); // set the saved father nbt data to new FATHER cat
 
             this.spawnBaby(this.FATHER);
@@ -74,20 +78,20 @@ public class CatAIBirth extends Goal {
         if (child != null) {
             child.setGrowingAge(-SimplyCatsConfig.KITTEN_MATURE_TIMER);
             child.setLocationAndAngles(this.MOTHER.posX, this.MOTHER.posY, this.MOTHER.posZ, 0.0F, 0.0F);
-            child.setParent("father", this.FATHER.getCustomNameTag());
-            child.setParent("mother", this.MOTHER.getCustomNameTag());
-            this.WORLD.spawnEntity(child);
+            child.setParent("father", this.FATHER.getCustomName().getString());
+            child.setParent("mother", this.MOTHER.getCustomName().getString());
+            this.WORLD.addEntity(child);
 
             Random random = this.MOTHER.getRNG();
             for (int i = 0; i < 7; ++i) {
                 double d0 = random.nextGaussian() * 0.02D;
                 double d1 = random.nextGaussian() * 0.02D;
                 double d2 = random.nextGaussian() * 0.02D;
-                this.WORLD.spawnParticle(EnumParticleTypes.HEART, this.MOTHER.posX + (double) (random.nextFloat() * this.MOTHER.width * 2.0F) - (double) this.MOTHER.width, this.MOTHER.posY + 0.5D + (double) (random.nextFloat() * this.MOTHER.height), this.MOTHER.posZ + (double) (random.nextFloat() * this.MOTHER.width * 2.0F) - (double) this.MOTHER.width, d0, d1, d2);
+                this.WORLD.addParticle(ParticleTypes.HEART, this.MOTHER.posX + (double) (random.nextFloat() * this.MOTHER.getWidth() * 2.0F) - (double) this.MOTHER.getWidth(), this.MOTHER.posY + 0.5D + (double) (random.nextFloat() * this.MOTHER.getHeight()), this.MOTHER.posZ + (double) (random.nextFloat() * this.MOTHER.getWidth() * 2.0F) - (double) this.MOTHER.getWidth(), d0, d1, d2);
             }
 
-            if (this.WORLD.getGameRules().getBoolean("doMobLoot")) {
-                this.WORLD.spawnEntity(new EntityXPOrb(this.WORLD, this.MOTHER.posX, this.MOTHER.posY, this.MOTHER.posZ, random.nextInt(2) + 1));
+            if (this.WORLD.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                this.WORLD.addEntity(new ExperienceOrbEntity(this.WORLD, this.MOTHER.posX, this.MOTHER.posY, this.MOTHER.posZ, random.nextInt(2) + 1));
             }
         }
     }

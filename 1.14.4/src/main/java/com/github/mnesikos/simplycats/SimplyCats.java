@@ -1,7 +1,8 @@
 package com.github.mnesikos.simplycats;
 
+import com.github.mnesikos.simplycats.client.render.entity.RenderCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
-import com.github.mnesikos.simplycats.init.ModBlocks;
+//import com.github.mnesikos.simplycats.init.ModBlocks;
 import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityClassification;
@@ -13,6 +14,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(value = Ref.MODID)
@@ -24,9 +26,11 @@ public class SimplyCats {
     public static ItemGroup GROUP = new ItemGroup(Ref.MODID + ".tab") {
         @Override
         public ItemStack createIcon() {
-            return new ItemStack(ModItems.PET_CARRIER);
+            return new ItemStack(ModItems.CATNIP);
         }
     };
+
+    public static final EntityType<EntityCat> CAT = null;
 
     /*@Mod.Instance
     public static SimplyCats instance;
@@ -63,6 +67,11 @@ public class SimplyCats {
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(80).setUpdateInterval(1)
                     .build("cat").setRegistryName(Ref.MODID, "cat")
             );
+        }
+
+        @SubscribeEvent
+        public static void registerRenders(final ModelRegistryEvent event) {
+            RenderingRegistry.registerEntityRenderingHandler(EntityCat.class, RenderCat::new);
         }
 
         @SubscribeEvent

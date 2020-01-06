@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats;
 
+/*
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.datafix.IFixableData;
@@ -203,3 +204,4 @@ public class CatDataFixer implements IFixableData {
             compound.setString("WhitePaws_3", "white_" + base + "_paw4");
     }
 }
+*/

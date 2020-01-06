@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats;
 
-import com.github.mnesikos.simplycats.entity.EntityCat;
+/*import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
@@ -74,7 +74,7 @@ public class CommandBeckon implements ICommand {
                     }
                     else {
                         switch (args[1]) { // further info via /beckon help x
-                            /*case "base":
+                            *//*case "base":
                                 player.sendMessage(new TextComponentTranslation("command.beckon.help.base"));
                                 break;
                             case "eyes":
@@ -82,7 +82,7 @@ public class CommandBeckon implements ICommand {
                                 break;
                             case "white":
                                 player.sendMessage(new TextComponentTranslation("command.beckon.help.white"));
-                                break;*/
+                                break;*//*
                             default:
                                 player.sendMessage(new TextComponentTranslation(TextFormatting.RED + "command.beckon.help.fail"));
                                 break;
@@ -132,7 +132,7 @@ public class CommandBeckon implements ICommand {
                         }
                     }
                 }
-                /*else if (args.length == 5){
+                *//*else if (args.length == 5){
                     EntityCat cat = new EntityCat(world);
                     cat.setType(0);
 
@@ -207,7 +207,7 @@ public class CommandBeckon implements ICommand {
                     cat.setTamed(true);
                     cat.setOwnerId(player.getUniqueID());
                     cat.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), null);
-                }*/
+                }*//*
             }
         }
     }
@@ -230,4 +230,4 @@ public class CommandBeckon implements ICommand {
     public boolean isUsernameIndex(String[] args, int index) {
         return args.length > 0 && index == 0;
     }
-}
+}*/
