@@ -6,30 +6,26 @@ import com.github.mnesikos.simplycats.entity.ai.*;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.passive.*;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class EntityCat extends AbstractCat {
     private static final DataParameter<Byte> FIXED;
@@ -40,48 +36,47 @@ public class EntityCat extends AbstractCat {
     private static final DataParameter<String> MOTHER;
     private static final DataParameter<String> FATHER;
 
-    private EntityAITempt aiTempt;
+    private TemptGoal aiTempt;
 
-    public EntityCat(World world) {
-        super(world);
-        this.setSize(0.6F, 0.8F);
+    public EntityCat(EntityType<? extends EntityCat> entityType, World world) {
+        super(entityType, world);
         this.setParent("mother", "Unknown");
         this.setParent("father", "Unknown");
     }
 
     @Override
-    protected void initEntityAI() {
-        this.aiSit = new EntityAISit(this);
-        this.aiTempt = new EntityAITempt(this, 1.2D, ModItems.TREAT_BAG, false);
-        this.tasks.addTask(1, new EntityAISwimming(this));
-        this.tasks.addTask(2, this.aiSit);
-        this.tasks.addTask(3, this.aiTempt);
+    protected void registerGoals() {
+        this.sitGoal = new SitGoal(this);
+        this.aiTempt = new TemptGoal(this, 1.2D, ModItems.TREAT_BAG, false);
+        this.goalSelector.addGoal(1, new SwimGoal(this));
+        this.goalSelector.addGoal(2, this.sitGoal);
+        this.goalSelector.addGoal(3, this.aiTempt);
         if (!this.isSitting())
-            this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
+            this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.0D));
         if (!this.isFixed())
-            this.tasks.addTask(3, new CatAIMate(this, 1.2D));
-        this.tasks.addTask(4, new CatAIBirth(this));
-        this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
-        this.tasks.addTask(6, new EntityAIOcelotAttack(this));
-        this.tasks.addTask(7, new CatAIWander(this, 1.0D));
-        //this.tasks.addTask(8, new CatAIWanderAvoidWater(this, 1.0D));
-        this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
-        this.tasks.addTask(10, new EntityAILookIdle(this));
+            this.goalSelector.addGoal(3, new CatAIMate(this, 1.2D));
+        this.goalSelector.addGoal(4, new CatAIBirth(this));
+        this.goalSelector.addGoal(5, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(6, new OcelotAttackGoal(this));
+        this.goalSelector.addGoal(7, new CatAIWander(this, 1.0D));
+        //this.goalSelector.addGoal(8, new CatAIWanderAvoidWater(this, 1.0D));
+        this.goalSelector.addGoal(9, new LookAtGoal(this, LivingEntity.class, 7.0F));
+        this.goalSelector.addGoal(10, new LookRandomlyGoal(this));
     }
 
     @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
-        getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(0.7D);
-        getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(0.5D);
+    protected void registerAttributes() {
+        super.registerAttributes();
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
+        getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
+        getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(0.7D);
+        getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
+        getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(0.5D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
 
         this.dataManager.register(FIXED, (byte)0);
         this.dataManager.register(IN_HEAT, (byte)0);
@@ -93,18 +88,18 @@ public class EntityCat extends AbstractCat {
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+    public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
         if (!this.world.isRemote)
             if (this.isTamed())
-                this.aiSit.setSitting(!this.isSitting());
+                this.sitGoal.setSitting(!this.isSitting());
         if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && !this.isFixed())
             this.setTimeCycle("end", this.world.rand.nextInt(SimplyCatsConfig.HEAT_COOLDOWN));
-        return super.onInitialSpawn(difficulty, livingdata);
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (!this.world.isRemote && !this.isChild() && !this.isFixed() && this.getSex().equals(Genetics.Sex.FEMALE.getName())) { //if female & adult & not fixed
             if (this.getBreedingStatus("inheat")) //if in heat
@@ -126,8 +121,8 @@ public class EntityCat extends AbstractCat {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.isChild() && !this.isFixed()) { //if not a child & not fixed
             int mateTimer = this.getMateTimer();
@@ -140,7 +135,7 @@ public class EntityCat extends AbstractCat {
                             double d0 = this.rand.nextGaussian() * 0.02D;
                             double d1 = this.rand.nextGaussian() * 0.02D;
                             double d2 = this.rand.nextGaussian() * 0.02D;
-                            this.world.spawnParticle(EnumParticleTypes.HEART, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 0.5D + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d0, d1, d2);
+                            this.world.addParticle(ParticleTypes.HEART, this.posX + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.posY + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.posZ + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), d0, d1, d2);
                         }
                     }
                 }
@@ -158,11 +153,11 @@ public class EntityCat extends AbstractCat {
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (this.isEntityInvulnerable(source)) {
+        if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if (this.aiSit != null) {
-                this.aiSit.setSitting(false);
+            if (this.sitGoal != null) {
+                this.sitGoal.setSitting(false);
             }
 
             return super.attackEntityFrom(source, amount);
@@ -262,63 +257,63 @@ public class EntityCat extends AbstractCat {
 
     public void addFather(EntityCat father, int size) {
         for (int i = 0; i < size; i++) {
-            if(!this.getEntityData().hasKey("Father" + i) || (this.getEntityData().hasKey("Father" + i) && this.getEntityData().getCompoundTag("Father" + i) == null)) {
-                this.getEntityData().setTag("Father" + i, father.writeToNBT(new NBTTagCompound()));
+            if(!this.getPersistentData().contains("Father" + i) || (this.getPersistentData().contains("Father" + i) && this.getPersistentData().getCompound("Father" + i) == null)) {
+                this.getPersistentData().put("Father" + i, father.getPersistentData().copy());
                 //break;
             }
         }
     }
 
-    private void setFather(int i, NBTBase father) {
-        if (this.getEntityData().hasKey("Father" + i))
-            this.getEntityData().setTag("Father" + i, father);
+    private void setFather(int i, CompoundNBT father) {
+        if (this.getPersistentData().contains("Father" + i))
+            this.getPersistentData().put("Father" + i, father);
     }
 
-    public NBTTagCompound getFather(int i) {
-        return this.getEntityData().getCompoundTag("Father" + i);
+    public CompoundNBT getFather(int i) {
+        return this.getPersistentData().getCompound("Father" + i);
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbt) {
-        super.writeEntityToNBT(nbt);
-        nbt.setByte("Fixed", this.getIsFixed());
+    public void writeAdditional(CompoundNBT nbt) {
+        super.writeAdditional(nbt);
+        nbt.putByte("Fixed", this.getIsFixed());
         if (this.getSex().equals(Genetics.Sex.FEMALE.getName())) {
-            nbt.setBoolean("InHeat", this.getBreedingStatus("inheat"));
-            nbt.setBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
-            nbt.setInteger("Kittens", this.getKittens());
+            nbt.putBoolean("InHeat", this.getBreedingStatus("inheat"));
+            nbt.putBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
+            nbt.putInt("Kittens", this.getKittens());
             for (int i = 0; i < 5; i++)
-                nbt.setTag("Father" + i, this.getFather(i));
+                nbt.put("Father" + i, this.getFather(i));
         }
-        nbt.setInteger("Timer", this.getMateTimer());
-        nbt.setString("Mother", this.getParent("mother"));
-        nbt.setString("Father", this.getParent("father"));
+        nbt.putInt("Timer", this.getMateTimer());
+        nbt.putString("Mother", this.getParent("mother"));
+        nbt.putString("Father", this.getParent("father"));
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbt) {
-        super.readEntityFromNBT(nbt);
+    public void readAdditional(CompoundNBT nbt) {
+        super.readAdditional(nbt);
         this.setFixed(nbt.getByte("Fixed"));
         if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && !this.isFixed()) {
             this.setBreedingStatus("inheat", nbt.getBoolean("InHeat"));
             this.setBreedingStatus("ispregnant", nbt.getBoolean("IsPregnant"));
-            this.setKittens(nbt.getInteger("Kittens"));
+            this.setKittens(nbt.getInt("Kittens"));
             for (int i = 0; i < 5; i++) {
-                this.setFather(i, nbt.getTag("Father" + i));
+                this.setFather(i, nbt.getCompound("Father" + i));
             }
         }
         if (!this.isFixed())
-            this.setMateTimer(nbt.getInteger("Timer"));
+            this.setMateTimer(nbt.getInt("Timer"));
         this.setParent("mother", nbt.getString("Mother"));
         this.setParent("father", nbt.getString("Father"));
     }
 
     @Override
-    protected boolean canDespawn() {
+    public boolean canDespawn(double distanceToClosestPlayer) {
         return false;
     }
 
     @Override
-    public boolean canMateWith(EntityAnimal target) {
+    public boolean canMateWith(AnimalEntity target) {
         if (target == this)
             return false;
         if (!(target instanceof EntityCat))
@@ -344,7 +339,7 @@ public class EntityCat extends AbstractCat {
     }
 
     @Override
-    public EntityCat createChild(EntityAgeable parFather) {
+    public EntityCat createChild(AgeableEntity parFather) {
         return (EntityCat) super.createChild(parFather);
     }
 
@@ -353,7 +348,7 @@ public class EntityCat extends AbstractCat {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
 
         if (!stack.isEmpty()) {
@@ -361,7 +356,7 @@ public class EntityCat extends AbstractCat {
                 if (stack.getItem() == Items.BLAZE_POWDER && player.isSneaking()) {
                     if (!this.isFixed() && this.getMateTimer() != 0) {
                         this.setMateTimer(this.getMateTimer() / 2); // heat inducer, used on females not in heat to quicken the process
-                        if (!player.capabilities.isCreativeMode)
+                        if (!player.abilities.isCreativeMode)
                             stack.shrink(1);
                         if (stack.getCount() <= 0)
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
@@ -376,9 +371,9 @@ public class EntityCat extends AbstractCat {
                     if (!this.isFixed()) {
                         this.setFixed((byte) 1);
                         if (this.world.isRemote) {
-                            String FIXED_FEMALE = new TextComponentTranslation("chat.info.success_fixed_female").getFormattedText();
-                            String FIXED_MALE = new TextComponentTranslation("chat.info.success_fixed_male").getFormattedText();
-                            player.sendMessage(new TextComponentString(this.getName() + " " + (this.getSex().equals(Genetics.Sex.FEMALE.getName()) ? FIXED_FEMALE : FIXED_MALE)));
+                            String FIXED_FEMALE = new TranslationTextComponent("chat.info.success_fixed_female").getFormattedText();
+                            String FIXED_MALE = new TranslationTextComponent("chat.info.success_fixed_male").getFormattedText();
+                            player.sendMessage(new StringTextComponent(this.getName() + " " + (this.getSex().equals(Genetics.Sex.FEMALE.getName()) ? FIXED_FEMALE : FIXED_MALE)));
                         }
                     }
                     return true;
@@ -386,13 +381,12 @@ public class EntityCat extends AbstractCat {
             }
 
             if (isFoodItem(stack)) {
-                ItemFood food = (ItemFood) stack.getItem();
-                if (this.getHealth() < this.getMaxHealth())
-                    this.heal((float) food.getHealAmount(stack));
-                if (!player.capabilities.isCreativeMode)
-                    stack.shrink(1);
-                if (stack.getCount() <= 0)
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                Item food = stack.getItem();
+                if (this.getHealth() < this.getMaxHealth() && food.isFood()) {
+                    this.consumeItemFromStack(player, stack);
+                    this.heal((float)food.getFood().getHealing());
+                    return true;
+                }
                 return true;
             }
 
@@ -400,27 +394,27 @@ public class EntityCat extends AbstractCat {
                 if (this.world.isRemote) {
                     if (this.isFixed()) {
                         if (this.getSex().equals(Genetics.Sex.FEMALE.getName()))
-                            player.sendMessage(new TextComponentTranslation("chat.info.fixed_female"));
+                            player.sendMessage(new TranslationTextComponent("chat.info.fixed_female"));
                         else
-                            player.sendMessage(new TextComponentTranslation("chat.info.fixed_male"));
+                            player.sendMessage(new TranslationTextComponent("chat.info.fixed_male"));
                     } else if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.getBreedingStatus("ispregnant")) {
                         if (!this.getBreedingStatus("inheat"))
-                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.pregnant").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
+                            player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.pregnant").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                         else
-                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.pregnant_heat").getFormattedText() + " " + this.getMateTimer()));
+                            player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.pregnant_heat").getFormattedText() + " " + this.getMateTimer()));
                     } else if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.getBreedingStatus("inheat"))
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
+                        player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                     else if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && !this.getBreedingStatus("inheat"))
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.not_in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
+                        player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.not_in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                     else if (this.getSex().equals(Genetics.Sex.MALE.getName()))
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.male").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
+                        player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.male").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                 }
                 return true;
 
             } else if (stack.getItem() == Items.BONE && player.isSneaking()) {
                 if (this.world.isRemote) {
                     if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.getBreedingStatus("ispregnant"))
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.kitten_count").getFormattedText() + " " + this.getKittens()));
+                        player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.kitten_count").getFormattedText() + " " + this.getKittens()));
                 }
                 return true;
 
@@ -429,20 +423,20 @@ public class EntityCat extends AbstractCat {
                     if (this.hasHomePos()) {
                         this.resetHomePos();
                         if (this.world.isRemote)
-                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.remove_home").getFormattedText() + " " + this.getName()));
+                            player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.remove_home").getFormattedText() + " " + this.getName()));
                         return true;
                     } else {
                         this.setHomePos(new BlockPos(this));
                         if (this.world.isRemote)
-                            player.sendMessage(new TextComponentString(this.getName() +
-                                    new TextComponentTranslation("chat.info.set_home").getFormattedText() +
+                            player.sendMessage(new StringTextComponent(this.getName() +
+                                    new TranslationTextComponent("chat.info.set_home").getFormattedText() +
                                     " " + getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
                         return true;
                     }
                 } else {
                     if (this.hasHomePos())
                         if (this.world.isRemote)
-                            player.sendMessage(new TextComponentString(getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
+                            player.sendMessage(new StringTextComponent(getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
                 }
 
             }
@@ -450,7 +444,7 @@ public class EntityCat extends AbstractCat {
 
         if (!this.world.isRemote && this.isOwner(player) && !player.isSneaking()) {
             if (stack.isEmpty() || (!this.isBreedingItem(stack) && !this.isFoodItem(stack))) {
-                this.aiSit.setSitting(!this.isSitting());
+                this.sitGoal.setSitting(!this.isSitting());
                 this.navigator.clearPath();
                 this.setAttackTarget(null);
             }

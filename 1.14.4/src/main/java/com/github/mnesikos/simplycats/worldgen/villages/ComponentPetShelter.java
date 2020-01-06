@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.worldgen.villages;
 
-import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
+/*import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModProfessions;
 import net.minecraft.block.BlockCarpet;
@@ -91,7 +91,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
          *
          * OLD this.placeDoorAtCurrentPosition(world, structureBoundingBox, rand, x, y, z, this.getMetadataWithOffset(Blocks.wooden_door, 1));
          * NEW this.createVillageDoor(world, structureBoundingBox, rand, x, y, z, facing);
-         */
+         *
 
         IBlockState cobble = this.getBiomeSpecificBlockState(Blocks.COBBLESTONE.getDefaultState());
         IBlockState log = this.getBiomeSpecificBlockState(Blocks.LOG.getDefaultState());
@@ -383,4 +383,4 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
             }
         }
     }
-}
+}*/

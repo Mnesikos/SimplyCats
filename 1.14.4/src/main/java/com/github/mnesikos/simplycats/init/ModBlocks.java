@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class ModBlocks {
-    public static BlockCropCatnip CROP_CATNIP = new BlockCropCatnip("crop_catnip");
+    /*public static BlockCropCatnip CROP_CATNIP = new BlockCropCatnip("crop_catnip");
     public static BlockBowl BOWL = new BlockBowl("cat_bowl");
     public static BlockLitterBox LITTER_BOX = new BlockLitterBox("litter_box");
     public static BlockScratchingPost SCRATCHING_POST = new BlockScratchingPost("scratching_post");
@@ -42,5 +42,5 @@ public class ModBlocks {
         registry.registerAll(
                 BOWL_TYPE
         );
-    }
+    }*/
 }

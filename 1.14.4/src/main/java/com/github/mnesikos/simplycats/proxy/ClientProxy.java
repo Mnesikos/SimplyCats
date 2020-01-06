@@ -6,17 +6,14 @@ import com.github.mnesikos.simplycats.client.gui.GuiBowl;
 import com.github.mnesikos.simplycats.client.render.entity.RenderCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod.EventBusSubscriber
+/*@Mod.EventBusSubscriber
 public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -39,4 +36,4 @@ public class ClientProxy extends CommonProxy {
                 return null;
         }
     }
-}
+}*/

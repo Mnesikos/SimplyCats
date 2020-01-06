@@ -3,14 +3,13 @@ package com.github.mnesikos.simplycats.entity.ai;
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class CatAIBirth extends EntityAIBase {
+public class CatAIBirth extends Goal {
 
     private final EntityCat MOTHER;
     private EntityCat FATHER;
@@ -20,7 +19,8 @@ public class CatAIBirth extends EntityAIBase {
     public CatAIBirth(EntityCat entityCat) {
         this.MOTHER = entityCat;
         this.WORLD = entityCat.world;
-        this.setMutexBits(8);
+        //this.setMutexBits(8);
+        //this.setMutexFlags(EnumSet.noneOf(Goal.Flag.class));
     }
 
     @Override
@@ -54,10 +54,10 @@ public class CatAIBirth extends EntityAIBase {
 
         for (int i = 0; i < this.MOTHER.getKittens(); i++) {
             this.FATHER = new EntityCat(this.WORLD); // create the father cat for kitten referencing
-            FATHER.readFromNBT(this.MOTHER.getFather(i)); // set the saved father nbt data to new FATHER cat
+            FATHER.read(this.MOTHER.getFather(i)); // set the saved father nbt data to new FATHER cat
 
             this.spawnBaby(this.FATHER);
-            this.MOTHER.getEntityData().removeTag("Father" + i); // deletes just used father data
+            this.MOTHER.getPersistentData().remove("Father" + i); // deletes just used father data
         }
 
         this.MOTHER.setKittens(0); // resets kitten counter

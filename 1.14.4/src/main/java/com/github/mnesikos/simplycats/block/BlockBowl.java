@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.block;
 
-import com.github.mnesikos.simplycats.SimplyCats;
+/*import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -187,4 +187,4 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
         float min = 0.34375F, max = 0.65625F;
         return new AxisAlignedBB(min, 0.0F, min, max, 0.125F, max);
     }
-}
+}*/

@@ -1,39 +1,39 @@
 package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
+//import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
-import com.google.common.base.Optional;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.monster.AbstractSkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.monster.AbstractSkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
-public abstract class AbstractCat extends EntityTameable {
+public abstract class AbstractCat extends TameableEntity {
     private static final DataParameter<String> EYE_COLOR;
     private static final DataParameter<String> FUR_LENGTH;
     private static final DataParameter<String> EUMELANIN;
@@ -59,25 +59,25 @@ public abstract class AbstractCat extends EntityTameable {
     private String texturePrefix;
     private final String[] catTexturesArray = new String[12];
 
-    private static final DataParameter<Optional<BlockPos>> HOME_POSITION;
+    private static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.OPTIONAL_BLOCK_POS);
     private boolean PURR;
     private int PURR_TIMER;
 
-    public AbstractCat(World world) {
-        super(world);
+    public AbstractCat(EntityType<? extends AbstractCat> entityType, World world) {
+        super(entityType, world);
         setPhenotype();
     }
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+    public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
         //this.setPhenotype();
-        return super.onInitialSpawn(difficulty, livingdata);
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(EYE_COLOR, EyeColor.COPPER.toString());
         this.dataManager.register(FUR_LENGTH, "L-L");
         this.dataManager.register(EUMELANIN, "B-B");
@@ -98,7 +98,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.dataManager.register(WHITE_PAWS_2, "");
         this.dataManager.register(WHITE_PAWS_3, "");
 
-        this.dataManager.register(HOME_POSITION, Optional.absent());
+        this.dataManager.register(HOME_POSITION, Optional.empty());
     }
 
     private void setPhenotype() {
@@ -301,7 +301,7 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     public BlockPos getHomePos() {
-        return this.dataManager.get(HOME_POSITION).or(this.getPosition());
+        return this.dataManager.get(HOME_POSITION).orElse(this.getPosition());
     }
 
     public void setHomePos(BlockPos position) {
@@ -309,38 +309,38 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     public void resetHomePos() {
-        this.dataManager.set(HOME_POSITION, Optional.absent());
+        this.dataManager.set(HOME_POSITION, Optional.empty());
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
-        super.writeEntityToNBT(compound);
-        compound.setString("EyeColor", this.getGenotype(EYE_COLOR));
-        compound.setString("FurLength", this.getGenotype(FUR_LENGTH));
-        compound.setString("Eumelanin", this.getGenotype(EUMELANIN));
-        compound.setString("Phaeomelanin", this.getGenotype(PHAEOMELANIN));
-        compound.setString("Dilution", this.getGenotype(DILUTION));
-        compound.setString("DiluteMod", this.getGenotype(DILUTE_MOD));
-        compound.setString("Agouti", this.getGenotype(AGOUTI));
-        compound.setString("Tabby", this.getGenotype(TABBY));
-        compound.setString("Spotted", this.getGenotype(SPOTTED));
-        compound.setString("Ticked", this.getGenotype(TICKED));
-        compound.setString("Colorpoint", this.getGenotype(COLORPOINT));
-        compound.setString("White", this.getGenotype(WHITE));
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.putString("EyeColor", this.getGenotype(EYE_COLOR));
+        compound.putString("FurLength", this.getGenotype(FUR_LENGTH));
+        compound.putString("Eumelanin", this.getGenotype(EUMELANIN));
+        compound.putString("Phaeomelanin", this.getGenotype(PHAEOMELANIN));
+        compound.putString("Dilution", this.getGenotype(DILUTION));
+        compound.putString("DiluteMod", this.getGenotype(DILUTE_MOD));
+        compound.putString("Agouti", this.getGenotype(AGOUTI));
+        compound.putString("Tabby", this.getGenotype(TABBY));
+        compound.putString("Spotted", this.getGenotype(SPOTTED));
+        compound.putString("Ticked", this.getGenotype(TICKED));
+        compound.putString("Colorpoint", this.getGenotype(COLORPOINT));
+        compound.putString("White", this.getGenotype(WHITE));
         for (int i = 0; i <= 2; i++)
-            compound.setString("White_" + i, this.getWhiteTextures(i));
+            compound.putString("White_" + i, this.getWhiteTextures(i));
         for (int i = 0; i <= 3; i++)
-            compound.setString("WhitePaws_" + i, this.getWhitePawTextures(i));
+            compound.putString("WhitePaws_" + i, this.getWhitePawTextures(i));
         if (this.hasHomePos()) {
-            compound.setInteger("HomePosX", this.getHomePos().getX());
-            compound.setInteger("HomePosY", this.getHomePos().getY());
-            compound.setInteger("HomePosZ", this.getHomePos().getZ());
+            compound.putInt("HomePosX", this.getHomePos().getX());
+            compound.putInt("HomePosY", this.getHomePos().getY());
+            compound.putInt("HomePosZ", this.getHomePos().getZ());
         }
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
-        super.readEntityFromNBT(compound);
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
         this.setGenotype(EYE_COLOR, compound.getString("EyeColor"));
         this.setGenotype(FUR_LENGTH, compound.getString("FurLength"));
         this.setGenotype(EUMELANIN, compound.getString("Eumelanin"));
@@ -357,8 +357,8 @@ public abstract class AbstractCat extends EntityTameable {
             this.setWhiteTextures(i, compound.getString("White_" + i));
         for (int i = 0; i <= 3; i++)
             this.setWhitePawTextures(i, compound.getString("WhitePaws_" + i));
-        if (compound.hasKey("HomePosX"))
-            this.setHomePos(new BlockPos(compound.getInteger("HomePosX"), compound.getInteger("HomePosY"), compound.getInteger("HomePosZ")));
+        if (compound.contains("HomePosX"))
+            this.setHomePos(new BlockPos(compound.getInt("HomePosX"), compound.getInt("HomePosY"), compound.getInt("HomePosZ")));
     }
 
     private String getPhenotype(DataParameter<String> dataParameter) {
@@ -399,7 +399,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.texturePrefix = null;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void setCatTexturePaths() {
         String solid = this.getPhenotype(EUMELANIN);
         if (this.getPhenotype(PHAEOMELANIN).equalsIgnoreCase(Phaeomelanin.RED.toString().toLowerCase()))
@@ -462,7 +462,7 @@ public abstract class AbstractCat extends EntityTameable {
         // todo System.out.println(this.texturePrefix);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getCatTexture() {
         if (this.texturePrefix == null)
             this.setCatTexturePaths();
@@ -470,7 +470,7 @@ public abstract class AbstractCat extends EntityTameable {
         return this.texturePrefix;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String[] getTexturePaths() {
         if (this.texturePrefix == null)
             this.setCatTexturePaths();
@@ -479,8 +479,8 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (this.PURR) {
             if (PURR_TIMER == 0) {
@@ -490,8 +490,8 @@ public abstract class AbstractCat extends EntityTameable {
         }
 
         if (this.getAttackTarget() == null) {
-            List<EntityZombie> zombies = this.world.getEntitiesWithinAABB(EntityZombie.class, this.getEntityBoundingBox().grow(4.0D, 3.0D, 4.0D));
-            List<AbstractSkeleton> skeletons = this.world.getEntitiesWithinAABB(AbstractSkeleton.class, this.getEntityBoundingBox().grow(4.0D, 3.0D, 4.0D));
+            List<ZombieEntity> zombies = this.world.getEntitiesWithinAABB(ZombieEntity.class, this.getBoundingBox().grow(4.0D, 3.0D, 4.0D));
+            List<AbstractSkeletonEntity> skeletons = this.world.getEntitiesWithinAABB(AbstractSkeletonEntity.class, this.getBoundingBox().grow(4.0D, 3.0D, 4.0D));
             if ((!zombies.isEmpty() || !skeletons.isEmpty()) && this.rand.nextInt(400) == 0) {
                 this.playSound(SoundEvents.ENTITY_CAT_HISS, this.getSoundVolume() / 2.0F, this.getSoundPitch());
             }
@@ -504,8 +504,8 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (this.PURR && PURR_TIMER > 0) {
             --PURR_TIMER;
@@ -513,26 +513,26 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
             if (stack.getItem() == Items.STRING && player.isSneaking()) {
                 if (this.world.isRemote) {
-                    player.sendMessage(new TextComponentString(this.getGenotype(EYE_COLOR)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(FUR_LENGTH) + ": " + getPhenotype(FUR_LENGTH)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(EUMELANIN) + ": " + getPhenotype(EUMELANIN)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(PHAEOMELANIN) + ": " + getPhenotype(PHAEOMELANIN)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(DILUTION) + ": " + getPhenotype(DILUTION)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(DILUTE_MOD) + ": " + getPhenotype(DILUTE_MOD)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(AGOUTI) + ": " + getPhenotype(AGOUTI)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(TABBY) + ": " + getPhenotype(TABBY)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(SPOTTED) + ": " + getPhenotype(SPOTTED)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(TICKED) + ": " + getPhenotype(TICKED)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(COLORPOINT) + ": " + getPhenotype(COLORPOINT)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(WHITE) + ": " + getPhenotype(WHITE)));
-                    player.sendMessage(new TextComponentString(this.getWhiteTextures(0) + ", " + this.getWhiteTextures(1)
+                    player.sendMessage(new StringTextComponent(this.getGenotype(EYE_COLOR)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(FUR_LENGTH) + ": " + getPhenotype(FUR_LENGTH)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(EUMELANIN) + ": " + getPhenotype(EUMELANIN)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(PHAEOMELANIN) + ": " + getPhenotype(PHAEOMELANIN)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(DILUTION) + ": " + getPhenotype(DILUTION)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(DILUTE_MOD) + ": " + getPhenotype(DILUTE_MOD)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(AGOUTI) + ": " + getPhenotype(AGOUTI)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(TABBY) + ": " + getPhenotype(TABBY)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(SPOTTED) + ": " + getPhenotype(SPOTTED)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(TICKED) + ": " + getPhenotype(TICKED)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(COLORPOINT) + ": " + getPhenotype(COLORPOINT)));
+                    player.sendMessage(new StringTextComponent(this.getGenotype(WHITE) + ": " + getPhenotype(WHITE)));
+                    player.sendMessage(new StringTextComponent(this.getWhiteTextures(0) + ", " + this.getWhiteTextures(1)
                             + ", " + this.getWhiteTextures(2)));
-                    player.sendMessage(new TextComponentString(this.getWhitePawTextures(0) + ", " + this.getWhitePawTextures(1)
+                    player.sendMessage(new StringTextComponent(this.getWhitePawTextures(0) + ", " + this.getWhitePawTextures(1)
                             + ", " + this.getWhitePawTextures(2) + ", " + this.getWhitePawTextures(3)));
                 }
                 return true;
@@ -549,7 +549,7 @@ public abstract class AbstractCat extends EntityTameable {
 
     @Nullable
     @Override
-    public EntityAgeable createChild(EntityAgeable parFather) {
+    public AgeableEntity createChild(AgeableEntity parFather) {
         EntityDataManager father = parFather.getDataManager();
         EntityDataManager mother = this.getDataManager();
         EntityCat child = new EntityCat(this.world);
@@ -702,11 +702,11 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     @Override
-    public String getName() {
+    public ITextComponent getName() {
         if (this.hasCustomName())
-            return this.getCustomNameTag();
+            return this.getCustomName();
         else
-            return this.isTamed() ? new TextComponentTranslation("entity.Cat.name").getFormattedText() : super.getName();
+            return this.isTamed() ? new TranslationTextComponent("entity.Cat.name") : super.getName();
     }
 
     @Nullable
@@ -735,7 +735,5 @@ public abstract class AbstractCat extends EntityTameable {
         WHITE_PAWS_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
         WHITE_PAWS_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
         WHITE_PAWS_3 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-
-        HOME_POSITION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.OPTIONAL_BLOCK_POS);
     }
 }

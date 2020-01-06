@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.block;
 
-import net.minecraft.block.SoundType;
+/*import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -148,4 +148,4 @@ public class BlockLitterBox extends BlockBase {
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         return new AxisAlignedBB(0.125F, 0.0F, 0.0F, 0.875F, 0.25F, 1.0F);
     }
-}
+}*/

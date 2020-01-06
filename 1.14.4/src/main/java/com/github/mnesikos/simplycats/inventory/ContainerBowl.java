@@ -1,13 +1,10 @@
 package com.github.mnesikos.simplycats.inventory;
 
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
-public class ContainerBowl extends Container {
+/*public class ContainerBowl extends Container {
     private TileEntityBowl tileEntityBowl;
 
     public ContainerBowl(InventoryPlayer player, final TileEntityBowl bowl) {
@@ -75,4 +72,4 @@ public class ContainerBowl extends Container {
     public boolean canInteractWith(EntityPlayer player) {
         return tileEntityBowl.isUsableByPlayer(player);
     }
-}
+}*/

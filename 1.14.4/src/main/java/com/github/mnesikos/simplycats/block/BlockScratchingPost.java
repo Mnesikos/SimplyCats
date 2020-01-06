@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.block;
 
-import net.minecraft.block.material.Material;
+/*import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -34,4 +34,4 @@ public class BlockScratchingPost extends BlockBase {
         float min = 0.15625F, max = 0.84375F;
         return new AxisAlignedBB(min, 0.0F, min, max, 1.0F, max);
     }
-}
+}*/

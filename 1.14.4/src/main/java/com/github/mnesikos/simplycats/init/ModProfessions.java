@@ -2,23 +2,15 @@ package com.github.mnesikos.simplycats.init;
 
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
-import net.minecraft.entity.IMerchant;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.village.MerchantRecipe;
-import net.minecraft.village.MerchantRecipeList;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.*;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Random;
 
-@GameRegistry.ObjectHolder(Ref.MODID)
+/*@GameRegistry.ObjectHolder(Ref.MODID)
 public class ModProfessions {
     public final static VillagerProfession SHELTER_STAFF = null;
 
@@ -93,4 +85,4 @@ public class ModProfessions {
             recipeList.add(new MerchantRecipe(stackToPay, PURCHASE));
         }
     }
-}
+}*/
