@@ -16,6 +16,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ObjectHolder;
 
 @Mod(value = Ref.MODID)
 public class SimplyCats {
@@ -30,7 +31,8 @@ public class SimplyCats {
         }
     };
 
-    public static final EntityType<EntityCat> CAT = null;
+    @ObjectHolder(Ref.MODID + ":cat")
+    public static EntityType<EntityCat> CAT;
 
     /*@Mod.Instance
     public static SimplyCats instance;
@@ -62,8 +64,9 @@ public class SimplyCats {
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
-        public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {event.getRegistry().register(
-                    EntityType.Builder.create(EntityCat::new, EntityClassification.CREATURE).size(0.6F, 0.8F)
+        public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
+            event.getRegistry().register(EntityType.Builder.create(EntityCat::new, EntityClassification.CREATURE)
+                    .size(0.6F, 0.8F)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(80).setUpdateInterval(1)
                     .build("cat").setRegistryName(Ref.MODID, "cat")
             );

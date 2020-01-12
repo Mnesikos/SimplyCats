@@ -8,8 +8,9 @@ import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder(value = Ref.MODID)
 public class ModItems {
-    //public static final ItemBase PET_CARRIER = new ItemPetCarrier();
-    public static final ItemBase CERTIFICATE = new ItemCertificate("certificate");
+    public static final ItemBase PET_CARRIER = new ItemPetCarrier();
+    public static final ItemBase ADOPT_CERTIFICATE = new ItemCertificate("certificate_adopt");
+    public static final ItemBase RELEASE_CERTIFICATE = new ItemCertificate("certificate_release");
     public static final ItemBase TREAT_BAG = new ItemTreatBag("treat_bag");
     public static final ItemBase CATNIP = new ItemCatnip("catnip");
     public static final ItemCatnipSeeds CATNIP_SEEDS = new ItemCatnipSeeds("catnip_seeds");
@@ -21,8 +22,9 @@ public class ModItems {
 
     public static void register(IForgeRegistry<Item> registry) {
         registry.registerAll(
-                //PET_CARRIER,
-                CERTIFICATE,
+                PET_CARRIER,
+                ADOPT_CERTIFICATE,
+                RELEASE_CERTIFICATE,
                 TREAT_BAG,
                 CATNIP,
                 CATNIP_SEEDS

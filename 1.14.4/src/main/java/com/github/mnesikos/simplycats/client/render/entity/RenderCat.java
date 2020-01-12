@@ -17,7 +17,7 @@ import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderCat extends MobRenderer<EntityCat, ModelCat<EntityCat>> {
-    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
+    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.newHashMap();
 
     public RenderCat(EntityRendererManager render) {
         super(render, new ModelCat<>(), 0.2F);

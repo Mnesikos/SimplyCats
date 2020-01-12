@@ -373,7 +373,7 @@ public class EntityCat extends AbstractCat {
                         if (this.world.isRemote) {
                             String FIXED_FEMALE = new TranslationTextComponent("chat.info.success_fixed_female").getFormattedText();
                             String FIXED_MALE = new TranslationTextComponent("chat.info.success_fixed_male").getFormattedText();
-                            player.sendMessage(new StringTextComponent(this.getName() + " " + (this.getSex().equals(Genetics.Sex.FEMALE.getName()) ? FIXED_FEMALE : FIXED_MALE)));
+                            player.sendMessage(new StringTextComponent(this.getName().getFormattedText() + " " + (this.getSex().equals(Genetics.Sex.FEMALE.getName()) ? FIXED_FEMALE : FIXED_MALE)));
                         }
                     }
                     return true;
@@ -423,12 +423,12 @@ public class EntityCat extends AbstractCat {
                     if (this.hasHomePos()) {
                         this.resetHomePos();
                         if (this.world.isRemote)
-                            player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.remove_home").getFormattedText() + " " + this.getName()));
+                            player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.remove_home").getFormattedText() + " " + this.getName().getFormattedText()));
                         return true;
                     } else {
                         this.setHomePos(new BlockPos(this));
                         if (this.world.isRemote)
-                            player.sendMessage(new StringTextComponent(this.getName() +
+                            player.sendMessage(new StringTextComponent(this.getName().getFormattedText() +
                                     new TranslationTextComponent("chat.info.set_home").getFormattedText() +
                                     " " + getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
                         return true;

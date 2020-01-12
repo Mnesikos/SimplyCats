@@ -66,7 +66,6 @@ public abstract class AbstractCat extends TameableEntity {
 
     public AbstractCat(EntityType<? extends AbstractCat> entityType, World world) {
         super(entityType, world);
-        setPhenotype();
     }
 
     @Nullable
@@ -103,19 +102,20 @@ public abstract class AbstractCat extends TameableEntity {
     }
 
     private void setPhenotype() {
-        this.setGenotype(FUR_LENGTH, FurLength.init() + "-" + FurLength.init());
-        this.setGenotype(EUMELANIN, Eumelanin.init() + "-" + Eumelanin.init());
-        this.setGenotype(PHAEOMELANIN, Phaeomelanin.init());
-        this.setGenotype(DILUTION, Dilution.init() + "-" + Dilution.init());
-        this.setGenotype(DILUTE_MOD, DiluteMod.init() + "-" + DiluteMod.init());
-        this.setGenotype(AGOUTI, Agouti.init() + "-" + Agouti.init());
-        this.setGenotype(TABBY, Tabby.init() + "-" + Tabby.init());
-        this.setGenotype(SPOTTED, Spotted.init() + "-" + Spotted.init());
-        this.setGenotype(TICKED, Ticked.init() + "-" + Ticked.init());
-        this.setGenotype(COLORPOINT, Colorpoint.init() + "-" + Colorpoint.init());
-        this.setGenotype(WHITE, White.init() + "-" + White.init());
+        this.setGenotype(FUR_LENGTH, FurLength.init(this.rand) + "-" + FurLength.init(this.rand));
+        this.setGenotype(EUMELANIN, Eumelanin.init(this.rand) + "-" + Eumelanin.init(this.rand));
+        this.setGenotype(PHAEOMELANIN, Phaeomelanin.init(this.rand));
+        this.setGenotype(DILUTION, Dilution.init(this.rand) + "-" + Dilution.init(this.rand));
+        this.setGenotype(DILUTE_MOD, DiluteMod.init(this.rand) + "-" + DiluteMod.init(this.rand));
+        this.setGenotype(AGOUTI, Agouti.init(this.rand) + "-" + Agouti.init(this.rand));
+        this.setGenotype(TABBY, Tabby.init(this.rand) + "-" + Tabby.init(this.rand));
+        this.setGenotype(SPOTTED, Spotted.init(this.rand) + "-" + Spotted.init(this.rand));
+        this.setGenotype(TICKED, Ticked.init(this.rand) + "-" + Ticked.init(this.rand));
+        this.setGenotype(COLORPOINT, Colorpoint.init(this.rand) + "-" + Colorpoint.init(this.rand));
+        this.setGenotype(WHITE, White.init(this.rand) + "-" + White.init(this.rand));
         this.selectWhiteMarkings();
         this.setGenotype(EYE_COLOR, selectEyeColor());
+        this.resetTexturePrefix();
     }
 
     private String selectEyeColor() {
@@ -707,7 +707,7 @@ public abstract class AbstractCat extends TameableEntity {
         if (this.hasCustomName())
             return this.getCustomName();
         else
-            return this.isTamed() ? new TranslationTextComponent("entity.Cat.name") : super.getName();
+            return this.isTamed() ? new TranslationTextComponent(this.getType().getName().getString()) : super.getName();
     }
 
     @Nullable

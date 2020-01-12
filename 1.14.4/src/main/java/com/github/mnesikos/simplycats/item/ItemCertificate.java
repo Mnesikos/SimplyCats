@@ -1,7 +1,9 @@
 package com.github.mnesikos.simplycats.item;
 
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
+import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -9,10 +11,12 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -25,18 +29,18 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemCertificate extends ItemBase {
-    private static final String[] TYPES = new String[] { "adopt", "release" };
+    private static final String[] TYPES = new String[] { "certificate.adopt", "certificate.release" };
     protected String name;
 
     public ItemCertificate(String name) {
-        super(name, new Item.Properties().group(SimplyCats.GROUP).maxStackSize(1).defaultMaxDamage(1));
+        super(name, new Item.Properties().group(SimplyCats.GROUP).maxStackSize(1));
         this.name = name;
     }
 
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
         if (target instanceof EntityCat || target instanceof WolfEntity) {
-            if (stack.getDamage() == 0) {
+            if (name.equals("certificate_adopt")) {
                 if (((TameableEntity) target).isTamed()) {
                     return false;
                 } else {
@@ -56,7 +60,7 @@ public class ItemCertificate extends ItemBase {
                 }
                 return true;
 
-            } else if (stack.getDamage() == 1) {
+            } else if (name.equals("certificate_release")) {
                 if (((TameableEntity) target).isOwner(player)) {
                     ((TameableEntity) target).setTamed(false);
                     ((TameableEntity) target).getNavigator().clearPath();
@@ -93,19 +97,17 @@ public class ItemCertificate extends ItemBase {
 
     @Override
     public String getTranslationKey(ItemStack stack) {
-        int meta = stack.getDamage();
-        switch (meta) {
-            case 0:
-            default:
-                return "item.certificate." + TYPES[0];
-            case 1:
-                return "item.certificate." + TYPES[1];
-        }
+        if (name.equals("certificate_adopt"))
+            return "item." + Ref.MODID + "." + TYPES[0];
+        else
+            return "item." + Ref.MODID + "." + TYPES[1];
     }
 
     @Override @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        int i = MathHelper.clamp(stack.getDamage(), 0, 1);
-        tooltip.add(new TranslationTextComponent("tooltip.certificate." + TYPES[i] + ".desc"));
+        if (name.equals("certificate_adopt"))
+            tooltip.add(new TranslationTextComponent("tooltip." + TYPES[0] + ".desc"));
+        else
+            tooltip.add(new TranslationTextComponent("tooltip." + TYPES[1] + ".desc"));
     }
 }

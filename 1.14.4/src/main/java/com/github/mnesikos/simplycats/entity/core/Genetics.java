@@ -66,8 +66,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.75f)
                 return SHORT.getAllele(); // 75% chance
@@ -99,8 +98,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.80F)
                 return BLACK.getAllele(); // 80% chance
@@ -138,8 +136,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance1 = rand.nextFloat();
             String allele1;
             if (chance1 <= 0.75f)
@@ -190,8 +187,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.60f)
                 return NON_DILUTE.getAllele(); // 60% chance
@@ -222,8 +218,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.96f)
                 return NORMAL.getAllele(); // 96% chance
@@ -254,8 +249,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.80f)
                 return SOLID.getAllele(); // 80% chance
@@ -286,8 +280,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.50f)
                 return MACKEREL.getAllele(); // 50% chance
@@ -320,8 +313,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.80f)
                 return NORMAL.getAllele(); // 80% chance
@@ -357,8 +349,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.96F)
                 return NORMAL.getAllele(); // 96% chance
@@ -400,8 +391,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.80F)
                 return NOT_POINTED.getAllele(); // 80% chance
@@ -443,8 +433,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init() {
-            Random rand = new Random();
+        public static String init(Random rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.49F)
                 return NONE.getAllele(); // 49% chance
