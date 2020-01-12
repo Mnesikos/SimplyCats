@@ -48,16 +48,12 @@ public class CatAIBirth extends Goal {
     @Override
     public void resetTask() {
         this.FATHER = null;
-        //KITTEN_DELAY = 0;
     }
 
     @Override
     public void tick() {
-        /*++KITTEN_DELAY;
-        if (KITTEN_DELAY >= 60)*/
-
         for (int i = 0; i < this.MOTHER.getKittens(); i++) {
-            this.FATHER = new EntityCat(SimplyCats.CAT, this.WORLD); // create the father cat for kitten referencing
+            this.FATHER = SimplyCats.CAT.create(this.WORLD); // create the father cat for kitten referencing
             FATHER.read(this.MOTHER.getFather(i)); // set the saved father nbt data to new FATHER cat
 
             this.spawnBaby(this.FATHER);
@@ -78,8 +74,8 @@ public class CatAIBirth extends Goal {
         if (child != null) {
             child.setGrowingAge(-SimplyCatsConfig.KITTEN_MATURE_TIMER);
             child.setLocationAndAngles(this.MOTHER.posX, this.MOTHER.posY, this.MOTHER.posZ, 0.0F, 0.0F);
-            child.setParent("father", this.FATHER.getCustomName().getString());
-            child.setParent("mother", this.MOTHER.getCustomName().getString());
+            child.setParent("father", this.FATHER.getName().getFormattedText());
+            child.setParent("mother", this.MOTHER.getName().getFormattedText());
             this.WORLD.addEntity(child);
 
             Random random = this.MOTHER.getRNG();

@@ -258,8 +258,9 @@ public class EntityCat extends AbstractCat {
     public void addFather(EntityCat father, int size) {
         for (int i = 0; i < size; i++) {
             if(!this.getPersistentData().contains("Father" + i) || (this.getPersistentData().contains("Father" + i) && this.getPersistentData().getCompound("Father" + i) == null)) {
-                this.getPersistentData().put("Father" + i, father.getPersistentData().copy());
-                //break;
+                CompoundNBT tags = new CompoundNBT();
+                father.writeWithoutTypeId(tags);
+                this.getPersistentData().put("Father" + i, tags);
             }
         }
     }
@@ -426,7 +427,7 @@ public class EntityCat extends AbstractCat {
                             player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.remove_home").getFormattedText() + " " + this.getName().getFormattedText()));
                         return true;
                     } else {
-                        this.setHomePos(new BlockPos(this));
+                        this.setHomePos(new BlockPos(this.getPosition()));
                         if (this.world.isRemote)
                             player.sendMessage(new StringTextComponent(this.getName().getFormattedText() +
                                     new TranslationTextComponent("chat.info.set_home").getFormattedText() +

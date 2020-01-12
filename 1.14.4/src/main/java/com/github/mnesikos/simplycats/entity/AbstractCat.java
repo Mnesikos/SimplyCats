@@ -78,7 +78,7 @@ public abstract class AbstractCat extends TameableEntity {
     @Override
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(EYE_COLOR, EyeColor.COPPER.toString());
+        this.dataManager.register(EYE_COLOR, EyeColor.COPPER.toString().toLowerCase());
         this.dataManager.register(FUR_LENGTH, "L-L");
         this.dataManager.register(EUMELANIN, "B-B");
         this.dataManager.register(PHAEOMELANIN, "Xo-Xo");
