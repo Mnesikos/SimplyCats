@@ -62,7 +62,7 @@ public class CatAIBirth extends Goal {
 
         this.MOTHER.setKittens(0); // resets kitten counter
         this.MOTHER.setBreedingStatus("ispregnant", false); // ends pregnancy
-        this.MOTHER.setTimeCycle("end", SimplyCatsConfig.HEAT_COOLDOWN); // sets out of heat timer
+        this.MOTHER.setTimeCycle("end", SimplyCatsConfig.HEAT_COOLDOWN.get()); // sets out of heat timer
     }
 
     private void spawnBaby(EntityCat father) {
@@ -72,7 +72,7 @@ public class CatAIBirth extends Goal {
         child = (EntityCat) event.getChild();
 
         if (child != null) {
-            child.setGrowingAge(-SimplyCatsConfig.KITTEN_MATURE_TIMER);
+            child.setGrowingAge(-SimplyCatsConfig.KITTEN_MATURE_TIMER.get());
             child.setLocationAndAngles(this.MOTHER.posX, this.MOTHER.posY, this.MOTHER.posZ, 0.0F, 0.0F);
             child.setParent("father", this.FATHER.getName().getFormattedText());
             child.setParent("mother", this.MOTHER.getName().getFormattedText());

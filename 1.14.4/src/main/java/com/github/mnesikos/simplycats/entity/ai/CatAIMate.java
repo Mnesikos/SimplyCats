@@ -34,7 +34,7 @@ public class CatAIMate extends Goal {
             return false;
 
         this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getBoundingBox().grow(NEARBY_SIZE_CHECK));
-        if (this.LIST.size() >= SimplyCatsConfig.BREEDING_LIMIT)
+        if (this.LIST.size() >= SimplyCatsConfig.BREEDING_LIMIT.get())
             return false;
 
         else if ((this.TARGET != null && !this.TARGET.getBreedingStatus("inheat")) || (this.CAT.getMateTimer() > 0))
@@ -51,7 +51,7 @@ public class CatAIMate extends Goal {
         boolean maleCooldownCheck = this.CAT.getSex().equals(Genetics.Sex.MALE.getName()) && this.CAT.getMateTimer() == 0;
         boolean femaleHeatCheck = this.TARGET.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.TARGET.getBreedingStatus("inheat");
         this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getBoundingBox().grow(NEARBY_SIZE_CHECK));
-        return maleCooldownCheck && this.TARGET.isAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SimplyCatsConfig.BREEDING_LIMIT && this.CAT.getEntitySenses().canSee(this.TARGET);
+        return maleCooldownCheck && this.TARGET.isAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SimplyCatsConfig.BREEDING_LIMIT.get() && this.CAT.getEntitySenses().canSee(this.TARGET);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class CatAIMate extends Goal {
         if (this.MATE_DELAY >= 60 && this.CAT.getDistanceSq(this.TARGET) < 4.0D) {
             if (this.WORLD.rand.nextInt(4) <= 2) // 75% chance of success
                 this.startPregnancy();
-            this.CAT.setMateTimer(SimplyCatsConfig.MALE_COOLDOWN); // starts male cooldown
+            this.CAT.setMateTimer(SimplyCatsConfig.MALE_COOLDOWN.get()); // starts male cooldown
         }
     }
 
@@ -108,7 +108,7 @@ public class CatAIMate extends Goal {
 
         if (litterSize == 6 || this.TARGET.getKittens() == 6 || this.WORLD.rand.nextInt(4) == 0) { // full litter OR 25% chance ends heat
             this.TARGET.setBreedingStatus("inheat", false);
-            this.TARGET.setTimeCycle("pregnancy", SimplyCatsConfig.PREGNANCY_TIMER); // starts pregnancy timer
+            this.TARGET.setTimeCycle("pregnancy", SimplyCatsConfig.PREGNANCY_TIMER.get()); // starts pregnancy timer
         }
     }
 }

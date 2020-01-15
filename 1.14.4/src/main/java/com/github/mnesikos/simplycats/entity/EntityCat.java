@@ -93,7 +93,7 @@ public class EntityCat extends AbstractCat {
             if (this.isTamed())
                 this.sitGoal.setSitting(!this.isSitting());
         if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && !this.isFixed())
-            this.setTimeCycle("end", this.world.rand.nextInt(SimplyCatsConfig.HEAT_COOLDOWN));
+            this.setTimeCycle("end", this.world.rand.nextInt(SimplyCatsConfig.HEAT_COOLDOWN.get()));
         return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
@@ -105,16 +105,16 @@ public class EntityCat extends AbstractCat {
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("end", SimplyCatsConfig.HEAT_COOLDOWN); //sets out of heat for 16 (default) minecraft days
+                        setTimeCycle("end", SimplyCatsConfig.HEAT_COOLDOWN.get()); //sets out of heat for 16 (default) minecraft days
                     else { //or if IS pregnant
-                        setTimeCycle("pregnant", SimplyCatsConfig.PREGNANCY_TIMER); //and heat time runs out, starts pregnancy timer for birth
+                        setTimeCycle("pregnant", SimplyCatsConfig.PREGNANCY_TIMER.get()); //and heat time runs out, starts pregnancy timer for birth
                         this.setBreedingStatus("inheat", false); //sets out of heat
                     }
                 }
             if (!this.getBreedingStatus("inheat")) { //if not in heat
                 if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("start", SimplyCatsConfig.HEAT_TIMER); //sets in heat for 2 minecraft days
+                        setTimeCycle("start", SimplyCatsConfig.HEAT_TIMER.get()); //sets in heat for 2 minecraft days
                 }
             }
         }

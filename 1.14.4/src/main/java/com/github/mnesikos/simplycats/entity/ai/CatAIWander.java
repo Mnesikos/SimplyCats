@@ -57,7 +57,7 @@ public class CatAIWander extends Goal {
         int yRange = 3;
 
         if (cat.hasHomePos())
-            outsideBounds = cat.getHomePos().withinDistance(cat.getPositionVec(), SimplyCatsConfig.WANDER_AREA_LIMIT);
+            outsideBounds = cat.getHomePos().withinDistance(cat.getPositionVec(), SimplyCatsConfig.WANDER_AREA_LIMIT.get());
         else
             outsideBounds = false;
 
@@ -88,7 +88,7 @@ public class CatAIWander extends Goal {
 
             BlockPos blockpos1 = new BlockPos((double)l + cat.posX, (double)i1 + cat.posY, (double)j1 + cat.posZ);
 
-            if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SimplyCatsConfig.WANDER_AREA_LIMIT*SimplyCatsConfig.WANDER_AREA_LIMIT))) && pathnavigate.canEntityStandOnPos(blockpos1)) {
+            if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SimplyCatsConfig.WANDER_AREA_LIMIT.get() * SimplyCatsConfig.WANDER_AREA_LIMIT.get()))) && pathnavigate.canEntityStandOnPos(blockpos1)) {
                 blockpos1 = moveAboveSolid(blockpos1, cat);
 
                 if (isWaterDestination(blockpos1, cat))

@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats;
 
 import com.github.mnesikos.simplycats.client.render.entity.RenderCat;
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 //import com.github.mnesikos.simplycats.init.ModBlocks;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -14,14 +15,18 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ObjectHolder;
 
 @Mod(value = Ref.MODID)
 public class SimplyCats {
     public SimplyCats() {
-
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SimplyCatsConfig.COMMON_CONFIG);
+        SimplyCatsConfig.loadConfig(SimplyCatsConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(Ref.MODID + "-" + Ref.VERSION + ".toml"));
     }
 
     public static ItemGroup GROUP = new ItemGroup(Ref.MODID + ".tab") {
