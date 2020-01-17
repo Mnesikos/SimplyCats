@@ -1,11 +1,13 @@
 # SimplyCats
-the cat mod no one wanted
 
-Check out the wiki for more information!
+**Links**
 
+Discord: https://discord.gg/8gRHcgJ
+     
+Progress Trello: https://trello.com/b/VoIFA2M1
 
-
-reminders for myself;
-Rewrite item and block registrations
-Find better alternative for those item tooltips?
-…document stuff…
+CurseForge: https://www.curseforge.com/minecraft/mc-mods/simply-cats/
+     
+MinecraftForum: https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/minecraft-mods/3002510-simply-cats
+     
+Planet Minecraft: https://www.planetminecraft.com/mod/simply-cats/
