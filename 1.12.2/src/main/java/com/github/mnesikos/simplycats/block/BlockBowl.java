@@ -59,14 +59,16 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
                 .withProperty(COLOR, EnumDyeColor.BLACK));
     }
 
-    public void setWaterLevel(World world, BlockPos pos, IBlockState state, int level) {
+    public void setWaterLevel(World world, BlockPos pos, IBlockState state, int level, EnumDyeColor color) {
         world.setBlockState(pos, state.withProperty(WATER_LEVEL, Integer.valueOf(MathHelper.clamp(level, 0, 3))), 2);
+        ((TileEntityBowl)world.getTileEntity(pos)).setColor(color);
         world.updateComparatorOutputLevel(pos, this);
     }
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntityBowl tileEntityBowl = this.getTileEntity(world, pos);
+        EnumDyeColor color = tileEntityBowl.getColor();
 
         if (tileEntityBowl == null)
             return false;
@@ -78,7 +80,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
                 if (!player.capabilities.isCreativeMode)
                     player.setHeldItem(hand, new ItemStack(Items.BUCKET));
 
-                this.setWaterLevel(world, pos, state, 3);
+                this.setWaterLevel(world, pos, state, 3, color);
                 world.playSound((EntityPlayer) null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 return true;
 
@@ -92,7 +94,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
                         player.dropItem(new ItemStack(Items.WATER_BUCKET), false);
                 }
 
-                this.setWaterLevel(world, pos, state, 0);
+                this.setWaterLevel(world, pos, state, 0, color);
                 world.playSound((EntityPlayer)null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 return true;
 
@@ -103,7 +105,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
                         ((EntityPlayerMP)player).sendContainerToPlayer(player.inventoryContainer);
                 }
 
-                this.setWaterLevel(world, pos, state, waterLevel + 1);
+                this.setWaterLevel(world, pos, state, waterLevel + 1, color);
                 world.playSound((EntityPlayer) null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 return true;
 
@@ -116,7 +118,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
 
     @Override
     public void fillWithRain(World world, BlockPos pos) {
-        TileEntityBowl tileEntityBowl = this.getTileEntity(world, pos);
+        /*TileEntityBowl tileEntityBowl = this.getTileEntity(world, pos);
         if (tileEntityBowl.isEmpty()) {
             if (world.rand.nextInt(20) == 1) {
                 float f = world.getBiome(pos).getTemperature(pos);
@@ -128,7 +130,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
                         world.setBlockState(pos, iblockstate.cycleProperty(WATER_LEVEL), 2);
                 }
             }
-        }
+        }*/ // todo might add this back but who lets their cats drink rain water????? gross
     }
 
     @Override
@@ -240,7 +242,12 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
 
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        return new ItemStack(ModItems.BOWLS.get(state.getValue(COLOR)));
+        TileEntity te = world.getTileEntity(target.getBlockPos());
+        if (te instanceof TileEntityBowl) {
+            TileEntityBowl bowl = (TileEntityBowl) te;
+            return new ItemStack(ModItems.BOWLS.get(bowl.getColor()));
+        } else
+            return ItemStack.EMPTY;
     }
 
     @Override
