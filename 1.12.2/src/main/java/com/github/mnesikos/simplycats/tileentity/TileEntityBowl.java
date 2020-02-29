@@ -1,7 +1,9 @@
 package com.github.mnesikos.simplycats.tileentity;
 
+import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -18,11 +20,13 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 
 public class TileEntityBowl extends TileEntity implements IInventory {
+    private EnumDyeColor color;
     private ItemStackHandler inventory = new ItemStackHandler(10);
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
+        nbt.setInteger("color", this.color.getMetadata());
         nbt.setTag("inventory", inventory.serializeNBT());
         return nbt;
     }
@@ -30,7 +34,23 @@ public class TileEntityBowl extends TileEntity implements IInventory {
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
+        if (nbt.hasKey("color"))
+            this.color = EnumDyeColor.byMetadata(nbt.getInteger("color"));
         inventory.deserializeNBT(nbt.getCompoundTag("inventory"));
+    }
+
+    public EnumDyeColor getColor()
+    {
+        return this.color;
+    }
+
+    public void setColor(EnumDyeColor color) {
+        this.color = color;
+        this.markDirty();
+    }
+
+    public ItemStack getItemStack() {
+        return new ItemStack(ModItems.BOWLS.get(this.color), 1, this.color.getMetadata());
     }
 
     @Override

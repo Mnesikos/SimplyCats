@@ -1,14 +1,18 @@
 package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.init.ModItems;
+import com.github.mnesikos.simplycats.item.ItemCatBowl;
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -16,6 +20,8 @@ import net.minecraft.init.PotionTypes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -25,12 +31,14 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
     protected String name;
@@ -38,6 +46,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
 
     public static final PropertyBool FULL_FOOD = PropertyBool.create("full_food");
     public static final PropertyInteger WATER_LEVEL = PropertyInteger.create("water_level", 0, 3);
+    public static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
 
     public BlockBowl(String name) {
         super(Material.GROUND, name);
@@ -46,7 +55,8 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
         this.setHardness(0.2F);
         this.setDefaultState(this.blockState.getBaseState()
                 .withProperty(FULL_FOOD, Boolean.FALSE)
-                .withProperty(WATER_LEVEL, Integer.valueOf(0)));
+                .withProperty(WATER_LEVEL, Integer.valueOf(0))
+                .withProperty(COLOR, EnumDyeColor.BLACK));
     }
 
     public void setWaterLevel(World world, BlockPos pos, IBlockState state, int level) {
@@ -130,6 +140,17 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
         super.breakBlock(world, pos, state);
     }
 
+    @Override
+    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
+        if (te instanceof TileEntityBowl) {
+            TileEntityBowl TileEntityBowl = (TileEntityBowl)te;
+            ItemStack itemstack = TileEntityBowl.getItemStack();
+            spawnAsEntity(worldIn, pos, itemstack);
+        }
+        else
+            super.harvestBlock(worldIn, player, pos, state, (TileEntity)null, stack);
+    }
+
     public boolean hasComparatorInputOverride(IBlockState state) {
         return true;
     }
@@ -154,8 +175,9 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
         TileEntity tileEntity = worldIn instanceof ChunkCache ? ((ChunkCache)worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityBowl) {
             TileEntityBowl tileEntityBowl = (TileEntityBowl) tileEntity;
-            return getDefaultState().withProperty(FULL_FOOD, !tileEntityBowl.isEmpty())
-                    .withProperty(WATER_LEVEL, state.getValue(WATER_LEVEL));
+            return state.withProperty(FULL_FOOD, !tileEntityBowl.isEmpty())
+                    //.withProperty(WATER_LEVEL, state.getValue(WATER_LEVEL))
+                    .withProperty(COLOR, tileEntityBowl.getColor());
         }
         return state;
     }
@@ -173,7 +195,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, new IProperty[] {
-                FULL_FOOD, WATER_LEVEL
+                FULL_FOOD, WATER_LEVEL, COLOR
         });
     }
 
@@ -196,5 +218,33 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         float min = 0.34375F, max = 0.65625F;
         return new AxisAlignedBB(min, 0.0F, min, max, 0.125F, max);
+    }
+
+    @Override
+    public Item createItemBlock() {
+        return null;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        TileEntity te = worldIn.getTileEntity(pos);
+        if (te instanceof TileEntityBowl) {
+            TileEntityBowl bowl = (TileEntityBowl) te;
+            if (stack.getItem() instanceof ItemCatBowl) {
+                EnumDyeColor color = ((ItemCatBowl) stack.getItem()).color;
+                bowl.setColor(color);
+            } else
+                bowl.setColor(EnumDyeColor.BLACK);
+        }
+    }
+
+    @Override
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+        return new ItemStack(ModItems.BOWLS.get(state.getValue(COLOR)));
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return ModItems.BOWLS.get(state.getValue(COLOR));
     }
 }
