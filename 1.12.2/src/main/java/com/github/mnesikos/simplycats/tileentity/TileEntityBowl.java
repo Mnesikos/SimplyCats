@@ -39,8 +39,7 @@ public class TileEntityBowl extends TileEntity implements IInventory {
         inventory.deserializeNBT(nbt.getCompoundTag("inventory"));
     }
 
-    public EnumDyeColor getColor()
-    {
+    public EnumDyeColor getColor() {
         return this.color;
     }
 

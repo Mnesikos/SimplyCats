@@ -16,8 +16,23 @@ tooltip.pet_carrier.adopt_dog=Adopt a Dog!
 tooltip.pet_carrier.owner=Owned by
 
 < Block Names
-tile.cat_bowl.name=Cat Food Bowl
-container.cat_bowl.name=Cat Food Bowl
+block.cat_bowl_white.name=White Cat Bowl
+block.cat_bowl_orange.name=Orange Cat Bowl
+block.cat_bowl_magenta.name=Magenta Cat Bowl
+block.cat_bowl_light_blue.name=Light Blue Cat Bowl
+block.cat_bowl_yellow.name=Yellow Cat Bowl
+block.cat_bowl_lime.name=Lime Cat Bowl
+block.cat_bowl_pink.name=Pink Cat Bowl
+block.cat_bowl_gray.name=Gray Cat Bowl
+block.cat_bowl_silver.name=Silver Cat Bowl
+block.cat_bowl_cyan.name=Cyan Cat Bowl
+block.cat_bowl_purple.name=Purple Cat Bowl
+block.cat_bowl_blue.name=Blue Cat Bowl
+block.cat_bowl_brown.name=Brown Cat Bowl
+block.cat_bowl_green.name=Green Cat Bowl
+block.cat_bowl_red.name=Red Cat Bowl
+block.cat_bowl_black.name=Black Cat Bowl
+container.cat_bowl.name=Cat Bowl
 tile.litter_box.name=Litter Box
 tile.scratching_post.name=Scratching Post
 

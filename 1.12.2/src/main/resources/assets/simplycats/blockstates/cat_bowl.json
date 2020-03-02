@@ -111,24 +111,6 @@
           "1": "blocks/hardened_clay_stained_black"
         }
       }
-    },
-    "inventory": [
-      { "transform": {
-          "thirdperson": {
-            "translation": [0, 0.3, -0.1]
-          },
-          "firstperson": {
-            "translation": [0, 0.3, -0.1]
-          },
-          "ground": {
-            "translation": [0, 0.3, 0]
-          },
-          "gui": {
-            "scale": 1.6,
-            "translation": [0, 0.5, 0],
-            "rotation": [{"x": 24},{"y": 45}]
-          }
-      }}
-    ]
+    }
   }
 }

@@ -15,12 +15,21 @@ public class ItemCatBowl extends ItemBlock {
 
     public ItemCatBowl(String name, EnumDyeColor color) {
         super(ModBlocks.BOWL);
-        this.name = name;
         this.color = color;
-        String s = name + "_" + color.getName();
-        this.setTranslationKey(s);
-        this.setRegistryName(Ref.MODID + ":" + s);
+        this.name = name + "_" + color.getName();
+        this.setTranslationKey(this.name);
+        this.setRegistryName(Ref.MODID + ":" + this.name);
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return "block." + this.name;
+    }
+
+    @Override
+    public String getTranslationKey(ItemStack stack) {
+        return "block." + this.name;
     }
 
     @Override

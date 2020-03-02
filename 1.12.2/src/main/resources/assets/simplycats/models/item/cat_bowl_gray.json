@@ -1,0 +1,6 @@
+{
+  "parent": "simplycats:item/cat_bowl",
+  "textures": {
+    "1": "blocks/hardened_clay_stained_gray"
+  }
+}
