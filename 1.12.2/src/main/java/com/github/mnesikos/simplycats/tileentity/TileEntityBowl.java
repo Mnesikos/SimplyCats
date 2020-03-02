@@ -49,7 +49,7 @@ public class TileEntityBowl extends TileEntity implements IInventory {
     }
 
     public ItemStack getItemStack() {
-        return new ItemStack(ModItems.BOWLS.get(this.color), 1, this.color.getMetadata());
+        return new ItemStack(ModItems.CAT_BOWLS.get(this.color), 1, this.color.getMetadata());
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.github.mnesikos.simplycats.init;
 
+import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.item.*;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -17,7 +19,8 @@ public class ModItems {
     public static ItemBase CATNIP = new ItemCatnip("catnip");
     public static ItemCatnipSeeds CATNIP_SEEDS = new ItemCatnipSeeds("catnip_seeds");
 
-    public static final Map<EnumDyeColor, ItemCatBowl> BOWLS = new HashMap<>();
+    public static final Map<EnumDyeColor, ItemCatBowl> CAT_BOWLS = new HashMap<>();
+    public static final Map<BlockPlanks.EnumType, ItemScratchingPost> SCRATCHING_POSTS = new HashMap<>();
 
     public static void registerOres() {
         OreDictionary.registerOre("cropCatnip", CATNIP);
@@ -31,10 +34,13 @@ public class ModItems {
                 TREAT_BAG,
                 CATNIP, CATNIP_SEEDS
         );
-
         for (EnumDyeColor color : EnumDyeColor.values()) {
-            BOWLS.put(color, new ItemCatBowl("cat_bowl", color));
-            registry.register(BOWLS.get(color));
+            CAT_BOWLS.put(color, new ItemCatBowl("cat_bowl", color));
+            registry.register(CAT_BOWLS.get(color));
+        }
+        for (BlockPlanks.EnumType type : BlockPlanks.EnumType.values()) {
+            SCRATCHING_POSTS.put(type, new ItemScratchingPost("scratching_post", type));
+            registry.register(SCRATCHING_POSTS.get(type));
         }
     }
 
@@ -45,6 +51,8 @@ public class ModItems {
         CATNIP.registerItemModel();
         CATNIP_SEEDS.registerItemModel();
         for (EnumDyeColor color : EnumDyeColor.values())
-            BOWLS.get(color).registerItemModel();
+            CAT_BOWLS.get(color).registerItemModel();
+        for (BlockPlanks.EnumType type : BlockPlanks.EnumType.values())
+            SCRATCHING_POSTS.get(type).registerItemModel();
     }
 }

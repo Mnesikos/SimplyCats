@@ -24,6 +24,7 @@ public class BlockLitterBox extends BlockBase {
 
     public static final PropertyBool FULL = PropertyBool.create("full");
     public static final PropertyBool DIRTY = PropertyBool.create("dirty");
+    protected static final AxisAlignedBB LITTER_BOX_AABB = new AxisAlignedBB(0.125F, 0.0F, 0.0F, 0.875F, 0.25F, 1.0F);
 
     public BlockLitterBox(String name) {
         super(Material.GROUND, name);
@@ -146,6 +147,6 @@ public class BlockLitterBox extends BlockBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return new AxisAlignedBB(0.125F, 0.0F, 0.0F, 0.875F, 0.25F, 1.0F);
+        return LITTER_BOX_AABB;
     }
 }

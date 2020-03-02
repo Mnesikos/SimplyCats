@@ -3,7 +3,7 @@ package com.github.mnesikos.simplycats.proxy;
 import com.github.mnesikos.simplycats.CatDataFixer;
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
-import com.github.mnesikos.simplycats.block.BlockBowl;
+import com.github.mnesikos.simplycats.block.BlockCatBowl;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.event.SimplyCatsEvents;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -80,7 +80,7 @@ public class CommonProxy implements IGuiHandler {
     @Override
     public Container getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
-            case BlockBowl.GUI_ID:
+            case BlockCatBowl.GUI_ID:
                 return new ContainerBowl(player.inventory, (TileEntityBowl)world.getTileEntity(new BlockPos(x, y, z)));
             default:
                 return null;

@@ -33,8 +33,13 @@ block.cat_bowl_green.name=Green Cat Bowl
 block.cat_bowl_red.name=Red Cat Bowl
 block.cat_bowl_black.name=Black Cat Bowl
 container.cat_bowl.name=Cat Bowl
+block.scratching_post_oak.name=Oak Scratching Post
+block.scratching_post_spruce.name=Spruce Scratching Post
+block.scratching_post_birch.name=Birch Scratching Post
+block.scratching_post_jungle.name=Jungle Scratching Post
+block.scratching_post_acacia.name=Acacia Scratching Post
+block.scratching_post_dark_oak.name=Dark Oak Scratching Post
 tile.litter_box.name=Litter Box
-tile.scratching_post.name=Scratching Post
 
 < Creative Tab Name
 itemGroup.simplycats.tab=Simply Cats

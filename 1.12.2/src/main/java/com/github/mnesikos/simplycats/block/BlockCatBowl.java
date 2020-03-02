@@ -40,15 +40,16 @@ import net.minecraft.world.chunk.Chunk;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
+public class BlockCatBowl extends BlockTileEntity<TileEntityBowl> {
     protected String name;
     public static final int GUI_ID = 0;
 
     public static final PropertyBool FULL_FOOD = PropertyBool.create("full_food");
     public static final PropertyInteger WATER_LEVEL = PropertyInteger.create("water_level", 0, 3);
     public static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
+    protected static final AxisAlignedBB BOWL_AABB = new AxisAlignedBB(0.34375F, 0.0F, 0.34375F, 0.65625F, 0.125F, 0.65625F);
 
-    public BlockBowl(String name) {
+    public BlockCatBowl(String name) {
         super(Material.GROUND, name);
         this.name = name;
         this.setSoundType(SoundType.STONE);
@@ -218,8 +219,7 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        float min = 0.34375F, max = 0.65625F;
-        return new AxisAlignedBB(min, 0.0F, min, max, 0.125F, max);
+        return BOWL_AABB;
     }
 
     @Override
@@ -245,13 +245,13 @@ public class BlockBowl extends BlockTileEntity<TileEntityBowl> {
         TileEntity te = world.getTileEntity(target.getBlockPos());
         if (te instanceof TileEntityBowl) {
             TileEntityBowl bowl = (TileEntityBowl) te;
-            return new ItemStack(ModItems.BOWLS.get(bowl.getColor()));
+            return new ItemStack(ModItems.CAT_BOWLS.get(bowl.getColor()));
         } else
             return ItemStack.EMPTY;
     }
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return ModItems.BOWLS.get(state.getValue(COLOR));
+        return ModItems.CAT_BOWLS.get(state.getValue(COLOR));
     }
 }

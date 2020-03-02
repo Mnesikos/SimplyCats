@@ -1,5 +1,41 @@
 {
+  "forge_marker": 1,
+  "defaults":{
+    "textures": {
+      "wooden": "blocks/planks_oak",
+      "particle": "blocks/planks_oak",
+      "post": "simplycats:block/cat_blocks"
+    },
+    "model": "simplycats:scratching_post"
+  },
   "variants": {
-    "normal": { "model": "simplycats:scratching_post" }
+    "variant": {
+      "oak": {},
+      "spruce": {
+        "textures": {
+          "wooden": "blocks/planks_spruce"
+        }
+      },
+      "birch": {
+        "textures": {
+          "wooden": "blocks/planks_birch"
+        }
+      },
+      "jungle": {
+        "textures": {
+          "wooden": "blocks/planks_jungle"
+        }
+      },
+      "acacia": {
+        "textures": {
+          "wooden": "blocks/planks_acacia"
+        }
+      },
+      "dark_oak": {
+        "textures": {
+          "wooden": "blocks/planks_big_oak"
+        }
+      }
+    }
   }
 }

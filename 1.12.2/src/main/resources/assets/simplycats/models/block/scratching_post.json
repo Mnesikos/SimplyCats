@@ -1,9 +1,7 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "wooden": "blocks/planks_oak",
-    "particle": "blocks/planks_oak",
-    "post": "simplycats:block/cat_blocks"
+    "particle": "#wooden"
   },
   "elements": [
     {
