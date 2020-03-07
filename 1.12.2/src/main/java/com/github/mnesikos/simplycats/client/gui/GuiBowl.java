@@ -1,7 +1,7 @@
 package com.github.mnesikos.simplycats.client.gui;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
+import com.github.mnesikos.simplycats.tileentity.TileEntityCatBowl;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
@@ -9,11 +9,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiBowl extends GuiContainer {
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(Ref.MODID + ":textures/gui/bowl_gui.png");
-    private TileEntityBowl tileEntityBowl;
+    private TileEntityCatBowl tileEntityCatBowl;
 
-    public GuiBowl(Container container, TileEntityBowl tileEntityBowl) {
+    public GuiBowl(Container container, TileEntityCatBowl tileEntityCatBowl) {
         super(container);
-        this.tileEntityBowl = tileEntityBowl;
+        this.tileEntityCatBowl = tileEntityCatBowl;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class GuiBowl extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String name = tileEntityBowl.getDisplayName().getUnformattedText();
+        String name = tileEntityCatBowl.getDisplayName().getUnformattedText();
         fontRenderer.drawString(name, xSize / 2 - fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     }
 

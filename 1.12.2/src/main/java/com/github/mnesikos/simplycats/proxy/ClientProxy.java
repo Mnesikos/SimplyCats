@@ -5,7 +5,7 @@ import com.github.mnesikos.simplycats.block.BlockCatBowl;
 import com.github.mnesikos.simplycats.client.gui.GuiBowl;
 import com.github.mnesikos.simplycats.client.render.entity.RenderCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
-import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
+import com.github.mnesikos.simplycats.tileentity.TileEntityCatBowl;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -34,7 +34,7 @@ public class ClientProxy extends CommonProxy {
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
             case BlockCatBowl.GUI_ID:
-                return new GuiBowl(getServerGuiElement(ID, player, world, x, y, z), (TileEntityBowl)world.getTileEntity(new BlockPos(x, y, z)));
+                return new GuiBowl(getServerGuiElement(ID, player, world, x, y, z), (TileEntityCatBowl)world.getTileEntity(new BlockPos(x, y, z)));
             default:
                 return null;
         }

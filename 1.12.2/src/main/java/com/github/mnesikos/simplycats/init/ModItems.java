@@ -1,11 +1,9 @@
 package com.github.mnesikos.simplycats.init;
 
-import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.item.*;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -20,6 +18,7 @@ public class ModItems {
     public static ItemCatnipSeeds CATNIP_SEEDS = new ItemCatnipSeeds("catnip_seeds");
 
     public static final Map<EnumDyeColor, ItemCatBowl> CAT_BOWLS = new HashMap<>();
+    public static final Map<EnumDyeColor, ItemLitterBox> LITTER_BOXES = new HashMap<>();
     public static final Map<BlockPlanks.EnumType, ItemScratchingPost> SCRATCHING_POSTS = new HashMap<>();
 
     public static void registerOres() {
@@ -37,6 +36,8 @@ public class ModItems {
         for (EnumDyeColor color : EnumDyeColor.values()) {
             CAT_BOWLS.put(color, new ItemCatBowl("cat_bowl", color));
             registry.register(CAT_BOWLS.get(color));
+            LITTER_BOXES.put(color, new ItemLitterBox("litter_box", color));
+            registry.register(LITTER_BOXES.get(color));
         }
         for (BlockPlanks.EnumType type : BlockPlanks.EnumType.values()) {
             SCRATCHING_POSTS.put(type, new ItemScratchingPost("scratching_post", type));
@@ -50,8 +51,10 @@ public class ModItems {
         TREAT_BAG.registerItemModel();
         CATNIP.registerItemModel();
         CATNIP_SEEDS.registerItemModel();
-        for (EnumDyeColor color : EnumDyeColor.values())
+        for (EnumDyeColor color : EnumDyeColor.values()) {
             CAT_BOWLS.get(color).registerItemModel();
+            LITTER_BOXES.get(color).registerItemModel();
+        }
         for (BlockPlanks.EnumType type : BlockPlanks.EnumType.values())
             SCRATCHING_POSTS.get(type).registerItemModel();
     }

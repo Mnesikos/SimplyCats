@@ -26,15 +26,16 @@ public class ModBlocks {
         );
 
         GameRegistry.registerTileEntity(CAT_BOWL.getTileEntityClass(), Objects.requireNonNull(CAT_BOWL.getRegistryName()));
+        GameRegistry.registerTileEntity(LITTER_BOX.getTileEntityClass(), Objects.requireNonNull(LITTER_BOX.getRegistryName()));
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         registry.registerAll(
-                LITTER_BOX.createItemBlock()
+                //LITTER_BOX.createItemBlock()
         );
     }
 
     public static void registerModels() {
-        LITTER_BOX.registerItemModel(Item.getItemFromBlock(LITTER_BOX));
+        //LITTER_BOX.registerItemModel(Item.getItemFromBlock(LITTER_BOX));
     }
 }

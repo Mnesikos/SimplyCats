@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.inventory;
 
-import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
+import com.github.mnesikos.simplycats.tileentity.TileEntityCatBowl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -8,16 +8,16 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
 public class ContainerBowl extends Container {
-    private TileEntityBowl tileEntityBowl;
+    private TileEntityCatBowl tileEntityCatBowl;
 
-    public ContainerBowl(InventoryPlayer player, final TileEntityBowl bowl) {
-        this.tileEntityBowl = bowl;
+    public ContainerBowl(InventoryPlayer player, final TileEntityCatBowl bowl) {
+        this.tileEntityCatBowl = bowl;
         //IItemHandler inventory = bowl.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
 
         //Bowl Storage
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 5; j++) {
-                 addSlotToContainer(new SlotCatFood(tileEntityBowl, j + i * 5, 44 + j * 18, 21 + i * 18) {
+                 addSlotToContainer(new SlotCatFood(tileEntityCatBowl, j + i * 5, 44 + j * 18, 21 + i * 18) {
                     @Override
                     public void onSlotChanged() {
                         bowl.markDirty();
@@ -73,6 +73,6 @@ public class ContainerBowl extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return tileEntityBowl.isUsableByPlayer(player);
+        return tileEntityCatBowl.isUsableByPlayer(player);
     }
 }

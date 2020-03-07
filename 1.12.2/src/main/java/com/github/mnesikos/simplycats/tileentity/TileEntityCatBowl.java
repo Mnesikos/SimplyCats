@@ -19,7 +19,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
-public class TileEntityBowl extends TileEntity implements IInventory {
+public class TileEntityCatBowl extends TileEntity implements IInventory {
     private EnumDyeColor color = EnumDyeColor.BLACK;
     private ItemStackHandler inventory = new ItemStackHandler(10);
 

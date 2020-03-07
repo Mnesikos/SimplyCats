@@ -10,7 +10,7 @@ import com.github.mnesikos.simplycats.init.ModItems;
 import com.github.mnesikos.simplycats.init.ModProfessions;
 import com.github.mnesikos.simplycats.init.ModRecipes;
 import com.github.mnesikos.simplycats.inventory.ContainerBowl;
-import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
+import com.github.mnesikos.simplycats.tileentity.TileEntityCatBowl;
 import com.github.mnesikos.simplycats.worldgen.villages.ComponentPetShelter;
 import com.github.mnesikos.simplycats.worldgen.villages.VillagePetShelterHandler;
 import net.minecraft.creativetab.CreativeTabs;
@@ -81,7 +81,7 @@ public class CommonProxy implements IGuiHandler {
     public Container getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
             case BlockCatBowl.GUI_ID:
-                return new ContainerBowl(player.inventory, (TileEntityBowl)world.getTileEntity(new BlockPos(x, y, z)));
+                return new ContainerBowl(player.inventory, (TileEntityCatBowl)world.getTileEntity(new BlockPos(x, y, z)));
             default:
                 return null;
         }
