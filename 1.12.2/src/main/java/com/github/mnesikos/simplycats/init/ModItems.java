@@ -16,6 +16,7 @@ public class ModItems {
     public static ItemBase TREAT_BAG = new ItemTreatBag("treat_bag");
     public static ItemBase CATNIP = new ItemCatnip("catnip");
     public static ItemCatnipSeeds CATNIP_SEEDS = new ItemCatnipSeeds("catnip_seeds");
+    public static final ItemLaserPointer LASER_POINTER = new ItemLaserPointer("laser_pointer");
 
     public static final Map<EnumDyeColor, ItemCatBowl> CAT_BOWLS = new HashMap<>();
     public static final Map<EnumDyeColor, ItemLitterBox> LITTER_BOXES = new HashMap<>();
@@ -31,7 +32,7 @@ public class ModItems {
                 PET_CARRIER,
                 CERTIFICATE,
                 TREAT_BAG,
-                CATNIP, CATNIP_SEEDS
+                CATNIP, CATNIP_SEEDS, LASER_POINTER
         );
         for (EnumDyeColor color : EnumDyeColor.values()) {
             CAT_BOWLS.put(color, new ItemCatBowl("cat_bowl", color));
@@ -51,6 +52,7 @@ public class ModItems {
         TREAT_BAG.registerItemModel();
         CATNIP.registerItemModel();
         CATNIP_SEEDS.registerItemModel();
+        LASER_POINTER.registerItemModel();
         for (EnumDyeColor color : EnumDyeColor.values()) {
             CAT_BOWLS.get(color).registerItemModel();
             LITTER_BOXES.get(color).registerItemModel();

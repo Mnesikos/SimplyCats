@@ -20,6 +20,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DifficultyInstance;
@@ -41,12 +42,21 @@ public class EntityCat extends AbstractCat {
     private static final DataParameter<String> FATHER;
 
     private EntityAITempt aiTempt;
+    private Vec3d nearestLaser;
 
     public EntityCat(World world) {
         super(world);
         this.setSize(0.6F, 0.8F);
         this.setParent("mother", "Unknown");
         this.setParent("father", "Unknown");
+    }
+
+    public Vec3d getNearestLaser(){
+        return nearestLaser;
+    }
+
+    public void setNearestLaser(Vec3d vec){
+        this.nearestLaser = vec;
     }
 
     @Override
@@ -105,6 +115,11 @@ public class EntityCat extends AbstractCat {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if(this.getNearestLaser() != null) {
+            if(this.isSitting())
+                this.setSitting(false);
+            this.getNavigator().tryMoveToXYZ(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 1.2D);
+        }
 
         if (!this.world.isRemote && !this.isChild() && !this.isFixed() && this.getSex().equals(Genetics.Sex.FEMALE.getName())) { //if female & adult & not fixed
             if (this.getBreedingStatus("inheat")) //if in heat
