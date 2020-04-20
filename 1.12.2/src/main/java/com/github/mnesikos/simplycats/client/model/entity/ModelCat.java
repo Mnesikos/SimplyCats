@@ -139,28 +139,43 @@ public class ModelCat extends ModelBase {
         if (entity instanceof EntityCat) {
             EntityCat cat = (EntityCat) entity;
 
+            this.head.rotationPointY = 14.0F;
             this.head.rotationPointZ = -6.5F;
             this.body.rotateAngleX = 0.0F;
+            this.body.rotationPointY = 18.0F;
             this.fleftlegpoint.rotateAngleX = this.frightlegpoint.rotateAngleX = 0.0F;
             this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = 0.0F;
+            this.bleftlegpoint.rotationPointY = this.brightlegpoint.rotationPointY = -0.5F;
+            this.fleftlegpoint.rotationPointY = this.frightlegpoint.rotationPointY = -0.5F;
             this.fleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
             this.brightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
             this.frightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
             this.bleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
             this.tail.rotationPointY = 15.0F;
             this.tail.rotateAngleX = (float) (180 / (180 / Math.PI));
+            this.tail2.rotateAngleX = (float) (10 / (180 / Math.PI));
+            this.lear.rotateAngleX = 0.0F;
+            this.lear.rotateAngleY = 0.0F;
+            this.rear.rotateAngleX = 0.0F;
+            this.rear.rotateAngleY = 0.0F;
 
-            /*if (cat.isAngry()) {
+            if (cat.isAngry() || cat.isSneaking()) {
                 this.lear.rotateAngleX = (float) (67 / (180 / Math.PI));
                 this.lear.rotateAngleY = (float) (-145 / (180 / Math.PI));
                 this.rear.rotateAngleX = (float) (67 / (180 / Math.PI));
                 this.rear.rotateAngleY = (float) (145 / (180 / Math.PI));
-            } else {
-                this.lear.rotateAngleX = 0.0F;
-                this.lear.rotateAngleY = 0.0F;
-                this.rear.rotateAngleX = 0.0F;
-                this.rear.rotateAngleY = 0.0F;
-            }*/
+            }
+
+            if (cat.isSneaking()) {
+                this.head.rotationPointY += 2.5F;
+                this.body.rotationPointY += 2.0F;
+                this.bleftlegpoint.rotationPointY -= 2.0F;
+                this.brightlegpoint.rotationPointY -= 2.0F;
+                this.fleftlegpoint.rotationPointY -= 2.0F;
+                this.frightlegpoint.rotationPointY -= 2.0F;
+                this.tail.rotationPointY += 2.0F;
+                this.tail.rotateAngleX = ((float) Math.PI / 3F);
+            }
 
             if (cat.isSitting()) {
                 if (this.isChild) {

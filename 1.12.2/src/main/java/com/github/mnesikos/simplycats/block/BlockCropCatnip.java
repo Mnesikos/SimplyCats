@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 
 public class BlockCropCatnip extends BlockCrops {
     public BlockCropCatnip(String name) {
-        this.setTranslationKey(name);
+        this.setUnlocalizedName(name);
         this.setRegistryName(Ref.MODID + ":" + name);
     }
 

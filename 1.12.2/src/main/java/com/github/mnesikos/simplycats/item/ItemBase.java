@@ -10,7 +10,7 @@ public class ItemBase extends Item {
 
     public ItemBase(String name) {
         this.name = name;
-        this.setTranslationKey(name);
+        this.setUnlocalizedName(name);
         this.setRegistryName(new ResourceLocation(Ref.MODID, name));
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
     }

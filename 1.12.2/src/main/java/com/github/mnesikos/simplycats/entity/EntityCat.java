@@ -1,16 +1,17 @@
 package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.ai.*;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
+import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.init.ModItems;
+import com.google.common.base.Predicate;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -24,13 +25,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class EntityCat extends AbstractCat {
     private static final DataParameter<Byte> FIXED;
@@ -42,6 +40,7 @@ public class EntityCat extends AbstractCat {
     private static final DataParameter<String> FATHER;
 
     private EntityAITempt aiTempt;
+    private CatAITargetNearest aiTargetNearest;
     private Vec3d nearestLaser;
 
     public EntityCat(World world) {
@@ -72,21 +71,29 @@ public class EntityCat extends AbstractCat {
             this.tasks.addTask(3, new CatAIMate(this, 1.2D));
         this.tasks.addTask(4, new CatAIBirth(this));
         this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
-        this.tasks.addTask(6, new EntityAIOcelotAttack(this));
+        this.tasks.addTask(6, new CatAIAttack(this));
         this.tasks.addTask(7, new CatAIWander(this, 1.0D));
         //this.tasks.addTask(8, new CatAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
         this.tasks.addTask(10, new EntityAILookIdle(this));
+        this.aiTargetNearest = new CatAITargetNearest<>(this, EntityLivingBase.class, true, new Predicate<EntityLivingBase>() {
+            @Override
+            public boolean apply(@Nullable EntityLivingBase entity) {
+                //return SCEvents.isRatEntity(entity) && SCEvents.isBirdEntity(entity);
+                return entity instanceof EntityChicken || (!(entity instanceof EntityCat) && !(entity instanceof EntityPlayer) && SCEvents.isEntityPrey(entity));
+            }
+        });
+        this.targetTasks.addTask(1, this.aiTargetNearest);
     }
 
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(14.0D);
         getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(0.7D);
         getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(0.5D);
+        getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(2.0D);
     }
 
     @Override
@@ -103,12 +110,38 @@ public class EntityCat extends AbstractCat {
     }
 
     @Override
+    protected void updateAITasks() {
+        if (this.world.getDifficulty() == EnumDifficulty.PEACEFUL || !SCConfig.ATTACK_AI)
+            this.targetTasks.removeTask(aiTargetNearest);
+
+        if (this.getMoveHelper().isUpdating()) {
+            double d0 = this.getMoveHelper().getSpeed();
+
+            if (d0 == 0.6D) {
+                this.setSneaking(true);
+                this.setSprinting(false);
+            }
+            else if (d0 == 1.33D) {
+                this.setSneaking(false);
+                this.setSprinting(true);
+            }
+            else {
+                this.setSneaking(false);
+                this.setSprinting(false);
+            }
+        } else {
+            this.setSneaking(false);
+            this.setSprinting(false);
+        }
+    }
+
+    @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
         if (!this.world.isRemote)
             if (this.isTamed())
                 this.aiSit.setSitting(!this.isSitting());
         if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && !this.isFixed())
-            this.setTimeCycle("end", this.world.rand.nextInt(SimplyCatsConfig.HEAT_COOLDOWN));
+            this.setTimeCycle("end", this.world.rand.nextInt(SCConfig.HEAT_COOLDOWN));
         return super.onInitialSpawn(difficulty, livingdata);
     }
 
@@ -125,16 +158,16 @@ public class EntityCat extends AbstractCat {
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("end", SimplyCatsConfig.HEAT_COOLDOWN); //sets out of heat for 16 (default) minecraft days
+                        setTimeCycle("end", SCConfig.HEAT_COOLDOWN); //sets out of heat for 16 (default) minecraft days
                     else { //or if IS pregnant
-                        setTimeCycle("pregnant", SimplyCatsConfig.PREGNANCY_TIMER); //and heat time runs out, starts pregnancy timer for birth
+                        setTimeCycle("pregnant", SCConfig.PREGNANCY_TIMER); //and heat time runs out, starts pregnancy timer for birth
                         this.setBreedingStatus("inheat", false); //sets out of heat
                     }
                 }
             if (!this.getBreedingStatus("inheat")) { //if not in heat
                 if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("start", SimplyCatsConfig.HEAT_TIMER); //sets in heat for 2 minecraft days
+                        setTimeCycle("start", SCConfig.HEAT_TIMER); //sets in heat for 2 minecraft days
                 }
             }
         }
@@ -169,6 +202,9 @@ public class EntityCat extends AbstractCat {
             }
             this.setMateTimer(mateTimer);
         }
+
+        if (!this.world.isRemote && this.getAttackTarget() == null && this.isAngry())
+            this.setAngry(false);
     }
 
     @Override
@@ -186,7 +222,22 @@ public class EntityCat extends AbstractCat {
 
     @Override
     public boolean attackEntityAsMob(Entity entity) {
-        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), 3.0F);
+        float damage = (int) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+        if (SCEvents.isRatEntity(entity))
+            damage *= 3.0F;
+        if (this.isSneaking() || this.isSprinting())
+            damage *= 2.0F;
+        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), damage);
+    }
+
+    @Override
+    public void setAttackTarget(@Nullable EntityLivingBase entitylivingbaseIn) {
+        super.setAttackTarget(entitylivingbaseIn);
+
+        if (entitylivingbaseIn == null)
+            this.setAngry(false);
+        else if (!this.isTamed())
+            this.setAngry(true);
     }
 
     public void setParent (String parent, String name) {

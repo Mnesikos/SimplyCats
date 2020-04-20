@@ -12,7 +12,7 @@ public class ItemCatnipSeeds extends ItemSeeds {
     public ItemCatnipSeeds(String name) {
         super(ModBlocks.CROP_CATNIP, Blocks.FARMLAND);
         this.name = name;
-        this.setTranslationKey(name);
+        this.setUnlocalizedName(name);
         this.setRegistryName(Ref.MODID + ":" + name);
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
     }

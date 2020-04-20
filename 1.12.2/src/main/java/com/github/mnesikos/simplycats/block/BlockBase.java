@@ -13,7 +13,7 @@ public class BlockBase extends Block {
     public BlockBase(Material material, String name) {
         super(material);
         this.name = name;
-        this.setTranslationKey(name);
+        this.setUnlocalizedName(name);
         this.setRegistryName(Ref.MODID + ":" + name);
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
     }

@@ -109,7 +109,7 @@ public class ItemCertificate extends ItemBase {
     }
 
     @Override
-    public String getTranslationKey(ItemStack stack) {
+    public String getUnlocalizedName(ItemStack stack) {
         int meta = stack.getMetadata();
         switch (meta) {
             case 0:

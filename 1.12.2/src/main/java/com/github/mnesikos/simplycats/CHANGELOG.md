@@ -13,8 +13,11 @@ and this project adheres to
 - Cats will hiss when undead are nearby.
 - Catnip crop... almost- corn art in as placeholder
 - New Blocks: food bowl, litter box, and scratching post!
+- ALMOST: support for TOP and WAILA
+- New attack AI for cats, with a sneak animation AND configurable prey list!
 ### Changed
 - Kittens are smaller for longer, yay! (This time is also configurable.)
+- Updated Forge Mappings
 ### Fixed
 - Cats can no longer mate through walls or even 1x1 gaps.
 - Cats with home points will now wander correctly.

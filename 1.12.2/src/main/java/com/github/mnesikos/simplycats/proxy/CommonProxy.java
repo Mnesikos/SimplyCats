@@ -5,7 +5,7 @@ import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.BlockCatBowl;
 import com.github.mnesikos.simplycats.entity.EntityCat;
-import com.github.mnesikos.simplycats.event.SimplyCatsEvents;
+import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.init.ModItems;
 import com.github.mnesikos.simplycats.init.ModProfessions;
 import com.github.mnesikos.simplycats.init.ModRecipes;
@@ -43,13 +43,13 @@ public class CommonProxy implements IGuiHandler {
 
     public final CreativeTabs SIMPLYCATS = new CreativeTabs(Ref.MODID + ".tab") {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack getTabIconItem() {
             return new ItemStack(ModItems.PET_CARRIER);
         }
     };
 
     public void preInit(FMLPreInitializationEvent e) {
-        MinecraftForge.EVENT_BUS.register(new SimplyCatsEvents());
+        MinecraftForge.EVENT_BUS.register(new SCEvents());
 
         int ENTITY_ID = 0;
         EntityRegistry.registerModEntity(new ResourceLocation(Ref.MODID + ":cat"), EntityCat.class, "Cat", ENTITY_ID++, SimplyCats.instance, 80, 1, true);

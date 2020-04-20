@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.entity.ai;
 
-import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -62,7 +62,7 @@ public class CatAIBirth extends EntityAIBase {
 
         this.MOTHER.setKittens(0); // resets kitten counter
         this.MOTHER.setBreedingStatus("ispregnant", false); // ends pregnancy
-        this.MOTHER.setTimeCycle("end", SimplyCatsConfig.HEAT_COOLDOWN); // sets out of heat timer
+        this.MOTHER.setTimeCycle("end", SCConfig.HEAT_COOLDOWN); // sets out of heat timer
     }
 
     private void spawnBaby(EntityCat father) {
@@ -72,7 +72,7 @@ public class CatAIBirth extends EntityAIBase {
         child = (EntityCat) event.getChild();
 
         if (child != null) {
-            child.setGrowingAge(-SimplyCatsConfig.KITTEN_MATURE_TIMER);
+            child.setGrowingAge(-SCConfig.KITTEN_MATURE_TIMER);
             child.setLocationAndAngles(this.MOTHER.posX, this.MOTHER.posY, this.MOTHER.posZ, 0.0F, 0.0F);
             child.setParent("father", this.FATHER.getCustomNameTag());
             child.setParent("mother", this.MOTHER.getCustomNameTag());

@@ -1,15 +1,43 @@
 package com.github.mnesikos.simplycats.event;
 
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.AbstractCat;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
-public class SimplyCatsEvents {
+import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+public class SCEvents {
+    private static Set<Class<? extends Entity>> entities;
+
+    public static boolean isEntityPrey(@Nullable Entity entity) {
+        if (entities == null) {
+            entities = new HashSet<>();
+            for (String s : SCConfig.PREY_LIST) {
+                ResourceLocation location = new ResourceLocation(s);
+                if (ForgeRegistries.ENTITIES.containsKey(location))
+                    entities.add(Objects.requireNonNull(ForgeRegistries.ENTITIES.getValue(location)).getEntityClass());
+            }
+        }
+        return entities.contains(entity.getClass());
+    }
+
+    public static boolean isRatEntity(Entity entity) {
+        String entityClass = EntityList.getKey(entity).toString();
+        return entityClass.equals("rats:rat")/* || entityClass.equals("zawa:brownrat")*/;
+    }
 
     @SubscribeEvent
     public void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {

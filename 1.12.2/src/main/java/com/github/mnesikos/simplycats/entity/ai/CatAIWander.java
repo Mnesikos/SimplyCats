@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.entity.ai;
 
-import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityCreature;
@@ -58,7 +58,7 @@ public class CatAIWander extends EntityAIBase {
 
         if (cat.hasHomePos()) {
             double d0 = cat.getHomePos().distanceSq((double) MathHelper.floor(cat.posX), (double)MathHelper.floor(cat.posY), (double)MathHelper.floor(cat.posZ)) + 4.0D;
-            double d1 = (SimplyCatsConfig.WANDER_AREA_LIMIT + (float)xzRange);
+            double d1 = (SCConfig.WANDER_AREA_LIMIT + (float)xzRange);
             outsideBounds = d0 < d1 * d1;
         }
         else
@@ -91,15 +91,12 @@ public class CatAIWander extends EntityAIBase {
 
             BlockPos blockpos1 = new BlockPos((double)l + cat.posX, (double)i1 + cat.posY, (double)j1 + cat.posZ);
 
-            if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SimplyCatsConfig.WANDER_AREA_LIMIT*SimplyCatsConfig.WANDER_AREA_LIMIT))) && pathnavigate.canEntityStandOnPos(blockpos1)) {
+            if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SCConfig.WANDER_AREA_LIMIT* SCConfig.WANDER_AREA_LIMIT))) && pathnavigate.canEntityStandOnPos(blockpos1)) {
                 blockpos1 = moveAboveSolid(blockpos1, cat);
-
-                if (isWaterDestination(blockpos1, cat))
-                    continue; //todo avoid water
 
                 float f1 = cat.getBlockPathWeight(blockpos1);
 
-                if (f1 > f) {
+                if (!isWaterDestination(blockpos1, cat) && f1 > f) {
                     f = f1;
                     k1 = l;
                     i = i1;

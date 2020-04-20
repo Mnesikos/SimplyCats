@@ -1,7 +1,6 @@
 package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.google.common.base.Optional;
@@ -390,7 +389,7 @@ public abstract class AbstractCat extends EntityTameable {
 
     /*public boolean canWander() {
         if (this.hasHomePos())
-            return this.getDistanceSq(this.getHomePos()) < SimplyCatsConfig.WANDER_AREA_LIMIT;
+            return this.getDistanceSq(this.getHomePos()) < SCConfig.WANDER_AREA_LIMIT;
         else
             return true;
     }*/

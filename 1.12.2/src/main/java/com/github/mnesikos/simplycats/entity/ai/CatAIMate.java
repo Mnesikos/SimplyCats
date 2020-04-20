@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.entity.ai;
 
-import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -33,7 +33,7 @@ public class CatAIMate extends EntityAIBase {
             return false;
 
         this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
-        if (this.LIST.size() >= SimplyCatsConfig.BREEDING_LIMIT)
+        if (this.LIST.size() >= SCConfig.BREEDING_LIMIT)
             return false;
 
         else if ((this.TARGET != null && !this.TARGET.getBreedingStatus("inheat")) || (this.CAT.getMateTimer() > 0))
@@ -50,7 +50,7 @@ public class CatAIMate extends EntityAIBase {
         boolean maleCooldownCheck = this.CAT.getSex().equals(Genetics.Sex.MALE.getName()) && this.CAT.getMateTimer() == 0;
         boolean femaleHeatCheck = this.TARGET.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.TARGET.getBreedingStatus("inheat");
         this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
-        return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SimplyCatsConfig.BREEDING_LIMIT && this.CAT.getEntitySenses().canSee(this.TARGET);
+        return maleCooldownCheck && this.TARGET.isEntityAlive() && femaleHeatCheck && this.MATE_DELAY < 60 && this.LIST.size() < SCConfig.BREEDING_LIMIT && this.CAT.getEntitySenses().canSee(this.TARGET);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CatAIMate extends EntityAIBase {
         if (this.MATE_DELAY >= 60 && this.CAT.getDistanceSq(this.TARGET) < 4.0D) {
             if (this.WORLD.rand.nextInt(4) <= 2) // 75% chance of success
                 this.startPregnancy();
-            this.CAT.setMateTimer(SimplyCatsConfig.MALE_COOLDOWN); // starts male cooldown
+            this.CAT.setMateTimer(SCConfig.MALE_COOLDOWN); // starts male cooldown
         }
     }
 
@@ -107,7 +107,7 @@ public class CatAIMate extends EntityAIBase {
 
         if (litterSize == 6 || this.TARGET.getKittens() == 6 || this.WORLD.rand.nextInt(4) == 0) { // full litter OR 25% chance ends heat
             this.TARGET.setBreedingStatus("inheat", false);
-            this.TARGET.setTimeCycle("pregnancy", SimplyCatsConfig.PREGNANCY_TIMER); // starts pregnancy timer
+            this.TARGET.setTimeCycle("pregnancy", SCConfig.PREGNANCY_TIMER); // starts pregnancy timer
         }
     }
 }

@@ -49,7 +49,7 @@ repositories {
 
 dependencies {
     deobfCompile "mcp.mobius.waila:Hwyla:1.8.25-B40_1.12:api"
-    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.28-17"
+    provided "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.28-17"
 
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..

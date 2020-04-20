@@ -17,18 +17,18 @@ public class ItemScratchingPost extends ItemBlock {
         super(ModBlocks.SCRATCHING_POST);
         this.type = type;
         this.name = name + "_" + type.getName();
-        this.setTranslationKey(this.name);
+        this.setUnlocalizedName(this.name);
         this.setRegistryName(Ref.MODID + ":" + this.name);
         setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getUnlocalizedName() {
         return "block." + this.name;
     }
 
     @Override
-    public String getTranslationKey(ItemStack stack) {
+    public String getUnlocalizedName(ItemStack stack) {
         return "block." + this.name;
     }
 

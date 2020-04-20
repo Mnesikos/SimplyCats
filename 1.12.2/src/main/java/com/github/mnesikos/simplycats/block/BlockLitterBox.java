@@ -166,7 +166,7 @@ public class BlockLitterBox extends BlockTileEntity<TileEntityLitterBox> {
     @Override
     public IBlockState getStateFromMeta(int meta) {
         return this.getDefaultState()
-                .withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 3))
+                .withProperty(FACING, EnumFacing.getHorizontal(meta & 3))
                 .withProperty(LEVEL, EnumLevel.byMetadata((meta & 15) >> 2));
     }
 

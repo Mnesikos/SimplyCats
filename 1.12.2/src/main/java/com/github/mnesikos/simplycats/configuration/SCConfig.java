@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Config(modid = Ref.MODID, name = "SimplyCats/" + Ref.MODID + "-" + Ref.VERSION)
 @LangKey("config." + Ref.MODID + ".title")
-public class SimplyCatsConfig {
+public class SCConfig {
     private static final String PREFIX = "config." + Ref.MODID;
 
     @Name("Beckon Command")
@@ -30,6 +30,29 @@ public class SimplyCatsConfig {
     @Comment("Disabling this will remove the villager trade to get a one-time-use pet carrier containing a dog.")
     @LangKey(PREFIX + ".adopt_a_dog")
     public static boolean ADOPT_A_DOG = true;
+
+    @Name("Cat Attack AI")
+    @Comment("Disabling this will not allow cats to attack entities in their prey list, essentially a peaceful mode for cats.")
+    @LangKey(PREFIX + ".attack_ai")
+    public static boolean ATTACK_AI = true;
+
+    @Name("Cats' Prey List")
+    @Comment("This is a list of entities all cats will attack on sight if cat attack AI is enabled.")
+    @LangKey(PREFIX + ".prey_list")
+    public static String[] PREY_LIST = new String[]{"minecraft:bat", "minecraft:parrot", "minecraft:chicken",
+            "minecraft:rabbit", "minecraft:silverfish", "rats:rat", "zawa:brownrat", "zawa:cockatoo", "zawa:frigate",
+            "zawa:macaw", "zawa:rattlesnake", "zawa:toucan", "zawa:treefrog", "exoticbirds:woodpecker", "birdwmod:brown_booby",
+            "birdwmod:eastern_bluebird", "birdwmod:eurasian_bullfinch", "birdwmod:great_grey_owl", "birdwmod:green_heron",
+            "birdwmod:hoatzin", "birdwmod:killdeer", "birdwmod:kingofsaxony_bird_of_paradise", "birdwmod:northern_mockingbird",
+            "birdwmod:redflanked_bluetail", "birdwmod:rednecked_nightjar", "birdwmod:stellers_eider",
+            "birdwmod:turquoisebrowed_motmot", "exoticbirds:bluejay", "exoticbirds:booby", "exoticbirds:budgerigar", "exoticbirds:cardinal",
+            "exoticbirds:duck", "exoticbirds:gouldianfinch", "exoticbirds:hummingbird", "exoticbirds:kingfisher", "exoticbirds:kiwi",
+            "exoticbirds:kookaburra", "exoticbirds:lyrebird", "exoticbirds:magpie", "exoticbirds:parrot", "exoticbirds:pigeon",
+            "exoticbirds:roadrunner", "exoticbirds:robin", "exoticbirds:toucan", "animania:hamster", "animania:frog",
+            "animania:toad", "animania:buck_cottontail", "animania:doe_cottontail", "animania:buck_chinchilla",
+            "animania:doe_chinchilla", "animania:buck_dutch", "animania:doe_dutch", "animania:buck_havana", "animania:doe_havana",
+            "animania:buck_jack", "animania:doe_jack", "animania:buck_new_zealand", "animania:doe_new_zealand", "animania:buck_rex",
+            "animania:doe_rex", "animania:buck_lop", "animania:doe_lop"};
 
     @Name("Wander Area Limit") @RangeDouble(min = 10.0D, max = 600.0D)
     @Comment("When a cat's home is set, this is the distance in blocks they are allowed to roam.")

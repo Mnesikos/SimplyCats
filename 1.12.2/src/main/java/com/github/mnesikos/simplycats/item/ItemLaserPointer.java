@@ -68,7 +68,7 @@ public class ItemLaserPointer extends ItemBase {
 						Vec3d vec3 = player.getPositionEyes(1.0F);
 						Vec3d vec3a = player.getLook(1.0F);
 						int distance = 9;
-						Vec3d vec3b = vec3.add(vec3a.x * distance, vec3a.y * distance, vec3a.z * distance);
+						Vec3d vec3b = vec3.addVector(vec3a.x * distance, vec3a.y * distance, vec3a.z * distance);
 						RayTraceResult mop = worldIn.rayTraceBlocks(vec3, vec3b);
 						//If the trace returns a point (it hit something and isnt going off thousands of metres away
 						if (mop != null && mop.hitVec != null) {
