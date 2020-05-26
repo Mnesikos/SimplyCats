@@ -65,7 +65,7 @@ public class ItemCertificate extends ItemBase {
                 return true;
 
             } else if (stack.getMetadata() == 1) {
-                if (((EntityTameable) target).isOwner(player)) {
+                if (((EntityTameable) target).isOwner(player) || player.capabilities.isCreativeMode) {
                     ((EntityTameable) target).setTamed(false);
                     ((EntityTameable) target).getNavigator().clearPath();
                     ((EntityTameable) target).setOwnerId(null);

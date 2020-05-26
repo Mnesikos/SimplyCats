@@ -8,7 +8,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiBowl extends GuiContainer {
-    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(Ref.MODID + ":textures/gui/bowl_gui.png");
+    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(Ref.MODID, "textures/gui/bowl_gui.png");
     private TileEntityCatBowl tileEntityCatBowl;
 
     public GuiBowl(Container container, TileEntityCatBowl tileEntityCatBowl) {

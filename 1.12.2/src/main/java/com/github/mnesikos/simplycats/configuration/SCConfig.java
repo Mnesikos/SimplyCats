@@ -54,10 +54,15 @@ public class SCConfig {
             "animania:buck_jack", "animania:doe_jack", "animania:buck_new_zealand", "animania:doe_new_zealand", "animania:buck_rex",
             "animania:doe_rex", "animania:buck_lop", "animania:doe_lop"};
 
-    @Name("Wander Area Limit") @RangeDouble(min = 10.0D, max = 600.0D)
+    @Name("Wander Area Limit") @RangeDouble(min = 10.0D)
     @Comment("When a cat's home is set, this is the distance in blocks they are allowed to roam.")
     @LangKey(PREFIX + ".wander_area_limit") @RequiresMcRestart
     public static double WANDER_AREA_LIMIT = 400.0D;
+
+    @Name("Tamed Cats Limit") @RangeInt(min = 0)
+    @Comment("Sets a limit of cats each player is allowed to have tamed, setting this to 0 will disable the limit.")
+    @LangKey(PREFIX + ".tamed_limit")
+    public static int TAMED_LIMIT = 0;
 
     @Name("Cats in Area Breeding Limit")
     @Comment("This number is used to limit cat breeding; if more than this amount of cats are nearby, automatic breeding will be disabled.")

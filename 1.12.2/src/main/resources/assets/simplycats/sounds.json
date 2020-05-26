@@ -1,52 +1,13 @@
 {
-    "mob.cat.hiss":
+    "shake_treats":
     {
-        "category": "neutral",
+        "category": "master",
+        "subtitle": "simplycats.subtitle.shake_treats",
         "sounds":
         [
-            "mob/cat/hiss1",
-            "mob/cat/hiss2",
-            "mob/cat/hiss3"
-        ]
-    },
-    "mob.cat.hitt":
-    {
-        "category": "neutral",
-        "sounds":
-        [
-            "mob/cat/hitt1",
-			"mob/cat/hitt2",
-			"mob/cat/hitt3"
-        ]
-    },
-    "mob.cat.meow":
-    {
-        "category": "neutral",
-        "sounds":
-        [
-            "mob/cat/meow1",
-            "mob/cat/meow2",
-            "mob/cat/meow3",
-            "mob/cat/meow4"
-        ]
-    },
-	"mob.cat.purr":
-    {
-        "category": "neutral",
-        "sounds":
-        [
-            "mob/cat/purr1",
-            "mob/cat/purr2",
-            "mob/cat/purr3"
-        ]
-    },
-    "mob.cat.purreow":
-    {
-        "category": "neutral",
-        "sounds":
-        [
-            "mob/cat/purreow1",
-			"mob/cat/purreow2"
+            "simplycats:treat_bag/shake1",
+            "simplycats:treat_bag/shake2",
+            "simplycats:treat_bag/shake3"
         ]
     }
 }

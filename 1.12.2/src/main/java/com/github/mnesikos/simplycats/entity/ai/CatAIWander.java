@@ -48,7 +48,7 @@ public class CatAIWander extends EntityAIBase {
     }
 
     @Nullable
-    protected Vec3d getPosition() {
+    private Vec3d getPosition() {
         PathNavigate pathnavigate = cat.getNavigator();
         Random random = cat.getRNG();
         boolean outsideBounds;
@@ -75,7 +75,7 @@ public class CatAIWander extends EntityAIBase {
             int i1 = random.nextInt(2 * yRange + 1) - yRange;
             int j1 = random.nextInt(2 * xzRange + 1) - xzRange;
 
-            if (cat.hasHomePos() /*&& xzRange > 1*/) {
+            if (cat.hasHomePos()) {
                 BlockPos blockpos = cat.getHomePos();
 
                 if (cat.posX > (double)blockpos.getX())
@@ -91,12 +91,15 @@ public class CatAIWander extends EntityAIBase {
 
             BlockPos blockpos1 = new BlockPos((double)l + cat.posX, (double)i1 + cat.posY, (double)j1 + cat.posZ);
 
-            if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SCConfig.WANDER_AREA_LIMIT* SCConfig.WANDER_AREA_LIMIT))) && pathnavigate.canEntityStandOnPos(blockpos1)) {
+            if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SCConfig.WANDER_AREA_LIMIT * SCConfig.WANDER_AREA_LIMIT))) && pathnavigate.canEntityStandOnPos(blockpos1)) {
                 blockpos1 = moveAboveSolid(blockpos1, cat);
+
+                if (isWaterDestination(blockpos1, cat))
+                    continue;
 
                 float f1 = cat.getBlockPathWeight(blockpos1);
 
-                if (!isWaterDestination(blockpos1, cat) && f1 > f) {
+                if (f1 > f) {
                     f = f1;
                     k1 = l;
                     i = i1;

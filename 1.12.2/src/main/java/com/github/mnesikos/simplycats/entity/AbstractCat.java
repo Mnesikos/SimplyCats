@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.google.common.base.Optional;
@@ -100,7 +101,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.dataManager.register(HOME_POSITION, Optional.absent());
     }
 
-    private void setPhenotype() {
+    public void setPhenotype() {
         this.setGenotype(FUR_LENGTH, FurLength.init() + "-" + FurLength.init());
         this.setGenotype(EUMELANIN, Eumelanin.init() + "-" + Eumelanin.init());
         this.setGenotype(PHAEOMELANIN, Phaeomelanin.init());
@@ -488,14 +489,6 @@ public abstract class AbstractCat extends EntityTameable {
             }
         }
 
-        if (this.getAttackTarget() == null) {
-            List<EntityZombie> zombies = this.world.getEntitiesWithinAABB(EntityZombie.class, this.getEntityBoundingBox().grow(4.0D, 3.0D, 4.0D));
-            List<AbstractSkeleton> skeletons = this.world.getEntitiesWithinAABB(AbstractSkeleton.class, this.getEntityBoundingBox().grow(4.0D, 3.0D, 4.0D));
-            if ((!zombies.isEmpty() || !skeletons.isEmpty()) && this.rand.nextInt(400) == 0) {
-                this.playSound(SoundEvents.ENTITY_CAT_HISS, this.getSoundVolume() / 2.0F, this.getSoundPitch());
-            }
-        }
-
         if (this.world.isRemote && this.dataManager.isDirty()) {
             this.dataManager.setClean();
             this.resetTexturePrefix();
@@ -509,6 +502,14 @@ public abstract class AbstractCat extends EntityTameable {
         if (this.PURR && PURR_TIMER > 0) {
             --PURR_TIMER;
         }
+    }
+
+    public boolean canBeTamed(EntityPlayer player) {
+        if (SCConfig.TAMED_LIMIT == 0)
+            return true;
+
+        // todo
+        return true;
     }
 
     @Override
@@ -633,8 +634,8 @@ public abstract class AbstractCat extends EntityTameable {
 
         child.setGenotype(EYE_COLOR, eye);
 
-        child.setTamed(this.isTamed());
-        if (this.isTamed()) {
+        if (this.isTamed() && this.getOwnerId() != null && this.canBeTamed(this.world.getPlayerEntityByUUID(this.getOwnerId()))) {
+            child.setTamed(this.isTamed());
             child.setOwnerId(this.getOwnerId());
             if (this.hasHomePos())
                 child.setHomePos(this.getHomePos());

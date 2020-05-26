@@ -9,6 +9,7 @@ import com.github.mnesikos.simplycats.init.ModItems;
 import com.google.common.base.Predicate;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -52,7 +53,7 @@ public class EntityCat extends AbstractCat {
 
     public Vec3d getNearestLaser(){
         return nearestLaser;
-    }
+    } //todo
 
     public void setNearestLaser(Vec3d vec){
         this.nearestLaser = vec;
@@ -73,14 +74,15 @@ public class EntityCat extends AbstractCat {
         this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(6, new CatAIAttack(this));
         this.tasks.addTask(7, new CatAIWander(this, 1.0D));
-        //this.tasks.addTask(8, new CatAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
         this.tasks.addTask(10, new EntityAILookIdle(this));
         this.aiTargetNearest = new CatAITargetNearest<>(this, EntityLivingBase.class, true, new Predicate<EntityLivingBase>() {
             @Override
             public boolean apply(@Nullable EntityLivingBase entity) {
-                //return SCEvents.isRatEntity(entity) && SCEvents.isBirdEntity(entity);
-                return entity instanceof EntityChicken || (!(entity instanceof EntityCat) && !(entity instanceof EntityPlayer) && SCEvents.isEntityPrey(entity));
+                if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
+                    return false;
+
+                return entity != null && !(entity instanceof EntityCat) && !(entity instanceof EntityPlayer) && !(entity instanceof IMob) && !entity.isOnSameTeam(EntityCat.this) && SCEvents.isEntityPrey(entity);
             }
         });
         this.targetTasks.addTask(1, this.aiTargetNearest);
@@ -238,6 +240,24 @@ public class EntityCat extends AbstractCat {
             this.setAngry(false);
         else if (!this.isTamed())
             this.setAngry(true);
+    }
+
+    @Override
+    public boolean isOnSameTeam(Entity entity) {
+        if (entity instanceof EntityTameable) {
+            EntityTameable tameable = (EntityTameable)entity;
+            if (tameable.isTamed() && tameable.getOwnerId() != null && this.isTamed() && this.getOwnerId() != null && this.getOwnerId().equals(tameable.getOwnerId()))
+                return true;
+        }
+
+        return super.isOnSameTeam(entity);
+    }
+
+    public void onBagShake(EntityPlayer player) {
+        if (!this.isTamed() || (this.isOwner(player) && !this.isSitting())) {
+            this.getLookHelper().setLookPositionWithEntity(player, 10, (float) this.getVerticalFaceSpeed());
+            this.getNavigator().tryMoveToEntityLiving(player, 1.8);
+        }
     }
 
     public void setParent (String parent, String name) {

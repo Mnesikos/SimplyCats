@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModItems {
+    public static ItemBase CAT_BOOK = new ItemCatBook("cat_book");
     public static ItemBase PET_CARRIER = new ItemPetCarrier();
     public static ItemBase CERTIFICATE = new ItemCertificate("certificate");
     public static ItemBase TREAT_BAG = new ItemTreatBag("treat_bag");
@@ -29,10 +30,12 @@ public class ModItems {
 
     public static void register(IForgeRegistry<Item> registry) {
         registry.registerAll(
+                CAT_BOOK,
                 PET_CARRIER,
                 CERTIFICATE,
                 TREAT_BAG,
-                CATNIP, CATNIP_SEEDS, LASER_POINTER
+                CATNIP, CATNIP_SEEDS,
+                LASER_POINTER
         );
         for (EnumDyeColor color : EnumDyeColor.values()) {
             CAT_BOWLS.put(color, new ItemCatBowl("cat_bowl", color));
@@ -47,6 +50,7 @@ public class ModItems {
     }
 
     public static void registerModels() {
+        CAT_BOOK.registerItemModel();
         PET_CARRIER.registerItemModel();
         CERTIFICATE.registerItemModel();
         TREAT_BAG.registerItemModel();
