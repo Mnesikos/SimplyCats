@@ -50,7 +50,7 @@ public class ClientProxy extends CommonProxy {
             case BlockCatBowl.GUI_ID:
                 return new GuiBowl(getServerGuiElement(ID, player, world, x, y, z), (TileEntityCatBowl)world.getTileEntity(new BlockPos(x, y, z)));
             case ItemCatBook.GUI_ID:
-                if (x == 0) return null;
+                if (x == 0) return new GuiCatBook();
                 Entity target = player.world.getEntityByID(x);
                 if (!(target instanceof AbstractCat)) return null;
                 AbstractCat cat = (AbstractCat) target;

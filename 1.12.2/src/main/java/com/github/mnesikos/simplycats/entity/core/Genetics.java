@@ -1,9 +1,62 @@
 package com.github.mnesikos.simplycats.entity.core;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextComponentTranslation;
+
 import java.util.Random;
 
 public class Genetics {
     public Genetics() {
+    }
+
+    public static String getPhenotypeDescription(NBTTagCompound nbt) {
+        String sex = Sex.getPrettyName(nbt.getString("Phaeomelanin").contains(Genetics.Phaeomelanin.MALE.getAllele()) ? "male" : "female");
+
+        String eumelanin = Genetics.Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
+        String phaeomelanin = Genetics.Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
+        String dilution = Genetics.Dilution.getPhenotype(nbt.getString("Dilution"));
+        String diluteMod = Genetics.DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
+        TextComponentTranslation base = new TextComponentTranslation("cat.base." + eumelanin + (phaeomelanin.equals(Genetics.Phaeomelanin.NOT_RED.toString().toLowerCase()) ? "" : "_" + phaeomelanin) + ".name");
+        boolean dilute = dilution.equals(Genetics.Dilution.DILUTE.toString().toLowerCase());
+        boolean caramelized = diluteMod.equals(Genetics.DiluteMod.CARAMELIZED.toString().toLowerCase());
+        if (dilute) {
+            base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + dilution + ".name");
+            if (caramelized)
+                base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + diluteMod + ".name");
+        }
+        boolean red = phaeomelanin.equals(Genetics.Phaeomelanin.RED.toString().toLowerCase());
+        if (red) {
+            base = new TextComponentTranslation("cat.base." + phaeomelanin + ".name");
+            if (dilute) {
+                base = new TextComponentTranslation("cat.base." + phaeomelanin + "_" + dilution + ".name");
+                if (caramelized)
+                    base = new TextComponentTranslation("cat.base." + phaeomelanin + "_" + diluteMod + ".name");
+            }
+        }
+
+        String agouti = Genetics.Agouti.getPhenotype(nbt.getString("Agouti"));
+        String tabby1 = Genetics.Tabby.getPhenotype(nbt.getString("Tabby"));
+        String spotted = Genetics.Spotted.getPhenotype(nbt.getString("Spotted"));
+        String ticked = Genetics.Ticked.getPhenotype(nbt.getString("Ticked"));
+        TextComponentTranslation tabby = new TextComponentTranslation("");
+        if (agouti.equals(Genetics.Agouti.TABBY.toString().toLowerCase()) || red) {
+            tabby = new TextComponentTranslation("cat.tabby." + tabby1 + ".name");
+            if (spotted.equals(Genetics.Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Genetics.Spotted.SPOTTED.toString().toLowerCase()))
+                tabby = new TextComponentTranslation("cat.tabby." + spotted + ".name");
+            if (ticked.equals(Genetics.Ticked.TICKED.toString().toLowerCase()))
+                tabby = new TextComponentTranslation("cat.tabby." + ticked + ".name");
+        }
+
+        String colorpoint = Genetics.Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
+        TextComponentTranslation point = new TextComponentTranslation("");
+        if (!colorpoint.equals(Genetics.Colorpoint.NOT_POINTED.toString().toLowerCase())) {
+            point = new TextComponentTranslation("cat.point." + colorpoint + ".name");
+        }
+
+        return sex + " " + base.getUnformattedText() +
+                (tabby.getUnformattedText().equals("") ? "" : " " + tabby.getUnformattedText()) +
+                (point.getUnformattedText().equals("") ? "" : " " + point.getUnformattedText()) +
+                " Cat"; //todo missing white
     }
 
     public enum Sex {
@@ -18,6 +71,15 @@ public class Genetics {
 
         public String getName() {
             return name;
+        }
+
+        public static String getPrettyName(String name) {
+            if (name.equalsIgnoreCase(MALE.name))
+                return "Male";
+            else if (name.equalsIgnoreCase(FEMALE.name))
+                return "Female";
+            else
+                return name;
         }
     }
 

@@ -7,11 +7,8 @@ import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.google.common.base.Optional;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.monster.AbstractSkeleton;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +20,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DifficultyInstance;
@@ -31,35 +29,35 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class AbstractCat extends EntityTameable {
-    private static final DataParameter<String> EYE_COLOR;
-    private static final DataParameter<String> FUR_LENGTH;
-    private static final DataParameter<String> EUMELANIN;
-    private static final DataParameter<String> PHAEOMELANIN;
-    private static final DataParameter<String> DILUTION;
-    private static final DataParameter<String> DILUTE_MOD;
-    private static final DataParameter<String> AGOUTI;
-    private static final DataParameter<String> TABBY;
-    private static final DataParameter<String> SPOTTED;
-    private static final DataParameter<String> TICKED;
-    private static final DataParameter<String> COLORPOINT;
-    private static final DataParameter<String> WHITE;
-    private static final DataParameter<String> WHITE_0;
-    private static final DataParameter<String> WHITE_1;
-    private static final DataParameter<String> WHITE_2;
-    private static final DataParameter<String> WHITE_PAWS_0;
-    private static final DataParameter<String> WHITE_PAWS_1;
-    private static final DataParameter<String> WHITE_PAWS_2;
-    private static final DataParameter<String> WHITE_PAWS_3;
+    private static final DataParameter<String> EYE_COLOR = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> FUR_LENGTH = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> EUMELANIN = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> PHAEOMELANIN = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> DILUTION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> DILUTE_MOD = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> AGOUTI = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> TABBY = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> SPOTTED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> TICKED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> COLORPOINT = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_PAWS_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_PAWS_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_PAWS_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_PAWS_3 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private final String[] whiteTexturesArray = new String[3];
     private final String[] whitePawTexturesArray = new String[4];
 
     private String texturePrefix;
     private final String[] catTexturesArray = new String[12];
 
-    private static final DataParameter<Optional<BlockPos>> HOME_POSITION;
+    private static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.OPTIONAL_BLOCK_POS);
+    public static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private boolean PURR;
     private int PURR_TIMER;
 
@@ -99,6 +97,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.dataManager.register(WHITE_PAWS_3, "");
 
         this.dataManager.register(HOME_POSITION, Optional.absent());
+        this.dataManager.register(OWNER_NAME, "");
     }
 
     public void setPhenotype() {
@@ -312,6 +311,21 @@ public abstract class AbstractCat extends EntityTameable {
         this.dataManager.set(HOME_POSITION, Optional.absent());
     }
 
+    public ITextComponent getOwnerName() {
+        if (this.getOwner() != null)
+            return this.getOwner().getDisplayName();
+        else if (!this.dataManager.get(OWNER_NAME).isEmpty())
+            return new TextComponentString(this.dataManager.get(OWNER_NAME));
+        else if (this.getOwnerId() != null)
+            return new TextComponentTranslation("entity.simplycats.cat.unknown_owner");
+        else
+            return new TextComponentTranslation("entity.simplycats.cat.untamed");
+    }
+
+    public void setOwnerName(String name) {
+        this.dataManager.set(OWNER_NAME, name);
+    }
+
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
@@ -336,6 +350,7 @@ public abstract class AbstractCat extends EntityTameable {
             compound.setInteger("HomePosY", this.getHomePos().getY());
             compound.setInteger("HomePosZ", this.getHomePos().getZ());
         }
+        compound.setString("OwnerName", this.dataManager.get(OWNER_NAME));
     }
 
     @Override
@@ -359,6 +374,7 @@ public abstract class AbstractCat extends EntityTameable {
             this.setWhitePawTextures(i, compound.getString("WhitePaws_" + i));
         if (compound.hasKey("HomePosX"))
             this.setHomePos(new BlockPos(compound.getInteger("HomePosX"), compound.getInteger("HomePosY"), compound.getInteger("HomePosZ")));
+        this.setOwnerName(compound.getString("OwnerName"));
     }
 
     private String getPhenotype(DataParameter<String> dataParameter) {
@@ -387,13 +403,6 @@ public abstract class AbstractCat extends EntityTameable {
         else // EYES
             return this.getGenotype(EYE_COLOR);
     }
-
-    /*public boolean canWander() {
-        if (this.hasHomePos())
-            return this.getDistanceSq(this.getHomePos()) < SCConfig.WANDER_AREA_LIMIT;
-        else
-            return true;
-    }*/
 
     private void resetTexturePrefix() {
         this.texturePrefix = null;
@@ -489,6 +498,11 @@ public abstract class AbstractCat extends EntityTameable {
             }
         }
 
+        if (this.ticksExisted % 40 == 0) {
+            if (!this.world.isRemote && this.getOwner() != null)
+                this.setOwnerName(this.getOwner().getDisplayName().getFormattedText());
+        }
+
         if (this.world.isRemote && this.dataManager.isDirty()) {
             this.dataManager.setClean();
             this.resetTexturePrefix();
@@ -499,24 +513,25 @@ public abstract class AbstractCat extends EntityTameable {
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
+        if(this.getHealth() <= 0 && this.isTamed() && this.getOwner() == null) {
+            this.deathTime = 0;
+            this.setHealth(1);
+        }
+
         if (this.PURR && PURR_TIMER > 0) {
             --PURR_TIMER;
         }
     }
 
     public boolean canBeTamed(EntityPlayer player) {
-        if (SCConfig.TAMED_LIMIT == 0)
-            return true;
-
-        // todo
-        return true;
+        return SCConfig.TAMED_LIMIT == 0 || player.getEntityData().getInteger("CatCount") < SCConfig.TAMED_LIMIT;
     }
 
     @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (!stack.isEmpty()) {
-            if (stack.getItem() == Items.STRING && player.isSneaking()) {
+        /*if (!stack.isEmpty()) {
+            /*if (stack.getItem() == Items.STRING && player.isSneaking()) {
                 if (this.world.isRemote) {
                     player.sendMessage(new TextComponentString(this.getGenotype(EYE_COLOR)));
                     player.sendMessage(new TextComponentString(this.getGenotype(FUR_LENGTH) + ": " + getPhenotype(FUR_LENGTH)));
@@ -537,7 +552,7 @@ public abstract class AbstractCat extends EntityTameable {
                 }
                 return true;
             }
-        }
+        }*/
 
         if (!this.PURR && this.rand.nextInt(10) == 0) { // 1/10th chance an interaction will result in purrs
             this.PURR = true;
@@ -545,6 +560,34 @@ public abstract class AbstractCat extends EntityTameable {
         }
 
         return false;
+    }
+
+    /**
+     * A custom setTamed method to set the owner's data along with taming or untaming a cat.
+     * @param tamed - true is tamed, false is untamed, used for this.setTamed(tamed) call at the end.
+     * @param owner - the EntityPlayer who is taming the cat.
+     */
+    public void setTamed(boolean tamed, EntityPlayer owner) {
+        int catCount = owner.getEntityData().getInteger("CatCount");
+        if (tamed) {
+            if (!world.isRemote)
+                owner.getEntityData().setInteger("CatCount", catCount + 1);
+            this.setOwnerName(owner.getDisplayNameString());
+
+        } else {
+            if (!world.isRemote)
+                owner.getEntityData().setInteger("CatCount", catCount - 1);
+            this.setOwnerName("");
+        }
+
+        this.setTamed(tamed);
+    }
+
+    @Override
+    public void onDeath(DamageSource cause) {
+        if (this.isTamed() && this.getOwner() != null)
+            this.getOwner().getEntityData().setInteger("CatCount", this.getOwner().getEntityData().getInteger("CatCount") - 1);
+        super.onDeath(cause);
     }
 
     @Nullable
@@ -634,11 +677,15 @@ public abstract class AbstractCat extends EntityTameable {
 
         child.setGenotype(EYE_COLOR, eye);
 
-        if (this.isTamed() && this.getOwnerId() != null && this.canBeTamed(this.world.getPlayerEntityByUUID(this.getOwnerId()))) {
-            child.setTamed(this.isTamed());
-            child.setOwnerId(this.getOwnerId());
-            if (this.hasHomePos())
-                child.setHomePos(this.getHomePos());
+        if (this.isTamed() && this.getOwnerId() != null) { // checks if mother is tamed & her owner's UUID exists
+            EntityPlayer owner = this.world.getPlayerEntityByUUID(this.getOwnerId()); // grabs owner by UUID
+            if (owner != null && child.canBeTamed(owner)) { // checks if owner is not null (is online), and is able to tame the kitten OR if the tame limit is disabled
+                child.setTamed(this.isTamed(), owner); // sets tamed by owner
+                child.setOwnerId(this.getOwnerId()); // idk if this is needed, don't feel like testing it
+                child.setTamedBy(owner);
+                if (this.hasHomePos()) // checks mother's home point
+                    child.setHomePos(this.getHomePos()); // sets kitten's home point to mother's
+            }
         }
 
         return child;
@@ -713,29 +760,5 @@ public abstract class AbstractCat extends EntityTameable {
     @Override
     protected ResourceLocation getLootTable() {
         return null;
-    }
-
-    static {
-        EYE_COLOR = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        FUR_LENGTH = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        EUMELANIN = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        PHAEOMELANIN = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        DILUTION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        DILUTE_MOD = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        AGOUTI = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        TABBY = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        SPOTTED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        TICKED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        COLORPOINT = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_PAWS_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_PAWS_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_PAWS_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_PAWS_3 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-
-        HOME_POSITION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.OPTIONAL_BLOCK_POS);
     }
 }

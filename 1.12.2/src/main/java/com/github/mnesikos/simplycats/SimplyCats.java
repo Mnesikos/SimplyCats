@@ -1,5 +1,7 @@
 package com.github.mnesikos.simplycats;
 
+import com.github.mnesikos.simplycats.commands.CommandBeckon;
+import com.github.mnesikos.simplycats.commands.CommandCatCount;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.init.ModBlocks;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -44,6 +46,7 @@ public class SimplyCats {
     public void serverLoad(FMLServerStartingEvent event) {
         if (SCConfig.COMMAND_BECKON)
             event.registerServerCommand(new CommandBeckon());
+        event.registerServerCommand(new CommandCatCount());
     }
 
     @Mod.EventBusSubscriber

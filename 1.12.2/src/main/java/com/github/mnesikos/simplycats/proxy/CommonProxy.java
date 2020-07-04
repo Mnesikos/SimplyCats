@@ -4,8 +4,6 @@ import com.github.mnesikos.simplycats.CatDataFixer;
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.BlockCatBowl;
-import com.github.mnesikos.simplycats.client.gui.GuiCatBook;
-import com.github.mnesikos.simplycats.entity.AbstractCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -69,6 +67,8 @@ public class CommonProxy implements IGuiHandler {
         ModFixs fixer = FMLCommonHandler.instance().getDataFixer().init(Ref.MODID, FIXER_VERSION);
         fixer.registerFix(FixTypes.ENTITY, new CatDataFixer());
 
+        //CapabilityHandler.register();
+
         NetworkRegistry.INSTANCE.registerGuiHandler(SimplyCats.instance, SimplyCats.PROXY);
 
         ModProfessions.associateCareersAndTrades();
@@ -82,8 +82,6 @@ public class CommonProxy implements IGuiHandler {
 
     public void registerItemRenderer(Item item, int meta, String id) {
     }
-
-    //public void openCatBook() {}
 
     @Nullable
     @Override

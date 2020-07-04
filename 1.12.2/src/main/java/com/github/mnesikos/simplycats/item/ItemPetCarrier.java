@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.init.ModItems;
@@ -70,7 +71,6 @@ public class ItemPetCarrier extends ItemBase {
                             tags.setString("Entity", String.valueOf(f.getKey()));
                         }
                     }
-                    tags.setString("ownerName", player.getDisplayNameString());
                     if (target.world.isRemote)
                         player.sendMessage(new TextComponentTranslation("chat.pet_carrier.retrieve_pet"));
 
@@ -171,12 +171,18 @@ public class ItemPetCarrier extends ItemBase {
             pet = new EntityWolf(world);
         }
 
-        if (pet != null) {
+        if (pet instanceof EntityCat && !((EntityCat) pet).canBeTamed(player)) {
+            player.sendMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"));
+
+        } else if (pet != null) {
             pet.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
             pet.rotationYawHead = pet.rotationYaw;
             pet.renderYawOffset = pet.rotationYaw;
             world.spawnEntity(pet);
-            pet.setTamed(true);
+            if (pet instanceof EntityCat)
+                ((EntityCat)pet).setTamed(true, player);
+            else
+                pet.setTamed(true);
 
             if (world.isRemote) {
                 for (int i = 0; i < 7; ++i) {
@@ -241,57 +247,15 @@ public class ItemPetCarrier extends ItemBase {
                 TextComponentTranslation species = new TextComponentTranslation("entity." + nbt.getString("id") + ".name");
 
                 TextComponentTranslation owner = new TextComponentTranslation("tooltip.pet_carrier.owner");
-                TextComponentTranslation sex = new TextComponentTranslation("cat.sex." + (nbt.getString("Phaeomelanin").contains(Genetics.Phaeomelanin.MALE.getAllele()) ? "male" : "female") + ".name");
                 if (nbt.hasKey("CustomName"))
-                    tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("CustomName") + "\"" + " " + sex.getFormattedText());
+                    tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("CustomName") + "\"");
                 if (item.getItemDamage() == 2)
                     tooltip.add(TextFormatting.ITALIC + species.getUnformattedText());
                 else if (item.getItemDamage() == 1) {
-                    String eumelanin = Genetics.Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
-                    String phaeomelanin = Genetics.Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
-                    String dilution = Genetics.Dilution.getPhenotype(nbt.getString("Dilution"));
-                    String diluteMod = Genetics.DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
-                    TextComponentTranslation base = new TextComponentTranslation("cat.base." + eumelanin + (phaeomelanin.equals(Genetics.Phaeomelanin.NOT_RED.toString().toLowerCase()) ? "" : "_" + phaeomelanin) + ".name");
-                    if (dilution.equals(Genetics.Dilution.DILUTE.toString().toLowerCase())) {
-                        base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + dilution + ".name");
-                        if (diluteMod.equals(Genetics.DiluteMod.CARAMELIZED.toString().toLowerCase()))
-                            base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + diluteMod + ".name");
-                    }
-                    if (phaeomelanin.equals(Genetics.Phaeomelanin.RED.toString().toLowerCase())) {
-                        base = new TextComponentTranslation("cat.base." + phaeomelanin + ".name");
-                        if (dilution.equals(Genetics.Dilution.DILUTE.toString().toLowerCase())) {
-                            base = new TextComponentTranslation("cat.base." + phaeomelanin + "_" + dilution + ".name");
-                            if (diluteMod.equals(Genetics.DiluteMod.CARAMELIZED.toString().toLowerCase()))
-                                base = new TextComponentTranslation("cat.base." + phaeomelanin + "_" + diluteMod + ".name");
-                        }
-                    }
-
-                    String agouti = Genetics.Agouti.getPhenotype(nbt.getString("Agouti"));
-                    String tabby1 = Genetics.Tabby.getPhenotype(nbt.getString("Tabby"));
-                    String spotted = Genetics.Spotted.getPhenotype(nbt.getString("Spotted"));
-                    String ticked = Genetics.Ticked.getPhenotype(nbt.getString("Ticked"));
-                    TextComponentTranslation tabby = new TextComponentTranslation("");
-                    if (agouti.equals(Genetics.Agouti.TABBY.toString().toLowerCase()) || phaeomelanin.equals(Genetics.Phaeomelanin.RED.toString().toLowerCase())) {
-                        tabby = new TextComponentTranslation("cat.tabby." + tabby1 + ".name");
-                        if (spotted.equals(Genetics.Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Genetics.Spotted.SPOTTED.toString().toLowerCase()))
-                            tabby = new TextComponentTranslation("cat.tabby." + spotted + ".name");
-                        if (ticked.equals(Genetics.Ticked.TICKED.toString().toLowerCase()))
-                            tabby = new TextComponentTranslation("cat.tabby." + ticked + ".name");
-                    }
-
-                    String colorpoint = Genetics.Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
-                    TextComponentTranslation point = new TextComponentTranslation("");
-                    if (!colorpoint.equals(Genetics.Colorpoint.NOT_POINTED.toString().toLowerCase())) {
-                        point = new TextComponentTranslation("cat.point." + colorpoint + ".name");
-                    }
-
-                    tooltip.add(TextFormatting.ITALIC + base.getUnformattedText() +
-                            (tabby.getUnformattedText().equals("") ? "" : " " + tabby.getUnformattedText()) +
-                            (point.getUnformattedText().equals("") ? "" : " " + point.getUnformattedText()) +
-                            " " + species.getFormattedText());
+                    tooltip.add(TextFormatting.ITALIC + Genetics.getPhenotypeDescription(nbt));
                 }
 
-                tooltip.add(owner.getUnformattedText() + " " + nbt.getString("ownerName"));
+                tooltip.add(owner.getUnformattedText() + " " + nbt.getString("OwnerName"));
             }
         } else {
             TextComponentTranslation empty = new TextComponentTranslation("tooltip.pet_carrier.empty");

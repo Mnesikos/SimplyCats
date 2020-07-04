@@ -32,8 +32,7 @@ public class CatAIBirth extends EntityAIBase {
         else if (this.MOTHER.getMateTimer() >= 0)
             return false;
 
-        else
-            return true;
+        else return !this.MOTHER.isTamed() || this.MOTHER.getOwner() != null;
     }
 
     @Override

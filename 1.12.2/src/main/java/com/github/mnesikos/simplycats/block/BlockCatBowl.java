@@ -118,23 +118,6 @@ public class BlockCatBowl extends BlockTileEntity<TileEntityCatBowl> {
     }
 
     @Override
-    public void fillWithRain(World world, BlockPos pos) {
-        /*TileEntityCatBowl tileEntityBowl = this.getTileEntity(world, pos);
-        if (tileEntityBowl.isEmpty()) {
-            if (world.rand.nextInt(20) == 1) {
-                float f = world.getBiome(pos).getTemperature(pos);
-
-                if (world.getBiomeProvider().getTemperatureAtHeight(f, pos.getY()) >= 0.15F) {
-                    IBlockState iblockstate = world.getBlockState(pos);
-
-                    if (((Integer) iblockstate.getValue(WATER_LEVEL)).intValue() < 3)
-                        world.setBlockState(pos, iblockstate.cycleProperty(WATER_LEVEL), 2);
-                }
-            }
-        }*/ // todo might add this back but who lets their cats drink rain water????? gross
-    }
-
-    @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         TileEntityCatBowl te = getTileEntity(world, pos);
         if (te instanceof IInventory)

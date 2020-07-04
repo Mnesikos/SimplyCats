@@ -2,22 +2,38 @@ package com.github.mnesikos.simplycats.client.gui;
 
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.entity.AbstractCat;
+import com.github.mnesikos.simplycats.entity.core.Genetics;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.Random;
 
 @SideOnly(Side.CLIENT)
 public class GuiCatBook extends GuiScreen {
@@ -35,19 +51,21 @@ public class GuiCatBook extends GuiScreen {
     private BookmarkButton buttonBookmark;
 
     public AbstractCat cat;
-    public static ItemStack book;
     NBTTagCompound nbt;
+    protected int catHealth;
+    public static ItemStack book;
+    protected final Random rand = new Random();
 
     public GuiCatBook(AbstractCat cat) {
         this();
         this.cat = cat;
-        nbt = cat.getEntityData();
+        nbt = new NBTTagCompound();
         cat.writeToNBT(nbt);
     }
 
     public GuiCatBook() {
-        if (this.book != null) {
-            if (this.book.hasTagCompound()) {
+        if (book != null) {
+            if (book.hasTagCompound()) {
                 NBTTagCompound nbttagcompound = book.getTagCompound();
                 this.bookPages = nbttagcompound.getTagList("pages", Constants.NBT.TAG_COMPOUND).copy();
                 this.bookTotalPages = this.bookPages.tagCount();
@@ -90,6 +108,7 @@ public class GuiCatBook extends GuiScreen {
         this.buttonNextPage.visible = this.currPage < this.bookTotalPages - 1;
         this.buttonPreviousPage.visible = this.currPage > 0;
         this.buttonHome.isActive = this.currPage == 0;
+        this.buttonAddBookmark.visible = this.currPage > 0;
     }
 
     protected void actionPerformed(GuiButton button) throws IOException {
@@ -112,55 +131,6 @@ public class GuiCatBook extends GuiScreen {
 
             this.updateButtons();
         }
-        /*
-
-        if (button.enabled)
-        {
-            if (button.id == 0)
-            {
-                this.mc.displayGuiScreen((GuiScreen)null);
-                this.sendBookToServer(false);
-            }
-            else if (button.id == 3 && this.bookIsUnsigned)
-            {
-                this.bookGettingSigned = true;
-            }
-            else if (button.id == 1)
-            {
-                if (this.currPage < this.bookTotalPages - 1)
-                {
-                    ++this.currPage;
-                }
-                else if (this.bookIsUnsigned)
-                {
-                    this.addNewPage();
-
-                    if (this.currPage < this.bookTotalPages - 1)
-                    {
-                        ++this.currPage;
-                    }
-                }
-            }
-            else if (button.id == 2)
-            {
-                if (this.currPage > 0)
-                {
-                    --this.currPage;
-                }
-            }
-            else if (button.id == 5 && this.bookGettingSigned)
-            {
-                this.sendBookToServer(true);
-                this.mc.displayGuiScreen((GuiScreen)null);
-            }
-            else if (button.id == 4 && this.bookGettingSigned)
-            {
-                this.bookGettingSigned = false;
-            }
-
-            this.updateButtons();
-        }
-        * */
     }
 
     @Override
@@ -172,20 +142,24 @@ public class GuiCatBook extends GuiScreen {
         drawModalRectWithCustomSizedTexture(centerX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
 
         if (cat != null) {
-            GuiInventory.drawEntityOnScreen(centerX + 40, 80, 50, (centerX + 51) - mouseX, 50 - mouseY, cat);
+            GuiInventory.drawEntityOnScreen(centerX + 40, 74, 50, (centerX + 51) - mouseX, 50 - mouseY, cat);
 
-            this.fontRenderer.drawString(cat.getName(), centerX + 66, 24, 0);
-            this.fontRenderer.drawString(cat.getSex(), centerX + 66, 36, 0);
-            this.fontRenderer.drawString("Purrsonality", centerX + 66, 48, 0);
-            this.fontRenderer.drawString("Owner", centerX + 66, 60, 0);
-            this.fontRenderer.drawString("Health", centerX + 66, 72, 0);
+            String ownerName = "";
+            if (cat.isTamed())
+                ownerName = cat.getOwnerName().getFormattedText();
 
-            this.fontRenderer.drawSplitString("Description will go here and sort of here ish :)",
-                    centerX + 20, 90, 114, 0);
+            this.renderCatHealth(centerX + 66, 24);
+            this.fontRenderer.drawSplitString(cat.getName(), centerX + 66, 40, 68, 0);
+            this.fontRenderer.drawString("Purrsonality", centerX + 66, 64, 0);
+
+            this.fontRenderer.drawSplitString(Genetics.getPhenotypeDescription(nbt), centerX + 16, 90, 120, 0);
+
+            this.fontRenderer.drawSplitString(ownerName, centerX + 16, 122, 120, 0);
+
             this.fontRenderer.drawSplitString("Some vocal level shit",
-                    centerX + 20, 124, 114, 0);
+                    centerX + 16, 136, 120, 0);
             this.fontRenderer.drawSplitString("Some activity level shit",
-                    centerX + 20, 136, 114, 0);
+                    centerX + 16, 148, 120, 0);
 
             this.fontRenderer.drawString(nbt.getString("EyeColor"), centerX + 230, 12 + 12, 0);
             this.fontRenderer.drawString(nbt.getString("FurLength"), centerX + 230, 22 + 12, 0);
@@ -213,12 +187,82 @@ public class GuiCatBook extends GuiScreen {
             this.fontRenderer.drawString("Colorpoint", centerX + 152, 124, 0);
             this.fontRenderer.drawString("White", centerX + 152, 134, 0);
 
+            this.fontRenderer.drawSplitString("Pregnancy/Heat Data", centerX + 150, 148, 120, 0);
+
         } else if (book != null) {
             this.fontRenderer.drawString("Index page?", centerX + 40, 80, 0);
         } else
             this.fontRenderer.drawString("error page this should not happen", centerX + 40, 80, 0); //todo remove when done
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    protected void renderCatHealth(int x, int y) {
+        GlStateManager.color(1, 1, 1, 1);
+        this.mc.getTextureManager().bindTexture(ICONS);
+        this.catHealth = MathHelper.ceil(cat.getHealth());
+        IAttributeInstance iattributeinstance = cat.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
+
+        float maxHealth = (float)iattributeinstance.getAttributeValue();
+        int l1 = MathHelper.ceil((maxHealth) / 2.0F / 10.0F);
+        int i2 = Math.max(10 - (l1 - 2), 3);
+
+        for (int wholeHearts = MathHelper.ceil((maxHealth) / 2.0F) - 1; wholeHearts >= 0; --wholeHearts) {
+            int textureX = 16;
+            int textureY = 0;
+
+            int j4 = MathHelper.ceil((float) (wholeHearts + 1) / 10.0F) - 1;
+            int guiX = x + wholeHearts % 10 * 8;
+            int guiY = y - j4 * i2;
+
+            this.drawTexturedModalRect(guiX, guiY, 16 + textureY * 9, 9 * textureY, 9, 9);
+
+            if (wholeHearts * 2 + 1 < catHealth)
+                this.drawTexturedModalRect(guiX, guiY, textureX + 36, 9 * textureY, 9, 9);
+
+            if (wholeHearts * 2 + 1 == catHealth)
+                this.drawTexturedModalRect(guiX, guiY, textureX + 45, 9 * textureY, 9, 9);
+        }
+    }
+
+    public static void drawEntityOnScreen(int posX, int posY, int scale, float mouseX, float mouseY, AbstractCat cat)
+    {
+        GlStateManager.enableColorMaterial();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate((float)posX, (float)posY, 50.0F);
+        GlStateManager.scale((float)(-scale), (float)scale, (float)scale);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        float f = cat.renderYawOffset;
+        float f1 = cat.rotationYaw;
+        float f2 = cat.rotationPitch;
+        float f3 = cat.prevRotationYawHead;
+        float f4 = cat.rotationYawHead;
+        GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
+        cat.renderYawOffset = (float)Math.atan((double)(mouseX / 40.0F)) * 20.0F;
+        cat.rotationYaw = (float)Math.atan((double)(mouseX / 40.0F)) * 40.0F;
+        cat.rotationPitch = -((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F;
+        cat.rotationYawHead = cat.rotationYaw;
+        cat.prevRotationYawHead = cat.rotationYaw;
+        GlStateManager.translate(0.0F, 0.0F, 0.0F);
+        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        rendermanager.setPlayerViewY(180.0F);
+        rendermanager.setRenderShadow(false);
+        rendermanager.renderEntity(cat, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
+        rendermanager.setRenderShadow(true);
+        cat.renderYawOffset = f;
+        cat.rotationYaw = f1;
+        cat.rotationPitch = f2;
+        cat.prevRotationYawHead = f3;
+        cat.rotationYawHead = f4;
+        GlStateManager.popMatrix();
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
 
     @SideOnly(Side.CLIENT)

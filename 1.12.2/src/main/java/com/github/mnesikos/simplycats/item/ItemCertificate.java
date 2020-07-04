@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -45,10 +46,19 @@ public class ItemCertificate extends ItemBase {
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
         if (target instanceof EntityCat || target instanceof EntityWolf) {
             if (stack.getMetadata() == 0) {
-                if (((EntityTameable) target).isTamed()) {
+                if (((EntityTameable) target).isTamed())
                     return false;
+
+                else if (target instanceof EntityCat && !((EntityCat) target).canBeTamed(player)) { //TODO THIS IS BROKEN AF
+                    if (player.world.isRemote)
+                        player.sendMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"));
+                    return false;
+
                 } else {
-                    ((EntityTameable) target).setTamed(true);
+                    if (target instanceof EntityCat)
+                        ((EntityCat)target).setTamed(true, player);
+                    else
+                        ((EntityTameable) target).setTamed(true);
                     ((EntityTameable) target).getNavigator().clearPath();
                     ((EntityTameable) target).setOwnerId(player.getUniqueID());
                     target.setHealth(target.getMaxHealth());
@@ -61,12 +71,15 @@ public class ItemCertificate extends ItemBase {
                         if (stack.getCount() <= 0)
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                     }
+                    return true;
                 }
-                return true;
 
             } else if (stack.getMetadata() == 1) {
-                if (((EntityTameable) target).isOwner(player) || player.capabilities.isCreativeMode) {
-                    ((EntityTameable) target).setTamed(false);
+                if (((EntityTameable) target).isOwner(player)) {
+                    if (target instanceof EntityCat)
+                        ((EntityCat)target).setTamed(false, player);
+                    else
+                        ((EntityTameable) target).setTamed(false);
                     ((EntityTameable) target).getNavigator().clearPath();
                     ((EntityTameable) target).setOwnerId(null);
                     if (player.world.isRemote)

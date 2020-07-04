@@ -76,16 +76,15 @@ public class EntityCat extends AbstractCat {
         this.tasks.addTask(7, new CatAIWander(this, 1.0D));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
         this.tasks.addTask(10, new EntityAILookIdle(this));
-        this.aiTargetNearest = new CatAITargetNearest<>(this, EntityLivingBase.class, true, new Predicate<EntityLivingBase>() {
-            @Override
-            public boolean apply(@Nullable EntityLivingBase entity) {
+        if (SCConfig.ATTACK_AI) {
+            this.aiTargetNearest = new CatAITargetNearest<>(this, EntityLivingBase.class, true, entity -> {
                 if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
                     return false;
 
                 return entity != null && !(entity instanceof EntityCat) && !(entity instanceof EntityPlayer) && !(entity instanceof IMob) && !entity.isOnSameTeam(EntityCat.this) && SCEvents.isEntityPrey(entity);
-            }
-        });
-        this.targetTasks.addTask(1, this.aiTargetNearest);
+            });
+            this.targetTasks.addTask(1, this.aiTargetNearest);
+        }
     }
 
     @Override
@@ -211,8 +210,9 @@ public class EntityCat extends AbstractCat {
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (this.isEntityInvulnerable(source)) {
+        if (this.isEntityInvulnerable(source) || (this.isTamed() && this.getOwner() == null)) {
             return false;
+
         } else {
             if (this.aiSit != null) {
                 this.aiSit.setSitting(false);
@@ -502,15 +502,17 @@ public class EntityCat extends AbstractCat {
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.male").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                 }
                 return true;
+            }
 
-            } else if (stack.getItem() == Items.BONE && player.isSneaking()) {
+            if (stack.getItem() == Items.BONE && player.isSneaking()) {
                 if (this.world.isRemote) {
                     if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.getBreedingStatus("ispregnant"))
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.kitten_count").getFormattedText() + " " + this.getKittens()));
                 }
                 return true;
+            }
 
-            } else if ((this.aiTempt == null || this.aiTempt.isRunning()) && stack.getItem() == ModItems.TREAT_BAG && player.getDistanceSq(this) < 9.0D) {
+            if ((this.aiTempt == null || this.aiTempt.isRunning()) && stack.getItem() == ModItems.TREAT_BAG && player.getDistanceSq(this) < 9.0D) {
                 if (player.isSneaking()) {
                     if (this.hasHomePos()) {
                         this.resetHomePos();
@@ -530,7 +532,6 @@ public class EntityCat extends AbstractCat {
                         if (this.world.isRemote)
                             player.sendMessage(new TextComponentString(getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
                 }
-
             }
         }
 

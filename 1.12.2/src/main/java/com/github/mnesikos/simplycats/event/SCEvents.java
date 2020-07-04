@@ -8,10 +8,13 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -37,6 +40,14 @@ public class SCEvents {
     public static boolean isRatEntity(Entity entity) {
         String entityClass = EntityList.getKey(entity).toString();
         return entityClass.equals("rats:rat")/* || entityClass.equals("zawa:brownrat")*/;
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogsIn(PlayerLoggedInEvent event) {
+        EntityPlayer player = event.player;
+
+        String message = String.format("You have §7%d§r tamed cats!", player.getEntityData().getInteger("CatCount"));
+        player.sendMessage(new TextComponentString(message));
     }
 
     @SubscribeEvent

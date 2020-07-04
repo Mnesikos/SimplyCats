@@ -47,7 +47,6 @@ public class ItemCatBook extends ItemBase {
             if (compound.hasKey("pages")) {
                 tagList = compound.getTagList("pages", Constants.NBT.TAG_COMPOUND);
                 for (int i = 0; i < tagList.tagCount(); ++i) {
-                    System.out.println(tagList.getCompoundTagAt(i).getUniqueId("UUID") + " // " + cat.getUniqueID());
                     if (tagList.getCompoundTagAt(i).getUniqueId("UUID").equals(cat.getUniqueID())) {
                         catExists = true;
                         break;
@@ -61,14 +60,16 @@ public class ItemCatBook extends ItemBase {
             if (!catExists) {
                 NBTTagCompound catTag = new NBTTagCompound();
                 cat.writeToNBTOptional(catTag);
-                //catTag.setUniqueId("UUID", cat.getUniqueID());
                 tagList.appendTag(catTag);
             }
 
             stack.setTagCompound(compound);
 
-            GuiCatBook.book = stack;
-            player.openGui(SimplyCats.instance, GUI_ID, player.world, cat.getEntityId(), (int)player.posY, (int)player.posZ);
+            if (player.isSneaking()) {
+                if (player.world.isRemote)
+                    GuiCatBook.book = stack;
+                player.openGui(SimplyCats.instance, GUI_ID, player.world, cat.getEntityId(), (int)player.posY, (int)player.posZ);
+            }
 
         }
         return super.itemInteractionForEntity(stack, player, target, hand);
@@ -77,11 +78,12 @@ public class ItemCatBook extends ItemBase {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack book = player.getHeldItem(hand);
-        //if (world.isRemote) {
-            //SimplyCats.PROXY.openCatBook();
-            //GuiCatBook.book = book;
-            //player.openGui(SimplyCats.instance, GUI_ID, player.world, 0, (int) player.posY, (int) player.posZ);
-        //}
+
+        if (!player.isSneaking()) {
+            if (world.isRemote)
+                GuiCatBook.book = book;
+            player.openGui(SimplyCats.instance, GUI_ID, player.world, 0, (int) player.posY, (int) player.posZ);
+        }
 
         return super.onItemRightClick(world, player, hand);
     }

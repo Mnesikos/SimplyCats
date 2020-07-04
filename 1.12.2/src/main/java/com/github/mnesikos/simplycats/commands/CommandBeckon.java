@@ -1,4 +1,4 @@
-package com.github.mnesikos.simplycats;
+package com.github.mnesikos.simplycats.commands;
 
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
@@ -214,16 +214,12 @@ public class CommandBeckon implements ICommand {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        if (sender instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) sender;
-            return player.capabilities.isCreativeMode;
-        }
-        return false;
+        return sender.canUseCommand(2, this.getName());
     }
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return Collections.<String>emptyList();
+        return Collections.emptyList();
     }
 
     @Override

@@ -6,15 +6,14 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
-## [1.12.2-1.0.0.0] - 
+## [1.12.2-0.0.3.0] - 
 ### Added
 - Creepers will now avoid SC cats exactly like their vanilla counterparts.
 - Witches are suddenly pacifists with SC cats around!
-- ALMOST: Cat book! Keep track of all your cats and their info. 
+- ALMOST: Cat book! Keep track of all your cats and their info.
 - ALMOST: Catnip crop.
 - ALMOST: A laser pointer!! Cute and fun. Written by SoggyMustache.
-- New blocks: food bowl, litter box, and scratching post.
-- ALMOST: support for TOP and WAILA
+- New blocks: food bowl, litter box, and scratching post (all currently decoration only).
 - New attack AI for cats, with a sneak animation AND configurable prey list!
 - ALMOST: Maximum limit of tamed cats per player now able to be set via config.
 ### Changed
