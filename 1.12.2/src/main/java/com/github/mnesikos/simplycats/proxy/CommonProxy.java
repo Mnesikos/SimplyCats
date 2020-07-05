@@ -2,6 +2,7 @@ package com.github.mnesikos.simplycats.proxy;
 
 import com.github.mnesikos.simplycats.CatDataFixer;
 import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.SCNetworking;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.BlockCatBowl;
 import com.github.mnesikos.simplycats.entity.EntityCat;
@@ -39,8 +40,11 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nullable;
+
+import static com.github.mnesikos.simplycats.SCNetworking.CHANNEL;
 
 @Mod.EventBusSubscriber
 public class CommonProxy implements IGuiHandler {
@@ -55,6 +59,7 @@ public class CommonProxy implements IGuiHandler {
 
     public void preInit(FMLPreInitializationEvent e) {
         MinecraftForge.EVENT_BUS.register(new SCEvents());
+        CHANNEL.registerMessage(SCNetworking::someMethodIDontUnderstandYet, SCNetworking.class, 0, Side.CLIENT);
 
         int ENTITY_ID = 0;
         EntityRegistry.registerModEntity(new ResourceLocation(Ref.MODID + ":cat"), EntityCat.class, "Cat", ENTITY_ID++, SimplyCats.instance, 80, 1, true);
@@ -66,8 +71,6 @@ public class CommonProxy implements IGuiHandler {
 
         ModFixs fixer = FMLCommonHandler.instance().getDataFixer().init(Ref.MODID, FIXER_VERSION);
         fixer.registerFix(FixTypes.ENTITY, new CatDataFixer());
-
-        //CapabilityHandler.register();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(SimplyCats.instance, SimplyCats.PROXY);
 

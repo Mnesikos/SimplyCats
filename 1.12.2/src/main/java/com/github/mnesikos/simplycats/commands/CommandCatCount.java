@@ -1,7 +1,9 @@
 package com.github.mnesikos.simplycats.commands;
 
+import com.github.mnesikos.simplycats.SCNetworking;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
@@ -9,6 +11,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.github.mnesikos.simplycats.SCNetworking.CHANNEL;
 
 public class CommandCatCount extends CommandBase {
     private final List<String> aliases;
@@ -45,6 +49,8 @@ public class CommandCatCount extends CommandBase {
             EntityPlayer entityplayer = getPlayer(server, sender, args[0]);
 
             entityplayer.getEntityData().setInteger("CatCount", parseInt(args[1]));
+            if (!entityplayer.world.isRemote)
+                CHANNEL.sendTo(new SCNetworking(parseInt(args[1])), (EntityPlayerMP) entityplayer);
             notifyCommandListener(sender, this, "command.cat_count.success", args[0], args[1]);
 
         } else if (args.length == 1) {

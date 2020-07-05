@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.SCNetworking;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
@@ -9,8 +10,8 @@ import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -29,6 +30,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+
+import static com.github.mnesikos.simplycats.SCNetworking.CHANNEL;
 
 public abstract class AbstractCat extends EntityTameable {
     private static final DataParameter<String> EYE_COLOR = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
@@ -524,36 +527,11 @@ public abstract class AbstractCat extends EntityTameable {
     }
 
     public boolean canBeTamed(EntityPlayer player) {
-        return SCConfig.TAMED_LIMIT == 0 || player.getEntityData().getInteger("CatCount") < SCConfig.TAMED_LIMIT;
+        return (SCConfig.TAMED_LIMIT == 0 || player.getEntityData().getInteger("CatCount") < SCConfig.TAMED_LIMIT) && !this.isTamed();
     }
 
     @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        /*if (!stack.isEmpty()) {
-            /*if (stack.getItem() == Items.STRING && player.isSneaking()) {
-                if (this.world.isRemote) {
-                    player.sendMessage(new TextComponentString(this.getGenotype(EYE_COLOR)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(FUR_LENGTH) + ": " + getPhenotype(FUR_LENGTH)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(EUMELANIN) + ": " + getPhenotype(EUMELANIN)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(PHAEOMELANIN) + ": " + getPhenotype(PHAEOMELANIN)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(DILUTION) + ": " + getPhenotype(DILUTION)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(DILUTE_MOD) + ": " + getPhenotype(DILUTE_MOD)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(AGOUTI) + ": " + getPhenotype(AGOUTI)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(TABBY) + ": " + getPhenotype(TABBY)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(SPOTTED) + ": " + getPhenotype(SPOTTED)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(TICKED) + ": " + getPhenotype(TICKED)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(COLORPOINT) + ": " + getPhenotype(COLORPOINT)));
-                    player.sendMessage(new TextComponentString(this.getGenotype(WHITE) + ": " + getPhenotype(WHITE)));
-                    player.sendMessage(new TextComponentString(this.getWhiteTextures(0) + ", " + this.getWhiteTextures(1)
-                            + ", " + this.getWhiteTextures(2)));
-                    player.sendMessage(new TextComponentString(this.getWhitePawTextures(0) + ", " + this.getWhitePawTextures(1)
-                            + ", " + this.getWhitePawTextures(2) + ", " + this.getWhitePawTextures(3)));
-                }
-                return true;
-            }
-        }*/
-
         if (!this.PURR && this.rand.nextInt(10) == 0) { // 1/10th chance an interaction will result in purrs
             this.PURR = true;
             this.PURR_TIMER = (this.rand.nextInt(61) + 30) * 20; // random range of 600 to 1800 ticks (0.5 to 1.5 IRL minutes)
@@ -562,21 +540,22 @@ public abstract class AbstractCat extends EntityTameable {
         return false;
     }
 
-    /**
-     * A custom setTamed method to set the owner's data along with taming or untaming a cat.
+    /** A custom setTamed method to set the owner's data along with taming or untaming a cat.
      * @param tamed - true is tamed, false is untamed, used for this.setTamed(tamed) call at the end.
      * @param owner - the EntityPlayer who is taming the cat.
      */
     public void setTamed(boolean tamed, EntityPlayer owner) {
         int catCount = owner.getEntityData().getInteger("CatCount");
         if (tamed) {
+            owner.getEntityData().setInteger("CatCount", catCount + 1);
             if (!world.isRemote)
-                owner.getEntityData().setInteger("CatCount", catCount + 1);
+                CHANNEL.sendTo(new SCNetworking(catCount + 1), (EntityPlayerMP) owner);
             this.setOwnerName(owner.getDisplayNameString());
 
         } else {
+            owner.getEntityData().setInteger("CatCount", catCount - 1);
             if (!world.isRemote)
-                owner.getEntityData().setInteger("CatCount", catCount - 1);
+                CHANNEL.sendTo(new SCNetworking(catCount - 1), (EntityPlayerMP) owner);
             this.setOwnerName("");
         }
 
@@ -585,8 +564,12 @@ public abstract class AbstractCat extends EntityTameable {
 
     @Override
     public void onDeath(DamageSource cause) {
-        if (this.isTamed() && this.getOwner() != null)
-            this.getOwner().getEntityData().setInteger("CatCount", this.getOwner().getEntityData().getInteger("CatCount") - 1);
+        if (this.isTamed() && this.getOwner() != null) {
+            int count = this.getOwner().getEntityData().getInteger("CatCount");
+            this.getOwner().getEntityData().setInteger("CatCount", count - 1);
+            if (!world.isRemote)
+                CHANNEL.sendTo(new SCNetworking(count - 1), (EntityPlayerMP) this.getOwner());
+        }
         super.onDeath(cause);
     }
 

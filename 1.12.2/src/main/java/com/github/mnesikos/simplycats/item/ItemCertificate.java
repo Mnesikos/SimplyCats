@@ -46,33 +46,27 @@ public class ItemCertificate extends ItemBase {
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
         if (target instanceof EntityCat || target instanceof EntityWolf) {
             if (stack.getMetadata() == 0) {
-                if (((EntityTameable) target).isTamed())
-                    return false;
-
-                else if (target instanceof EntityCat && !((EntityCat) target).canBeTamed(player)) { //TODO THIS IS BROKEN AF
-                    if (player.world.isRemote)
-                        player.sendMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"));
-                    return false;
-
-                } else {
+                if ((target instanceof EntityCat && ((EntityCat) target).canBeTamed(player)) || (target instanceof EntityWolf && !((EntityWolf) target).isTamed())) {
                     if (target instanceof EntityCat)
-                        ((EntityCat)target).setTamed(true, player);
+                        ((EntityCat) target).setTamed(true, player);
                     else
                         ((EntityTameable) target).setTamed(true);
                     ((EntityTameable) target).getNavigator().clearPath();
                     ((EntityTameable) target).setOwnerId(player.getUniqueID());
                     target.setHealth(target.getMaxHealth());
-                    if (player.world.isRemote)
+                    if (player.world.isRemote) {
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.adopt_usage").getFormattedText() + " " + target.getName() + "!"));
-                    this.playTameEffect(true, target.world, (EntityTameable)target);
+                        this.playTameEffect(true, target.world, (EntityTameable) target);
+                    }
 
                     if (!player.capabilities.isCreativeMode) {
                         stack.shrink(1);
                         if (stack.getCount() <= 0)
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                     }
-                    return true;
-                }
+
+                } else if (player.world.isRemote && target instanceof EntityCat && !((EntityCat) target).isTamed())
+                        player.sendMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"));
 
             } else if (stack.getMetadata() == 1) {
                 if (((EntityTameable) target).isOwner(player)) {
