@@ -29,16 +29,32 @@ public class CatAIMate extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
+        // Only runs this AI on male cats
         if (this.CAT.getSex().equals(Genetics.Sex.FEMALE.getName()))
             return false;
 
+        // Checks for all cats in the area based on config variable, disables this AI if cats exceed that limit
         this.LIST = this.WORLD.getEntitiesWithinAABB(this.CAT.getClass(), this.CAT.getEntityBoundingBox().grow(NEARBY_SIZE_CHECK));
         if (this.LIST.size() >= SCConfig.BREEDING_LIMIT)
             return false;
 
+        // Disables this AI if the cat is tamed and its owner exceeds the tamed limit config variable
+        if (this.CAT.isTamed() && SCConfig.TAMED_LIMIT != 0 && this.CAT.getOwner() != null && this.CAT.getOwner().getEntityData().getInteger("CatCount") >= SCConfig.TAMED_LIMIT)
+            return false;
+
+        // Disables this AI if the target cat is tamed and its owner exceeds the tamed limit config variable
+        if (this.TARGET != null && (this.TARGET.isTamed() && SCConfig.TAMED_LIMIT != 0 && this.TARGET.getOwner() != null && this.TARGET.getOwner().getEntityData().getInteger("CatCount") >= SCConfig.TAMED_LIMIT))
+            return false;
+
+        // Disables this AI if the cat OR the target cat is tamed and its owner is null (aka offline)
+        if ((this.CAT.isTamed() && this.CAT.getOwner() == null) || (this.TARGET.isTamed() && this.TARGET.getOwner() == null))
+            return false;
+
+        // Checks if the target cat is not in heat to disable this AI, OR if this cat's timer is where he can breed otherwise disables this AI
         else if ((this.TARGET != null && !this.TARGET.getBreedingStatus("inheat")) || (this.CAT.getMateTimer() > 0))
             return false;
 
+        // Gets the mate and executes if it exists and this cat can see the target
         else {
             this.TARGET = this.getNearbyMate();
             return this.TARGET != null && this.CAT.getEntitySenses().canSee(this.TARGET);

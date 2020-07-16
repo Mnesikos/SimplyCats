@@ -21,6 +21,7 @@ and this project adheres to
 - Kittens are smaller for longer, yay! (This time is also configurable.)
 - Removed maximum limit on wander area idk do what you want I guess lol.
 - UNFINISHED: Updated treat bag! Right click to shake the bag and call all your nearby cats to your location, also with some inventory.
+- Cats have new breeding rules, they will not breed if: their owner is offline, there are too many cats in the area (config), or their owner exceeds the tame limit (config).
 ### Fixed
 - Cats can no longer mate through walls or even 1x1 gaps.
 - Cats with home points will now wander correctly.
