@@ -71,6 +71,9 @@ public class ItemPetCarrier extends ItemBase {
                             tags.setString("Entity", String.valueOf(f.getKey()));
                         }
                     }
+                    if (target instanceof EntityWolf)
+                        tags.setString("OwnerName", player.getDisplayNameString());
+
                     if (target.world.isRemote)
                         player.sendMessage(new TextComponentTranslation("chat.pet_carrier.retrieve_pet"));
 
@@ -249,11 +252,11 @@ public class ItemPetCarrier extends ItemBase {
                 TextComponentTranslation owner = new TextComponentTranslation("tooltip.pet_carrier.owner");
                 if (nbt.hasKey("CustomName"))
                     tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("CustomName") + "\"");
-                if (item.getItemDamage() == 2)
-                    tooltip.add(TextFormatting.ITALIC + species.getUnformattedText());
-                else if (item.getItemDamage() == 1) {
-                    tooltip.add(TextFormatting.ITALIC + Genetics.getPhenotypeDescription(nbt));
-                }
+                else
+                    tooltip.add(TextFormatting.AQUA + species.getUnformattedText());
+
+                if (item.getItemDamage() == 1)
+                    tooltip.add(TextFormatting.ITALIC + Genetics.getPhenotypeDescription(nbt, true));
 
                 tooltip.add(owner.getUnformattedText() + " " + nbt.getString("OwnerName"));
             }

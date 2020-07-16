@@ -52,8 +52,8 @@ public class ClientProxy extends CommonProxy {
             case ItemCatBook.GUI_ID:
                 if (x == 0) return new GuiCatBook();
                 Entity target = player.world.getEntityByID(x);
-                if (!(target instanceof AbstractCat)) return null;
-                AbstractCat cat = (AbstractCat) target;
+                if (!(target instanceof EntityCat)) return null;
+                EntityCat cat = (EntityCat) target;
                 return new GuiCatBook(cat); // props to Doggy Talents mod for using x as the entity idea thank you
             default:
                 return null;

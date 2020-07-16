@@ -2,8 +2,8 @@ package com.github.mnesikos.simplycats.client.gui;
 
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.entity.AbstractCat;
+import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,19 +12,16 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
@@ -32,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Random;
 
@@ -50,13 +48,13 @@ public class GuiCatBook extends GuiScreen {
     private AddBookmarkButton buttonAddBookmark;
     private BookmarkButton buttonBookmark;
 
-    public AbstractCat cat;
+    public EntityCat cat;
     NBTTagCompound nbt;
     protected int catHealth;
     public static ItemStack book;
     protected final Random rand = new Random();
 
-    public GuiCatBook(AbstractCat cat) {
+    public GuiCatBook(EntityCat cat) {
         this();
         this.cat = cat;
         nbt = new NBTTagCompound();
@@ -136,68 +134,76 @@ public class GuiCatBook extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         GlStateManager.color(1, 1, 1, 1);
-        int centerX = (width - bookImageWidth) / 2;
+        int leftX = (width - bookImageWidth) / 2;
+        int leftCenterX = (bookImageWidth / 2) + 8;
 
         this.mc.getTextureManager().bindTexture(BG_TEXTURE);
-        drawModalRectWithCustomSizedTexture(centerX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
+        drawModalRectWithCustomSizedTexture(leftX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
 
         if (cat != null) {
-            GuiInventory.drawEntityOnScreen(centerX + 40, 74, 50, (centerX + 51) - mouseX, 50 - mouseY, cat);
+            GuiInventory.drawEntityOnScreen(leftX + 40, 74, 50, (leftX + 51) - mouseX, 50 - mouseY, cat);
+
+            int nameWidth = this.fontRenderer.getStringWidth(cat.getName());
+            this.fontRenderer.drawString(cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
+
+            String sex = (cat.isFixed() ? new TextComponentTranslation("cat.fixed.name").getUnformattedText() : new TextComponentTranslation("cat.intact.name").getUnformattedText())
+                    + " " + Genetics.Sex.getPrettyName(cat.getSex());
+            this.fontRenderer.drawString(sex, leftX + 66, 14*2, 0);
+
+            this.renderCatHealth(leftX + 66, 14*3);
+
+            //this.fontRenderer.drawString("Purrsonality", leftX + 66, 14*4, 0);
 
             String ownerName = "";
-            if (cat.isTamed())
-                ownerName = cat.getOwnerName().getFormattedText();
+            if (cat.isTamed()) ownerName = cat.getOwnerName().getFormattedText();
+            this.fontRenderer.drawString(new TextComponentTranslation("tooltip.pet_carrier.owner").getUnformattedText() + " " + ownerName, leftX + 16, 14*6, 0);
 
-            this.renderCatHealth(centerX + 66, 24);
-            this.fontRenderer.drawSplitString(cat.getName(), centerX + 66, 40, 68, 0);
-            this.fontRenderer.drawString("Purrsonality", centerX + 66, 64, 0);
+            this.fontRenderer.drawSplitString(Genetics.getPhenotypeDescription(nbt, false), leftX + 16, 14*7, 120, 0);
 
-            this.fontRenderer.drawSplitString(Genetics.getPhenotypeDescription(nbt), centerX + 16, 90, 120, 0);
+            this.fontRenderer.drawSplitString("Vocal Level Bar Here",
+                    leftX + 16, 14*9-5, 120, 0);
+            this.fontRenderer.drawSplitString("Activity Level Bar Here",
+                    leftX + 16, 14*10-5, 120, 0);
 
-            this.fontRenderer.drawSplitString(ownerName, centerX + 16, 122, 120, 0);
+            this.fontRenderer.drawSplitString("Pregnancy Data", leftX + 16, 14*11-5, 120, 0);
 
-            this.fontRenderer.drawSplitString("Some vocal level shit",
-                    centerX + 16, 136, 120, 0);
-            this.fontRenderer.drawSplitString("Some activity level shit",
-                    centerX + 16, 148, 120, 0);
+            String eyeColor = TextFormatting.GRAY + nbt.getString("EyeColor");
+            String furLength = TextFormatting.GRAY + nbt.getString("FurLength");
+            String eumelanin = TextFormatting.GRAY + nbt.getString("Eumelanin");
+            String phaeomelanin = TextFormatting.GRAY + nbt.getString("Phaeomelanin");
+            String dilution = TextFormatting.GRAY + nbt.getString("Dilution");
+            String diluteMod = TextFormatting.GRAY + nbt.getString("DiluteMod");
+            String agouti = TextFormatting.GRAY + nbt.getString("Agouti");
+            String tabby = TextFormatting.GRAY + nbt.getString("Tabby");
+            String spotted = TextFormatting.GRAY + nbt.getString("Spotted");
+            String ticked = TextFormatting.GRAY + nbt.getString("Ticked");
+            String colorpoint = TextFormatting.GRAY + nbt.getString("Colorpoint");
+            String white = TextFormatting.GRAY + nbt.getString("White");
 
-            this.fontRenderer.drawString(nbt.getString("EyeColor"), centerX + 230, 12 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("FurLength"), centerX + 230, 22 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("Eumelanin"), centerX + 230, 32 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("Phaeomelanin"), centerX + 230, 42 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("Dilution"), centerX + 230, 52 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("DiluteMod"), centerX + 230, 62 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("Agouti"), centerX + 230, 72 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("Tabby"), centerX + 230, 82 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("Spotted"), centerX + 230, 92 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("Ticked"), centerX + 230, 102 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("Colorpoint"), centerX + 230, 112 + 12, 0);
-            this.fontRenderer.drawString(nbt.getString("White"), centerX + 230, 122 + 12, 0);
+            this.fontRenderer.drawString("Eye color: " + eyeColor, leftX + 152, 24, 0);
+            this.fontRenderer.drawString("Fur length: " + furLength, leftX + 152, 34, 0);
+            this.fontRenderer.drawString("Eumelanin: " + eumelanin, leftX + 152, 44, 0);
+            this.fontRenderer.drawString("Phaeomelanin: " + phaeomelanin, leftX + 152, 54, 0);
+            this.fontRenderer.drawString("Dilute: " + dilution, leftX + 152, 64, 0);
+            this.fontRenderer.drawString("Dilute modifier: " + diluteMod, leftX + 152, 74, 0);
+            this.fontRenderer.drawString("Agouti: " + agouti, leftX + 152, 84, 0);
+            this.fontRenderer.drawString("Tabby: " + tabby, leftX + 152, 94, 0);
+            this.fontRenderer.drawString("Spotted: " + spotted, leftX + 152, 104, 0);
+            this.fontRenderer.drawString("Ticked: " + ticked, leftX + 152, 114, 0);
+            this.fontRenderer.drawString("Colorpoint: " + colorpoint, leftX + 152, 124, 0);
+            this.fontRenderer.drawString("White: " + white, leftX + 152, 134, 0);
 
-            this.fontRenderer.drawString("Eye color", centerX + 152, 24, 0);
-            this.fontRenderer.drawString("Fur length", centerX + 152, 34, 0);
-            this.fontRenderer.drawString("Eumelanin", centerX + 152, 44, 0);
-            this.fontRenderer.drawString("Phaeomelanin", centerX + 152, 54, 0);
-            this.fontRenderer.drawString("Dilute", centerX + 152, 64, 0);
-            this.fontRenderer.drawString("Dilute modifier", centerX + 152, 74, 0);
-            this.fontRenderer.drawString("Agouti", centerX + 152, 84, 0);
-            this.fontRenderer.drawString("Tabby", centerX + 152, 94, 0);
-            this.fontRenderer.drawString("Spotted", centerX + 152, 104, 0);
-            this.fontRenderer.drawString("Ticked", centerX + 152, 114, 0);
-            this.fontRenderer.drawString("Colorpoint", centerX + 152, 124, 0);
-            this.fontRenderer.drawString("White", centerX + 152, 134, 0);
-
-            this.fontRenderer.drawSplitString("Pregnancy/Heat Data", centerX + 150, 148, 120, 0);
+            this.fontRenderer.drawSplitString("Heritage Data", leftX + 152, 14*11-5, 120, 0);
 
         } else if (book != null) {
-            this.fontRenderer.drawString("Index page?", centerX + 40, 80, 0);
+            this.fontRenderer.drawString("Index page?", leftX + 40, 80, 0);
         } else
-            this.fontRenderer.drawString("error page this should not happen", centerX + 40, 80, 0); //todo remove when done
+            this.fontRenderer.drawString("error page this should not happen", leftX + 40, 80, 0); //todo remove when done
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
-    protected void renderCatHealth(int x, int y) {
+    private void renderCatHealth(int x, int y) {
         GlStateManager.color(1, 1, 1, 1);
         this.mc.getTextureManager().bindTexture(ICONS);
         this.catHealth = MathHelper.ceil(cat.getHealth());
@@ -223,6 +229,45 @@ public class GuiCatBook extends GuiScreen {
             if (wholeHearts * 2 + 1 == catHealth)
                 this.drawTexturedModalRect(guiX, guiY, textureX + 45, 9 * textureY, 9, 9);
         }
+    }
+
+    private static void drawEntityOnScreen(int posX, int posY, int scale, float mouseX, float mouseY, EntityLivingBase ent) {
+        GlStateManager.enableColorMaterial();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate((float)posX, (float)posY, 50.0F);
+        GlStateManager.scale((float)(-scale), (float)scale, (float)scale);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        float f = ent.renderYawOffset;
+        float f1 = ent.rotationYaw;
+        float f2 = ent.rotationPitch;
+        float f3 = ent.prevRotationYawHead;
+        float f4 = ent.rotationYawHead;
+        GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
+        ent.renderYawOffset = (float)Math.atan((double)(mouseX / 40.0F)) * 20.0F;
+        ent.rotationYaw = (float)Math.atan((double)(mouseX / 40.0F)) * 40.0F;
+        ent.rotationPitch = -((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F;
+        ent.rotationYawHead = ent.rotationYaw;
+        ent.prevRotationYawHead = ent.rotationYaw;
+        GlStateManager.translate(0.0F, 0.0F, 0.0F);
+        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        rendermanager.setPlayerViewY(180.0F);
+        rendermanager.setRenderShadow(false);
+        rendermanager.renderEntity(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
+        rendermanager.setRenderShadow(true);
+        ent.renderYawOffset = f;
+        ent.rotationYaw = f1;
+        ent.rotationPitch = f2;
+        ent.prevRotationYawHead = f3;
+        ent.rotationYawHead = f4;
+        GlStateManager.popMatrix();
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
 
     public static void drawEntityOnScreen(int posX, int posY, int scale, float mouseX, float mouseY, AbstractCat cat)

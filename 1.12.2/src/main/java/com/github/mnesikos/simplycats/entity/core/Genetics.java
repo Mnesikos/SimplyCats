@@ -9,7 +9,7 @@ public class Genetics {
     public Genetics() {
     }
 
-    public static String getPhenotypeDescription(NBTTagCompound nbt) {
+    public static String getPhenotypeDescription(NBTTagCompound nbt, boolean includeSex) {
         String sex = Sex.getPrettyName(nbt.getString("Phaeomelanin").contains(Genetics.Phaeomelanin.MALE.getAllele()) ? "male" : "female");
 
         String eumelanin = Genetics.Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
@@ -53,10 +53,10 @@ public class Genetics {
             point = new TextComponentTranslation("cat.point." + colorpoint + ".name");
         }
 
-        return sex + " " + base.getUnformattedText() +
+        return base.getUnformattedText() +
                 (tabby.getUnformattedText().equals("") ? "" : " " + tabby.getUnformattedText()) +
                 (point.getUnformattedText().equals("") ? "" : " " + point.getUnformattedText()) +
-                " Cat"; //todo missing white
+                (includeSex ? (" " + sex) : ""); //todo missing white
     }
 
     public enum Sex {

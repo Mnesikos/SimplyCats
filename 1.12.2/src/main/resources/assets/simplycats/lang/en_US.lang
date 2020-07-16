@@ -3,6 +3,7 @@ item.certificate.adopt.name=Adoption Certificate
 item.certificate.release.name=Release Certificate
 item.pet_carrier.empty.name=Pet Carrier (Empty)
 item.pet_carrier.full.name=Pet Carrier (Full)
+item.cat_book.name=Cat Book
 item.treat_bag.name=Treat Bag
 item.catnip.name=Catnip
 item.catnip_seeds.name=Catnip Seeds
@@ -68,6 +69,8 @@ entity.Villager.kennel_worker=Shelter Worker
 < Cat Phenotypes
 cat.sex.female.name=Female
 cat.sex.male.name=Male
+cat.intact.name=Intact
+cat.fixed.name=Fixed
 cat.base.red.name=Red
 cat.base.red_dilute.name=Cream
 cat.base.red_caramelized.name=Apricot

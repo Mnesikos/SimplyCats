@@ -10,17 +10,17 @@ and this project adheres to
 ### Added
 - Creepers will now avoid SC cats exactly like their vanilla counterparts.
 - Witches are suddenly pacifists with SC cats around!
-- ALMOST: Cat book! Keep track of all your cats and their info.
-- ALMOST: Catnip crop.
-- ALMOST: A laser pointer!! Cute and fun. Written by SoggyMustache.
+- UNFINISHED: Cat book! Keep track of all your cats and their info.
+- UNFINISHED: Catnip crop.
+- UNFINISHED: A laser pointer!! Cute and fun. Written by SoggyMustache.
 - New blocks: food bowl, litter box, and scratching post (all currently decoration only).
 - New attack AI for cats, with a sneak animation AND configurable prey list!
-- ALMOST: Maximum limit of tamed cats per player now able to be set via config.
+- A maximum limit of tamed cats per player now able to be set via config, disabled by default.
 ### Changed
 - Updated Forge Mappings
 - Kittens are smaller for longer, yay! (This time is also configurable.)
 - Removed maximum limit on wander area idk do what you want I guess lol.
-- ALMOST: Updated treat bag! Right click to shake the bag and call all your nearby cats to your location, also with some inventory.
+- UNFINISHED: Updated treat bag! Right click to shake the bag and call all your nearby cats to your location, also with some inventory.
 ### Fixed
 - Cats can no longer mate through walls or even 1x1 gaps.
 - Cats with home points will now wander correctly.
