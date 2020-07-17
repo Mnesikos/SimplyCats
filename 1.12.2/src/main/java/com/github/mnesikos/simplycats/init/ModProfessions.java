@@ -20,9 +20,8 @@ import java.util.Random;
 
 @GameRegistry.ObjectHolder(Ref.MODID)
 public class ModProfessions {
-    public final static VillagerProfession SHELTER_STAFF = null;
-
-    public static VillagerCareer KENNEL_WORKER;
+    public static final VillagerProfession SHELTER_STAFF = null;
+    public static VillagerCareer kennelWorker;
 
     @Mod.EventBusSubscriber(modid = Ref.MODID)
     public static class RegistrationHandler {
@@ -38,59 +37,60 @@ public class ModProfessions {
     }
 
     public static void associateCareersAndTrades() {
+        kennelWorker = new VillagerCareer(SHELTER_STAFF, "kennel_worker");
         if (SCConfig.ADOPT_A_DOG)
-            KENNEL_WORKER = (new VillagerCareer(SHELTER_STAFF, "kennel_worker")).addTrade(1, new AdoptACat()).addTrade(1, new AdoptADog());
-        else
-            KENNEL_WORKER = (new VillagerCareer(SHELTER_STAFF, "kennel_worker")).addTrade(1, new AdoptACat());
+            kennelWorker.addTrade(1, new AdoptADog());
+        kennelWorker.addTrade(1, new AdoptACat());
+        kennelWorker.addTrade(1, new EntityVillager.ListItemForEmeralds(ModItems.CATNIP_SEEDS, new EntityVillager.PriceInfo(-8, -4)));
     }
 
     public static class AdoptACat implements EntityVillager.ITradeList {
-        private ItemStack PURCHASE;
-        private EntityVillager.PriceInfo PRICE;
+        private final ItemStack itemPurchase;
+        private final EntityVillager.PriceInfo priceInfo;
 
         private AdoptACat() {
-            PURCHASE = new ItemStack(ModItems.PET_CARRIER, 1);
-            PURCHASE.setTagCompound(new NBTTagCompound());
-            PURCHASE.setItemDamage(3);
+            itemPurchase = new ItemStack(ModItems.PET_CARRIER, 1);
+            itemPurchase.setTagCompound(new NBTTagCompound());
+            itemPurchase.setItemDamage(3);
             // PriceInfo(min, max) is a price range!
-            PRICE = new EntityVillager.PriceInfo(8, 16);
+            priceInfo = new EntityVillager.PriceInfo(8, 16);
         }
 
         @Override
         public void addMerchantRecipe(IMerchant merchant, MerchantRecipeList recipeList, Random random) {
             int catPrice = 1;
 
-            if (PRICE != null) {
-                catPrice = PRICE.getPrice(random);
+            if (priceInfo != null) {
+                catPrice = priceInfo.getPrice(random);
             }
 
             ItemStack stackToPay = new ItemStack(Items.FISH, catPrice, 0);
-            recipeList.add(new MerchantRecipe(stackToPay, PURCHASE));
+            recipeList.add(new MerchantRecipe(stackToPay, itemPurchase));
         }
     }
 
     public static class AdoptADog implements EntityVillager.ITradeList {
-        private ItemStack PURCHASE;
-        private EntityVillager.PriceInfo PRICE;
+        private final ItemStack itemPurchase;
+        private final EntityVillager.PriceInfo priceInfo;
 
         private AdoptADog() {
-            PURCHASE = new ItemStack(ModItems.PET_CARRIER, 1);
-            PURCHASE.setTagCompound(new NBTTagCompound());
-            PURCHASE.setItemDamage(4);
+            itemPurchase = new ItemStack(ModItems.PET_CARRIER, 1);
+            itemPurchase.setTagCompound(new NBTTagCompound());
+            itemPurchase.setItemDamage(4);
             // PriceInfo(min, max) is a price range!
-            PRICE = new EntityVillager.PriceInfo(8, 16);
+            priceInfo = new EntityVillager.PriceInfo(8, 16);
         }
 
         @Override
         public void addMerchantRecipe(IMerchant merchant, MerchantRecipeList recipeList, Random random) {
             int dogPrice = 1;
 
-            if (PRICE != null) {
-                dogPrice = PRICE.getPrice(random);
+            if (priceInfo != null) {
+                dogPrice = priceInfo.getPrice(random);
             }
 
             ItemStack stackToPay = new ItemStack(Items.BONE, dogPrice, 0);
-            recipeList.add(new MerchantRecipe(stackToPay, PURCHASE));
+            recipeList.add(new MerchantRecipe(stackToPay, itemPurchase));
         }
     }
 }

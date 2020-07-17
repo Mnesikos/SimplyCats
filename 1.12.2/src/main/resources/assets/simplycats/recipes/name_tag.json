@@ -3,15 +3,14 @@
   "group": "simplycatsgroup",
   "pattern": [
     "S  ",
-    " I ",
-    "  I"
+    " I "
   ],
   "key": {
     "I": [
-      {"type": "forge:ore_dict",
-        "ore": "ingotIron"},
-      {"type": "forge:ore_dict",
-        "ore": "ingotGold"}
+      { "type": "forge:ore_dict",
+        "ore": "ingotIron" },
+      { "type": "forge:ore_dict",
+        "ore": "ingotGold" }
     ],
     "S": [
       {"item": "minecraft:string"}

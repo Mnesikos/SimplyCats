@@ -11,7 +11,7 @@ and this project adheres to
 - Creepers will now avoid SC cats exactly like their vanilla counterparts.
 - Witches are suddenly pacifists with SC cats around!
 - UNFINISHED: Cat book! Keep track of all your cats and their info.
-- UNFINISHED: Catnip crop.
+- UNFINISHED: Catnip crop, acquire from shelter workers.
 - UNFINISHED: A laser pointer!! Cute and fun. Written by SoggyMustache.
 - New blocks: food bowl, litter box, and scratching post (all currently decoration only).
 - New attack AI for cats, with a sneak animation AND configurable prey list!

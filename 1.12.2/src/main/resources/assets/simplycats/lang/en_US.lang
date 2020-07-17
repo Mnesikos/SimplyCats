@@ -7,6 +7,7 @@ item.cat_book.name=Cat Book
 item.treat_bag.name=Treat Bag
 item.catnip.name=Catnip
 item.catnip_seeds.name=Catnip Seeds
+item.laser_pointer.name=Laser Pointer
 
 < Item Tooltips
 tooltip.certificate.adopt.desc=Right click on an unowned pet to adopt them!
