@@ -39,9 +39,13 @@ public class CatAIMate extends EntityAIBase {
             return false;
 
         this.target = this.getNearbyMate();
-        EntityLivingBase targetOwner = this.target.getOwner();
-        return this.target != null && this.cat.getEntitySenses().canSee(this.target) && this.target.getBreedingStatus("inheat")
-                && !ownerExceedsLimit(this.target, targetOwner) && !ownerIsOffline(this.target, targetOwner);
+        if (this.target != null && this.cat.getEntitySenses().canSee(this.target) && this.target.getBreedingStatus("inheat")) {
+            if (!this.target.isTamed()) return true;
+            EntityLivingBase targetOwner = this.target.getOwner();
+            return !ownerExceedsLimit(this.target, targetOwner) && !ownerIsOffline(this.target, targetOwner);
+        }
+
+        return false;
     }
 
     @Override
