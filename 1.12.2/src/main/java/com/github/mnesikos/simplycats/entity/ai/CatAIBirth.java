@@ -25,7 +25,7 @@ public class CatAIBirth extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        if (!this.MOTHER.getSex().equals(Genetics.Sex.FEMALE) || !this.MOTHER.getBreedingStatus("ispregnant") || this.MOTHER.getBreedingStatus("inheat"))
+        if (this.MOTHER.getSex() != Genetics.Sex.FEMALE || !this.MOTHER.getBreedingStatus("ispregnant") || this.MOTHER.getBreedingStatus("inheat"))
             return false;
 
         else if (this.MOTHER.getMateTimer() >= 0)
