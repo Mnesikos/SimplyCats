@@ -145,7 +145,7 @@ public class GuiCatBook extends GuiScreen {
             this.fontRenderer.drawString(cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
 
             String sex = (cat.isFixed() ? new TextComponentTranslation("cat.fixed.name").getUnformattedText() : new TextComponentTranslation("cat.intact.name").getUnformattedText())
-                    + " " + Genetics.Sex.getPrettyName(cat.getSex());
+                    + " " + Genetics.Sex.getPrettyName(cat.getSex().getName());
             this.fontRenderer.drawString(sex, leftX + 66, 14*2, 0);
 
             this.renderCatHealth(leftX + 66, 14*3);

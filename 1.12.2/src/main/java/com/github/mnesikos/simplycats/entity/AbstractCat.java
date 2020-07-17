@@ -294,8 +294,8 @@ public abstract class AbstractCat extends EntityTameable {
         this.dataManager.set(parameter, value);
     }
 
-    public String getSex() {
-        return this.dataManager.get(PHAEOMELANIN).contains(Phaeomelanin.MALE.getAllele()) ? Sex.MALE.getName() : Sex.FEMALE.getName();
+    public Sex getSex() {
+        return this.dataManager.get(PHAEOMELANIN).contains(Phaeomelanin.MALE.getAllele()) ? Sex.MALE : Sex.FEMALE;
     }
 
     public boolean hasHomePos() {

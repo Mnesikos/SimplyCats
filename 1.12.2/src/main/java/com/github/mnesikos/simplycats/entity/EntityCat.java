@@ -141,7 +141,7 @@ public class EntityCat extends AbstractCat {
         if (!this.world.isRemote)
             if (this.isTamed())
                 this.aiSit.setSitting(!this.isSitting());
-        if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && !this.isFixed())
+        if (this.getSex().equals(Genetics.Sex.FEMALE) && !this.isFixed())
             this.setTimeCycle("end", this.world.rand.nextInt(SCConfig.HEAT_COOLDOWN));
         return super.onInitialSpawn(difficulty, livingdata);
     }
@@ -155,7 +155,7 @@ public class EntityCat extends AbstractCat {
             this.getNavigator().tryMoveToXYZ(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 1.2D);
         }
 
-        if (!this.world.isRemote && !this.isChild() && !this.isFixed() && this.getSex().equals(Genetics.Sex.FEMALE.getName())) { //if female & adult & not fixed
+        if (!this.world.isRemote && !this.isChild() && !this.isFixed() && this.getSex().equals(Genetics.Sex.FEMALE)) { //if female & adult & not fixed
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
@@ -180,7 +180,7 @@ public class EntityCat extends AbstractCat {
 
         if (!this.isChild() && !this.isFixed()) { //if not a child & not fixed
             int mateTimer = this.getMateTimer();
-            if (this.getSex().equals(Genetics.Sex.FEMALE.getName())) {
+            if (this.getSex().equals(Genetics.Sex.FEMALE)) {
                 if (this.getBreedingStatus("inheat") || this.getBreedingStatus("ispregnant")) {
                     --mateTimer;
                     if (this.getBreedingStatus("inheat")) {
@@ -195,7 +195,7 @@ public class EntityCat extends AbstractCat {
                 }
                 else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
                     ++mateTimer;
-            } else if (this.getSex().equals(Genetics.Sex.MALE.getName())) {
+            } else if (this.getSex().equals(Genetics.Sex.MALE)) {
                 if (mateTimer > 0)
                     --mateTimer;
                 else if (mateTimer <= 0)
@@ -368,7 +368,7 @@ public class EntityCat extends AbstractCat {
     public void writeEntityToNBT(NBTTagCompound nbt) {
         super.writeEntityToNBT(nbt);
         nbt.setByte("Fixed", this.getIsFixed());
-        if (this.getSex().equals(Genetics.Sex.FEMALE.getName())) {
+        if (this.getSex().equals(Genetics.Sex.FEMALE)) {
             nbt.setBoolean("InHeat", this.getBreedingStatus("inheat"));
             nbt.setBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
             nbt.setInteger("Kittens", this.getKittens());
@@ -384,7 +384,7 @@ public class EntityCat extends AbstractCat {
     public void readEntityFromNBT(NBTTagCompound nbt) {
         super.readEntityFromNBT(nbt);
         this.setFixed(nbt.getByte("Fixed"));
-        if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && !this.isFixed()) {
+        if (this.getSex().equals(Genetics.Sex.FEMALE) && !this.isFixed()) {
             this.setBreedingStatus("inheat", nbt.getBoolean("InHeat"));
             this.setBreedingStatus("ispregnant", nbt.getBoolean("IsPregnant"));
             this.setKittens(nbt.getInteger("Kittens"));
@@ -418,8 +418,8 @@ public class EntityCat extends AbstractCat {
         if (mate.isFixed() || this.isFixed())
             return false;
 
-        if ((this.getSex().equals(Genetics.Sex.MALE.getName()) && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
-            return (mate.getSex().equals(Genetics.Sex.FEMALE.getName()) && mate.getBreedingStatus("inheat")); // returns true if (mate) is female & in heat
+        if ((this.getSex().equals(Genetics.Sex.MALE) && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
+            return (mate.getSex().equals(Genetics.Sex.FEMALE) && mate.getBreedingStatus("inheat")); // returns true if (mate) is female & in heat
         else
             return false;
     }
@@ -464,7 +464,7 @@ public class EntityCat extends AbstractCat {
                         if (this.world.isRemote) {
                             String FIXED_FEMALE = new TextComponentTranslation("chat.info.success_fixed_female").getFormattedText();
                             String FIXED_MALE = new TextComponentTranslation("chat.info.success_fixed_male").getFormattedText();
-                            player.sendMessage(new TextComponentString(this.getName() + " " + (this.getSex().equals(Genetics.Sex.FEMALE.getName()) ? FIXED_FEMALE : FIXED_MALE)));
+                            player.sendMessage(new TextComponentString(this.getName() + " " + (this.getSex().equals(Genetics.Sex.FEMALE) ? FIXED_FEMALE : FIXED_MALE)));
                         }
                     }
                     return true;
@@ -485,20 +485,20 @@ public class EntityCat extends AbstractCat {
             if (stack.getItem() == Items.STICK && player.isSneaking()) {
                 if (this.world.isRemote) {
                     if (this.isFixed()) {
-                        if (this.getSex().equals(Genetics.Sex.FEMALE.getName()))
+                        if (this.getSex().equals(Genetics.Sex.FEMALE))
                             player.sendMessage(new TextComponentTranslation("chat.info.fixed_female"));
                         else
                             player.sendMessage(new TextComponentTranslation("chat.info.fixed_male"));
-                    } else if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.getBreedingStatus("ispregnant")) {
+                    } else if (this.getSex().equals(Genetics.Sex.FEMALE) && this.getBreedingStatus("ispregnant")) {
                         if (!this.getBreedingStatus("inheat"))
                             player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.pregnant").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                         else
                             player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.pregnant_heat").getFormattedText() + " " + this.getMateTimer()));
-                    } else if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.getBreedingStatus("inheat"))
+                    } else if (this.getSex().equals(Genetics.Sex.FEMALE) && this.getBreedingStatus("inheat"))
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
-                    else if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && !this.getBreedingStatus("inheat"))
+                    else if (this.getSex().equals(Genetics.Sex.FEMALE) && !this.getBreedingStatus("inheat"))
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.not_in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
-                    else if (this.getSex().equals(Genetics.Sex.MALE.getName()))
+                    else if (this.getSex().equals(Genetics.Sex.MALE))
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.male").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
                 }
                 return true;
@@ -506,7 +506,7 @@ public class EntityCat extends AbstractCat {
 
             if (stack.getItem() == Items.BONE && player.isSneaking()) {
                 if (this.world.isRemote) {
-                    if (this.getSex().equals(Genetics.Sex.FEMALE.getName()) && this.getBreedingStatus("ispregnant"))
+                    if (this.getSex().equals(Genetics.Sex.FEMALE) && this.getBreedingStatus("ispregnant"))
                         player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.kitten_count").getFormattedText() + " " + this.getKittens()));
                 }
                 return true;
