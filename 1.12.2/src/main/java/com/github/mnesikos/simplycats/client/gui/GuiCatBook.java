@@ -159,9 +159,9 @@ public class GuiCatBook extends GuiScreen {
             this.fontRenderer.drawSplitString(Genetics.getPhenotypeDescription(nbt, false), leftX + 16, 14*7, 120, 0);
 
             this.fontRenderer.drawSplitString("Vocal Level Bar Here",
-                    leftX + 16, 14*9-5, 120, 0);
+                    leftX + 16, 14*9, 120, 0);
             this.fontRenderer.drawSplitString("Activity Level Bar Here",
-                    leftX + 16, 14*10-5, 120, 0);
+                    leftX + 16, 14*9+9, 120, 0);
 
             this.fontRenderer.drawSplitString("Pregnancy Data", leftX + 16, 14*11-5, 120, 0);
 

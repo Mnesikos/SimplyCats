@@ -10,21 +10,21 @@ public class Genetics {
     }
 
     public static String getPhenotypeDescription(NBTTagCompound nbt, boolean includeSex) {
-        String sex = Sex.getPrettyName(nbt.getString("Phaeomelanin").contains(Genetics.Phaeomelanin.MALE.getAllele()) ? "male" : "female");
+        String sex = Sex.getPrettyName(nbt.getString("Phaeomelanin").contains(Phaeomelanin.MALE.getAllele()) ? "male" : "female");
 
-        String eumelanin = Genetics.Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
-        String phaeomelanin = Genetics.Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
-        String dilution = Genetics.Dilution.getPhenotype(nbt.getString("Dilution"));
-        String diluteMod = Genetics.DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
-        TextComponentTranslation base = new TextComponentTranslation("cat.base." + eumelanin + (phaeomelanin.equals(Genetics.Phaeomelanin.NOT_RED.toString().toLowerCase()) ? "" : "_" + phaeomelanin) + ".name");
-        boolean dilute = dilution.equals(Genetics.Dilution.DILUTE.toString().toLowerCase());
-        boolean caramelized = diluteMod.equals(Genetics.DiluteMod.CARAMELIZED.toString().toLowerCase());
+        String eumelanin = Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
+        String phaeomelanin = Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
+        String dilution = Dilution.getPhenotype(nbt.getString("Dilution"));
+        String diluteMod = DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
+        TextComponentTranslation base = new TextComponentTranslation("cat.base." + eumelanin + (phaeomelanin.equals(Phaeomelanin.NOT_RED.toString().toLowerCase()) ? "" : "_" + phaeomelanin) + ".name");
+        boolean dilute = dilution.equals(Dilution.DILUTE.toString().toLowerCase());
+        boolean caramelized = diluteMod.equals(DiluteMod.CARAMELIZED.toString().toLowerCase());
         if (dilute) {
             base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + dilution + ".name");
             if (caramelized)
                 base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + diluteMod + ".name");
         }
-        boolean red = phaeomelanin.equals(Genetics.Phaeomelanin.RED.toString().toLowerCase());
+        boolean red = phaeomelanin.equals(Phaeomelanin.RED.toString().toLowerCase());
         if (red) {
             base = new TextComponentTranslation("cat.base." + phaeomelanin + ".name");
             if (dilute) {
@@ -34,29 +34,46 @@ public class Genetics {
             }
         }
 
-        String agouti = Genetics.Agouti.getPhenotype(nbt.getString("Agouti"));
-        String tabby1 = Genetics.Tabby.getPhenotype(nbt.getString("Tabby"));
-        String spotted = Genetics.Spotted.getPhenotype(nbt.getString("Spotted"));
-        String ticked = Genetics.Ticked.getPhenotype(nbt.getString("Ticked"));
+        String agouti = Agouti.getPhenotype(nbt.getString("Agouti"));
+        String tabby1 = Tabby.getPhenotype(nbt.getString("Tabby"));
+        String spotted = Spotted.getPhenotype(nbt.getString("Spotted"));
+        String ticked = Ticked.getPhenotype(nbt.getString("Ticked"));
         TextComponentTranslation tabby = new TextComponentTranslation("");
-        if (agouti.equals(Genetics.Agouti.TABBY.toString().toLowerCase()) || red) {
+        if (agouti.equals(Agouti.TABBY.toString().toLowerCase()) || red) {
             tabby = new TextComponentTranslation("cat.tabby." + tabby1 + ".name");
-            if (spotted.equals(Genetics.Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Genetics.Spotted.SPOTTED.toString().toLowerCase()))
+            if (spotted.equals(Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Spotted.SPOTTED.toString().toLowerCase()))
                 tabby = new TextComponentTranslation("cat.tabby." + spotted + ".name");
-            if (ticked.equals(Genetics.Ticked.TICKED.toString().toLowerCase()))
+            if (ticked.equals(Ticked.TICKED.toString().toLowerCase()))
                 tabby = new TextComponentTranslation("cat.tabby." + ticked + ".name");
         }
 
-        String colorpoint = Genetics.Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
+        String colorpoint = Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
         TextComponentTranslation point = new TextComponentTranslation("");
-        if (!colorpoint.equals(Genetics.Colorpoint.NOT_POINTED.toString().toLowerCase())) {
+        if (!colorpoint.equals(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
             point = new TextComponentTranslation("cat.point." + colorpoint + ".name");
+        }
+
+        String white = White.getPhenotype(nbt.getString("White"));
+        TextComponentTranslation whiteText = new TextComponentTranslation("");
+        if (!white.equals(White.NONE.toString().toLowerCase())) {
+            if (white.equals(White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
+                whiteText = new TextComponentTranslation("cat.white.solid_white.name");
+                return whiteText.getUnformattedText() + (includeSex ? (" " + sex) : "");
+            }
+            if (nbt.getString("White_0").contains("5")) {
+                whiteText = new TextComponentTranslation("cat.white.mostly_white.name");
+                return whiteText.getUnformattedText() + " " + base.getUnformattedText() +
+                        (tabby.getUnformattedText().equals("") ? "" : " " + tabby.getUnformattedText()) +
+                        (point.getUnformattedText().equals("") ? "" : " " + point.getUnformattedText()) +
+                        (includeSex ? (" " + sex) : "");
+            } else
+                whiteText = new TextComponentTranslation("cat.white.some_white.name");
         }
 
         return base.getUnformattedText() +
                 (tabby.getUnformattedText().equals("") ? "" : " " + tabby.getUnformattedText()) +
                 (point.getUnformattedText().equals("") ? "" : " " + point.getUnformattedText()) +
-                (includeSex ? (" " + sex) : ""); //todo missing white
+                " " + whiteText.getUnformattedText() + (includeSex ? (" " + sex) : "");
     }
 
     public enum Sex {
