@@ -6,7 +6,12 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
-## [1.12.2-0.0.3.0] - 
+## [1.12.2-0.0.3.1] - 
+### Fixed
+- Removed extra blankspace in the nametag recipe, now it's truly 2x2 craftable.
+- Cat names in the book gui actually centered now (lol whoops).
+
+## [1.12.2-0.0.3.0] - 2020/07/19
 ### Added
 - Creepers will now avoid SC cats exactly like their vanilla counterparts.
 - Witches are suddenly pacifists with SC cats around!
@@ -21,6 +26,7 @@ and this project adheres to
 - Cats whose owner is offline will not die.
 ### Changed
 - Updated Forge Mappings
+- Nametag recipe is now 1 ingot instead of two.
 - Kittens are smaller for longer, yay! (This time is also configurable.)
 - Removed maximum limit on wander area idk do what you want I guess lol.
 - UNFINISHED: Updated treat bag! Right click to shake the bag and call all your nearby cats to your location, also with some inventory.

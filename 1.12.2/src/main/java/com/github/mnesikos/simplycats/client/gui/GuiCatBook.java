@@ -133,7 +133,7 @@ public class GuiCatBook extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         GlStateManager.color(1, 1, 1, 1);
         int leftX = (width - bookImageWidth) / 2;
-        int leftCenterX = (bookImageWidth / 2) + 8;
+        int leftCenterX = leftX + (bookImageWidth / 4);
 
         this.mc.getTextureManager().bindTexture(BG_TEXTURE);
         drawModalRectWithCustomSizedTexture(leftX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
