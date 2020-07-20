@@ -150,20 +150,23 @@ public class GuiCatBook extends GuiScreen {
 
             this.renderCatHealth(leftX + 66, 14*3);
 
-            //this.fontRenderer.drawString("Purrsonality", leftX + 66, 14*4, 0);
+            //this.fontRenderer.drawString("Purrsonality", leftX + 66, 14*4, 0); //todo
 
             String ownerName = "";
-            if (cat.isTamed()) ownerName = cat.getOwnerName().getFormattedText();
-            this.fontRenderer.drawString(new TextComponentTranslation("tooltip.pet_carrier.owner").getUnformattedText() + " " + ownerName, leftX + 16, 14*6, 0);
+            if (cat.isTamed()) {
+                ownerName = cat.getOwnerName().getFormattedText();
+                this.fontRenderer.drawString(new TextComponentTranslation("tooltip.pet_carrier.owner").getUnformattedText() + " " + ownerName, leftX + 16, 14 * 6, 0);
+            } else
+                this.fontRenderer.drawString(new TextComponentTranslation("entity.simplycats.cat.untamed").getUnformattedText(), leftX + 16, 14 * 6, 0);
 
             this.fontRenderer.drawSplitString(Genetics.getPhenotypeDescription(nbt, false), leftX + 16, 14*7, 120, 0);
 
-            this.fontRenderer.drawSplitString("Vocal Level Bar Here",
+            /*this.fontRenderer.drawSplitString("Vocal Level Bar Here",
                     leftX + 16, 14*9, 120, 0);
             this.fontRenderer.drawSplitString("Activity Level Bar Here",
-                    leftX + 16, 14*9+9, 120, 0);
+                    leftX + 16, 14*9+9, 120, 0);*/ //todo
 
-            this.fontRenderer.drawSplitString("Pregnancy Data", leftX + 16, 14*11-5, 120, 0);
+            //this.fontRenderer.drawSplitString("Pregnancy Data", leftX + 16, 14*11-5, 120, 0); //todo
 
             String eyeColor = TextFormatting.GRAY + nbt.getString("EyeColor");
             String furLength = TextFormatting.GRAY + nbt.getString("FurLength");
@@ -178,25 +181,25 @@ public class GuiCatBook extends GuiScreen {
             String colorpoint = TextFormatting.GRAY + nbt.getString("Colorpoint");
             String white = TextFormatting.GRAY + nbt.getString("White");
 
-            this.fontRenderer.drawString("Eye color: " + eyeColor, leftX + 152, 24, 0);
-            this.fontRenderer.drawString("Fur length: " + furLength, leftX + 152, 34, 0);
-            this.fontRenderer.drawString("Eumelanin: " + eumelanin, leftX + 152, 44, 0);
-            this.fontRenderer.drawString("Phaeomelanin: " + phaeomelanin, leftX + 152, 54, 0);
-            this.fontRenderer.drawString("Dilute: " + dilution, leftX + 152, 64, 0);
-            this.fontRenderer.drawString("Dilute modifier: " + diluteMod, leftX + 152, 74, 0);
-            this.fontRenderer.drawString("Agouti: " + agouti, leftX + 152, 84, 0);
-            this.fontRenderer.drawString("Tabby: " + tabby, leftX + 152, 94, 0);
-            this.fontRenderer.drawString("Spotted: " + spotted, leftX + 152, 104, 0);
-            this.fontRenderer.drawString("Ticked: " + ticked, leftX + 152, 114, 0);
-            this.fontRenderer.drawString("Colorpoint: " + colorpoint, leftX + 152, 124, 0);
-            this.fontRenderer.drawString("White: " + white, leftX + 152, 134, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.eye_color").getUnformattedText() + ": " + eyeColor, leftX + 152, 24, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.fur_length").getUnformattedText() + ": " + furLength, leftX + 152, 34, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.eumelanin").getUnformattedText() + ": " + eumelanin, leftX + 152, 44, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.phaeomelanin").getUnformattedText() + ": " + phaeomelanin, leftX + 152, 54, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.dilute").getUnformattedText() + ": " + dilution, leftX + 152, 64, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.dilute_modifier").getUnformattedText() + ": " + diluteMod, leftX + 152, 74, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.agouti").getUnformattedText() + ": " + agouti, leftX + 152, 84, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.tabby").getUnformattedText() + ": " + tabby, leftX + 152, 94, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.spotted").getUnformattedText() + ": " + spotted, leftX + 152, 104, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.ticked").getUnformattedText() + ": " + ticked, leftX + 152, 114, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.colorpoint").getUnformattedText() + ": " + colorpoint, leftX + 152, 124, 0);
+            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.white").getUnformattedText() + ": " + white, leftX + 152, 134, 0);
 
-            this.fontRenderer.drawSplitString("Heritage Data", leftX + 152, 14*11-5, 120, 0);
+            //this.fontRenderer.drawSplitString("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 
         } else if (book != null) {
-            this.fontRenderer.drawString("Index page?", leftX + 40, 80, 0);
+            this.fontRenderer.drawSplitString(new TextComponentTranslation("book.index_page.info").getUnformattedText(), leftX + 16, 60, 120, 0);
         } else
-            this.fontRenderer.drawString("error page this should not happen", leftX + 40, 80, 0); //todo remove when done
+            this.fontRenderer.drawSplitString("Error page, this should not happen, please report to github issue tracker, thanks.", leftX + 16, 60, 120, 0); //todo remove when done
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -227,85 +230,6 @@ public class GuiCatBook extends GuiScreen {
             if (wholeHearts * 2 + 1 == catHealth)
                 this.drawTexturedModalRect(guiX, guiY, textureX + 45, 9 * textureY, 9, 9);
         }
-    }
-
-    private static void drawEntityOnScreen(int posX, int posY, int scale, float mouseX, float mouseY, EntityLivingBase ent) {
-        GlStateManager.enableColorMaterial();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float)posX, (float)posY, 50.0F);
-        GlStateManager.scale((float)(-scale), (float)scale, (float)scale);
-        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-        float f = ent.renderYawOffset;
-        float f1 = ent.rotationYaw;
-        float f2 = ent.rotationPitch;
-        float f3 = ent.prevRotationYawHead;
-        float f4 = ent.rotationYawHead;
-        GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
-        RenderHelper.enableStandardItemLighting();
-        GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
-        ent.renderYawOffset = (float)Math.atan((double)(mouseX / 40.0F)) * 20.0F;
-        ent.rotationYaw = (float)Math.atan((double)(mouseX / 40.0F)) * 40.0F;
-        ent.rotationPitch = -((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F;
-        ent.rotationYawHead = ent.rotationYaw;
-        ent.prevRotationYawHead = ent.rotationYaw;
-        GlStateManager.translate(0.0F, 0.0F, 0.0F);
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
-        rendermanager.setPlayerViewY(180.0F);
-        rendermanager.setRenderShadow(false);
-        rendermanager.renderEntity(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
-        rendermanager.setRenderShadow(true);
-        ent.renderYawOffset = f;
-        ent.rotationYaw = f1;
-        ent.rotationPitch = f2;
-        ent.prevRotationYawHead = f3;
-        ent.rotationYawHead = f4;
-        GlStateManager.popMatrix();
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.disableTexture2D();
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-    }
-
-    public static void drawEntityOnScreen(int posX, int posY, int scale, float mouseX, float mouseY, AbstractCat cat)
-    {
-        GlStateManager.enableColorMaterial();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float)posX, (float)posY, 50.0F);
-        GlStateManager.scale((float)(-scale), (float)scale, (float)scale);
-        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-        float f = cat.renderYawOffset;
-        float f1 = cat.rotationYaw;
-        float f2 = cat.rotationPitch;
-        float f3 = cat.prevRotationYawHead;
-        float f4 = cat.rotationYawHead;
-        GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
-        RenderHelper.enableStandardItemLighting();
-        GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
-        cat.renderYawOffset = (float)Math.atan((double)(mouseX / 40.0F)) * 20.0F;
-        cat.rotationYaw = (float)Math.atan((double)(mouseX / 40.0F)) * 40.0F;
-        cat.rotationPitch = -((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F;
-        cat.rotationYawHead = cat.rotationYaw;
-        cat.prevRotationYawHead = cat.rotationYaw;
-        GlStateManager.translate(0.0F, 0.0F, 0.0F);
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
-        rendermanager.setPlayerViewY(180.0F);
-        rendermanager.setRenderShadow(false);
-        rendermanager.renderEntity(cat, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
-        rendermanager.setRenderShadow(true);
-        cat.renderYawOffset = f;
-        cat.rotationYaw = f1;
-        cat.rotationPitch = f2;
-        cat.prevRotationYawHead = f3;
-        cat.rotationYawHead = f4;
-        GlStateManager.popMatrix();
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.disableTexture2D();
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
 
     @SideOnly(Side.CLIENT)

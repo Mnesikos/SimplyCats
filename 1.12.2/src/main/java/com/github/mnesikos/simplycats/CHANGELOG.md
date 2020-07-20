@@ -16,6 +16,7 @@ and this project adheres to
 - New blocks: food bowl, litter box, and scratching post (all currently decoration only).
 - New attack AI for cats, with a sneak animation AND configurable prey list!
 - A maximum limit of tamed cats per player now able to be set via config, disabled by default.
+- Your tamed cats are now kept track of, including a command to edit the number if necessary. A join message can be enabledin the config!
 - Cats have a couple new breeding rules, they will not breed if: their owner is offline, or their owner exceeds the tame limit (config).
 - Cats whose owner is offline will not die.
 ### Changed

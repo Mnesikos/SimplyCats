@@ -10,6 +10,7 @@ item.catnip_seeds.name=Catnip Seeds
 item.laser_pointer.name=Laser Pointer
 
 < Item Tooltips
+tooltip.cat_book.usage=Sneak right click on a cat to see their page!
 tooltip.certificate.adopt.desc=Right click on an unowned pet to adopt them!
 tooltip.certificate.release.desc=Right click on your pet to release ownership.
 tooltip.pet_carrier.empty=This carrier is empty.
@@ -67,6 +68,21 @@ entity.simplycats.cat.unknown_owner=Unknown Owner
 entity.simplycats.cat.untamed=Untamed
 entity.Villager.kennel_worker=Shelter Worker
 
+< Book Data
+book.index_page.info=Hello! This is the index page of the Simply Cats cat book, or at least it will be once finalized. Try sneak right clicking a cat to see their information instead!
+book.genetics.eye_color=Eye color
+book.genetics.fur_length=Fur length
+book.genetics.eumelanin=Eumelanin
+book.genetics.phaeomelanin=Phaeomelanin
+book.genetics.dilute=Dilute
+book.genetics.dilute_modifier=Dilute modifier
+book.genetics.agouti=Agouti
+book.genetics.tabby=Tabby
+book.genetics.spotted=Spotted
+book.genetics.ticked=Ticked
+book.genetics.colorpoint=Colorpoint
+book.genetics.white=White
+
 < Cat Phenotypes
 cat.sex.female.name=Female
 cat.sex.male.name=Male
@@ -121,6 +137,8 @@ command.cat_count.return_count=%s has a total of %s tamed cats
 
 < Config
 config.simplycats.title=Simply Cats Config
+config.simplycats.join_message=Join Message
+config.simplycats.join_message.tooltip=Enable or disables the join message with a player's cat count.
 config.simplycats.command_beckon=Beckon Command
 config.simplycats.command_beckon.tooltip=ONLY enable this if you know what you're doing. This command can and will corrupt your world if used incorrectly.
 config.simplycats.name_tag_recipe=Name Tag Recipe
@@ -143,6 +161,7 @@ config.simplycats.male_cooldown=Male Cooldown
 config.simplycats.male_cooldown.tooltip=Number of minecraft ticks that a male cat will not try to breed after breeding once already. Default is 1/4th a minecraft day.
 
 < Chat Messages
+chat.join.cat_count=You have %d tamed cats!
 chat.pet_carrier.empty=This carrier is empty.
 chat.pet_carrier.full=This carrier is already full!
 chat.pet_carrier.retrieve_pet=Pet Retrieved!

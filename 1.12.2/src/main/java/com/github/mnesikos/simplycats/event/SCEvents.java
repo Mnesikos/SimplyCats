@@ -11,6 +11,7 @@ import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -44,10 +45,10 @@ public class SCEvents {
 
     @SubscribeEvent
     public void onPlayerLogsIn(PlayerLoggedInEvent event) {
-        EntityPlayer player = event.player;
-
-        String message = String.format("You have §7%d§r tamed cats!", player.getEntityData().getInteger("CatCount"));
-        player.sendMessage(new TextComponentString(message));
+        if (SCConfig.JOIN_MESSAGE) {
+            EntityPlayer player = event.player;
+            player.sendMessage(new TextComponentTranslation("chat.join.cat_count", player.getEntityData().getInteger("CatCount")));
+        }
     }
 
     @SubscribeEvent

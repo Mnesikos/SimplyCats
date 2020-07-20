@@ -4,6 +4,7 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.client.gui.GuiCatBook;
 import com.github.mnesikos.simplycats.entity.AbstractCat;
 import com.github.mnesikos.simplycats.init.ModItems;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,10 +14,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ItemCatBook extends ItemBase {
     public static final int GUI_ID = 1;
@@ -95,5 +101,11 @@ public class ItemCatBook extends ItemBase {
             book.setTagCompound(new NBTTagCompound());
             itemList.add(book);
         }
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        TextComponentTranslation usage = new TextComponentTranslation("tooltip.cat_book.usage");
+        tooltip.add(TextFormatting.AQUA + usage.getFormattedText());
     }
 }

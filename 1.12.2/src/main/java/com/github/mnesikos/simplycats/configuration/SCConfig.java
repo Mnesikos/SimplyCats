@@ -13,6 +13,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class SCConfig {
     private static final String PREFIX = "config." + Ref.MODID;
 
+    @Name("Join Message")
+    @Comment("Enable or disables the initial join message with a player's cat count.")
+    @LangKey(PREFIX + ".join_message")
+    public static boolean JOIN_MESSAGE = false;
+
     @Name("Beckon Command")
     @Comment({
             "ONLY enable this if you know what you're doing.",
