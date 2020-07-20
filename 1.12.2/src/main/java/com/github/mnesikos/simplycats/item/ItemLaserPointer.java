@@ -39,7 +39,7 @@ public class ItemLaserPointer extends ItemBase {
 		if(!stack.getTagCompound().getBoolean("On")){
 			//If the pointer is off we want to get the cats within the area + a little more than whats defined below
 			//and set the nearest pointer to null
-			List<EntityCat> cats = worldIn.getEntitiesWithinAABB(EntityCat.class, playerIn.getEntityBoundingBox().grow(15.0D));
+			List<EntityCat> cats = worldIn.getEntitiesWithinAABB(EntityCat.class, playerIn.getEntityBoundingBox().grow(14.0D));
 			cats.forEach(eb -> eb.setNearestLaser(null));
 		}
 		return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -58,8 +58,8 @@ public class ItemLaserPointer extends ItemBase {
 		if (isSelected) {
 			if (stack.getTagCompound() != null) {
 				if (stack.getTagCompound().getBoolean("On")) {
-					//Get all cats within a 14 block area of the player
-					List<EntityCat> cats = worldIn.getEntitiesWithinAABB(EntityCat.class, e.getEntityBoundingBox().grow(14.0D));
+					//Get all cats within a 6 block radius of the player
+					List<EntityCat> cats = worldIn.getEntitiesWithinAABB(EntityCat.class, e.getEntityBoundingBox().grow(6.0D));
 
 					if (e instanceof EntityPlayer) {
 						//Check to make sure the entity using this is a player and

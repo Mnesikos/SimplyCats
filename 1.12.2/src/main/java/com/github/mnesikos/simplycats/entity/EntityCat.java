@@ -57,6 +57,9 @@ public class EntityCat extends AbstractCat {
 
     public void setNearestLaser(Vec3d vec){
         this.nearestLaser = vec;
+        if (vec == null) {
+            this.getNavigator().clearPath();
+        }
     }
 
     @Override
@@ -150,9 +153,10 @@ public class EntityCat extends AbstractCat {
     public void onUpdate() {
         super.onUpdate();
         if(this.getNearestLaser() != null) {
-            if(this.isSitting())
-                this.setSitting(false);
+            if(this.aiSit != null && this.isSitting())
+                this.aiSit.setSitting(false);
             this.getNavigator().tryMoveToXYZ(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 1.2D);
+            this.getLookHelper().setLookPosition(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 10.0F, (float) this.getVerticalFaceSpeed());
         }
 
         if (!this.world.isRemote && !this.isChild() && !this.isFixed() && this.getSex() == Genetics.Sex.FEMALE) { //if female & adult & not fixed
