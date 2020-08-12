@@ -42,6 +42,7 @@ public class ModProfessions {
             kennelWorker.addTrade(1, new AdoptADog());
         kennelWorker.addTrade(1, new AdoptACat());
         kennelWorker.addTrade(1, new EntityVillager.ListItemForEmeralds(ModItems.CATNIP_SEEDS, new EntityVillager.PriceInfo(-8, -4)));
+        kennelWorker.addTrade(1, new EntityVillager.ListItemForEmeralds(ModItems.STERILIZE_POTION, new EntityVillager.PriceInfo(1, 1)));
     }
 
     public static class AdoptACat implements EntityVillager.ITradeList {

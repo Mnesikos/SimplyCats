@@ -7,17 +7,25 @@ and this project adheres to
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
 ## [1.12.2-0.0.3.1] - 
+### Added
+- Cat Sterilization Potion! No more snipping... with shears...
+- Animania chickens and certain species' babies have been added to the prey list.
+### Changed
+- Cats now have 14 health! (New cats from 0.0.3.0 already saw this change, now pre-existing cats have been fixed.)
+- Certificates are no longer limited to 1 item stack sizes! This was annoying.
 ### Fixed
-- Removed extra blankspace in the nametag recipe, now it's truly 2x2 craftable.
+- Removed extra space in the nametag recipe, now it's truly 2x2 craftable.
 - Cat names in the book gui actually centered now (lol whoops).
+- Prevents possible TE crashes now.
+- Catnip seeds can be planted on modded farmland.
 
 ## [1.12.2-0.0.3.0] - 2020/07/19
 ### Added
 - Creepers will now avoid SC cats exactly like their vanilla counterparts.
 - Witches are suddenly pacifists with SC cats around!
-- UNFINISHED: Cat book! Keep track of all your cats and their info.
-- UNFINISHED: Catnip crop, acquire from shelter workers.
-- UNFINISHED: A laser pointer!! Cute and fun. Written by SoggyMustache.
+- Cat book! Keep track of all your cats and their info.
+- Catnip crop, acquire from shelter workers.
+- A laser pointer!! Cute and fun. Written by SoggyMustache.
 - New blocks: food bowl, litter box, and scratching post (all currently decoration only).
 - New attack AI for cats, with a sneak animation AND configurable prey list!
 - A maximum limit of tamed cats per player now able to be set via config, disabled by default.
@@ -29,7 +37,7 @@ and this project adheres to
 - Nametag recipe is now 1 ingot instead of two.
 - Kittens are smaller for longer, yay! (This time is also configurable.)
 - Removed maximum limit on wander area idk do what you want I guess lol.
-- UNFINISHED: Updated treat bag! Right click to shake the bag and call all your nearby cats to your location, also with some inventory.
+- Updated treat bag! Right click to shake the bag and call all your nearby cats to your location.
 ### Fixed
 - Cats can no longer mate through walls or even 1x1 gaps.
 - Cats with home points will now wander correctly.

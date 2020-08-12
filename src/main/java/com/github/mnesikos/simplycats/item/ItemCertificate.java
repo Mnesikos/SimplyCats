@@ -33,7 +33,6 @@ public class ItemCertificate extends ItemBase {
         this.name = name;
         setHasSubtypes(true);
         setMaxDamage(0);
-        setMaxStackSize(1);
     }
 
     @Override

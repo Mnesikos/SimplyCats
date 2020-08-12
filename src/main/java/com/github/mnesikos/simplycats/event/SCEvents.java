@@ -2,10 +2,13 @@ package com.github.mnesikos.simplycats.event;
 
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.AbstractCat;
+import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,6 +59,15 @@ public class SCEvents {
         if (event.getEntity() instanceof EntityCreeper) {
             EntityCreeper creeper = (EntityCreeper) event.getEntity();
             creeper.tasks.addTask(3, new EntityAIAvoidEntity<>(creeper, AbstractCat.class, 6.0F, 1.0D, 1.2D));
+        }
+
+        if (event.getEntity() instanceof EntityCat) {
+            EntityCat cat = (EntityCat) event.getEntity();
+            IAttributeInstance maxHealth = cat.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
+            if (maxHealth.getBaseValue() < 14.0D) {
+                maxHealth.setBaseValue(14.0D);
+                cat.setHealth(14.0F);
+            }
         }
     }
 

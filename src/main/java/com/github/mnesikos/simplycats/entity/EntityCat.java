@@ -461,20 +461,6 @@ public class EntityCat extends AbstractCat {
                 }
             }
 
-            if (!this.isTamed() || (this.isTamed() && this.isOwner(player))) {
-                if (stack.getItem() == Items.SHEARS && player.isSneaking()) {
-                    if (!this.isFixed()) {
-                        this.setFixed((byte) 1);
-                        if (this.world.isRemote) {
-                            String FIXED_FEMALE = new TextComponentTranslation("chat.info.success_fixed_female").getFormattedText();
-                            String FIXED_MALE = new TextComponentTranslation("chat.info.success_fixed_male").getFormattedText();
-                            player.sendMessage(new TextComponentString(this.getName() + " " + (this.getSex() == Genetics.Sex.FEMALE ? FIXED_FEMALE : FIXED_MALE)));
-                        }
-                    }
-                    return true;
-                }
-            }
-
             if (isFoodItem(stack)) {
                 ItemFood food = (ItemFood) stack.getItem();
                 if (this.getHealth() < this.getMaxHealth())

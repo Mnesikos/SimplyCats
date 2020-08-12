@@ -8,6 +8,7 @@ item.treat_bag.name=Treat Bag
 item.catnip.name=Catnip
 item.catnip_seeds.name=Catnip Seeds
 item.laser_pointer.name=Laser Pointer
+item.sterilization_potion.name=Sterilization Potion
 
 < Item Tooltips
 tooltip.cat_book.usage=Sneak right click on a cat to see their page!
@@ -167,8 +168,8 @@ chat.pet_carrier.full=This carrier is already full!
 chat.pet_carrier.retrieve_pet=Pet Retrieved!
 chat.pet_carrier.release_pet=Pet Released!
 chat.info.tamed_limit_reached=You cannot tame this cat, your limit has been reached!
-chat.info.success_fixed_female=has successfully been spayed.
-chat.info.success_fixed_male=has successfully been neutered.
+chat.info.success_fixed_female=%s has successfully been spayed.
+chat.info.success_fixed_male=%s has successfully been neutered.
 chat.info.fixed_female=This female is spayed! She cannot go into heat, mate, or give birth.
 chat.info.fixed_male=This male is neutered! He cannot mate.
 chat.info.pregnant=This female is pregnant. Ticks until birth:

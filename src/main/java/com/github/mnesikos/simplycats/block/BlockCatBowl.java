@@ -68,6 +68,9 @@ public class BlockCatBowl extends BlockTileEntity<TileEntityCatBowl> {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (!(this.getTileEntity(world, pos) instanceof  TileEntityCatBowl))
+            return false;
+
         TileEntityCatBowl tileEntityCatBowl = this.getTileEntity(world, pos);
         EnumDyeColor color = tileEntityCatBowl.getColor();
 

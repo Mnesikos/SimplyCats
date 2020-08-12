@@ -2,6 +2,7 @@ package com.github.mnesikos.simplycats.init;
 
 import com.github.mnesikos.simplycats.item.*;
 import net.minecraft.block.BlockPlanks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
@@ -11,13 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModItems {
-    public static ItemBase CAT_BOOK = new ItemCatBook("cat_book");
-    public static ItemBase PET_CARRIER = new ItemPetCarrier();
-    public static ItemBase CERTIFICATE = new ItemCertificate("certificate");
-    public static ItemBase TREAT_BAG = new ItemTreatBag("treat_bag");
-    public static ItemBase CATNIP = new ItemCatnip("catnip");
-    public static ItemCatnipSeeds CATNIP_SEEDS = new ItemCatnipSeeds("catnip_seeds");
+    public static final ItemBase CAT_BOOK = new ItemCatBook("cat_book");
+    public static final ItemBase PET_CARRIER = new ItemPetCarrier();
+    public static final ItemBase CERTIFICATE = new ItemCertificate("certificate");
+    public static final ItemBase TREAT_BAG = new ItemTreatBag("treat_bag");
+    public static final ItemBase CATNIP = new ItemCatnip("catnip");
+    public static final ItemCatnipSeeds CATNIP_SEEDS = new ItemCatnipSeeds("catnip_seeds");
     public static final ItemLaserPointer LASER_POINTER = new ItemLaserPointer("laser_pointer");
+    public static final ItemSterilizationPotion STERILIZE_POTION = new ItemSterilizationPotion("sterilization_potion");
 
     public static final Map<EnumDyeColor, ItemCatBowl> CAT_BOWLS = new HashMap<>();
     public static final Map<EnumDyeColor, ItemLitterBox> LITTER_BOXES = new HashMap<>();
@@ -35,7 +37,8 @@ public class ModItems {
                 CERTIFICATE,
                 TREAT_BAG,
                 CATNIP, CATNIP_SEEDS,
-                LASER_POINTER
+                LASER_POINTER,
+                STERILIZE_POTION
         );
         for (EnumDyeColor color : EnumDyeColor.values()) {
             CAT_BOWLS.put(color, new ItemCatBowl("cat_bowl", color));
@@ -57,6 +60,7 @@ public class ModItems {
         CATNIP.registerItemModel();
         CATNIP_SEEDS.registerItemModel();
         LASER_POINTER.registerItemModel();
+        STERILIZE_POTION.registerItemModel();
         for (EnumDyeColor color : EnumDyeColor.values()) {
             CAT_BOWLS.get(color).registerItemModel();
             LITTER_BOXES.get(color).registerItemModel();
