@@ -1,7 +1,6 @@
 package com.github.mnesikos.simplycats.client.gui;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.entity.AbstractCat;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.client.Minecraft;
@@ -9,10 +8,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.item.ItemStack;
@@ -144,7 +140,7 @@ public class GuiCatBook extends GuiScreen {
             int nameWidth = this.fontRenderer.getStringWidth(cat.getName());
             this.fontRenderer.drawString(cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
 
-            String sex = (cat.isFixed() ? new TextComponentTranslation("cat.fixed.name").getUnformattedText() : new TextComponentTranslation("cat.intact.name").getUnformattedText())
+            String sex = (cat.isFixed() ? I18n.format("cat.fixed.name") : I18n.format("cat.intact.name"))
                     + " " + Genetics.Sex.getPrettyName(cat.getSex().getName());
             this.fontRenderer.drawString(sex, leftX + 66, 14*2, 0);
 
@@ -155,9 +151,9 @@ public class GuiCatBook extends GuiScreen {
             String ownerName = "";
             if (cat.isTamed()) {
                 ownerName = cat.getOwnerName().getFormattedText();
-                this.fontRenderer.drawString(new TextComponentTranslation("tooltip.pet_carrier.owner").getUnformattedText() + " " + ownerName, leftX + 16, 14 * 6, 0);
+                this.fontRenderer.drawString(I18n.format("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0);
             } else
-                this.fontRenderer.drawString(new TextComponentTranslation("entity.simplycats.cat.untamed").getUnformattedText(), leftX + 16, 14 * 6, 0);
+                this.fontRenderer.drawString(I18n.format("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
 
             this.fontRenderer.drawSplitString(Genetics.getPhenotypeDescription(nbt, false), leftX + 16, 14*7, 120, 0);
 
@@ -180,24 +176,26 @@ public class GuiCatBook extends GuiScreen {
             String ticked = TextFormatting.GRAY + nbt.getString("Ticked");
             String colorpoint = TextFormatting.GRAY + nbt.getString("Colorpoint");
             String white = TextFormatting.GRAY + nbt.getString("White");
+            String bobtail = TextFormatting.GRAY + nbt.getString("Bobtail");
 
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.eye_color").getUnformattedText() + ": " + eyeColor, leftX + 152, 24, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.fur_length").getUnformattedText() + ": " + furLength, leftX + 152, 34, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.eumelanin").getUnformattedText() + ": " + eumelanin, leftX + 152, 44, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.phaeomelanin").getUnformattedText() + ": " + phaeomelanin, leftX + 152, 54, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.dilute").getUnformattedText() + ": " + dilution, leftX + 152, 64, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.dilute_modifier").getUnformattedText() + ": " + diluteMod, leftX + 152, 74, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.agouti").getUnformattedText() + ": " + agouti, leftX + 152, 84, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.tabby").getUnformattedText() + ": " + tabby, leftX + 152, 94, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.spotted").getUnformattedText() + ": " + spotted, leftX + 152, 104, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.ticked").getUnformattedText() + ": " + ticked, leftX + 152, 114, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.colorpoint").getUnformattedText() + ": " + colorpoint, leftX + 152, 124, 0);
-            this.fontRenderer.drawString(new TextComponentTranslation("book.genetics.white").getUnformattedText() + ": " + white, leftX + 152, 134, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.eye_color", eyeColor), leftX + 152, 24, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.fur_length", furLength), leftX + 152, 34, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.eumelanin", eumelanin), leftX + 152, 44, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.dilute", dilution), leftX + 152, 64, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.agouti", agouti), leftX + 152, 84, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.tabby", tabby), leftX + 152, 94, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.spotted", spotted), leftX + 152, 104, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.ticked", ticked), leftX + 152, 114, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.colorpoint", colorpoint), leftX + 152, 124, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.white", white), leftX + 152, 134, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.bobtail", bobtail), leftX + 152, 144, 0);
 
             //this.fontRenderer.drawSplitString("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 
         } else if (book != null) {
-            this.fontRenderer.drawSplitString(new TextComponentTranslation("book.index_page.info").getUnformattedText(), leftX + 16, 60, 120, 0);
+            this.fontRenderer.drawSplitString(I18n.format("book.index_page.info"), leftX + 16, 60, 120, 0);
         } else
             this.fontRenderer.drawSplitString("Error page, this should not happen, please report to github issue tracker, thanks.", leftX + 16, 60, 120, 0); //todo remove when done
 

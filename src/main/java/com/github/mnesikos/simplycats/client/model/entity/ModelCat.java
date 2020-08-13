@@ -14,6 +14,7 @@ public class ModelCat extends ModelBase {
     private ModelRenderer body;
     private ModelRenderer head;
     private ModelRenderer tail;
+    private ModelRenderer tailbobbed;
     private ModelRenderer frightlegpoint;
     private ModelRenderer fleftlegpoint;
     private ModelRenderer brightlegpoint;
@@ -78,6 +79,10 @@ public class ModelCat extends ModelBase {
         this.tail.setRotationPoint(0.0F, 15.0F, 7.6F);
         this.tail.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         this.setRotateAngle(tail, (float) (180 / (180 / Math.PI)), -0.0F, 0.0F);
+        this.tailbobbed = new ModelRenderer(this, 20, 22);
+        this.tailbobbed.setRotationPoint(0.0F, 15.0F, 7.6F);
+        this.tailbobbed.addBox(-1.0F, 0.0F, -1.0F, 2, 2, 2, 0.0F);
+        this.setRotateAngle(tailbobbed, (float) (135 / (180 / Math.PI)), -0.0F, 0.0F);
         this.tail2 = new ModelRenderer(this, 28, 22);
         this.tail2.setRotationPoint(0.0F, 7.8F, 0.0F);
         this.tail2.addBox(-1.0F, 0.0F, -1.0F, 2, 3, 2, 0.0F);
@@ -98,34 +103,38 @@ public class ModelCat extends ModelBase {
     @Override
     public void render(Entity entity, float parSpeed, float parWalkSpeed, float par4, float parHeadAngleY, float parHeadAngleX, float par7) {
         this.setRotationAngles(parSpeed, parWalkSpeed, par4, parHeadAngleY, parHeadAngleX, par7, entity);
+        if (entity instanceof EntityCat) {
+            EntityCat entityCat = (EntityCat) entity;
+            if (this.isChild) {
+                float var8 = 2.0F;
+                GL11.glPushMatrix();
+                GL11.glScalef(1.25F / var8, 1.25F / var8, 1.25F / var8);
+                GL11.glTranslatef(0.0F, 15.6F * par7, 2.5F * par7);
+                this.head.render(par7);
+                GL11.glPopMatrix();
 
-        if(this.isChild) {
-            float var8 = 2.0F;
-            GL11.glPushMatrix();
-            GL11.glScalef(1.25F / var8, 1.25F / var8, 1.25F / var8);
-            GL11.glTranslatef(0.0F, 15.6F * par7, 2.5F * par7);
-            this.head.render(par7);
-            GL11.glPopMatrix();
+                GL11.glPushMatrix();
+                GL11.glScalef(0.7F / var8, 0.7F / var8, 0.7F / var8);
+                GL11.glTranslatef(0.0F, 41.0F * par7, 1.4F * par7);
+                if (entityCat.isBobtail()) this.tailbobbed.render(par7);
+                else this.tail.render(par7);
+                GL11.glPopMatrix();
 
-            GL11.glPushMatrix();
-            GL11.glScalef(0.7F / var8, 0.7F / var8, 0.7F / var8);
-            GL11.glTranslatef(0.0F, 41.0F * par7, 1.4F * par7);
-            this.tail.render(par7);
-            GL11.glPopMatrix();
+                GL11.glPushMatrix();
+                GL11.glScalef(1.0F / var8, 1.0F / var8, 0.8F / var8);
+                GL11.glTranslatef(0.0F, 24.0F * par7, 0.0F);
+                this.body.render(par7);
+                GL11.glPopMatrix();
 
-            GL11.glPushMatrix();
-            GL11.glScalef(1.0F / var8, 1.0F / var8, 0.8F / var8);
-            GL11.glTranslatef(0.0F, 24.0F * par7, 0.0F);
-            this.body.render(par7);
-            GL11.glPopMatrix();
-
-        } else {
-            GL11.glPushMatrix();
-            GL11.glScaled(1.01D, 1.01D, 1.01D); // scaling head slightly larger for no texture clip hopefully
-            this.head.render(par7);
-            GL11.glPopMatrix();
-            this.body.render(par7);
-            this.tail.render(par7);
+            } else {
+                GL11.glPushMatrix();
+                GL11.glScaled(1.01D, 1.01D, 1.01D); // scaling head slightly larger for no texture clip hopefully
+                this.head.render(par7);
+                GL11.glPopMatrix();
+                this.body.render(par7);
+                if (entityCat.isBobtail()) this.tailbobbed.render(par7);
+                else this.tail.render(par7);
+            }
         }
     }
 
@@ -139,6 +148,8 @@ public class ModelCat extends ModelBase {
         if (entity instanceof EntityCat) {
             EntityCat cat = (EntityCat) entity;
 
+            ModelRenderer tailType = cat.isBobtail() ? tailbobbed : tail;
+
             this.head.rotationPointY = 14.0F;
             this.head.rotationPointZ = -6.5F;
             this.body.rotateAngleX = 0.0F;
@@ -151,9 +162,10 @@ public class ModelCat extends ModelBase {
             this.brightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
             this.frightleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
             this.bleftleg.rotateAngleX = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
-            this.tail.rotationPointY = 15.0F;
+            tailType.rotationPointY = 15.0F;
             this.tail.rotateAngleX = (float) (180 / (180 / Math.PI));
             this.tail2.rotateAngleX = (float) (10 / (180 / Math.PI));
+            this.tailbobbed.rotateAngleX = (float) (135 / (180 / Math.PI));
             this.lear.rotateAngleX = 0.0F;
             this.lear.rotateAngleY = 0.0F;
             this.rear.rotateAngleX = 0.0F;
@@ -173,23 +185,22 @@ public class ModelCat extends ModelBase {
                 this.brightlegpoint.rotationPointY -= 2.0F;
                 this.fleftlegpoint.rotationPointY -= 2.0F;
                 this.frightlegpoint.rotationPointY -= 2.0F;
-                this.tail.rotationPointY += 2.0F;
-                this.tail.rotateAngleX = ((float) Math.PI / 3F);
+                tailType.rotationPointY += 2.0F;
+                tailType.rotateAngleX = ((float) Math.PI / 3F);
             }
 
             if (cat.isSitting()) {
                 if (this.isChild) {
-                    this.tail.rotationPointY = 23.5F;
+                    tailType.rotationPointY = 23.5F;
                 } else {
-                    this.tail.rotationPointY = 21.5F;
+                    tailType.rotationPointY = 21.5F;
                 }
                 this.head.rotationPointZ = -4.5F;
                 this.body.rotateAngleX = (float) (-28 / (180 / Math.PI));
                 this.fleftleg.rotateAngleX = this.frightleg.rotateAngleX = (float) (28 / (180 / Math.PI));
                 this.bleftlegpoint.rotateAngleX = this.brightlegpoint.rotateAngleX = (float) (-62.5 / (180 / Math.PI));
                 this.bleftleg.rotateAngleX = this.brightleg.rotateAngleX = 0.0F;
-                this.tail.rotateAngleX = (float) (79 / (180 / Math.PI));
-
+                tailType.rotateAngleX = (float) (79 / (180 / Math.PI));
             }
         }
     }

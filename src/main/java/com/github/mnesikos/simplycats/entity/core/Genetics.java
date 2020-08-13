@@ -547,4 +547,32 @@ public class Genetics {
             }
         }
     }
+
+    public enum Bobtail {
+        FULL("Jb"),
+        BOBTAIL("jb");
+
+        private String allele;
+
+        Bobtail(String allele) {
+            this.allele = allele;
+        }
+
+        public String getAllele() {
+            return allele;
+        }
+
+        public static String init() {
+            Random rand = new Random();
+            float chance = rand.nextFloat();
+            if (chance <= 0.98F)
+                return FULL.getAllele(); // 98% chance
+            else
+                return BOBTAIL.getAllele(); // 2% chance
+        }
+
+        public static boolean isBobtail(String bobtail) {
+            return bobtail.equals("jb-jb");
+        }
+    }
 }

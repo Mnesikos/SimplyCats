@@ -46,6 +46,8 @@ public abstract class AbstractCat extends EntityTameable {
     private static final DataParameter<String> TICKED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> COLORPOINT = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> WHITE = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> BOBTAIL = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+
     private static final DataParameter<String> WHITE_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> WHITE_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> WHITE_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
@@ -91,6 +93,8 @@ public abstract class AbstractCat extends EntityTameable {
         this.dataManager.register(TICKED, "ta-ta");
         this.dataManager.register(COLORPOINT, "C-C");
         this.dataManager.register(WHITE, "w-w");
+        this.dataManager.register(BOBTAIL, "Jb-Jb");
+
         this.dataManager.register(WHITE_0, "");
         this.dataManager.register(WHITE_1, "");
         this.dataManager.register(WHITE_2, "");
@@ -115,6 +119,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.setGenotype(TICKED, Ticked.init() + "-" + Ticked.init());
         this.setGenotype(COLORPOINT, Colorpoint.init() + "-" + Colorpoint.init());
         this.setGenotype(WHITE, White.init() + "-" + White.init());
+        this.setGenotype(BOBTAIL, Bobtail.init() + "-" + Bobtail.init());
         this.selectWhiteMarkings();
         this.setGenotype(EYE_COLOR, selectEyeColor());
     }
@@ -298,6 +303,10 @@ public abstract class AbstractCat extends EntityTameable {
         return this.dataManager.get(PHAEOMELANIN).contains(Phaeomelanin.MALE.getAllele()) ? Sex.MALE : Sex.FEMALE;
     }
 
+    public boolean isBobtail() {
+        return Bobtail.isBobtail(this.dataManager.get(BOBTAIL));
+    }
+
     public boolean hasHomePos() {
         return this.dataManager.get(HOME_POSITION).isPresent();
     }
@@ -344,6 +353,7 @@ public abstract class AbstractCat extends EntityTameable {
         compound.setString("Ticked", this.getGenotype(TICKED));
         compound.setString("Colorpoint", this.getGenotype(COLORPOINT));
         compound.setString("White", this.getGenotype(WHITE));
+        compound.setString("Bobtail", this.getGenotype(BOBTAIL));
         for (int i = 0; i <= 2; i++)
             compound.setString("White_" + i, this.getWhiteTextures(i));
         for (int i = 0; i <= 3; i++)
@@ -371,6 +381,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.setGenotype(TICKED, compound.getString("Ticked"));
         this.setGenotype(COLORPOINT, compound.getString("Colorpoint"));
         this.setGenotype(WHITE, compound.getString("White"));
+        this.setGenotype(BOBTAIL, compound.getString("Bobtail"));
         for (int i = 0; i <= 2; i++)
             this.setWhiteTextures(i, compound.getString("White_" + i));
         for (int i = 0; i <= 3; i++)
@@ -624,6 +635,10 @@ public abstract class AbstractCat extends EntityTameable {
         String[] patWhite = father.get(WHITE).split("-");
         String white = matWhite[rand.nextInt(2)] + "-" + patWhite[rand.nextInt(2)];
 
+        String[] matBobtail = mother.get(BOBTAIL).split("-");
+        String[] patBobtail = father.get(BOBTAIL).split("-");
+        String bobtail = matBobtail[rand.nextInt(2)] + "-" + patBobtail[rand.nextInt(2)];
+
         child.setGenotype(FUR_LENGTH, fur);
         child.setGenotype(EUMELANIN, eum);
         child.setGenotype(PHAEOMELANIN, phae);
@@ -635,6 +650,7 @@ public abstract class AbstractCat extends EntityTameable {
         child.setGenotype(TICKED, tick);
         child.setGenotype(COLORPOINT, point);
         child.setGenotype(WHITE, white);
+        child.setGenotype(BOBTAIL, bobtail);
         child.selectWhiteMarkings();
 
         int eyesMin;

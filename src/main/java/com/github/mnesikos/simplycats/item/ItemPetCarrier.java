@@ -4,6 +4,7 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.init.ModItems;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -201,9 +202,7 @@ public class ItemPetCarrier extends ItemBase {
 
             if (pet instanceof EntityCat) {
                 ((EntityCat) pet).setHomePos(new BlockPos(x, y, z));
-                player.sendMessage(new TextComponentString(pet.getName() +
-                        new TextComponentTranslation("chat.info.set_home").getFormattedText() +
-                        " " + x + ", " + y + ", " + z));
+                player.sendMessage(new TextComponentTranslation("chat.info.set_home", pet.getName(), x, y, z));
             }
             pet.getNavigator().clearPath();
             pet.setOwnerId(player.getUniqueID());
@@ -248,7 +247,7 @@ public class ItemPetCarrier extends ItemBase {
             else if (item.getItemDamage() != 0) {
                 TextComponentTranslation species = new TextComponentTranslation("entity." + nbt.getString("id") + ".name");
 
-                TextComponentTranslation owner = new TextComponentTranslation("tooltip.pet_carrier.owner");
+                String owner = I18n.format("tooltip.pet_carrier.owner", nbt.getString("OwnerName"));
                 if (nbt.hasKey("CustomName"))
                     tooltip.add(TextFormatting.AQUA + "\"" + nbt.getString("CustomName") + "\"");
                 else
@@ -257,7 +256,7 @@ public class ItemPetCarrier extends ItemBase {
                 if (item.getItemDamage() == 1)
                     tooltip.add(TextFormatting.ITALIC + Genetics.getPhenotypeDescription(nbt, true));
 
-                tooltip.add(owner.getUnformattedText() + " " + nbt.getString("OwnerName"));
+                tooltip.add(owner);
             }
         } else {
             TextComponentTranslation empty = new TextComponentTranslation("tooltip.pet_carrier.empty");

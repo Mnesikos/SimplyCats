@@ -48,7 +48,7 @@ import static com.github.mnesikos.simplycats.SCNetworking.CHANNEL;
 
 @Mod.EventBusSubscriber
 public class CommonProxy implements IGuiHandler {
-    public static final int FIXER_VERSION = 2;
+    public static final int FIXER_VERSION = 3;
 
     public final CreativeTabs SIMPLYCATS = new CreativeTabs(Ref.MODID + ".tab") {
         @Override
