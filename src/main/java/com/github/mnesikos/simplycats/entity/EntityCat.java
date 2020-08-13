@@ -6,11 +6,11 @@ import com.github.mnesikos.simplycats.entity.ai.*;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.init.ModItems;
-import com.google.common.base.Predicate;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemFood;
@@ -20,7 +20,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
@@ -69,8 +71,7 @@ public class EntityCat extends AbstractCat {
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiSit);
         this.tasks.addTask(3, this.aiTempt);
-        if (!this.isSitting())
-            this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
+        this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
         if (!this.isFixed())
             this.tasks.addTask(3, new CatAIMate(this, 1.2D));
         this.tasks.addTask(4, new CatAIBirth(this));
@@ -450,14 +451,13 @@ public class EntityCat extends AbstractCat {
             if (this.isTamed() && this.isOwner(player)) {
                 if (stack.getItem() == Items.BLAZE_POWDER && player.isSneaking()) {
                     if (!this.isFixed() && this.getMateTimer() != 0) {
-                        this.setMateTimer(this.getMateTimer() / 2); // heat inducer, used on females not in heat to quicken the process
+                        this.setMateTimer(this.getMateTimer() / 2);
                         if (!player.capabilities.isCreativeMode)
                             stack.shrink(1);
                         if (stack.getCount() <= 0)
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                     }
                     return true;
-
                 }
             }
 
@@ -472,32 +472,10 @@ public class EntityCat extends AbstractCat {
                 return true;
             }
 
-            if (stack.getItem() == Items.STICK && player.isSneaking()) {
-                if (this.world.isRemote) {
-                    if (this.isFixed()) {
-                        if (this.getSex() == Genetics.Sex.FEMALE)
-                            player.sendMessage(new TextComponentTranslation("chat.info.fixed_female"));
-                        else
-                            player.sendMessage(new TextComponentTranslation("chat.info.fixed_male"));
-                    } else if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant")) {
-                        if (!this.getBreedingStatus("inheat"))
-                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.pregnant").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
-                        else
-                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.pregnant_heat").getFormattedText() + " " + this.getMateTimer()));
-                    } else if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("inheat"))
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
-                    else if (this.getSex() == Genetics.Sex.FEMALE && !this.getBreedingStatus("inheat"))
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.not_in_heat").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
-                    else if (this.getSex() == Genetics.Sex.MALE)
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.male").getFormattedText() + " " + this.getMateTimer()/* + parents + this.getParent("mother") + "/" + this.getParent("father")*/));
-                }
-                return true;
-            }
-
             if (stack.getItem() == Items.BONE && player.isSneaking()) {
                 if (this.world.isRemote) {
                     if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.kitten_count").getFormattedText() + " " + this.getKittens()));
+                        player.sendMessage(new TextComponentTranslation("chat.info.kitten_count", this.getKittens()));
                 }
                 return true;
             }
@@ -507,16 +485,14 @@ public class EntityCat extends AbstractCat {
                     if (this.hasHomePos()) {
                         this.resetHomePos();
                         if (this.world.isRemote)
-                            player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.remove_home").getFormattedText() + " " + this.getName()));
-                        return true;
+                            player.sendMessage(new TextComponentTranslation("chat.info.remove_home", this.getName()));
                     } else {
                         this.setHomePos(new BlockPos(this));
                         if (this.world.isRemote)
-                            player.sendMessage(new TextComponentString(this.getName() +
-                                    new TextComponentTranslation("chat.info.set_home").getFormattedText() +
-                                    " " + getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
-                        return true;
+                            player.sendMessage(new TextComponentTranslation("chat.info.set_home", this.getName(),
+                                    getHomePos().getX(), getHomePos().getY(), getHomePos().getZ()));
                     }
+                    return true;
                 } else {
                     if (this.hasHomePos())
                         if (this.world.isRemote)

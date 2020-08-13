@@ -12,6 +12,7 @@ and this project adheres to
 - Animania chickens and certain species' babies have been added to the prey list.
 ### Changed
 - Cats now have 14 health! (New cats from 0.0.3.0 already saw this change, now pre-existing cats have been fixed.)
+- Instead of using a stick to get information on your cat, give them a name and sneak while looking at them!
 - Certificates are no longer limited to 1 item stack sizes! This was annoying.
 ### Fixed
 - Removed extra space in the nametag recipe, now it's truly 2x2 craftable.

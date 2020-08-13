@@ -170,19 +170,17 @@ chat.pet_carrier.release_pet=Pet Released!
 chat.info.tamed_limit_reached=You cannot tame this cat, your limit has been reached!
 chat.info.success_fixed_female=%s has successfully been spayed.
 chat.info.success_fixed_male=%s has successfully been neutered.
-chat.info.fixed_female=This female is spayed! She cannot go into heat, mate, or give birth.
-chat.info.fixed_male=This male is neutered! He cannot mate.
-chat.info.pregnant=This female is pregnant. Ticks until birth:
-chat.info.pregnant_heat=This cat is pregnant, but still in heat for:
-chat.info.kitten_count=Kitten count:
-chat.info.in_heat=This female is in heat. Ticks left:
-chat.info.not_in_heat=This female is not in heat. Ticks until next heat:
-chat.info.male=This is a male. Cooldown ticks left:
+chat.info.pregnant=Pregnant: %d
+chat.info.pregnant_heat=Pregnant, in heat: %d
+chat.info.kitten_count=Kittens: %d
+chat.info.in_heat=In heat: %d
+chat.info.not_in_heat=Next heat: %d
+chat.info.male=Cooldown: %d
 chat.info.parents=. Mother/Father:
 chat.info.adopt_usage=You have successfully adopted
 chat.info.release_usage=has been released of your ownership. Did you say goodbye?
-chat.info.remove_home=Removed previously set home spot for
-chat.info.set_home='s new home spot has been set to
+chat.info.remove_home=Removed previously set home spot for %s
+chat.info.set_home=%s's new home spot has been set to %d, %d, %d
 
 < Subtitles
 simplycats.subtitle.shake_treats=Treat bag shakes
