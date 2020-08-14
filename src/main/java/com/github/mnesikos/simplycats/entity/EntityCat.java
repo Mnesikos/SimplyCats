@@ -34,13 +34,13 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class EntityCat extends AbstractCat {
-    private static final DataParameter<Byte> FIXED;
-    private static final DataParameter<Byte> IN_HEAT;
-    private static final DataParameter<Byte> IS_PREGNANT;
-    private static final DataParameter<Integer> MATE_TIMER;
-    private static final DataParameter<Integer> KITTENS;
-    private static final DataParameter<String> MOTHER;
-    private static final DataParameter<String> FATHER;
+    private static final DataParameter<Byte> FIXED = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
+    private static final DataParameter<Byte> IN_HEAT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
+    private static final DataParameter<Byte> IS_PREGNANT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> MATE_TIMER = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> KITTENS = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
+    private static final DataParameter<String> MOTHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> FATHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.STRING);
 
     private EntityAITempt aiTempt;
     private CatAITargetNearest aiTargetNearest;
@@ -431,7 +431,7 @@ public class EntityCat extends AbstractCat {
 
     @Override
     public boolean isBreedingItem(ItemStack item) {
-        return false;
+        return item.getItem() == Items.BLAZE_POWDER;
     }
 
     @Override
@@ -448,39 +448,29 @@ public class EntityCat extends AbstractCat {
         ItemStack stack = player.getHeldItem(hand);
 
         if (!stack.isEmpty()) {
-            if (this.isTamed() && this.isOwner(player)) {
-                if (stack.getItem() == Items.BLAZE_POWDER && player.isSneaking()) {
-                    if (this.isChild()) {
-                        this.consumeItemFromStack(player, stack);
-                        this.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.8F), true);
-                    }
-                    if (!this.isFixed() && this.getMateTimer() != 0) {
-                        this.setMateTimer(this.getMateTimer() / 2);
-                        if (!player.capabilities.isCreativeMode)
-                            stack.shrink(1);
-                        if (stack.getCount() <= 0)
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
-                        return true;
-                    }
+            if (isBreedingItem(stack) && player.isSneaking() && this.isTamed() && this.isOwner(player)) {
+                if (this.isChild()) {
+                    this.consumeItemFromStack(player, stack);
+                    this.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.8F), true);
+
+                } else if (!this.isFixed() && this.getMateTimer() != 0) {
+                    this.consumeItemFromStack(player, stack);
+                    this.setMateTimer(this.getMateTimer() / 2);
                 }
+                return true;
             }
 
-            if (isFoodItem(stack)) {
+            if (isFoodItem(stack) && this.getHealth() < this.getMaxHealth()) {
                 ItemFood food = (ItemFood) stack.getItem();
-                if (this.getHealth() < this.getMaxHealth())
-                    this.heal((float) food.getHealAmount(stack));
-                if (!player.capabilities.isCreativeMode)
-                    stack.shrink(1);
-                if (stack.getCount() <= 0)
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                this.consumeItemFromStack(player, stack);
+                this.heal((float) food.getHealAmount(stack));
                 return true;
             }
 
             if (stack.getItem() == Items.BONE && player.isSneaking()) {
-                if (this.world.isRemote) {
+                if (this.world.isRemote)
                     if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
                         player.sendMessage(new TextComponentTranslation("chat.info.kitten_count", this.getKittens()));
-                }
                 return true;
             }
 
@@ -493,36 +483,22 @@ public class EntityCat extends AbstractCat {
                     } else {
                         this.setHomePos(new BlockPos(this));
                         if (this.world.isRemote)
-                            player.sendMessage(new TextComponentTranslation("chat.info.set_home", this.getName(),
-                                    getHomePos().getX(), getHomePos().getY(), getHomePos().getZ()));
+                            player.sendMessage(new TextComponentTranslation("chat.info.set_home", this.getName(), getHomePos().getX(), getHomePos().getY(), getHomePos().getZ()));
                     }
                     return true;
-                } else {
+                } else
                     if (this.hasHomePos())
                         if (this.world.isRemote)
                             player.sendMessage(new TextComponentString(getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
-                }
             }
         }
 
-        if (!this.world.isRemote && this.isOwner(player) && !player.isSneaking()) {
-            if (stack.isEmpty() || (!this.isBreedingItem(stack) && !this.isFoodItem(stack))) {
-                this.aiSit.setSitting(!this.isSitting());
-                this.navigator.clearPath();
-                this.setAttackTarget(null);
-            }
+        if (this.isOwner(player) && !this.world.isRemote && !player.isSneaking()) {
+            this.aiSit.setSitting(!this.isSitting());
+            this.navigator.clearPath();
+            this.setAttackTarget(null);
         }
 
         return super.processInteract(player, hand);
-    }
-
-    static {
-        FIXED = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
-        IN_HEAT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
-        IS_PREGNANT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
-        MATE_TIMER = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
-        KITTENS = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
-        MOTHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.STRING);
-        FATHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.STRING);
     }
 }

@@ -18,6 +18,7 @@ tooltip.pet_carrier.empty=This carrier is empty.
 tooltip.pet_carrier.adopt_cat=Adopt a Cat!
 tooltip.pet_carrier.adopt_dog=Adopt a Dog!
 tooltip.pet_carrier.owner=Owned by %s
+tooltip.sterilization_potion.usage=Sneak right click a cat to spay or neuter them. This is irreversible!
 
 < Block Names
 container.cat_bowl.name=Cat Bowl

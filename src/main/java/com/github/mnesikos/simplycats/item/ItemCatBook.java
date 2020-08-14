@@ -4,6 +4,7 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.client.gui.GuiCatBook;
 import com.github.mnesikos.simplycats.entity.AbstractCat;
 import com.github.mnesikos.simplycats.init.ModItems;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,8 +15,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -83,13 +82,13 @@ public class ItemCatBook extends ItemBase {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        ItemStack book = player.getHeldItem(hand);
+        /*ItemStack book = player.getHeldItem(hand);
 
         if (!player.isSneaking()) {
             if (world.isRemote)
                 GuiCatBook.book = book;
             player.openGui(SimplyCats.instance, GUI_ID, player.world, 0, (int) player.posY, (int) player.posZ);
-        }
+        }*/
 
         return super.onItemRightClick(world, player, hand);
     }
@@ -105,7 +104,6 @@ public class ItemCatBook extends ItemBase {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        TextComponentTranslation usage = new TextComponentTranslation("tooltip.cat_book.usage");
-        tooltip.add(TextFormatting.AQUA + usage.getFormattedText());
+        tooltip.add(I18n.format("tooltip.cat_book.usage"));
     }
 }

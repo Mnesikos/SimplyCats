@@ -6,8 +6,10 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
-## [1.12.2-0.0.3.1] - 
+## [1.12.2-0.0.3.1] - 2020/08/14
 ### Added
+- New ticked tabby texture for homozygous ticked cats, slightly edited texture for residual-ticked cats as well.
+- Bobtails!!! They're so cute and stumpy (and rare).
 - Cat Sterilization Potion! No more snipping... with shears...
 - Animania chickens and certain species' babies have been added to the prey list.
 ### Changed
