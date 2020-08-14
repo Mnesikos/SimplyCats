@@ -450,14 +450,18 @@ public class EntityCat extends AbstractCat {
         if (!stack.isEmpty()) {
             if (this.isTamed() && this.isOwner(player)) {
                 if (stack.getItem() == Items.BLAZE_POWDER && player.isSneaking()) {
+                    if (this.isChild()) {
+                        this.consumeItemFromStack(player, stack);
+                        this.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.8F), true);
+                    }
                     if (!this.isFixed() && this.getMateTimer() != 0) {
                         this.setMateTimer(this.getMateTimer() / 2);
                         if (!player.capabilities.isCreativeMode)
                             stack.shrink(1);
                         if (stack.getCount() <= 0)
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                        return true;
                     }
-                    return true;
                 }
             }
 

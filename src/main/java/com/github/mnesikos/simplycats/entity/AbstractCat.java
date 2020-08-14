@@ -437,7 +437,7 @@ public abstract class AbstractCat extends EntityTameable {
         if (this.getGenotype(SPOTTED).contains(Spotted.SPOTTED.getAllele()))
             tabby = this.getPhenotype(SPOTTED) + "_" + tabby;
         if (this.getPhenotype(TICKED).equalsIgnoreCase(Ticked.TICKED.toString().toLowerCase()))
-            tabby = this.getPhenotype(TICKED) + "_" + solid;
+            tabby = this.getPhenotype(TICKED) + (this.getGenotype(TICKED).contains(Ticked.NORMAL.getAllele()) ? "_residual" : "") + "_" + solid;
 
         String tortie = "";
         if (this.getPhenotype(PHAEOMELANIN).equalsIgnoreCase(Phaeomelanin.TORTOISESHELL.toString().toLowerCase())) {
