@@ -104,6 +104,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         IBlockState stairs0 = this.getBiomeSpecificBlockState(Blocks.OAK_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST));
 
         IBlockState fence = this.getBiomeSpecificBlockState(Blocks.OAK_FENCE.getDefaultState());
+        IBlockState gate = this.getBiomeSpecificBlockState(Blocks.OAK_FENCE_GATE.getDefaultState());
         IBlockState dirt = this.getBiomeSpecificBlockState(Blocks.DIRT.getDefaultState());
 
         // Foundation & Pillars
@@ -154,7 +155,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         this.setBlockState(world, Blocks.GLASS_PANE.getDefaultState(), 5, 5, -1, structureBoundingBox);
 
         //this.setBlockState(world, Blocks.fence_gate, getMetadataWithOffset(Blocks.fence_gate, 2), 12, 2, 5, structureBoundingBox);
-        this.setBlockState(world, getBiomeSpecificBlockState(Blocks.OAK_FENCE_GATE.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH)), 12, 2, 3, structureBoundingBox);
+        this.setBlockState(world, gate.withProperty(BlockStairs.FACING, EnumFacing.SOUTH), 12, 2, 3, structureBoundingBox);
         this.fillWithBlocks(world, structureBoundingBox, 9, 2, 3, 11, 2, 3, cobble, cobble, false);
         this.fillWithBlocks(world, structureBoundingBox, 13, 2, 3, 15, 2, 3, cobble, cobble, false);
         this.fillWithBlocks(world, structureBoundingBox, 9, 3, 3, 10, 3, 3, planks, planks, false);
@@ -232,8 +233,8 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         this.fillWithBlocks(world, structureBoundingBox, 11, 2, 4, 11, 2, 10, fence, fence, false);
         this.placeTorch(world, EnumFacing.EAST, 9, 5, 7, structureBoundingBox);
         this.placeTorch(world, EnumFacing.WEST, 15, 5, 7, structureBoundingBox);
-        this.setBlockState(world, getBiomeSpecificBlockState(Blocks.OAK_FENCE_GATE.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST)), 11, 2, 5, structureBoundingBox);
-        this.setBlockState(world, getBiomeSpecificBlockState(Blocks.OAK_FENCE_GATE.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST)), 11, 2, 9, structureBoundingBox);
+        this.setBlockState(world, gate.withProperty(BlockStairs.FACING, EnumFacing.WEST), 11, 2, 5, structureBoundingBox);
+        this.setBlockState(world, gate.withProperty(BlockStairs.FACING, EnumFacing.WEST), 11, 2, 9, structureBoundingBox);
         for (int x = 14; x <= 15; x++) {
             for (int z = 4; z <= 5; z++) {
                 this.setBlockState(world, Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, EnumDyeColor.LIGHT_BLUE), x, 2, z, structureBoundingBox);
@@ -312,7 +313,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
 
         return true;
     }
-    
+
     @Override
     protected VillagerProfession chooseForgeProfession(int count, VillagerProfession prof) {
         return super.chooseForgeProfession(1, ModProfessions.SHELTER_STAFF);
@@ -382,5 +383,22 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                 }
             }
         }
+    }
+
+    @Override
+    protected IBlockState getBiomeSpecificBlockState(IBlockState blockstateIn) {
+        net.minecraftforge.event.terraingen.BiomeEvent.GetVillageBlockID event = new net.minecraftforge.event.terraingen.BiomeEvent.GetVillageBlockID(startPiece == null ? null : startPiece.biome, blockstateIn);
+        net.minecraftforge.common.MinecraftForge.TERRAIN_GEN_BUS.post(event);
+        if (event.getResult() == net.minecraftforge.fml.common.eventhandler.Event.Result.DENY) return event.getReplacement();
+        if (this.structureType == 3) {
+            if (blockstateIn.getBlock() == Blocks.OAK_FENCE_GATE)
+                return Blocks.SPRUCE_FENCE_GATE.getDefaultState();
+        }
+        else if (this.structureType == 2) {
+            if (blockstateIn.getBlock() == Blocks.OAK_FENCE_GATE)
+                return Blocks.ACACIA_FENCE_GATE.getDefaultState();
+        }
+
+        return super.getBiomeSpecificBlockState(blockstateIn);
     }
 }*/
