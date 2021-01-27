@@ -6,6 +6,11 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
+## [1.12.2-0.0.4.0] -
+### Added
+- Long hair cat model edits! All cats that were genetically long hair before will now use these cute new edits.
+- Super Not-So-Secret name tag easter egg for Generikb! 
+
 ## [1.12.2-0.0.3.1] - 2020/08/14
 ### Added
 - New ticked tabby texture for homozygous ticked cats, slightly edited texture for residual-ticked cats as well.

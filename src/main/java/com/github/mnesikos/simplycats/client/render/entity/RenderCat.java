@@ -22,7 +22,8 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class RenderCat extends RenderLiving<EntityCat> {
-    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
+    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.newHashMap();
+    private static final String[] CUSTOM_CATS = new String[]{"spinny"};
 
     public RenderCat(RenderManager render) {
         super(render, new ModelCat(), 0.2F);
@@ -37,6 +38,13 @@ public class RenderCat extends RenderLiving<EntityCat> {
     @Nullable
     @Override
     protected ResourceLocation getEntityTexture(EntityCat entity) {
+        if (entity.hasCustomName()) {
+            for (String customCat : CUSTOM_CATS) {
+                if (entity.getCustomNameTag().equalsIgnoreCase(customCat))
+                    return new ResourceLocation(Ref.MODID, "textures/entity/cat/custom/" + customCat + ".png");
+            }
+        }
+
         String s = entity.getCatTexture();
         ResourceLocation resourceLocation = LAYERED_LOCATION_CACHE.get(s);
 

@@ -93,6 +93,6 @@ processResources {
 }
 
 // sends builds to root directory
-tasks.withType(Jar) {
-    destinationDir = file("$rootDir/../builds/")
-}
+//tasks.withType(Jar) {
+//    destinationDir = file("$rootDir/../builds/")
+//}
