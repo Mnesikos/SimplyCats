@@ -3,16 +3,18 @@ package com.github.mnesikos.simplycats.configuration;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.github.mnesikos.simplycats.Ref;
+import com.google.common.collect.Lists;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 
 import java.nio.file.Path;
+import java.util.List;
 
 @Mod.EventBusSubscriber
 public class SimplyCatsConfig {
-    private static final String PREFIX = "config." + Ref.MODID;
+    private static final String PREFIX = "config." + Ref.MOD_ID;
     /*public static final String CATEGORY_BLOCKS = "blocks";
     public static final String CATEGORY_ITEMS = "items";*/
     public static final String CATEGORY_CATS = "cats";
@@ -22,12 +24,14 @@ public class SimplyCatsConfig {
 
     public static ForgeConfigSpec COMMON_CONFIG;
 
-    public static ForgeConfigSpec.BooleanValue COMMAND_BECKON;
+    public static ForgeConfigSpec.BooleanValue JOIN_MESSAGE;
     public static ForgeConfigSpec.BooleanValue NAME_TAG_RECIPE;
     public static ForgeConfigSpec.BooleanValue ADOPT_A_DOG;
 
-    /*@RequiresMcRestart*/
+    public static ForgeConfigSpec.BooleanValue ATTACK_AI;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> PREY_LIST;
     public static ForgeConfigSpec.DoubleValue WANDER_AREA_LIMIT;
+    public static ForgeConfigSpec.IntValue TAMED_LIMIT;
     public static ForgeConfigSpec.IntValue BREEDING_LIMIT;
 
     public static ForgeConfigSpec.IntValue KITTEN_MATURE_TIMER;
@@ -37,7 +41,6 @@ public class SimplyCatsConfig {
     public static ForgeConfigSpec.IntValue MALE_COOLDOWN;
 
     static {
-
         COMMON_BUILDER.comment("Cat Settings").push(CATEGORY_CATS);
         setupCatConfig();
         COMMON_BUILDER.pop();
@@ -48,11 +51,8 @@ public class SimplyCatsConfig {
         COMMON_BUILDER.comment("Item Settings").push(CATEGORY_ITEMS);
         COMMON_BUILDER.pop();*/
 
-        COMMAND_BECKON = COMMON_BUILDER.comment(
-                "ONLY enable this if you know what you're doing.",
-                "This command can and will corrupt your world if used incorrectly.")
-                .translation(PREFIX + ".command_beckon")
-                .define("command_beckon", false);
+        JOIN_MESSAGE = COMMON_BUILDER.comment("Enable or disables the initial join message with a player's cat count.")
+                .translation(PREFIX + ".join_message").define("join_message", false);
         ADOPT_A_DOG = COMMON_BUILDER.comment("Disabling this will remove the villager trade to get a one-time-use pet carrier containing a dog.")
                 .translation(PREFIX + ".adopt_a_dog")
                 .define("adopt_a_dog", true);
@@ -93,10 +93,19 @@ public class SimplyCatsConfig {
                 .defineInRange("male_cooldown", 24000 / 4, 0, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
 
+        ATTACK_AI = COMMON_BUILDER.comment("Disabling this will not allow cats to attack entities in their prey list, essentially a peaceful mode for cats.")
+                .translation(PREFIX + ".attack_ai")
+                .define("attack_ai", true);
+        PREY_LIST = COMMON_BUILDER.comment("This is a list of entities all cats will attack on sight if cat attack AI is enabled.")
+                .translation(PREFIX + ".prey_list")
+                .defineList("prey_list", Ref.PREY_LIST, o -> o instanceof String);
         WANDER_AREA_LIMIT = COMMON_BUILDER.comment(
                 "When a cat's home is set, this is the distance in blocks they are allowed to roam.")
-                .translation(PREFIX + ".wander_area_limit")
-                .defineInRange("wander_area_limit", 400.0D, 1.0D, 600.0D);
+                .translation(PREFIX + ".wander_area_limit").worldRestart()
+                .defineInRange("wander_area_limit", 400.0D, 10.0D, Double.MAX_VALUE);
+        TAMED_LIMIT = COMMON_BUILDER.comment("Sets a limit of cats each player is allowed to have tamed, setting this to 0 will disable the limit.")
+                .translation(PREFIX + ".tamed_limit")
+                .defineInRange("tamed_limit", 0, 0, Integer.MAX_VALUE);
         BREEDING_LIMIT = COMMON_BUILDER.comment(
                 "This number is used to limit cat breeding; if more than this amount of cats are nearby, automatic breeding will be disabled.")
                 .translation(PREFIX + ".breeding_limit")
@@ -115,7 +124,7 @@ public class SimplyCatsConfig {
     }
 
     @SubscribeEvent
-    public static void onReload(final ModConfig.ConfigReloading configReload) {
+    public static void onReload(final ModConfig.Reloading configReload) {
 
     }
 }

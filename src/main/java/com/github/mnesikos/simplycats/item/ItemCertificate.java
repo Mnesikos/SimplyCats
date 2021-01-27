@@ -1,72 +1,66 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.init.ModItems;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemCertificate extends ItemBase {
-    private static final String[] TYPES = new String[] { "certificate.adopt", "certificate.release" };
-    protected String name;
-
-    public ItemCertificate(String name) {
-        super(name, new Item.Properties().group(SimplyCats.GROUP).maxStackSize(1));
-        this.name = name;
+    public ItemCertificate() {
+        super(new Item.Properties().group(SimplyCats.GROUP));
     }
 
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
         if (target instanceof EntityCat || target instanceof WolfEntity) {
-            if (name.equals("certificate_adopt")) {
-                if (((TameableEntity) target).isTamed()) {
-                    return false;
-                } else {
-                    ((TameableEntity) target).setTamed(true);
+            if (stack.getItem() == ModItems.ADOPT_CERTIFICATE.get()) {
+                if ((target instanceof EntityCat && ((EntityCat) target).canBeTamed(player)) || (target instanceof WolfEntity && !((WolfEntity) target).isTamed())) {
+                    if (target instanceof EntityCat)
+                        ((EntityCat) target).setTamed(true, player);
+                    else
+                        ((TameableEntity) target).setTamed(true);
                     ((TameableEntity) target).getNavigator().clearPath();
                     ((TameableEntity) target).setOwnerId(player.getUniqueID());
                     target.setHealth(target.getMaxHealth());
-                    if (player.world.isRemote)
-                        player.sendMessage(new StringTextComponent(new TranslationTextComponent("chat.info.adopt_usage").getFormattedText() + " " + target.getName() + "!"));
-                    this.playTameEffect(true, target.world, (TameableEntity)target);
+                    if (player.world.isRemote) {
+                        player.sendMessage(new TranslationTextComponent("chat.info.adopt_usage", target.getName()));
+                        this.playTameEffect(true, target.world, (TameableEntity) target);
+                    }
 
                     if (!player.abilities.isCreativeMode) {
                         stack.shrink(1);
                         if (stack.getCount() <= 0)
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                     }
-                }
-                return true;
 
-            } else if (name.equals("certificate_release")) {
+                } else if (player.world.isRemote && target instanceof EntityCat && !((EntityCat) target).isTamed())
+                    player.sendMessage(new TranslationTextComponent("chat.info.tamed_limit_reached"));
+
+            } else if (stack.getItem() == ModItems.RELEASE_CERTIFICATE.get()) {
                 if (((TameableEntity) target).isOwner(player)) {
-                    ((TameableEntity) target).setTamed(false);
+                    if (target instanceof EntityCat)
+                        ((EntityCat) target).setTamed(false, player);
+                    else
+                        ((TameableEntity) target).setTamed(false);
                     ((TameableEntity) target).getNavigator().clearPath();
                     ((TameableEntity) target).setOwnerId(null);
                     if (player.world.isRemote)
-                        player.sendMessage(new StringTextComponent(target.getName() + " " + new TranslationTextComponent("chat.info.release_usage").getFormattedText()));
+                        player.sendMessage(new TranslationTextComponent("chat.info.release_usage", target.getName()));
                     this.playTameEffect(false, target.world, (TameableEntity)target);
 
                     if (!player.abilities.isCreativeMode) {
@@ -91,23 +85,15 @@ public class ItemCertificate extends ItemBase {
             double d0 = world.rand.nextGaussian() * 0.02D;
             double d1 = world.rand.nextGaussian() * 0.02D;
             double d2 = world.rand.nextGaussian() * 0.02D;
-            world.addParticle(enumparticletypes, entity.posX + (double)(world.rand.nextFloat() * entity.getWidth() * 2.0F) - (double)entity.getWidth(), entity.posY + 0.5D + (double)(world.rand.nextFloat() * entity.getHeight()), entity.posZ + (double)(world.rand.nextFloat() * entity.getWidth() * 2.0F) - (double)entity.getWidth(), d0, d1, d2);
+            world.addParticle(enumparticletypes, entity.getPosX() + (double)(world.rand.nextFloat() * entity.getWidth() * 2.0F) - (double)entity.getWidth(), entity.getPosY() + 0.5D + (double)(world.rand.nextFloat() * entity.getHeight()), entity.getPosZ() + (double)(world.rand.nextFloat() * entity.getWidth() * 2.0F) - (double)entity.getWidth(), d0, d1, d2);
         }
     }
 
     @Override
-    public String getTranslationKey(ItemStack stack) {
-        if (name.equals("certificate_adopt"))
-            return "item." + Ref.MODID + "." + TYPES[0];
-        else
-            return "item." + Ref.MODID + "." + TYPES[1];
-    }
-
-    @Override @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        if (name.equals("certificate_adopt"))
-            tooltip.add(new TranslationTextComponent("tooltip." + TYPES[0] + ".desc"));
+        if (stack.getItem() == ModItems.ADOPT_CERTIFICATE.get())
+            tooltip.add(new TranslationTextComponent("tooltip.certificate_adopt"));
         else
-            tooltip.add(new TranslationTextComponent("tooltip." + TYPES[1] + ".desc"));
+            tooltip.add(new TranslationTextComponent("tooltip.certificate_release"));
     }
 }

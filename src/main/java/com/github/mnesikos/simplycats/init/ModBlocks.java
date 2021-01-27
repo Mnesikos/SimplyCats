@@ -1,46 +1,25 @@
 package com.github.mnesikos.simplycats.init;
 
-//import com.github.mnesikos.simplycats.block.BlockBowl;
 import com.github.mnesikos.simplycats.block.BlockCropCatnip;
-//import com.github.mnesikos.simplycats.block.BlockLitterBox;
-//import com.github.mnesikos.simplycats.block.BlockScratchingPost;
 import com.github.mnesikos.simplycats.tileentity.TileEntityBowl;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import static com.github.mnesikos.simplycats.Ref.MOD_ID;
 
 public class ModBlocks {
-    public static BlockCropCatnip CROP_CATNIP = new BlockCropCatnip("crop_catnip");
-    /*public static BlockBowl BOWL = new BlockBowl("cat_bowl");
-    public static BlockLitterBox LITTER_BOX = new BlockLitterBox("litter_box");
-    public static BlockScratchingPost SCRATCHING_POST = new BlockScratchingPost("scratching_post");*/
+    public static final DeferredRegister<Block> REGISTER = new DeferredRegister<>(ForgeRegistries.BLOCKS, MOD_ID);
+    public static final RegistryObject<BlockCropCatnip> CROP_CATNIP = REGISTER.register("crop_catnip", BlockCropCatnip::new);
 
-    public static void register(IForgeRegistry<Block> registry) {
-        registry.registerAll(
-                CROP_CATNIP/*,
-                BOWL,
-                LITTER_BOX,
-                SCRATCHING_POST*/
-        );
-    }
+    /*public static final RegistryObject<BlockBowl> BOWL = REGISTER.register("cat_bowl", BlockBowl::new);
 
-    /*public static void registerItemBlocks(IForgeRegistry<Item> registry) {
-        registry.registerAll(
-                BOWL.createItemBlock(),
-                LITTER_BOX.createItemBlock(),
-                SCRATCHING_POST.createItemBlock()
-        );
-    }
+    public static final RegistryObject<BlockLitterBox> LITTER_BOX = REGISTER.register("litter_box", BlockLitterBox::new);
 
-    public static final TileEntityType<?> BOWL_TYPE = TileEntityType.Builder.create(TileEntityBowl::new, ModBlocks.BOWL).build(null)
-            .setRegistryName(BOWL.getRegistryName().toString());
+    public static final RegistryObject<BlockScratchingPost> SCRATCHING_POST = REGISTER.register("scratching_post", BlockScratchingPost::new);*/
 
-    public static void registerTE(IForgeRegistry<TileEntityType<?>> registry) {
-        registry.registerAll(
-                BOWL_TYPE
-        );
-    }*/
+    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, MOD_ID);
+//    public static final RegistryObject<TileEntityType<TileEntityBowl>> BOWL_TYPE = TILE_ENTITY.register("cat_bowl", () -> TileEntityType.Builder.create(TileEntityBowl::new, BOWL.get()).build(null));
 }

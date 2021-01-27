@@ -14,7 +14,7 @@ public class BlockBase extends Block {
 
     public BlockBase(String name, Properties properties) {
         super(properties);
-        this.setRegistryName(Ref.MODID + ":" + name);
+        this.setRegistryName(Ref.MOD_ID + ":" + name);
     }
 
     public Item createItemBlock() {

@@ -62,9 +62,9 @@ public class CatTemptGoal extends Goal {
                 if (Math.abs((double)this.closestPlayer.rotationPitch - this.pitch) > 5.0D || Math.abs((double)this.closestPlayer.rotationYaw - this.yaw) > 5.0D)
                     return false;
             } else {
-                this.targetX = this.closestPlayer.posX;
-                this.targetY = this.closestPlayer.posY;
-                this.targetZ = this.closestPlayer.posZ;
+                this.targetX = this.closestPlayer.getPosX();
+                this.targetY = this.closestPlayer.getPosY();
+                this.targetZ = this.closestPlayer.getPosZ();
             }
 
             this.pitch = (double)this.closestPlayer.rotationPitch;
@@ -79,9 +79,9 @@ public class CatTemptGoal extends Goal {
     }
 
     public void startExecuting() {
-        this.targetX = this.closestPlayer.posX;
-        this.targetY = this.closestPlayer.posY;
-        this.targetZ = this.closestPlayer.posZ;
+        this.targetX = this.closestPlayer.getPosX();
+        this.targetY = this.closestPlayer.getPosY();
+        this.targetZ = this.closestPlayer.getPosZ();
         this.isRunning = true;
     }
 

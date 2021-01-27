@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[24,)" #mandatory
+loaderVersion="[31,)" #mandatory
 issueTrackerURL="https://github.com/Mnesikos/SimplyCats/issues" #optional
 displayURL="https://www.curseforge.com/minecraft/mc-mods/simply-cats/" #optional
 #logoFile="simplycats.png" #optional
@@ -9,7 +9,6 @@ authors="Mnesikos" #optional
 modId="simplycats" #mandatory
 version="${version}" #mandatory
 displayName="Simply Cats" #mandatory
-#updateJSONURL="http://myurl.me/" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 Cats! Cats everywhere!
@@ -17,6 +16,13 @@ Cats! Cats everywhere!
 [[dependencies.simplycats]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[28.1.0,)" #mandatory
+    versionRange="[31,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.examplemod]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"

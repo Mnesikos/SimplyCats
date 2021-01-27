@@ -1,3 +1,4 @@
+/*
 package com.github.mnesikos.simplycats.init;
 
 import com.github.mnesikos.simplycats.SimplyCats;
@@ -28,3 +29,4 @@ public class ModFeatures {
         return Registry.register(Registry.STRUCTURE_PIECE, key.toLowerCase(Locale.ROOT), p_214750_0_);
     }
 }
+*/

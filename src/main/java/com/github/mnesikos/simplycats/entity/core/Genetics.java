@@ -1,9 +1,79 @@
 package com.github.mnesikos.simplycats.entity.core;
 
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.TranslationTextComponent;
+
 import java.util.Random;
 
 public class Genetics {
     public Genetics() {
+    }
+
+    public static String getPhenotypeDescription(CompoundNBT nbt, boolean includeSex) {
+        String sex = Sex.getPrettyName(nbt.getString("Phaeomelanin").contains(Phaeomelanin.MALE.getAllele()) ? "male" : "female");
+
+        String eumelanin = Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
+        String phaeomelanin = Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
+        String dilution = Dilution.getPhenotype(nbt.getString("Dilution"));
+        String diluteMod = DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
+        TranslationTextComponent base = new TranslationTextComponent("cat.base." + eumelanin + (phaeomelanin.equals(Phaeomelanin.NOT_RED.toString().toLowerCase()) ? "" : "_" + phaeomelanin) + ".name");
+        boolean dilute = dilution.equals(Dilution.DILUTE.toString().toLowerCase());
+        boolean caramelized = diluteMod.equals(DiluteMod.CARAMELIZED.toString().toLowerCase());
+        if (dilute) {
+            base = new TranslationTextComponent("cat.base." + eumelanin + "_" + phaeomelanin + "_" + dilution + ".name");
+            if (caramelized)
+                base = new TranslationTextComponent("cat.base." + eumelanin + "_" + phaeomelanin + "_" + diluteMod + ".name");
+        }
+        boolean red = phaeomelanin.equals(Phaeomelanin.RED.toString().toLowerCase());
+        if (red) {
+            base = new TranslationTextComponent("cat.base." + phaeomelanin + ".name");
+            if (dilute) {
+                base = new TranslationTextComponent("cat.base." + phaeomelanin + "_" + dilution + ".name");
+                if (caramelized)
+                    base = new TranslationTextComponent("cat.base." + phaeomelanin + "_" + diluteMod + ".name");
+            }
+        }
+
+        String agouti = Agouti.getPhenotype(nbt.getString("Agouti"));
+        String tabby1 = Tabby.getPhenotype(nbt.getString("Tabby"));
+        String spotted = Spotted.getPhenotype(nbt.getString("Spotted"));
+        String ticked = Ticked.getPhenotype(nbt.getString("Ticked"));
+        TranslationTextComponent tabby = new TranslationTextComponent("");
+        if (agouti.equals(Agouti.TABBY.toString().toLowerCase()) || red) {
+            tabby = new TranslationTextComponent("cat.tabby." + tabby1 + ".name");
+            if (spotted.equals(Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Spotted.SPOTTED.toString().toLowerCase()))
+                tabby = new TranslationTextComponent("cat.tabby." + spotted + ".name");
+            if (ticked.equals(Ticked.TICKED.toString().toLowerCase()))
+                tabby = new TranslationTextComponent("cat.tabby." + ticked + ".name");
+        }
+
+        String colorpoint = Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
+        TranslationTextComponent point = new TranslationTextComponent("");
+        if (!colorpoint.equals(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
+            point = new TranslationTextComponent("cat.point." + colorpoint + ".name");
+        }
+
+        String white = White.getPhenotype(nbt.getString("White"));
+        TranslationTextComponent whiteText = new TranslationTextComponent("");
+        if (!white.equals(White.NONE.toString().toLowerCase())) {
+            if (white.equals(White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
+                whiteText = new TranslationTextComponent("cat.white.solid_white.name");
+                return whiteText.getUnformattedComponentText() + (includeSex ? (" " + sex) : "");
+            }
+            if (nbt.getString("White_0").contains("5")) {
+                whiteText = new TranslationTextComponent("cat.white.mostly_white.name");
+                return whiteText.getUnformattedComponentText() + " " + base.getUnformattedComponentText() +
+                        (tabby.getUnformattedComponentText().equals("") ? "" : " " + tabby.getUnformattedComponentText()) +
+                        (point.getUnformattedComponentText().equals("") ? "" : " " + point.getUnformattedComponentText()) +
+                        (includeSex ? (" " + sex) : "");
+            } else
+                whiteText = new TranslationTextComponent("cat.white.some_white.name");
+        }
+
+        return base.getUnformattedComponentText() +
+                (tabby.getUnformattedComponentText().equals("") ? "" : " " + tabby.getUnformattedComponentText()) +
+                (point.getUnformattedComponentText().equals("") ? "" : " " + point.getUnformattedComponentText()) +
+                " " + whiteText.getUnformattedComponentText() + (includeSex ? (" " + sex) : "");
     }
 
     public enum Sex {
@@ -18,6 +88,15 @@ public class Genetics {
 
         public String getName() {
             return name;
+        }
+
+        public static String getPrettyName(String name) {
+            if (name.equalsIgnoreCase(MALE.name))
+                return "Male";
+            else if (name.equalsIgnoreCase(FEMALE.name))
+                return "Female";
+            else
+                return name;
         }
     }
 
@@ -455,6 +534,33 @@ public class Genetics {
                 default:
                     throw new IllegalArgumentException("Invalid white: " + white);
             }
+        }
+    }
+
+    public enum Bobtail {
+        FULL("Jb"),
+        BOBTAIL("jb");
+
+        private String allele;
+
+        Bobtail(String allele) {
+            this.allele = allele;
+        }
+
+        public String getAllele() {
+            return allele;
+        }
+
+        public static String init(Random rand) {
+            float chance = rand.nextFloat();
+            if (chance <= 0.98F)
+                return FULL.getAllele(); // 98% chance
+            else
+                return BOBTAIL.getAllele(); // 2% chance
+        }
+
+        public static boolean isBobtail(String bobtail) {
+            return bobtail.equals("jb-jb");
         }
     }
 }

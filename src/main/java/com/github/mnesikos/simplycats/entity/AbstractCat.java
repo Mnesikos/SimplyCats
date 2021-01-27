@@ -1,10 +1,11 @@
 package com.github.mnesikos.simplycats.entity;
 
 import com.github.mnesikos.simplycats.Ref;
-//import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.configuration.SimplyCatsConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
+import com.github.mnesikos.simplycats.network.SetCatCountPacket;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -13,6 +14,7 @@ import net.minecraft.entity.monster.AbstractSkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -29,31 +31,36 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import static com.github.mnesikos.simplycats.SimplyCats.CHANNEL;
+
 public abstract class AbstractCat extends TameableEntity {
-    private static final DataParameter<String> EYE_COLOR;
-    private static final DataParameter<String> FUR_LENGTH;
-    private static final DataParameter<String> EUMELANIN;
-    private static final DataParameter<String> PHAEOMELANIN;
-    private static final DataParameter<String> DILUTION;
-    private static final DataParameter<String> DILUTE_MOD;
-    private static final DataParameter<String> AGOUTI;
-    private static final DataParameter<String> TABBY;
-    private static final DataParameter<String> SPOTTED;
-    private static final DataParameter<String> TICKED;
-    private static final DataParameter<String> COLORPOINT;
-    private static final DataParameter<String> WHITE;
-    private static final DataParameter<String> WHITE_0;
-    private static final DataParameter<String> WHITE_1;
-    private static final DataParameter<String> WHITE_2;
-    private static final DataParameter<String> WHITE_PAWS_0;
-    private static final DataParameter<String> WHITE_PAWS_1;
-    private static final DataParameter<String> WHITE_PAWS_2;
-    private static final DataParameter<String> WHITE_PAWS_3;
+    private static final DataParameter<String> EYE_COLOR = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> FUR_LENGTH = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> EUMELANIN = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> PHAEOMELANIN = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> DILUTION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> DILUTE_MOD = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> AGOUTI = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> TABBY = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> SPOTTED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> TICKED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> COLORPOINT = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> BOBTAIL = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+
+    private static final DataParameter<String> WHITE_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_PAWS_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_PAWS_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_PAWS_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> WHITE_PAWS_3 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private final String[] whiteTexturesArray = new String[3];
     private final String[] whitePawTexturesArray = new String[4];
 
@@ -61,6 +68,7 @@ public abstract class AbstractCat extends TameableEntity {
     private final String[] catTexturesArray = new String[12];
 
     private static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.OPTIONAL_BLOCK_POS);
+    public static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private boolean PURR;
     private int PURR_TIMER;
 
@@ -90,6 +98,8 @@ public abstract class AbstractCat extends TameableEntity {
         this.dataManager.register(TICKED, "ta-ta");
         this.dataManager.register(COLORPOINT, "C-C");
         this.dataManager.register(WHITE, "w-w");
+        this.dataManager.register(BOBTAIL, "Jb-Jb");
+
         this.dataManager.register(WHITE_0, "");
         this.dataManager.register(WHITE_1, "");
         this.dataManager.register(WHITE_2, "");
@@ -99,6 +109,7 @@ public abstract class AbstractCat extends TameableEntity {
         this.dataManager.register(WHITE_PAWS_3, "");
 
         this.dataManager.register(HOME_POSITION, Optional.empty());
+        this.dataManager.register(OWNER_NAME, "");
     }
 
     private void setPhenotype() {
@@ -113,6 +124,7 @@ public abstract class AbstractCat extends TameableEntity {
         this.setGenotype(TICKED, Ticked.init(this.rand) + "-" + Ticked.init(this.rand));
         this.setGenotype(COLORPOINT, Colorpoint.init(this.rand) + "-" + Colorpoint.init(this.rand));
         this.setGenotype(WHITE, White.init(this.rand) + "-" + White.init(this.rand));
+        this.setGenotype(BOBTAIL, Bobtail.init(this.rand) + "-" + Bobtail.init(this.rand));
         this.selectWhiteMarkings();
         this.setGenotype(EYE_COLOR, selectEyeColor());
         this.resetTexturePrefix();
@@ -140,8 +152,11 @@ public abstract class AbstractCat extends TameableEntity {
         }
 
         switch (this.getGenotype(WHITE)) {
-            case "Wd-Wd": case "Wd-w": case "Wd-Ws":
-            case "w-Wd": case "Ws-Wd":
+            case "Wd-Wd":
+            case "Wd-w":
+            case "Wd-Ws":
+            case "w-Wd":
+            case "Ws-Wd":
                 base = 6;
                 body = 1;
                 face = 0;
@@ -162,8 +177,7 @@ public abstract class AbstractCat extends TameableEntity {
                     face = rand.nextInt(6) + 1;
                     if (body > 1)
                         tail = rand.nextInt(3) + 1;
-                }
-                else if (base == 4) {
+                } else if (base == 4) {
                     body = 1;
                     face = rand.nextInt(5) + 1;
                 }
@@ -175,7 +189,8 @@ public abstract class AbstractCat extends TameableEntity {
                 }
                 break;
 
-            case "Ws-w": case "w-Ws":
+            case "Ws-w":
+            case "w-Ws":
                 base = rand.nextInt(3) + 1; //1-3
                 body = 1;
                 if (base == 2 || base == 3)
@@ -293,8 +308,12 @@ public abstract class AbstractCat extends TameableEntity {
         this.dataManager.set(parameter, value);
     }
 
-    public String getSex() {
-        return this.dataManager.get(PHAEOMELANIN).contains(Phaeomelanin.MALE.getAllele()) ? Sex.MALE.getName() : Sex.FEMALE.getName();
+    public Sex getSex() {
+        return this.dataManager.get(PHAEOMELANIN).contains(Phaeomelanin.MALE.getAllele()) ? Sex.MALE : Sex.FEMALE;
+    }
+
+    public boolean isBobtail() {
+        return Bobtail.isBobtail(this.dataManager.get(BOBTAIL));
     }
 
     public boolean hasHomePos() {
@@ -313,6 +332,21 @@ public abstract class AbstractCat extends TameableEntity {
         this.dataManager.set(HOME_POSITION, Optional.empty());
     }
 
+    public ITextComponent getOwnerName() {
+        if (this.getOwner() != null)
+            return this.getOwner().getDisplayName();
+        else if (!this.dataManager.get(OWNER_NAME).isEmpty())
+            return new StringTextComponent(this.dataManager.get(OWNER_NAME));
+        else if (this.getOwnerId() != null)
+            return new TranslationTextComponent("entity.simplycats.cat.unknown_owner");
+        else
+            return new TranslationTextComponent("entity.simplycats.cat.untamed");
+    }
+
+    public void setOwnerName(String name) {
+        this.dataManager.set(OWNER_NAME, name);
+    }
+
     @Override
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
@@ -328,6 +362,7 @@ public abstract class AbstractCat extends TameableEntity {
         compound.putString("Ticked", this.getGenotype(TICKED));
         compound.putString("Colorpoint", this.getGenotype(COLORPOINT));
         compound.putString("White", this.getGenotype(WHITE));
+        compound.putString("Bobtail", this.getGenotype(BOBTAIL));
         for (int i = 0; i <= 2; i++)
             compound.putString("White_" + i, this.getWhiteTextures(i));
         for (int i = 0; i <= 3; i++)
@@ -337,6 +372,7 @@ public abstract class AbstractCat extends TameableEntity {
             compound.putInt("HomePosY", this.getHomePos().getY());
             compound.putInt("HomePosZ", this.getHomePos().getZ());
         }
+        compound.putString("OwnerName", this.dataManager.get(OWNER_NAME));
     }
 
     @Override
@@ -354,15 +390,24 @@ public abstract class AbstractCat extends TameableEntity {
         this.setGenotype(TICKED, compound.getString("Ticked"));
         this.setGenotype(COLORPOINT, compound.getString("Colorpoint"));
         this.setGenotype(WHITE, compound.getString("White"));
+        this.setGenotype(BOBTAIL, compound.getString("Bobtail"));
         for (int i = 0; i <= 2; i++)
             this.setWhiteTextures(i, compound.getString("White_" + i));
         for (int i = 0; i <= 3; i++)
             this.setWhitePawTextures(i, compound.getString("WhitePaws_" + i));
         if (compound.contains("HomePosX"))
             this.setHomePos(new BlockPos(compound.getInt("HomePosX"), compound.getInt("HomePosY"), compound.getInt("HomePosZ")));
+        this.setOwnerName(compound.getString("OwnerName"));
     }
 
     private String getPhenotype(DataParameter<String> dataParameter) {
+        String gene = getGenotype(dataParameter);
+        if (gene.isEmpty())
+            this.setPhenotype();
+        return getPhenotypeFromData(dataParameter);
+    }
+
+    private String getPhenotypeFromData(DataParameter<String> dataParameter) {
         if (dataParameter == FUR_LENGTH)
             return Genetics.FurLength.getPhenotype(this.getGenotype(dataParameter));
         else if (dataParameter == EUMELANIN)
@@ -388,13 +433,6 @@ public abstract class AbstractCat extends TameableEntity {
         else // EYES
             return this.getGenotype(EYE_COLOR);
     }
-
-    /*public boolean canWander() {
-        if (this.hasHomePos())
-            return this.getDistanceSq(this.getHomePos()) < SimplyCatsConfig.WANDER_AREA_LIMIT;
-        else
-            return true;
-    }*/
 
     private void resetTexturePrefix() {
         this.texturePrefix = null;
@@ -443,24 +481,24 @@ public abstract class AbstractCat extends TameableEntity {
                 tortie = tortie + "_point";
         }
 
-        this.catTexturesArray[0] = Ref.MODID + ":textures/entity/cat/solid/" + solid + ".png";
-        this.catTexturesArray[1] = tabby.equals("") ? null : (Ref.MODID + ":textures/entity/cat/tabby/" + tabby + ".png");
-        this.catTexturesArray[2] = tortie.equals("") ? null : (Ref.MODID + ":textures/entity/cat/tortie/" + tortie + ".png");
-        this.catTexturesArray[3] = colorpoint.equals("") ? null : (Ref.MODID + ":textures/entity/cat/colorpoint/" + colorpoint + ".png");
-        this.catTexturesArray[4] = this.getWhiteTextures(0).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/new/" + this.getWhiteTextures(0) + ".png");
-        this.catTexturesArray[5] = this.getWhiteTextures(1).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/new/" + this.getWhiteTextures(1) + ".png");
-        this.catTexturesArray[6] = this.getWhiteTextures(2).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/new/" + this.getWhiteTextures(2) + ".png");
-        this.catTexturesArray[7] = this.getWhitePawTextures(0).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/new/" + this.getWhitePawTextures(0) + ".png");
-        this.catTexturesArray[8] = this.getWhitePawTextures(1).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/new/" + this.getWhitePawTextures(1) + ".png");
-        this.catTexturesArray[9] = this.getWhitePawTextures(2).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/new/" + this.getWhitePawTextures(2) + ".png");
-        this.catTexturesArray[10] = this.getWhitePawTextures(3).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/new/" + this.getWhitePawTextures(3) + ".png");
-        this.catTexturesArray[11] = Ref.MODID + ":textures/entity/cat/eyes/" + this.getPhenotype(EYE_COLOR) + ".png";
+        this.catTexturesArray[0] = Ref.MOD_ID + ":textures/entity/cat/solid/" + solid + ".png";
+        this.catTexturesArray[1] = tabby.equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/tabby/" + tabby + ".png");
+        this.catTexturesArray[2] = tortie.equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/tortie/" + tortie + ".png");
+        this.catTexturesArray[3] = colorpoint.equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/colorpoint/" + colorpoint + ".png");
+        this.catTexturesArray[4] = this.getWhiteTextures(0).equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(0) + ".png");
+        this.catTexturesArray[5] = this.getWhiteTextures(1).equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(1) + ".png");
+        this.catTexturesArray[6] = this.getWhiteTextures(2).equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(2) + ".png");
+        this.catTexturesArray[7] = this.getWhitePawTextures(0).equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(0) + ".png");
+        this.catTexturesArray[8] = this.getWhitePawTextures(1).equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(1) + ".png");
+        this.catTexturesArray[9] = this.getWhitePawTextures(2).equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(2) + ".png");
+        this.catTexturesArray[10] = this.getWhitePawTextures(3).equals("") ? null : (Ref.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(3) + ".png");
+        this.catTexturesArray[11] = Ref.MOD_ID + ":textures/entity/cat/eyes/" + this.getPhenotype(EYE_COLOR) + ".png";
         this.texturePrefix = "cat/" + solid + tabby + tortie + colorpoint +
                 this.getWhiteTextures(0) + this.getWhiteTextures(1) + this.getWhiteTextures(2) +
                 this.getWhitePawTextures(0) + this.getWhitePawTextures(1) +
                 this.getWhitePawTextures(2) + this.getWhitePawTextures(3) +
                 getPhenotype(EYE_COLOR);
-        // todo System.out.println(this.texturePrefix);
+        //System.out.println(this.texturePrefix); // todo
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -498,6 +536,11 @@ public abstract class AbstractCat extends TameableEntity {
             }
         }
 
+        if (this.ticksExisted % 40 == 0) {
+            if (!this.world.isRemote && this.getOwner() != null)
+                this.setOwnerName(this.getOwner().getDisplayName().getFormattedText());
+        }
+
         if (this.world.isRemote && this.dataManager.isDirty()) {
             this.dataManager.setClean();
             this.resetTexturePrefix();
@@ -508,14 +551,23 @@ public abstract class AbstractCat extends TameableEntity {
     public void livingTick() {
         super.livingTick();
 
+        if (this.getHealth() <= 0 && this.isTamed() && this.getOwner() == null) {
+            this.deathTime = 0;
+            this.setHealth(1);
+        }
+
         if (this.PURR && PURR_TIMER > 0) {
             --PURR_TIMER;
         }
     }
 
+    public boolean canBeTamed(PlayerEntity player) {
+        return (SimplyCatsConfig.TAMED_LIMIT.get() == 0 || player.getPersistentData().getInt("CatCount") < SimplyCatsConfig.TAMED_LIMIT.get()) && !this.isTamed();
+    }
+
     @Override
     public boolean processInteract(PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+        /*ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
             if (stack.getItem() == Items.STRING && player.isSneaking()) {
                 if (this.world.isRemote) {
@@ -538,7 +590,7 @@ public abstract class AbstractCat extends TameableEntity {
                 }
                 return true;
             }
-        }
+        }*/
 
         if (!this.PURR && this.rand.nextInt(10) == 0) { // 1/10th chance an interaction will result in purrs
             this.PURR = true;
@@ -546,6 +598,41 @@ public abstract class AbstractCat extends TameableEntity {
         }
 
         return false;
+    }
+
+    /**
+     * A custom setTamed method to set the owner's data along with taming or untaming a cat.
+     *
+     * @param tamed - true is tamed, false is untamed, used for this.setTamed(tamed) call at the end.
+     * @param owner - the EntityPlayer who is taming the cat.
+     */
+    public void setTamed(boolean tamed, PlayerEntity owner) {
+        int catCount = owner.getPersistentData().getInt("CatCount");
+        if (tamed) {
+            owner.getPersistentData().putInt("CatCount", catCount + 1);
+            if (!world.isRemote)
+                CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) owner), new SetCatCountPacket(catCount + 1));
+            this.setOwnerName(owner.getDisplayName().getFormattedText());
+
+        } else {
+            owner.getPersistentData().putInt("CatCount", catCount - 1);
+            if (!world.isRemote)
+                CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) owner), new SetCatCountPacket(catCount - 1));
+            this.setOwnerName("");
+        }
+
+        this.setTamed(tamed);
+    }
+
+    @Override
+    public void onDeath(DamageSource cause) {
+        if (this.isTamed() && this.getOwner() != null) {
+            int count = this.getOwner().getPersistentData().getInt("CatCount");
+            this.getOwner().getPersistentData().putInt("CatCount", count - 1);
+            if (!world.isRemote)
+                CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) this.getOwner()), new SetCatCountPacket(count - 1));
+        }
+        super.onDeath(cause);
     }
 
     @Nullable
@@ -599,6 +686,10 @@ public abstract class AbstractCat extends TameableEntity {
         String[] patWhite = father.get(WHITE).split("-");
         String white = matWhite[rand.nextInt(2)] + "-" + patWhite[rand.nextInt(2)];
 
+        String[] matBobtail = mother.get(BOBTAIL).split("-");
+        String[] patBobtail = father.get(BOBTAIL).split("-");
+        String bobtail = matBobtail[rand.nextInt(2)] + "-" + patBobtail[rand.nextInt(2)];
+
         child.setGenotype(FUR_LENGTH, fur);
         child.setGenotype(EUMELANIN, eum);
         child.setGenotype(PHAEOMELANIN, phae);
@@ -610,6 +701,7 @@ public abstract class AbstractCat extends TameableEntity {
         child.setGenotype(TICKED, tick);
         child.setGenotype(COLORPOINT, point);
         child.setGenotype(WHITE, white);
+        child.setGenotype(BOBTAIL, bobtail);
         child.selectWhiteMarkings();
 
         int eyesMin;
@@ -627,7 +719,7 @@ public abstract class AbstractCat extends TameableEntity {
         if (white.contains(White.DOMINANT.getAllele()))
             eyesMax = 4;
         else
-            eyesMax = eyesMax >= 4 ? (eyesMin < 3 ? eyesMin+1 : 3) : eyesMax;
+            eyesMax = eyesMax >= 4 ? (eyesMin < 3 ? eyesMin + 1 : 3) : eyesMax;
         int eyes = rand.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
         String eye = EyeColor.init(matEye == 4 && patEye == 4 ? (eyesMax == 4 ? 4 : rand.nextInt(4)) : eyes);
         if (point.contentEquals(Colorpoint.COLORPOINT.getAllele() + "-" + Colorpoint.COLORPOINT.getAllele()))
@@ -635,18 +727,23 @@ public abstract class AbstractCat extends TameableEntity {
 
         child.setGenotype(EYE_COLOR, eye);
 
-        child.setTamed(this.isTamed());
-        if (this.isTamed()) {
-            child.setOwnerId(this.getOwnerId());
-            if (this.hasHomePos())
-                child.setHomePos(this.getHomePos());
+        if (this.isTamed() && this.getOwnerId() != null) { // checks if mother is tamed & her owner's UUID exists
+            PlayerEntity owner = this.world.getPlayerByUuid(this.getOwnerId()); // grabs owner by UUID
+            if (owner != null && child.canBeTamed(owner)) { // checks if owner is not null (is online), and is able to tame the kitten OR if the tame limit is disabled
+                child.setTamed(this.isTamed(), owner); // sets tamed by owner
+                child.setOwnerId(this.getOwnerId()); // idk if this is needed, don't feel like testing it
+                child.setTamedBy(owner);
+                if (this.hasHomePos()) // checks mother's home point
+                    child.setHomePos(this.getHomePos()); // sets kitten's home point to mother's
+            }
         }
 
         return child;
     }
 
     @Override
-    public void fall(float distance, float damageMultiplier) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -662,9 +759,9 @@ public abstract class AbstractCat extends TameableEntity {
         byte b0 = this.dataManager.get(TAMED);
 
         if (angry)
-            this.dataManager.set(TAMED, (byte)(b0 | 2));
+            this.dataManager.set(TAMED, (byte) (b0 | 2));
         else
-            this.dataManager.set(TAMED, (byte)(b0 & -3));
+            this.dataManager.set(TAMED, (byte) (b0 & -3));
     }
 
     @Override
@@ -714,27 +811,5 @@ public abstract class AbstractCat extends TameableEntity {
     @Override
     protected ResourceLocation getLootTable() {
         return null;
-    }
-
-    static {
-        EYE_COLOR = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        FUR_LENGTH = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        EUMELANIN = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        PHAEOMELANIN = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        DILUTION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        DILUTE_MOD = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        AGOUTI = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        TABBY = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        SPOTTED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        TICKED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        COLORPOINT = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_PAWS_0 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_PAWS_1 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_PAWS_2 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
-        WHITE_PAWS_3 = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     }
 }
