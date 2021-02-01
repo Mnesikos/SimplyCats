@@ -50,7 +50,7 @@ public class EntityCat extends AbstractCat {
         if (entity instanceof TameableEntity && ((TameableEntity) entity).isTamed())
             return false;
 
-        return entityType != SimplyCats.CAT && entityType != EntityType.PLAYER && !(entity instanceof IMob) && !entity.isOnSameTeam(EntityCat.this) && SimplyCatsEvents.isEntityPrey(entity);
+        return entityType != SimplyCats.CAT.get() && entityType != EntityType.PLAYER && !(entity instanceof IMob) && !entity.isOnSameTeam(EntityCat.this) && SimplyCatsConfig.getPreys().contains(entityType);
     };
     private CatTemptGoal aiTempt;
     private CatAITargetNearest<LivingEntity> aiTargetNearest;
@@ -441,7 +441,7 @@ public class EntityCat extends AbstractCat {
     }
 
     private boolean isFoodItem(ItemStack item) {
-        return Ref.catFoodItems(item);
+        return Ref.isCatFood(item);
     }
 
     @Override

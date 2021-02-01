@@ -29,10 +29,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
@@ -640,7 +642,7 @@ public abstract class AbstractCat extends TameableEntity {
     public AgeableEntity createChild(AgeableEntity parFather) {
         EntityDataManager father = parFather.getDataManager();
         EntityDataManager mother = this.getDataManager();
-        EntityCat child = new EntityCat(SimplyCats.CAT, this.world);
+        EntityCat child = SimplyCats.CAT.get().create(world);
 
         String[] matFur = mother.get(FUR_LENGTH).split("-");
         String[] patFur = father.get(FUR_LENGTH).split("-");
@@ -715,7 +717,7 @@ public abstract class AbstractCat extends TameableEntity {
             eyesMin = matEye - 1;
             eyesMax = patEye;
         }
-        eyesMin = eyesMin < 0 ? 0 : eyesMin;
+        eyesMin = Math.max(eyesMin, 0);
         if (white.contains(White.DOMINANT.getAllele()))
             eyesMax = 4;
         else
@@ -807,9 +809,9 @@ public abstract class AbstractCat extends TameableEntity {
             return this.isTamed() ? new TranslationTextComponent(this.getType().getName().getString()) : super.getName();
     }
 
-    @Nullable
+    @Nonnull
     @Override
     protected ResourceLocation getLootTable() {
-        return null;
+        return LootTables.EMPTY;
     }
 }

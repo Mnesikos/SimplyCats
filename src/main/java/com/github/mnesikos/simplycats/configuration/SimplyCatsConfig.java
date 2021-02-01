@@ -3,14 +3,20 @@ package com.github.mnesikos.simplycats.configuration;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.github.mnesikos.simplycats.Ref;
-import com.google.common.collect.Lists;
+import net.minecraft.entity.EntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber
 public class SimplyCatsConfig {
@@ -29,7 +35,7 @@ public class SimplyCatsConfig {
     public static ForgeConfigSpec.BooleanValue ADOPT_A_DOG;
 
     public static ForgeConfigSpec.BooleanValue ATTACK_AI;
-    public static ForgeConfigSpec.ConfigValue<List<? extends String>> PREY_LIST;
+    private static ForgeConfigSpec.ConfigValue<List<? extends String>> PREY_LIST;
     public static ForgeConfigSpec.DoubleValue WANDER_AREA_LIMIT;
     public static ForgeConfigSpec.IntValue TAMED_LIMIT;
     public static ForgeConfigSpec.IntValue BREEDING_LIMIT;
@@ -39,6 +45,7 @@ public class SimplyCatsConfig {
     public static ForgeConfigSpec.IntValue HEAT_TIMER;
     public static ForgeConfigSpec.IntValue HEAT_COOLDOWN;
     public static ForgeConfigSpec.IntValue MALE_COOLDOWN;
+    private static Set<EntityType<?>> preys;
 
     static {
         COMMON_BUILDER.comment("Cat Settings").push(CATEGORY_CATS);
@@ -110,6 +117,7 @@ public class SimplyCatsConfig {
                 "This number is used to limit cat breeding; if more than this amount of cats are nearby, automatic breeding will be disabled.")
                 .translation(PREFIX + ".breeding_limit")
                 .defineInRange("breeding_limit", 20, 0, Integer.MAX_VALUE);
+
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path) {
@@ -125,6 +133,10 @@ public class SimplyCatsConfig {
 
     @SubscribeEvent
     public static void onReload(final ModConfig.Reloading configReload) {
+        preys = PREY_LIST.get().stream().map(name -> ForgeRegistries.ENTITIES.getValue(new ResourceLocation(name))).collect(Collectors.toSet());
+    }
 
+    public static Set<EntityType<?>> getPreys() {
+        return preys;
     }
 }

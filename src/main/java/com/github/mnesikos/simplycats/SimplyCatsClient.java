@@ -11,6 +11,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = Ref.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SimplyCatsClient {
     public static void setup(final FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(SimplyCats.CAT, RenderCat::new);
+        RenderingRegistry.registerEntityRenderingHandler(SimplyCats.CAT.get(), RenderCat::new);
     }
 }

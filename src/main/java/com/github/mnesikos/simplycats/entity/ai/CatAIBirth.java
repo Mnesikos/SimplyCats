@@ -49,7 +49,7 @@ public class CatAIBirth extends Goal {
     @Override
     public void tick() {
         for (int i = 0; i < this.mother.getKittens(); i++) {
-            this.father = SimplyCats.CAT.create(this.world); // create the father cat for kitten referencing
+            this.father = SimplyCats.CAT.get().create(this.world); // create the father cat for kitten referencing
             father.read(this.mother.getFather(i)); // set the saved father nbt data to new FATHER cat
 
             this.spawnBaby(this.father);

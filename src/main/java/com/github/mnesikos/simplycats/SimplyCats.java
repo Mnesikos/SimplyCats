@@ -17,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -34,7 +35,7 @@ import static com.github.mnesikos.simplycats.Ref.MOD_ID;
 @Mod(MOD_ID)
 public class SimplyCats {
     public static final DeferredRegister<EntityType<?>> ENTITIES = new DeferredRegister<>(ForgeRegistries.ENTITIES, MOD_ID);
-    public static final EntityType<EntityCat> CAT = createCatEntity("cat");
+    public static final RegistryObject<EntityType<EntityCat>> CAT = createCatEntity("cat");
 
     public static final ItemGroup GROUP = new ItemGroup(MOD_ID + ".tab") {
         @Override
@@ -57,13 +58,11 @@ public class SimplyCats {
         bus.addListener(SimplyCatsClient::setup);
     }
 
-    private static EntityType<EntityCat> createCatEntity(String name) {
-        EntityType<EntityCat> type = EntityType.Builder.create(EntityCat::new, EntityClassification.CREATURE)
+    private static RegistryObject<EntityType<EntityCat>> createCatEntity(String name) {
+        return ENTITIES.register(name, () -> EntityType.Builder.create(EntityCat::new, EntityClassification.CREATURE)
                 .size(0.6f, 0.8f)
                 .setShouldReceiveVelocityUpdates(true).setTrackingRange(80).setUpdateInterval(1)
-                .build("name");
-        ENTITIES.register(name, () -> type);
-        return type;
+                .build(MOD_ID + "." + name));
     }
 
     private <T extends INetworkPacket> void registerMessage(Class<T> message, Supplier<T> supplier, LogicalSide side) {

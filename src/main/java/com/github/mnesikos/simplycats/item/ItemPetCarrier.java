@@ -147,13 +147,14 @@ public class ItemPetCarrier extends ItemBase {
     }
 
     private void newPet(ItemStack item, PlayerEntity player, World world, double x, double y, double z) {
-        TameableEntity pet = null;
+        EntityType<? extends TameableEntity> petType = null;
         if (item.getDamage() == 3) {
-            pet = new EntityCat(SimplyCats.CAT, world);
+            petType = SimplyCats.CAT.get();
         } else if (item.getDamage() == 4) {
-            pet = new WolfEntity(EntityType.WOLF, world);
+            petType = EntityType.WOLF;
         }
 
+        TameableEntity pet = petType == null ? null : petType.create(world);
         if (pet != null) {
             pet.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
             pet.rotationYawHead = pet.rotationYaw;

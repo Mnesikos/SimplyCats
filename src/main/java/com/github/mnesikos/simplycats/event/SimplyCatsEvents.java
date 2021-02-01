@@ -23,21 +23,6 @@ import java.util.Objects;
 import java.util.Set;
 
 public class SimplyCatsEvents {
-    private static Set<EntityType<?>> preyList;
-
-    public static boolean isEntityPrey(@Nullable Entity entity) {
-        if (preyList == null) {
-            preyList = new HashSet<>();
-            for (String s : SimplyCatsConfig.PREY_LIST.get()) {
-                ResourceLocation location = new ResourceLocation(s);
-                EntityType<?> type = ForgeRegistries.ENTITIES.getValue(location);
-                if (type != null)
-                    preyList.add(type);
-            }
-        }
-        return entity != null && preyList.contains(entity.getType());
-    }
-
     public static boolean isRatEntity(Entity entity) {
         String entityClass = EntityType.getKey(entity.getType()).toString();
         return entityClass.equals("rats:rat");
