@@ -146,8 +146,11 @@ public abstract class AbstractCat extends EntityTameable {
         }
 
         switch (this.getGenotype(WHITE)) {
-            case "Wd-Wd": case "Wd-w": case "Wd-Ws":
-            case "w-Wd": case "Ws-Wd":
+            case "Wd-Wd":
+            case "Wd-w":
+            case "Wd-Ws":
+            case "w-Wd":
+            case "Ws-Wd":
                 base = 6;
                 body = 1;
                 face = 0;
@@ -168,8 +171,7 @@ public abstract class AbstractCat extends EntityTameable {
                     face = rand.nextInt(6) + 1;
                     if (body > 1)
                         tail = rand.nextInt(3) + 1;
-                }
-                else if (base == 4) {
+                } else if (base == 4) {
                     body = 1;
                     face = rand.nextInt(5) + 1;
                 }
@@ -181,7 +183,8 @@ public abstract class AbstractCat extends EntityTameable {
                 }
                 break;
 
-            case "Ws-w": case "w-Ws":
+            case "Ws-w":
+            case "w-Ws":
                 base = rand.nextInt(3) + 1; //1-3
                 body = 1;
                 if (base == 2 || base == 3)
@@ -531,7 +534,7 @@ public abstract class AbstractCat extends EntityTameable {
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if(this.getHealth() <= 0 && this.isTamed() && this.getOwner() == null) {
+        if (this.getHealth() <= 0 && this.isTamed() && this.getOwner() == null) {
             this.deathTime = 0;
             this.setHealth(1);
         }
@@ -555,7 +558,9 @@ public abstract class AbstractCat extends EntityTameable {
         return false;
     }
 
-    /** A custom setTamed method to set the owner's data along with taming or untaming a cat.
+    /**
+     * A custom setTamed method to set the owner's data along with taming or untaming a cat.
+     *
      * @param tamed - true is tamed, false is untamed, used for this.setTamed(tamed) call at the end.
      * @param owner - the EntityPlayer who is taming the cat.
      */
@@ -672,7 +677,7 @@ public abstract class AbstractCat extends EntityTameable {
         if (white.contains(White.DOMINANT.getAllele()))
             eyesMax = 4;
         else
-            eyesMax = eyesMax >= 4 ? (eyesMin < 3 ? eyesMin+1 : 3) : eyesMax;
+            eyesMax = eyesMax >= 4 ? (eyesMin < 3 ? eyesMin + 1 : 3) : eyesMax;
         int eyes = rand.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
         String eye = EyeColor.init(matEye == 4 && patEye == 4 ? (eyesMax == 4 ? 4 : rand.nextInt(4)) : eyes);
         if (point.contentEquals(Colorpoint.COLORPOINT.getAllele() + "-" + Colorpoint.COLORPOINT.getAllele()))
@@ -711,9 +716,9 @@ public abstract class AbstractCat extends EntityTameable {
         byte b0 = this.dataManager.get(TAMED);
 
         if (angry)
-            this.dataManager.set(TAMED, (byte)(b0 | 2));
+            this.dataManager.set(TAMED, (byte) (b0 | 2));
         else
-            this.dataManager.set(TAMED, (byte)(b0 & -3));
+            this.dataManager.set(TAMED, (byte) (b0 & -3));
     }
 
     @Override
@@ -749,6 +754,51 @@ public abstract class AbstractCat extends EntityTameable {
     @Override
     protected float getSoundVolume() {
         return 0.4F;
+    }
+
+    @Override
+    public void setCustomNameTag(String name) {
+        if (this.getOwnerId() != null) {
+            String key = Ref.getCustomCats().get(this.getOwnerId());
+            if (key != null && key.equalsIgnoreCase(name)) {
+                EntityCat cat = (EntityCat) this;
+                switch (name.toLowerCase()) {
+                    case "penny":
+                        cat.setGenotype(FUR_LENGTH, "L-l");
+                        cat.setGenotype(EUMELANIN, "B-B");
+                        cat.setGenotype(PHAEOMELANIN, "XO-Xo");
+                        cat.setGenotype(DILUTION, "D-d");
+                        cat.setGenotype(DILUTE_MOD, "dm-dm");
+                        cat.setGenotype(AGOUTI, "A-a");
+                        cat.setGenotype(TABBY, "mc-mc");
+                        cat.setGenotype(SPOTTED, "sp-sp");
+                        cat.setGenotype(TICKED, "ta-ta");
+                        cat.setGenotype(COLORPOINT, "C-cs");
+                        cat.setGenotype(WHITE, "Ws-w");
+                        cat.setGenotype(BOBTAIL, "Jb-Jb");
+                        cat.selectWhiteMarkings();
+                        cat.setGenotype(EYE_COLOR, "green");
+                        cat.setFixed((byte) 1);
+
+                    case "spinny":
+                        cat.setGenotype(FUR_LENGTH, "L-l");
+                        cat.setGenotype(EUMELANIN, "B-B");
+                        cat.setGenotype(PHAEOMELANIN, "Xo-Xo");
+                        cat.setGenotype(DILUTION, "D-d");
+                        cat.setGenotype(DILUTE_MOD, "dm-dm");
+                        cat.setGenotype(AGOUTI, "a-a");
+                        cat.setGenotype(TABBY, "mc-mc");
+                        cat.setGenotype(SPOTTED, "sp-sp");
+                        cat.setGenotype(TICKED, "ta-ta");
+                        cat.setGenotype(COLORPOINT, "C-cs");
+                        cat.setGenotype(WHITE, "w-w");
+                        cat.setGenotype(BOBTAIL, "Jb-Jb");
+                        cat.selectWhiteMarkings();
+                        cat.setGenotype(EYE_COLOR, "gold");
+                }
+            }
+        }
+        super.setCustomNameTag(name);
     }
 
     @Override

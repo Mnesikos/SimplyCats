@@ -208,20 +208,10 @@ public class ModelCat extends ModelBase {
         super.setRotationAngles(parSpeed, parWalkSpeed, par4, parHeadAngleY, parHeadAngleX, par7, parEntity);
         if (parEntity instanceof EntityCat) {
             EntityCat cat = (EntityCat) parEntity;
-            ModelRenderer tailType = cat.isBobtail() ? tailBobbed : tail1;
             ModelRenderer head = !cat.isChild() && cat.isLongFur() ? head2 : head1;
 
             head.rotateAngleX = parHeadAngleX / (180F / (float) Math.PI);
             head.rotateAngleY = parHeadAngleY / (180F / (float) Math.PI);
-
-            if (cat.hasCustomName() && cat.getCustomNameTag().equalsIgnoreCase("spinny")) {
-                if (cat.isSitting()) {
-                    float r = 13.2F, speed = (float) cat.ticksExisted / 8.0F;
-                    this.body1.rotateAngleY = head.rotateAngleY = tailType.rotateAngleY = speed;
-                    tailType.rotationPointX = r * MathHelper.cos(-speed + 1.58F) - 0.0F;
-                    tailType.rotationPointZ = r * MathHelper.sin(-speed + 1.58F) - 5.0F;
-                }
-            }
         }
     }
 

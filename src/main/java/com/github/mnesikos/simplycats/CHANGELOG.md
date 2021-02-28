@@ -9,7 +9,7 @@ and this project adheres to
 ## [1.12.2-0.0.4.0] -
 ### Added
 - Long hair cat model edits! All cats that were genetically long hair before will now use these cute new edits.
-- Super Not-So-Secret name tag easter egg for Generikb! 
+- 2 Super Not-So-Secret name tag easter eggs for a couple specific people!
 
 ## [1.12.2-0.0.3.1] - 2020/08/14
 ### Added

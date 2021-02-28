@@ -23,7 +23,6 @@ import java.util.Map;
 @SideOnly(Side.CLIENT)
 public class RenderCat extends RenderLiving<EntityCat> {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.newHashMap();
-    private static final String[] CUSTOM_CATS = new String[]{"spinny"};
 
     public RenderCat(RenderManager render) {
         super(render, new ModelCat(), 0.2F);
@@ -39,9 +38,10 @@ public class RenderCat extends RenderLiving<EntityCat> {
     @Override
     protected ResourceLocation getEntityTexture(EntityCat entity) {
         if (entity.hasCustomName()) {
-            for (String customCat : CUSTOM_CATS) {
-                if (entity.getCustomNameTag().equalsIgnoreCase(customCat))
-                    return new ResourceLocation(Ref.MODID, "textures/entity/cat/custom/" + customCat + ".png");
+            if (entity.getOwnerId() != null) {
+                String name = Ref.getCustomCats().get(entity.getOwnerId());
+                if (name != null && name.equalsIgnoreCase(entity.getCustomNameTag()))
+                    return new ResourceLocation(Ref.MODID, "textures/entity/cat/custom/" + name + ".png");
             }
         }
 
@@ -63,7 +63,7 @@ public class RenderCat extends RenderLiving<EntityCat> {
             double d0 = cat.getDistanceSq(this.renderManager.renderViewEntity);
             float range = cat.isSneaking() ? NAME_TAG_RANGE_SNEAK : NAME_TAG_RANGE;
 
-            if (d0 < (double)(range * range)) {
+            if (d0 < (double) (range * range)) {
                 String name = cat.getDisplayName().getFormattedText();
                 GlStateManager.alphaFunc(516, 0.1F);
 
@@ -72,9 +72,9 @@ public class RenderCat extends RenderLiving<EntityCat> {
                 float f1 = this.renderManager.playerViewX;
                 boolean flag1 = this.renderManager.options.thirdPersonView == 2;
                 float f2 = cat.height + 0.5F - (flag ? 0.25F : 0.0F);
-                EntityRenderer.drawNameplate(this.getFontRendererFromRenderManager(), name, (float)x, (float)y + f2, (float)z, 0, f, f1, flag1, flag);
+                EntityRenderer.drawNameplate(this.getFontRendererFromRenderManager(), name, (float) x, (float) y + f2, (float) z, 0, f, f1, flag1, flag);
 
-                if (d0 < (double)(8 * 8)) {
+                if (d0 < (double) (8 * 8)) {
                     if (this.renderManager.renderViewEntity.isSneaking() && !cat.isFixed() && !cat.isChild()) {
                         String info = I18n.format((cat.getSex() == Genetics.Sex.FEMALE ? (cat.getBreedingStatus("inheat") ? "chat.info.in_heat" : "chat.info.not_in_heat") : "chat.info.male"), cat.getMateTimer());
                         if (cat.getBreedingStatus("ispregnant"))
