@@ -2,7 +2,7 @@ package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
-import com.github.mnesikos.simplycats.init.ModProfessions;
+import com.github.mnesikos.simplycats.init.CatProfessions;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
@@ -316,7 +316,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
     
     @Override
     protected VillagerProfession chooseForgeProfession(int count, VillagerProfession prof) {
-        return super.chooseForgeProfession(1, ModProfessions.SHELTER_STAFF);
+        return super.chooseForgeProfession(1, CatProfessions.SHELTER_STAFF);
     }
 
     private void spawnCats(World world, StructureBoundingBox structureBoundingBoxIn, int x, int y, int z) {

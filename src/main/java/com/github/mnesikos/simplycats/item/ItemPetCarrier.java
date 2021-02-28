@@ -3,7 +3,7 @@ package com.github.mnesikos.simplycats.item;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import com.github.mnesikos.simplycats.init.ModItems;
+import com.github.mnesikos.simplycats.init.CatItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
@@ -22,32 +23,25 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-public class ItemPetCarrier extends ItemBase {
-
+public class ItemPetCarrier extends Item {
     public ItemPetCarrier() {
-        super("pet_carrier");
+        super();
         this.setMaxStackSize(1);
         this.setHasSubtypes(true);
     }
 
-    @Override
     public void registerItemModel() {
         for (int i = 0; i < 5; i++)
-            SimplyCats.PROXY.registerItemRenderer(this, i, name);
+            SimplyCats.PROXY.registerItemRenderer(this, i, "pet_carrier");
     }
 
     @Override
@@ -64,13 +58,8 @@ public class ItemPetCarrier extends ItemBase {
                     target.setDead();
 
                     tags.setString("id", EntityList.getEntityString(target));
-                    Iterator var5 = ForgeRegistries.ENTITIES.getEntries().iterator();
-                    while(var5.hasNext()) {
-                        Map.Entry<ResourceLocation, EntityEntry> f = (Map.Entry)var5.next();
-                        if (((EntityEntry)f.getValue()).getEntityClass() == target.getClass()) {
-                            tags.setString("Entity", String.valueOf(f.getKey()));
-                        }
-                    }
+                    ResourceLocation key = EntityList.getKey(target.getClass());
+                    tags.setString("Entity", key.toString());
                     if (target instanceof EntityWolf)
                         tags.setString("OwnerName", player.getDisplayNameString());
 
@@ -225,11 +214,11 @@ public class ItemPetCarrier extends ItemBase {
     @Override @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList) {
         if (tab == this.getCreativeTab()) {
-            ItemStack cat = new ItemStack(ModItems.PET_CARRIER, 1);
+            ItemStack cat = new ItemStack(CatItems.PET_CARRIER, 1);
             cat.setTagCompound(new NBTTagCompound());
             cat.setItemDamage(3);
             itemList.add(cat);
-            itemList.add(new ItemStack(ModItems.PET_CARRIER, 1, 0));
+            itemList.add(new ItemStack(CatItems.PET_CARRIER, 1, 0));
         }
     }
 

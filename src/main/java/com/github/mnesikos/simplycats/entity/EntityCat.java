@@ -5,7 +5,7 @@ import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.ai.*;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.event.SCEvents;
-import com.github.mnesikos.simplycats.init.ModItems;
+import com.github.mnesikos.simplycats.init.CatItems;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.IMob;
@@ -67,7 +67,7 @@ public class EntityCat extends AbstractCat {
     @Override
     protected void initEntityAI() {
         this.aiSit = new EntityAISit(this);
-        this.aiTempt = new EntityAITempt(this, 1.2D, ModItems.TREAT_BAG, false);
+        this.aiTempt = new EntityAITempt(this, 1.2D, CatItems.TREAT_BAG, false);
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiSit);
         this.tasks.addTask(3, this.aiTempt);
@@ -474,7 +474,7 @@ public class EntityCat extends AbstractCat {
                 return true;
             }
 
-            if ((this.aiTempt == null || this.aiTempt.isRunning()) && stack.getItem() == ModItems.TREAT_BAG && player.getDistanceSq(this) < 9.0D) {
+            if ((this.aiTempt == null || this.aiTempt.isRunning()) && stack.getItem() == CatItems.TREAT_BAG && player.getDistanceSq(this) < 9.0D) {
                 if (player.isSneaking()) {
                     if (this.hasHomePos()) {
                         this.resetHomePos();

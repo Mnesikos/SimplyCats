@@ -1,0 +1,13 @@
+{
+  "multipart": [
+    { "apply": { "model": "simplycats:cat_bowl_white" } },
+
+    { "when": { "full_food": "true" },
+      "apply": { "model": "simplycats:cat_bowl_full_food" }
+    },
+
+    { "when": { "water_level": "3|2|1" },
+      "apply": { "model": "simplycats:cat_bowl_full" }
+    }
+  ]
+}

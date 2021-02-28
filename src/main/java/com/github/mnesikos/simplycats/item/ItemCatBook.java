@@ -3,31 +3,27 @@ package com.github.mnesikos.simplycats.item;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.client.gui.GuiCatBook;
 import com.github.mnesikos.simplycats.entity.AbstractCat;
-import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemCatBook extends ItemBase {
+public class ItemCatBook extends Item {
     public static final int GUI_ID = 1;
 
-    public ItemCatBook(String name) {
-        super(name);
+    public ItemCatBook() {
+        super();
         this.setMaxStackSize(1);
     }
 
@@ -91,15 +87,6 @@ public class ItemCatBook extends ItemBase {
         }*/
 
         return super.onItemRightClick(world, player, hand);
-    }
-
-    @Override @SideOnly(Side.CLIENT)
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList) {
-        if (tab == this.getCreativeTab()) {
-            ItemStack book = new ItemStack(ModItems.CAT_BOOK, 1);
-            book.setTagCompound(new NBTTagCompound());
-            itemList.add(book);
-        }
     }
 
     @Override

@@ -7,10 +7,10 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.BlockCatBowl;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.event.SCEvents;
-import com.github.mnesikos.simplycats.init.ModItems;
-import com.github.mnesikos.simplycats.init.ModProfessions;
-import com.github.mnesikos.simplycats.init.ModRecipes;
-import com.github.mnesikos.simplycats.init.ModSounds;
+import com.github.mnesikos.simplycats.init.CatItems;
+import com.github.mnesikos.simplycats.init.CatProfessions;
+import com.github.mnesikos.simplycats.init.CatRecipes;
+import com.github.mnesikos.simplycats.init.CatSounds;
 import com.github.mnesikos.simplycats.inventory.ContainerBowl;
 import com.github.mnesikos.simplycats.item.ItemCatBook;
 import com.github.mnesikos.simplycats.tileentity.TileEntityCatBowl;
@@ -53,7 +53,7 @@ public class CommonProxy implements IGuiHandler {
     public final CreativeTabs SIMPLYCATS = new CreativeTabs(Ref.MODID + ".tab") {
         @Override
         public ItemStack getTabIconItem() {
-            return new ItemStack(ModItems.PET_CARRIER);
+            return new ItemStack(CatItems.PET_CARRIER);
         }
     };
 
@@ -66,15 +66,15 @@ public class CommonProxy implements IGuiHandler {
     }
 
     public void init(FMLInitializationEvent e) {
-        ModItems.registerOres();
-        ModRecipes.init();
+        CatItems.registerOres();
+        CatRecipes.init();
 
         ModFixs fixer = FMLCommonHandler.instance().getDataFixer().init(Ref.MODID, FIXER_VERSION);
         fixer.registerFix(FixTypes.ENTITY, new CatDataFixer());
 
         NetworkRegistry.INSTANCE.registerGuiHandler(SimplyCats.instance, SimplyCats.PROXY);
 
-        ModProfessions.associateCareersAndTrades();
+        CatProfessions.associateCareersAndTrades();
         VillagerRegistry.instance().registerVillageCreationHandler(new VillagePetShelterHandler());
         MapGenStructureIO.registerStructureComponent(ComponentPetShelter.class, Ref.MODID + ":PetShelterStructure");
     }
@@ -85,6 +85,8 @@ public class CommonProxy implements IGuiHandler {
 
     public void registerItemRenderer(Item item, int meta, String id) {
     }
+
+    public void registerVariants() {}
 
     @Nullable
     @Override
@@ -103,6 +105,6 @@ public class CommonProxy implements IGuiHandler {
 
     @SubscribeEvent
     public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
-        event.getRegistry().register(ModSounds.SHAKE_TREATS);
+        event.getRegistry().register(CatSounds.SHAKE_TREATS);
     }
 }

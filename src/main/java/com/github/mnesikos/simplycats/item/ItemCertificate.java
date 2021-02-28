@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -23,21 +24,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemCertificate extends ItemBase {
+public class ItemCertificate extends Item {
     private static final String[] TYPES = new String[] { "adopt", "release" };
-    protected String name;
 
-    public ItemCertificate(String name) {
-        super(name);
-        this.name = name;
+    public ItemCertificate() {
+        super();
         setHasSubtypes(true);
         setMaxDamage(0);
     }
 
-    @Override
     public void registerItemModel() {
-        SimplyCats.PROXY.registerItemRenderer(this, 0, (name + "_adopt"));
-        SimplyCats.PROXY.registerItemRenderer(this, 1, (name + "_release"));
+        SimplyCats.PROXY.registerItemRenderer(this, 0, "certificate_adopt");
+        SimplyCats.PROXY.registerItemRenderer(this, 1, "certificate_release");
     }
 
     @Override

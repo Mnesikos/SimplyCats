@@ -1,9 +1,7 @@
 package com.github.mnesikos.simplycats.tileentity;
 
-import com.github.mnesikos.simplycats.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -20,13 +18,11 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 
 public class TileEntityCatBowl extends TileEntity implements IInventory {
-    private EnumDyeColor color = EnumDyeColor.BLACK;
     private ItemStackHandler inventory = new ItemStackHandler(10);
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setInteger("color", this.color.getMetadata());
         nbt.setTag("inventory", inventory.serializeNBT());
         return nbt;
     }
@@ -34,22 +30,7 @@ public class TileEntityCatBowl extends TileEntity implements IInventory {
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        if (nbt.hasKey("color"))
-            this.color = EnumDyeColor.byMetadata(nbt.getInteger("color"));
         inventory.deserializeNBT(nbt.getCompoundTag("inventory"));
-    }
-
-    public EnumDyeColor getColor() {
-        return this.color;
-    }
-
-    public void setColor(EnumDyeColor color) {
-        this.color = color;
-        this.markDirty();
-    }
-
-    public ItemStack getItemStack() {
-        return new ItemStack(ModItems.CAT_BOWLS.get(this.color), 1, this.color.getMetadata());
     }
 
     @Override
@@ -60,7 +41,7 @@ public class TileEntityCatBowl extends TileEntity implements IInventory {
     @Nullable
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)inventory : super.getCapability(capability, facing);
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory) : super.getCapability(capability, facing);
     }
 
     @Override
@@ -97,7 +78,7 @@ public class TileEntityCatBowl extends TileEntity implements IInventory {
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         inventory.setStackInSlot(index, stack);
-        if (stack != null && stack.getCount() > getInventoryStackLimit())
+        if (stack.getCount() > getInventoryStackLimit())
             stack.setCount(getInventoryStackLimit());
         markDirty();
         this.world.notifyBlockUpdate(this.pos, this.getBlockType().getDefaultState(), this.getBlockType().getDefaultState(), 3);
@@ -126,7 +107,7 @@ public class TileEntityCatBowl extends TileEntity implements IInventory {
 
     @Override
     public boolean isUsableByPlayer(EntityPlayer player) {
-        return world.getTileEntity(pos) == this && player.getDistanceSq((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D) <= 64.0D;
+        return world.getTileEntity(pos) == this && player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -156,10 +137,12 @@ public class TileEntityCatBowl extends TileEntity implements IInventory {
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {}
+    public void openInventory(EntityPlayer player) {
+    }
 
     @Override
-    public void closeInventory(EntityPlayer player) {}
+    public void closeInventory(EntityPlayer player) {
+    }
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
@@ -172,7 +155,8 @@ public class TileEntityCatBowl extends TileEntity implements IInventory {
     }
 
     @Override
-    public void setField(int id, int value) {}
+    public void setField(int id, int value) {
+    }
 
     @Override
     public int getFieldCount() {
@@ -180,7 +164,8 @@ public class TileEntityCatBowl extends TileEntity implements IInventory {
     }
 
     @Override
-    public void clear() {}
+    public void clear() {
+    }
 
     @Override
     public boolean isEmpty() {

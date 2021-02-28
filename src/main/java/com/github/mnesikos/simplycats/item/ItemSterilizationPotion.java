@@ -7,6 +7,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -15,17 +16,8 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
-public class ItemSterilizationPotion extends ItemBase {
-    protected String name;
-    protected Random rand;
-
-    public ItemSterilizationPotion(String name) {
-        super(name);
-        this.rand = new Random();
-    }
-
+public class ItemSterilizationPotion extends Item {
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
         if (target instanceof EntityCat) {
@@ -33,10 +25,10 @@ public class ItemSterilizationPotion extends ItemBase {
             if ((!cat.isTamed() || (cat.isTamed() && cat.isOwner(player))) && player.isSneaking() && !cat.isFixed()) {
                 cat.setFixed((byte) 1);
                 for (int i = 0; i < 7; ++i) {
-                    double d0 = this.rand.nextGaussian() * 0.02D;
-                    double d1 = this.rand.nextGaussian() * 0.02D;
-                    double d2 = this.rand.nextGaussian() * 0.02D;
-                    cat.world.spawnParticle(EnumParticleTypes.VILLAGER_HAPPY, cat.posX + (double)(this.rand.nextFloat() * cat.width * 2.0F) - (double)cat.width, cat.posY + 0.5D + (double)(this.rand.nextFloat() * cat.height), cat.posZ + (double)(this.rand.nextFloat() * cat.width * 2.0F) - (double)cat.width, d0, d1, d2);
+                    double d0 = itemRand.nextGaussian() * 0.02D;
+                    double d1 = itemRand.nextGaussian() * 0.02D;
+                    double d2 = itemRand.nextGaussian() * 0.02D;
+                    cat.world.spawnParticle(EnumParticleTypes.VILLAGER_HAPPY, cat.posX + (double) (itemRand.nextFloat() * cat.width * 2.0F) - (double) cat.width, cat.posY + 0.5D + (double) (itemRand.nextFloat() * cat.height), cat.posZ + (double) (itemRand.nextFloat() * cat.width * 2.0F) - (double) cat.width, d0, d1, d2);
                 }
                 if (cat.world.isRemote)
                     player.sendMessage(new TextComponentTranslation(cat.getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()));

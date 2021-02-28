@@ -1,7 +1,7 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "particle": "#wooden"
+    "post": "simplycats:block/cat_blocks"
   },
   "elements": [
     {

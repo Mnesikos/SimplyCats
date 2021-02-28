@@ -1,0 +1,6 @@
+{
+  "parent": "simplycats:item/cat_tree_box",
+  "textures": {
+    "wool": "blocks/wool_colored_yellow"
+  }
+}

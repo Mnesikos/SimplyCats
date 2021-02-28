@@ -120,6 +120,6 @@ public class Ref {
 
     static {
         CUSTOM_CATS.put(UUID.fromString("9b1ef261-ebc0-42ad-aacb-621b50fb8269"), "penny");
-        CUSTOM_CATS.put(UUID.fromString("f4e7fb2b-b2f9-4ab6-96e7-b42e798561ce"), "spinny");
+        CUSTOM_CATS.put(UUID.fromString("966ebb69-a63d-4bb2-ac90-ed39d8c64b80"), "spinny");
     }
 }

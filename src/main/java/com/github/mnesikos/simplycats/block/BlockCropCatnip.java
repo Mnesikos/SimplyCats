@@ -1,27 +1,27 @@
 package com.github.mnesikos.simplycats.block;
 
-import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.init.ModItems;
+import com.github.mnesikos.simplycats.init.CatItems;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class BlockCropCatnip extends BlockCrops {
-    public BlockCropCatnip(String name) {
-        this.setUnlocalizedName(name);
-        this.setRegistryName(Ref.MODID + ":" + name);
-    }
+    private Item seeds;
 
     @Override
-    protected Item getSeed() {
-        return ModItems.CATNIP_SEEDS;
+    public Item getSeed() {
+        if (seeds == null) {
+            seeds = ForgeRegistries.ITEMS.getValue(getRegistryName());
+        }
+        return seeds;
     }
 
     @Override
     protected Item getCrop() {
-        return ModItems.CATNIP;
+        return CatItems.CATNIP;
     }
 
     @Override

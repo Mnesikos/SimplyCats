@@ -1,7 +1,7 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "particle": "#1"
+    "full": "blocks/water_still"
   },
   "elements": [
     {

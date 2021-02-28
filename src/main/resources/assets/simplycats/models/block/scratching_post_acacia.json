@@ -1,0 +1,7 @@
+{
+  "parent": "simplycats:block/scratching_post",
+  "textures": {
+    "wooden": "blocks/planks_acacia",
+    "particle": "blocks/planks_acacia"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "multipart": [
+    { "when": { "facing": "north" },
+      "apply": { "model": "simplycats:litter_box_purple" }
+    },
+
+    { "when": { "facing": "south" },
+      "apply": { "model": "simplycats:litter_box_purple", "y": 180 }
+    },
+
+    { "when": { "facing": "east" },
+      "apply": { "model": "simplycats:litter_box_purple", "y": 90 }
+    },
+
+    { "when": { "facing": "west" },
+      "apply": { "model": "simplycats:litter_box_purple", "y": 270 }
+    },
+
+    { "when": { "level": "clean", "facing": "north" },
+      "apply":  { "model": "simplycats:litter_box_clean" }
+    },
+
+    { "when": { "level": "dirty", "facing": "north" },
+      "apply":  { "model": "simplycats:litter_box_dirty" }
+    },
+
+    { "when": { "level": "clean", "facing": "south" },
+      "apply":  { "model": "simplycats:litter_box_clean", "y": 180 }
+    },
+
+    { "when": { "level": "dirty", "facing": "south" },
+      "apply":  { "model": "simplycats:litter_box_dirty", "y": 180 }
+    },
+
+    { "when": { "level": "clean", "facing": "east" },
+      "apply":  { "model": "simplycats:litter_box_clean", "y": 90 }
+    },
+
+    { "when": { "level": "dirty", "facing": "east" },
+      "apply":  { "model": "simplycats:litter_box_dirty", "y": 90 }
+    },
+
+    { "when": { "level": "clean", "facing": "west" },
+      "apply":  { "model": "simplycats:litter_box_clean", "y": 270 }
+    },
+
+    { "when": { "level": "dirty", "facing": "west" },
+      "apply":  { "model": "simplycats:litter_box_dirty", "y": 270 }
+    }
+  ]
+}

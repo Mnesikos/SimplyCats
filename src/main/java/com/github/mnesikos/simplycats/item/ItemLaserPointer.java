@@ -4,6 +4,7 @@ import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -18,12 +19,7 @@ import java.util.List;
 /**
  * @author SoggyMustache
  */
-public class ItemLaserPointer extends ItemBase {
-
-	public ItemLaserPointer(String name) {
-		super(name);
-	}
-
+public class ItemLaserPointer extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
 		ItemStack stack = playerIn.getHeldItem(handIn);
