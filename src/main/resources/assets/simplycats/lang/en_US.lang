@@ -38,6 +38,7 @@ tile.simplycats.cat_bowl_brown.name=Brown Cat Bowl
 tile.simplycats.cat_bowl_green.name=Green Cat Bowl
 tile.simplycats.cat_bowl_red.name=Red Cat Bowl
 tile.simplycats.cat_bowl_black.name=Black Cat Bowl
+
 tile.simplycats.litter_box_white.name=White Litter Box
 tile.simplycats.litter_box_orange.name=Orange Litter Box
 tile.simplycats.litter_box_magenta.name=Magenta Litter Box
@@ -54,12 +55,64 @@ tile.simplycats.litter_box_brown.name=Brown Litter Box
 tile.simplycats.litter_box_green.name=Green Litter Box
 tile.simplycats.litter_box_red.name=Red Litter Box
 tile.simplycats.litter_box_black.name=Black Litter Box
+
 tile.simplycats.scratching_post_oak.name=Oak Scratching Post
 tile.simplycats.scratching_post_spruce.name=Spruce Scratching Post
 tile.simplycats.scratching_post_birch.name=Birch Scratching Post
 tile.simplycats.scratching_post_jungle.name=Jungle Scratching Post
 tile.simplycats.scratching_post_acacia.name=Acacia Scratching Post
 tile.simplycats.scratching_post_dark_oak.name=Dark Oak Scratching Post
+
+tile.simplycats.cat_tree_bed_white.name=White Tree Bed
+tile.simplycats.cat_tree_bed_orange.name=Orange Tree Bed
+tile.simplycats.cat_tree_bed_magenta.name=Magenta Tree Bed
+tile.simplycats.cat_tree_bed_light_blue.name=Light Blue Tree Bed
+tile.simplycats.cat_tree_bed_yellow.name=Yellow Tree Bed
+tile.simplycats.cat_tree_bed_lime.name=Lime Tree Bed
+tile.simplycats.cat_tree_bed_pink.name=Pink Tree Bed
+tile.simplycats.cat_tree_bed_gray.name=Gray Tree Bed
+tile.simplycats.cat_tree_bed_silver.name=Light Gray Tree Bed
+tile.simplycats.cat_tree_bed_cyan.name=Cyan Tree Bed
+tile.simplycats.cat_tree_bed_purple.name=Purple Tree Bed
+tile.simplycats.cat_tree_bed_blue.name=Blue Tree Bed
+tile.simplycats.cat_tree_bed_brown.name=Brown Tree Bed
+tile.simplycats.cat_tree_bed_green.name=Green Tree Bed
+tile.simplycats.cat_tree_bed_red.name=Red Tree Bed
+tile.simplycats.cat_tree_bed_black.name=Black Tree Bed
+
+tile.simplycats.cat_tree_box_white.name=White Tree Box
+tile.simplycats.cat_tree_box_orange.name=Orange Tree Box
+tile.simplycats.cat_tree_box_magenta.name=Magenta Tree Box
+tile.simplycats.cat_tree_box_light_blue.name=Light Blue Tree Box
+tile.simplycats.cat_tree_box_yellow.name=Yellow Tree Box
+tile.simplycats.cat_tree_box_lime.name=Lime Tree Box
+tile.simplycats.cat_tree_box_pink.name=Pink Tree Box
+tile.simplycats.cat_tree_box_gray.name=Gray Tree Box
+tile.simplycats.cat_tree_box_silver.name=Light Gray Tree Box
+tile.simplycats.cat_tree_box_cyan.name=Cyan Tree Box
+tile.simplycats.cat_tree_box_purple.name=Purple Tree Box
+tile.simplycats.cat_tree_box_blue.name=Blue Tree Box
+tile.simplycats.cat_tree_box_brown.name=Brown Tree Box
+tile.simplycats.cat_tree_box_green.name=Green Tree Box
+tile.simplycats.cat_tree_box_red.name=Red Tree Box
+tile.simplycats.cat_tree_box_black.name=Black Tree Box
+
+tile.simplycats.cat_tree_post_white.name=White Tree Post
+tile.simplycats.cat_tree_post_orange.name=Orange Tree Post
+tile.simplycats.cat_tree_post_magenta.name=Magenta Tree Post
+tile.simplycats.cat_tree_post_light_blue.name=Light Blue Tree Post
+tile.simplycats.cat_tree_post_yellow.name=Yellow Tree Post
+tile.simplycats.cat_tree_post_lime.name=Lime Tree Post
+tile.simplycats.cat_tree_post_pink.name=Pink Tree Post
+tile.simplycats.cat_tree_post_gray.name=Gray Tree Post
+tile.simplycats.cat_tree_post_silver.name=Light Gray Tree Post
+tile.simplycats.cat_tree_post_cyan.name=Cyan Tree Post
+tile.simplycats.cat_tree_post_purple.name=Purple Tree Post
+tile.simplycats.cat_tree_post_blue.name=Blue Tree Post
+tile.simplycats.cat_tree_post_brown.name=Brown Tree Post
+tile.simplycats.cat_tree_post_green.name=Green Tree Post
+tile.simplycats.cat_tree_post_red.name=Red Tree Post
+tile.simplycats.cat_tree_post_black.name=Black Tree Post
 
 < Creative Tab Name
 itemGroup.simplycats.tab=Simply Cats

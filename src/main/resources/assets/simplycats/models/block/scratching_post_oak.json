@@ -1,7 +1,0 @@
-{
-  "parent": "simplycats:block/scratching_post",
-  "textures": {
-    "wooden": "blocks/planks_oak",
-    "particle": "blocks/planks_oak"
-  }
-}

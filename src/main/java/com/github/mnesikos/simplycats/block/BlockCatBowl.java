@@ -6,6 +6,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -93,11 +94,11 @@ public class BlockCatBowl extends BlockTileEntity<TileEntityCatBowl> {
                 if (!player.capabilities.isCreativeMode) {
                     player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                     if (player instanceof EntityPlayerMP)
-                        ((EntityPlayerMP)player).sendContainerToPlayer(player.inventoryContainer);
+                        ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
                 }
 
                 this.setWaterLevel(world, pos, state, waterLevel + 1);
-                world.playSound( null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 return true;
 
             } else if (waterLevel == 0 && !world.isRemote)
@@ -121,8 +122,7 @@ public class BlockCatBowl extends BlockTileEntity<TileEntityCatBowl> {
         if (te instanceof TileEntityCatBowl) {
             ItemStack itemstack = new ItemStack(this);
             spawnAsEntity(worldIn, pos, itemstack);
-        }
-        else
+        } else
             super.harvestBlock(worldIn, player, pos, state, null, stack);
     }
 
@@ -147,7 +147,7 @@ public class BlockCatBowl extends BlockTileEntity<TileEntityCatBowl> {
 
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tileEntity = worldIn instanceof ChunkCache ? ((ChunkCache)worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+        TileEntity tileEntity = worldIn instanceof ChunkCache ? ((ChunkCache) worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityCatBowl) {
             TileEntityCatBowl tileEntityCatBowl = (TileEntityCatBowl) tileEntity;
             return state.withProperty(FULL_FOOD, !tileEntityCatBowl.isEmpty());
@@ -183,6 +183,11 @@ public class BlockCatBowl extends BlockTileEntity<TileEntityCatBowl> {
     @Override
     public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
         return false;
+    }
+
+    @Override
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
+        return BlockFaceShape.UNDEFINED;
     }
 
     @Override

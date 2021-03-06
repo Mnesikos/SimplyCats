@@ -1,7 +1,7 @@
 {
     "variants": {
         "normal": {
-           "model": "simplycats:cat_tree_post_yellow"
+           "model": "simplycats:tree_posts/cat_tree_post_yellow"
         }
     }
 }

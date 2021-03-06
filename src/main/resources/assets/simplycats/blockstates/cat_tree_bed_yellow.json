@@ -1,7 +1,21 @@
 {
-    "variants": {
-        "normal": {
-           "model": "simplycats:cat_tree_bed_yellow"
-        }
+  "multipart": [
+    { "when": { "facing": "north" },
+      "apply": { "model": "simplycats:tree_beds/cat_tree_bed_yellow" }
+    },
+
+    { "when": { "facing": "south" },
+      "apply": { "model": "simplycats:tree_beds/cat_tree_bed_yellow", "y": 180 }
+    },
+
+    { "when": { "facing": "east" },
+      "apply": { "model": "simplycats:tree_beds/cat_tree_bed_yellow", "y": 90 }
+    },
+
+    { "when": { "facing": "west" },
+      "apply": { "model": "simplycats:tree_beds/cat_tree_bed_yellow", "y": 270 }
     }
+  ]
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "parent": "simplycats:block/litter_box",
+  "parent": "simplycats:block/litter_boxes/litter_box",
   "display": {
     "thirdperson_righthand": {
       "rotation": [52, 0, 0],

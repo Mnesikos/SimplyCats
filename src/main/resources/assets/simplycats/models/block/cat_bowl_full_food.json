@@ -1,6 +1,0 @@
-{
-  "parent": "simplycats:block/cat_bowl_full",
-  "textures": {
-    "full": "simplycats:block/cat_blocks"
-  }
-}

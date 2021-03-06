@@ -1,7 +1,7 @@
 {
   "variants": {
     "normal": {
-      "model": "simplycats:scratching_post_oak"
+      "model": "simplycats:scratching_posts/scratching_post_oak"
     }
   }
 }

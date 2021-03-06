@@ -1,5 +1,5 @@
 {
-  "parent": "simplycats:block/scratching_post",
+  "parent": "simplycats:block/scratching_posts/scratching_post",
   "textures": {
     "post": "simplycats:block/cat_blocks"
   },

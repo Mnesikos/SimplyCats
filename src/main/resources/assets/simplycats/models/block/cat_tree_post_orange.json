@@ -1,8 +1,0 @@
-  {
-    "parent": "simplycats:block/cat_tree_post",
-    "textures": {
-      "wool": "blocks/wool_colored_orange",
-      "particle": "blocks/wool_colored_orange",
-      "post": "simplycats:block/cat_blocks"
-    }
-  }

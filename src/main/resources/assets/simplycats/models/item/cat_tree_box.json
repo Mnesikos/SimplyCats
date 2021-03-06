@@ -1,5 +1,5 @@
 {
-  "parent": "simplycats:block/cat_tree_box",
+  "parent": "simplycats:block/tree_boxes/cat_tree_box",
   "textures": {
     "post": "simplycats:block/cat_blocks"
   }

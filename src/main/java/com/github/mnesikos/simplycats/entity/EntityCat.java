@@ -20,6 +20,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNavigateClimber;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -51,6 +53,11 @@ public class EntityCat extends AbstractCat {
         this.setSize(0.6F, 0.8F);
         this.setParent("mother", "Unknown");
         this.setParent("father", "Unknown");
+    }
+
+    @Override
+    protected PathNavigate createNavigator(World worldIn) {
+        return new PathNavigateClimber(this, worldIn);
     }
 
     public Vec3d getNearestLaser(){

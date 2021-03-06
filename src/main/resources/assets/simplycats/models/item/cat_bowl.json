@@ -1,5 +1,5 @@
 {
-  "parent": "simplycats:block/cat_bowl",
+  "parent": "simplycats:block/bowls/cat_bowl",
   "display": {
     "thirdperson_righthand": {
       "translation": [0, 3, 5],
