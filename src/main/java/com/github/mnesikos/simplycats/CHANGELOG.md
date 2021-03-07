@@ -14,9 +14,11 @@ and this project adheres to
 - Parrot support for the pet carrier and adopt certificates.
 ### Changed
 - All chat messages from the mod are status messages now, no more chat spam finally.
-- Litter boxes are no longer tile entities!! ...also all the cool block variants got changed so if I don't remember to data fix them, all existing world will lose their cat blocks lol
+- Litter boxes are no longer tile entities!! ...also all block variants got changed so if I don't remember to data fix them, all existing worlds will lose their cat blocks lol
+- Blocks no longer connect to fences, glass panes, and the like.
+- Radius of laser pointer is now 4 blocks, and based around where the laser is pointing instead of the player.
 ### Removed
-- Beckon command.. useless and not worth keeping around.
+- Beckon command... useless and not worth keeping around.
 
 ## [1.12.2-0.0.3.1] - 2020/08/14
 ### Added

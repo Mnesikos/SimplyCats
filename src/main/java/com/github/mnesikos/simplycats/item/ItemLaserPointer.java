@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -54,8 +55,8 @@ public class ItemLaserPointer extends Item {
 		if (isSelected) {
 			if (stack.getTagCompound() != null) {
 				if (stack.getTagCompound().getBoolean("On")) {
-					//Get all cats within a 6 block radius of the player
-					List<EntityCat> cats = worldIn.getEntitiesWithinAABB(EntityCat.class, e.getEntityBoundingBox().grow(6.0D));
+					//Get all cats within a 2 block radius of the player
+//					List<EntityCat> cats = worldIn.getEntitiesWithinAABB(EntityCat.class, e.getEntityBoundingBox().grow(2.0D));
 
 					if (e instanceof EntityPlayer) {
 						//Check to make sure the entity using this is a player and
@@ -70,6 +71,8 @@ public class ItemLaserPointer extends Item {
 						if (mop != null && mop.hitVec != null) {
 							if (e.ticksExisted % 5 == 0) //About every 5 ticks we put the particle, just so it isnt spammed too much and kinda goes away on time
 								worldIn.spawnParticle(EnumParticleTypes.REDSTONE, mop.hitVec.x, mop.hitVec.y, mop.hitVec.z, 0, 0, 0);
+							//Get all cats within a 2 block radius of the laser position
+							List<EntityCat> cats = worldIn.getEntitiesWithinAABB(EntityCat.class, new AxisAlignedBB(mop.getBlockPos()).grow(4.0D));
 							//Most important is here
 							//Go through all the cats and set the hit vector to the laser
 							cats.forEach(eb -> eb.setNearestLaser(mop.hitVec));
