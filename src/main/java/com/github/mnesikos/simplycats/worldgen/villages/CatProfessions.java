@@ -1,7 +1,9 @@
-package com.github.mnesikos.simplycats.init;
+package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.Ref;
+import com.github.mnesikos.simplycats.block.CatBlocks;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
+import com.github.mnesikos.simplycats.item.CatItems;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;

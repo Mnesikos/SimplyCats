@@ -30,8 +30,7 @@ public class ItemSterilizationPotion extends Item {
                     double d2 = itemRand.nextGaussian() * 0.02D;
                     cat.world.spawnParticle(EnumParticleTypes.VILLAGER_HAPPY, cat.posX + (double) (itemRand.nextFloat() * cat.width * 2.0F) - (double) cat.width, cat.posY + 0.5D + (double) (itemRand.nextFloat() * cat.height), cat.posZ + (double) (itemRand.nextFloat() * cat.width * 2.0F) - (double) cat.width, d0, d1, d2);
                 }
-                if (cat.world.isRemote)
-                    player.sendMessage(new TextComponentTranslation(cat.getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()));
+                player.sendStatusMessage(new TextComponentTranslation(cat.getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()), true);
 
                 if (!player.capabilities.isCreativeMode) {
                     ItemStack emptyBottle = new ItemStack(Items.GLASS_BOTTLE);

@@ -3,13 +3,13 @@ package com.github.mnesikos.simplycats.item;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import com.github.mnesikos.simplycats.init.CatItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityParrot;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,11 +46,10 @@ public class ItemPetCarrier extends Item {
 
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
-        if (target instanceof EntityCat || target instanceof EntityWolf) {
+        if (target instanceof EntityCat || target instanceof EntityWolf || target instanceof EntityParrot) {
             if (((EntityTameable) target).getOwner() == player) {
                 if (stack.hasTagCompound()) {
-                    if (target.world.isRemote)
-                        player.sendMessage(new TextComponentTranslation("chat.pet_carrier.full"));
+                    player.sendStatusMessage(new TextComponentTranslation("chat.pet_carrier.full"), true);
                 } else {
                     stack = player.getHeldItem(hand);
                     NBTTagCompound tags = new NBTTagCompound();
@@ -60,11 +59,10 @@ public class ItemPetCarrier extends Item {
                     tags.setString("id", EntityList.getEntityString(target));
                     ResourceLocation key = EntityList.getKey(target.getClass());
                     tags.setString("Entity", key.toString());
-                    if (target instanceof EntityWolf)
+                    if (!(target instanceof EntityCat))
                         tags.setString("OwnerName", player.getDisplayNameString());
 
-                    if (target.world.isRemote)
-                        player.sendMessage(new TextComponentTranslation("chat.pet_carrier.retrieve_pet"));
+                    player.sendStatusMessage(new TextComponentTranslation("chat.pet_carrier.retrieve_pet"), true);
 
                     stack.setTagCompound(tags);
                     player.swingArm(hand);
@@ -82,42 +80,38 @@ public class ItemPetCarrier extends Item {
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float x, float y, float z) {
         ItemStack item = player.getHeldItem(hand);
         if (!item.hasTagCompound() || item.getItemDamage() == 0) {
-            if (world.isRemote)
-                player.sendMessage(new TextComponentTranslation("chat.pet_carrier.empty"));
+            player.sendStatusMessage(new TextComponentTranslation("chat.pet_carrier.empty"), true);
             return EnumActionResult.FAIL;
         }
 
-        if (world.isRemote) {
-            if (item.getItemDamage() == 1 || item.getItemDamage() == 2)
-                player.sendMessage(new TextComponentTranslation("chat.pet_carrier.release_pet"));
-            return EnumActionResult.SUCCESS;
-        }
+        if (!world.isRemote) {
+            BlockPos blockpos = pos.offset(facing);
+            double d0 = this.getYOffset(world, blockpos);
 
-        BlockPos blockpos = pos.offset(facing);
-        double d0 = this.getYOffset(world, blockpos);
+            if (item.getItemDamage() == 3 || item.getItemDamage() == 4) {
+                newPet(item, player, world, (double) blockpos.getX() + 0.5D, (double) blockpos.getY() + d0, (double) blockpos.getZ() + 0.5D);
+                if (!player.capabilities.isCreativeMode) {
+                    item.shrink(1);
+                    if (item.getCount() <= 0)
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                }
+            } else {
+                NBTTagCompound tags;
+                tags = item.getTagCompound();
 
-        if (item.getItemDamage() == 3 || item.getItemDamage() == 4) {
-            newPet(item, player, world, (double)blockpos.getX() + 0.5D, (double)blockpos.getY() + d0, (double)blockpos.getZ() + 0.5D);
-            if (!player.capabilities.isCreativeMode) {
-                item.shrink(1);
-                if (item.getCount() <= 0)
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
-            }
-        } else {
-            NBTTagCompound tags;
-            tags = item.getTagCompound();
+                tags.setTag("Pos", this.newDoubleNBTList((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + d0, (double) blockpos.getZ() + 0.5D));
+                tags.setTag("Rotation", this.newFloatNBTList(MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F));
+                tags.setTag("Motion", this.newDoubleNBTList(0.0, 0.0, 0.0));
+                tags.setFloat("FallDistance", 0.0f);
 
-            tags.setTag("Pos", this.newDoubleNBTList((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + d0, (double)blockpos.getZ() + 0.5D));
-            tags.setTag("Rotation", this.newFloatNBTList(MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F));
-            tags.setTag("Motion", this.newDoubleNBTList(0.0, 0.0, 0.0));
-            tags.setFloat("FallDistance", 0.0f);
-
-            if (item.getItemDamage() == 1 || item.getItemDamage() == 2) {
-                Entity entity = EntityList.createEntityByIDFromName(new ResourceLocation(tags.getString("Entity")), world);
-                entity.readFromNBT(tags);
-                world.spawnEntity(entity);
-                item.setTagCompound(null);
-                item.setItemDamage(0);
+                if (item.getItemDamage() == 1 || item.getItemDamage() == 2) {
+                    Entity entity = EntityList.createEntityByIDFromName(new ResourceLocation(tags.getString("Entity")), world);
+                    entity.readFromNBT(tags);
+                    world.spawnEntity(entity);
+                    item.setTagCompound(null);
+                    item.setItemDamage(0);
+                    player.sendStatusMessage(new TextComponentTranslation("chat.pet_carrier.release_pet"), true);
+                }
             }
         }
         player.swingArm(hand);
@@ -151,7 +145,7 @@ public class ItemPetCarrier extends Item {
                 d0 = Math.max(axisalignedbb1.maxY, d0);
             }
 
-            return d0 - (double)p_190909_2_.getY();
+            return d0 - (double) p_190909_2_.getY();
         }
     }
 
@@ -164,7 +158,7 @@ public class ItemPetCarrier extends Item {
         }
 
         if (pet instanceof EntityCat && !((EntityCat) pet).canBeTamed(player)) {
-            player.sendMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"));
+            player.sendStatusMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"), true);
 
         } else if (pet != null) {
             pet.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
@@ -172,7 +166,7 @@ public class ItemPetCarrier extends Item {
             pet.renderYawOffset = pet.rotationYaw;
             world.spawnEntity(pet);
             if (pet instanceof EntityCat)
-                ((EntityCat)pet).setTamed(true, player);
+                ((EntityCat) pet).setTamed(true, player);
             else
                 pet.setTamed(true);
 
@@ -191,7 +185,7 @@ public class ItemPetCarrier extends Item {
 
             if (pet instanceof EntityCat) {
                 ((EntityCat) pet).setHomePos(new BlockPos(x, y, z));
-                player.sendMessage(new TextComponentTranslation("chat.info.set_home", pet.getName(), x, y, z));
+                player.sendStatusMessage(new TextComponentTranslation("chat.info.set_home", pet.getName(), x, y, z), true);
             }
             pet.getNavigator().clearPath();
             pet.setOwnerId(player.getUniqueID());
@@ -211,7 +205,8 @@ public class ItemPetCarrier extends Item {
         return new TextComponentTranslation(unlocalizedName).getUnformattedText();
     }
 
-    @Override @SideOnly(Side.CLIENT)
+    @Override
+    @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList) {
         if (tab == this.getCreativeTab()) {
             ItemStack cat = new ItemStack(CatItems.PET_CARRIER, 1);

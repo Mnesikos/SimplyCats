@@ -5,7 +5,7 @@ import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.ai.*;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.event.SCEvents;
-import com.github.mnesikos.simplycats.init.CatItems;
+import com.github.mnesikos.simplycats.item.CatItems;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.IMob;
@@ -60,11 +60,11 @@ public class EntityCat extends AbstractCat {
         return new PathNavigateClimber(this, worldIn);
     }
 
-    public Vec3d getNearestLaser(){
+    public Vec3d getNearestLaser() {
         return nearestLaser;
     } //todo
 
-    public void setNearestLaser(Vec3d vec){
+    public void setNearestLaser(Vec3d vec) {
         this.nearestLaser = vec;
         if (vec == null) {
             this.getNavigator().clearPath();
@@ -112,9 +112,9 @@ public class EntityCat extends AbstractCat {
     protected void entityInit() {
         super.entityInit();
 
-        this.dataManager.register(FIXED, (byte)0);
-        this.dataManager.register(IN_HEAT, (byte)0);
-        this.dataManager.register(IS_PREGNANT, (byte)0);
+        this.dataManager.register(FIXED, (byte) 0);
+        this.dataManager.register(IN_HEAT, (byte) 0);
+        this.dataManager.register(IS_PREGNANT, (byte) 0);
         this.dataManager.register(MATE_TIMER, 0);
         this.dataManager.register(KITTENS, 0);
         this.dataManager.register(MOTHER, "Unknown");
@@ -132,12 +132,10 @@ public class EntityCat extends AbstractCat {
             if (d0 == 0.6D) {
                 this.setSneaking(true);
                 this.setSprinting(false);
-            }
-            else if (d0 == 1.33D) {
+            } else if (d0 == 1.33D) {
                 this.setSneaking(false);
                 this.setSprinting(true);
-            }
-            else {
+            } else {
                 this.setSneaking(false);
                 this.setSprinting(false);
             }
@@ -160,8 +158,8 @@ public class EntityCat extends AbstractCat {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if(this.getNearestLaser() != null) {
-            if(this.aiSit != null && this.isSitting())
+        if (this.getNearestLaser() != null) {
+            if (this.aiSit != null && this.isSitting())
                 this.aiSit.setSitting(false);
             this.getNavigator().tryMoveToXYZ(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 1.2D);
             this.getLookHelper().setLookPosition(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 10.0F, (float) this.getVerticalFaceSpeed());
@@ -201,11 +199,10 @@ public class EntityCat extends AbstractCat {
                             double d0 = this.rand.nextGaussian() * 0.02D;
                             double d1 = this.rand.nextGaussian() * 0.02D;
                             double d2 = this.rand.nextGaussian() * 0.02D;
-                            this.world.spawnParticle(EnumParticleTypes.HEART, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 0.5D + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d0, d1, d2);
+                            this.world.spawnParticle(EnumParticleTypes.HEART, this.posX + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.posY + 0.5D + (double) (this.rand.nextFloat() * this.height), this.posZ + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, d0, d1, d2);
                         }
                     }
-                }
-                else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
+                } else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
                     ++mateTimer;
             } else if (this.getSex() == Genetics.Sex.MALE) {
                 if (mateTimer > 0)
@@ -257,7 +254,7 @@ public class EntityCat extends AbstractCat {
     @Override
     public boolean isOnSameTeam(Entity entity) {
         if (entity instanceof EntityTameable) {
-            EntityTameable tameable = (EntityTameable)entity;
+            EntityTameable tameable = (EntityTameable) entity;
             if (tameable.isTamed() && tameable.getOwnerId() != null && this.isTamed() && this.getOwnerId() != null && this.getOwnerId().equals(tameable.getOwnerId()))
                 return true;
         }
@@ -272,7 +269,7 @@ public class EntityCat extends AbstractCat {
         }
     }
 
-    public void setParent (String parent, String name) {
+    public void setParent(String parent, String name) {
         if (parent.equals("mother"))
             this.dataManager.set(MOTHER, name);
         else if (parent.equals("father"))
@@ -319,11 +316,10 @@ public class EntityCat extends AbstractCat {
     public void setBreedingStatus(String string, boolean parTrue) {
         if (string.equals("inheat")) {
             if (parTrue)
-                this.dataManager.set(IN_HEAT, (byte)1);
+                this.dataManager.set(IN_HEAT, (byte) 1);
             else
                 this.dataManager.set(IN_HEAT, (byte) 0);
-        }
-        else if (string.equals("ispregnant")) {
+        } else if (string.equals("ispregnant")) {
             if (parTrue)
                 this.dataManager.set(IS_PREGNANT, (byte) 1);
             else
@@ -360,7 +356,7 @@ public class EntityCat extends AbstractCat {
 
     public void addFather(EntityCat father, int size) {
         for (int i = 0; i < size; i++) {
-            if(!this.getEntityData().hasKey("Father" + i) || (this.getEntityData().hasKey("Father" + i) && this.getEntityData().getCompoundTag("Father" + i) == null)) {
+            if (!this.getEntityData().hasKey("Father" + i) || (this.getEntityData().hasKey("Father" + i) && this.getEntityData().getCompoundTag("Father" + i) == null)) {
                 this.getEntityData().setTag("Father" + i, father.writeToNBT(new NBTTagCompound()));
                 //break;
             }
@@ -458,7 +454,7 @@ public class EntityCat extends AbstractCat {
             if (isBreedingItem(stack) && player.isSneaking() && this.isTamed() && this.isOwner(player)) {
                 if (this.isChild()) {
                     this.consumeItemFromStack(player, stack);
-                    this.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.8F), true);
+                    this.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.8F), true);
 
                 } else if (!this.isFixed() && this.getMateTimer() != 0) {
                     this.consumeItemFromStack(player, stack);
@@ -475,9 +471,8 @@ public class EntityCat extends AbstractCat {
             }
 
             if (stack.getItem() == Items.BONE && player.isSneaking()) {
-                if (this.world.isRemote)
-                    if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
-                        player.sendMessage(new TextComponentTranslation("chat.info.kitten_count", this.getKittens()));
+                if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
+                    player.sendStatusMessage(new TextComponentTranslation("chat.info.kitten_count", this.getKittens()), true);
                 return true;
             }
 
@@ -485,18 +480,14 @@ public class EntityCat extends AbstractCat {
                 if (player.isSneaking()) {
                     if (this.hasHomePos()) {
                         this.resetHomePos();
-                        if (this.world.isRemote)
-                            player.sendMessage(new TextComponentTranslation("chat.info.remove_home", this.getName()));
+                        player.sendStatusMessage(new TextComponentTranslation("chat.info.remove_home", this.getName()), true);
                     } else {
                         this.setHomePos(new BlockPos(this));
-                        if (this.world.isRemote)
-                            player.sendMessage(new TextComponentTranslation("chat.info.set_home", this.getName(), getHomePos().getX(), getHomePos().getY(), getHomePos().getZ()));
+                        player.sendStatusMessage(new TextComponentTranslation("chat.info.set_home", this.getName(), getHomePos().getX(), getHomePos().getY(), getHomePos().getZ()), true);
                     }
                     return true;
-                } else
-                    if (this.hasHomePos())
-                        if (this.world.isRemote)
-                            player.sendMessage(new TextComponentString(getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()));
+                } else if (this.hasHomePos())
+                    player.sendStatusMessage(new TextComponentString(getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()), true);
             }
         }
 

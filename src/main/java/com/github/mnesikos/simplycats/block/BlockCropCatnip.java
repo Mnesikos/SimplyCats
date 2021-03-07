@@ -1,6 +1,6 @@
 package com.github.mnesikos.simplycats.block;
 
-import com.github.mnesikos.simplycats.init.CatItems;
+import com.github.mnesikos.simplycats.item.CatItems;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;

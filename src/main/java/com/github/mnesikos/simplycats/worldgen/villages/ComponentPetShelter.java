@@ -2,7 +2,6 @@ package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
-import com.github.mnesikos.simplycats.init.CatProfessions;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;

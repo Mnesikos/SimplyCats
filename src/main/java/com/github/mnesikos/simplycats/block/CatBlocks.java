@@ -1,8 +1,8 @@
-package com.github.mnesikos.simplycats.init;
+package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;
-import com.github.mnesikos.simplycats.block.*;
+import com.github.mnesikos.simplycats.item.CatItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;

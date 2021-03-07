@@ -1,4 +1,4 @@
-package com.github.mnesikos.simplycats.init;
+package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.Ref;
 import com.github.mnesikos.simplycats.SimplyCats;

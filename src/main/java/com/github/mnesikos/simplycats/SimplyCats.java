@@ -1,11 +1,9 @@
 package com.github.mnesikos.simplycats;
 
-import com.github.mnesikos.simplycats.commands.CommandBeckon;
 import com.github.mnesikos.simplycats.commands.CommandCatCount;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
-import com.github.mnesikos.simplycats.init.CatBlocks;
-import com.github.mnesikos.simplycats.init.CatItems;
-import com.github.mnesikos.simplycats.item.ItemPetCarrier;
+import com.github.mnesikos.simplycats.block.CatBlocks;
+import com.github.mnesikos.simplycats.item.CatItems;
 import com.github.mnesikos.simplycats.proxy.CommonProxy;
 import com.github.mnesikos.simplycats.tileentity.TileEntityCatBowl;
 import net.minecraft.block.Block;
@@ -48,8 +46,6 @@ public class SimplyCats {
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
-        if (SCConfig.COMMAND_BECKON)
-            event.registerServerCommand(new CommandBeckon());
         event.registerServerCommand(new CommandCatCount());
     }
 

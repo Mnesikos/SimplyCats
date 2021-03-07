@@ -18,19 +18,6 @@ public class SCConfig {
     @LangKey(PREFIX + ".join_message")
     public static boolean JOIN_MESSAGE = false;
 
-    @Name("Beckon Command")
-    @Comment({
-            "ONLY enable this if you know what you're doing.",
-            "This command can and will corrupt your world if used incorrectly."
-    })
-    @LangKey(PREFIX + ".command_beckon")
-    public static boolean COMMAND_BECKON = false;
-
-    /*@Name("Name Tag Recipe")
-    @Comment("You can easily disable the name tag recipe added by this mod by setting this value to false.")
-    @LangKey(PREFIX + ".name_tag_recipe")
-    public static boolean NAME_TAG_RECIPE = true;*/
-
     @Name("Adopt-a-Dog")
     @Comment("Disabling this will remove the villager trade to get a one-time-use pet carrier containing a dog.")
     @LangKey(PREFIX + ".adopt_a_dog")

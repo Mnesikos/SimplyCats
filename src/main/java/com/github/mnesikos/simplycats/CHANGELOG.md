@@ -10,6 +10,13 @@ and this project adheres to
 ### Added
 - Long hair cat model edits! All cats that were genetically long hair before will now use these cute new edits.
 - 2 Super Not-So-Secret name tag easter eggs for a couple specific people!
+- Cat tree block pieces! A bed, a post, and a box, all in each of the dye colors.
+- Parrot support for the pet carrier and adopt certificates.
+### Changed
+- All chat messages from the mod are status messages now, no more chat spam finally.
+- Litter boxes are no longer tile entities!! ...also all the cool block variants got changed so if I don't remember to data fix them, all existing world will lose their cat blocks lol
+### Removed
+- Beckon command.. useless and not worth keeping around.
 
 ## [1.12.2-0.0.3.1] - 2020/08/14
 ### Added

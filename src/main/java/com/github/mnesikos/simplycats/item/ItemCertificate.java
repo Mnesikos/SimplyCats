@@ -6,6 +6,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityParrot;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,20 +41,20 @@ public class ItemCertificate extends Item {
 
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
-        if (target instanceof EntityCat || target instanceof EntityWolf) {
+        if (target instanceof EntityCat || target instanceof EntityWolf || target instanceof EntityParrot) {
+            EntityTameable tameable = (EntityTameable) target;
             if (stack.getMetadata() == 0) {
-                if ((target instanceof EntityCat && ((EntityCat) target).canBeTamed(player)) || (target instanceof EntityWolf && !((EntityWolf) target).isTamed())) {
-                    if (target instanceof EntityCat)
-                        ((EntityCat) target).setTamed(true, player);
+                if ((tameable instanceof EntityCat && ((EntityCat) tameable).canBeTamed(player)) || (!(tameable instanceof EntityCat) && !tameable.isTamed())) {
+                    if (tameable instanceof EntityCat)
+                        ((EntityCat) tameable).setTamed(true, player);
                     else
-                        ((EntityTameable) target).setTamed(true);
-                    ((EntityTameable) target).getNavigator().clearPath();
-                    ((EntityTameable) target).setOwnerId(player.getUniqueID());
-                    target.setHealth(target.getMaxHealth());
-                    if (player.world.isRemote) {
-                        player.sendMessage(new TextComponentString(new TextComponentTranslation("chat.info.adopt_usage").getFormattedText() + " " + target.getName() + "!"));
-                        this.playTameEffect(true, target.world, (EntityTameable) target);
-                    }
+                        tameable.setTamed(true);
+                    tameable.getNavigator().clearPath();
+                    tameable.setOwnerId(player.getUniqueID());
+                    tameable.setHealth(tameable.getMaxHealth());
+                    player.sendStatusMessage(new TextComponentString(new TextComponentTranslation("chat.info.adopt_usage").getFormattedText() + " " + tameable.getName() + "!"), true);
+                    if (player.world.isRemote)
+                        this.playTameEffect(true, tameable.world, tameable);
 
                     if (!player.capabilities.isCreativeMode) {
                         stack.shrink(1);
@@ -61,20 +62,19 @@ public class ItemCertificate extends Item {
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                     }
 
-                } else if (player.world.isRemote && target instanceof EntityCat && !((EntityCat) target).isTamed())
-                        player.sendMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"));
+                } else if (tameable instanceof EntityCat && !tameable.isTamed())
+                    player.sendStatusMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"), true);
 
             } else if (stack.getMetadata() == 1) {
-                if (((EntityTameable) target).isOwner(player)) {
-                    if (target instanceof EntityCat)
-                        ((EntityCat)target).setTamed(false, player);
+                if (tameable.isOwner(player)) {
+                    if (tameable instanceof EntityCat)
+                        ((EntityCat)tameable).setTamed(false, player);
                     else
-                        ((EntityTameable) target).setTamed(false);
-                    ((EntityTameable) target).getNavigator().clearPath();
-                    ((EntityTameable) target).setOwnerId(null);
-                    if (player.world.isRemote)
-                        player.sendMessage(new TextComponentString(target.getName() + " " + new TextComponentTranslation("chat.info.release_usage").getFormattedText()));
-                    this.playTameEffect(false, target.world, (EntityTameable)target);
+                        tameable.setTamed(false);
+                    tameable.getNavigator().clearPath();
+                    tameable.setOwnerId(null);
+                    player.sendStatusMessage(new TextComponentTranslation("chat.info.release_usage", tameable.getName()), true);
+                    this.playTameEffect(false, tameable.world, tameable);
 
                     if (!player.capabilities.isCreativeMode) {
                         stack.shrink(1);

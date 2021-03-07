@@ -178,15 +178,6 @@ cat.white.mostly_white.name=White and
 cat.white.some_white.name=With White
 
 < Command Usage
-command.beckon=See /beckon help for more info
-command.beckon.usage=/beckon <male|female> <base color: 0-3> <eye color: 0-4> <tabby: true|false> <white: 0-6>
-command.beckon.help=Use "x" for random. Also see /beckon help <base|eyes|white>
-command.beckon.help.base=0 = Black; 1 = Grey; 2 = Red; 3 = Cream
-command.beckon.help.eyes=0 = Copper; 1 = Yellow; 2 = Hazel; 3 = Green; 4 = Blue
-command.beckon.help.white=0 = no white markings; 6 = completely white
-command.beckon.help.fail=Incorrect argument, try again?
-command.beckon.success=Beckoning cat...
-command.beckon.fail=Incorrect usage of command, see /beckon
 command.cat_count.usage=/setcatcount <player> [number]
 command.cat_count.success=Set tamed cat count for %s to %s
 command.cat_count.return_count=%s has a total of %s tamed cats
@@ -233,9 +224,9 @@ chat.info.not_in_heat=Next heat: %d
 chat.info.male=Cooldown: %d
 chat.info.parents=. Mother/Father:
 chat.info.adopt_usage=You have successfully adopted
-chat.info.release_usage=has been released of your ownership. Did you say goodbye?
+chat.info.release_usage=%s has been released of your ownership. Did you say goodbye?
 chat.info.remove_home=Removed previously set home spot for %s
-chat.info.set_home=%s's new home spot has been set to %d, %d, %d
+chat.info.set_home=%s's home spot has been set to %d, %d, %d
 
 < Subtitles
 simplycats.subtitle.shake_treats=Treat bag shakes
