@@ -52,7 +52,7 @@ public class ItemCertificate extends Item {
                     tameable.getNavigator().clearPath();
                     tameable.setOwnerId(player.getUniqueID());
                     tameable.setHealth(tameable.getMaxHealth());
-                    player.sendStatusMessage(new TextComponentString(new TextComponentTranslation("chat.info.adopt_usage").getFormattedText() + " " + tameable.getName() + "!"), true);
+                    player.sendStatusMessage(new TextComponentTranslation("chat.info.adopt_usage", tameable.getName()), true);
                     if (player.world.isRemote)
                         this.playTameEffect(true, tameable.world, tameable);
 

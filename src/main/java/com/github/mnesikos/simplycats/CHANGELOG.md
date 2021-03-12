@@ -9,6 +9,7 @@ and this project adheres to
 ## [1.12.2-0.0.4.0] -
 ### Added
 - Long hair cat model edits! All cats that were genetically long hair before will now use these cute new edits.
+- New colors: double dilutions, adding 70+ new color combinations. The genetics for these existed before this update, now the textures will match their phenotype!
 - 2 Super Not-So-Secret name tag easter eggs for a couple specific people!
 - Cat tree block pieces! A bed, a post, and a box, all in each of the dye colors.
 - Parrot support for the pet carrier and adopt certificates.

@@ -436,8 +436,8 @@ public abstract class AbstractCat extends EntityTameable {
             solid = this.getPhenotype(PHAEOMELANIN);
         if (this.getPhenotype(DILUTION).equalsIgnoreCase(Dilution.DILUTE.toString().toLowerCase())) {
             solid = solid + "_" + this.getPhenotype(DILUTION);
-            /*if (this.getPhenotype(DILUTE_MOD).equalsIgnoreCase(DiluteMod.CARAMELIZED.toString().toLowerCase()))
-                solid = solid + "_" + this.getPhenotype(DILUTE_MOD);*/
+            if (this.getPhenotype(DILUTE_MOD).equalsIgnoreCase(DiluteMod.CARAMELIZED.toString().toLowerCase()))
+                solid = solid + "_" + this.getPhenotype(DILUTE_MOD);
         }
 
         String tabby = this.getPhenotype(TABBY) + "_" + solid;
@@ -451,8 +451,8 @@ public abstract class AbstractCat extends EntityTameable {
             tortie = this.getPhenotype(PHAEOMELANIN) + "_" + (tabby.replace(("_" + solid), ""));
             if (this.getPhenotype(DILUTION).equalsIgnoreCase(Dilution.DILUTE.toString().toLowerCase())) {
                 tortie = tortie + "_" + this.getPhenotype(DILUTION);
-                /*if (this.getPhenotype(DILUTE_MOD).equalsIgnoreCase(DiluteMod.CARAMELIZED.toString().toLowerCase()))
-                    tortie = tortie + "_" + this.getPhenotype(DILUTE_MOD);*/
+                if (this.getPhenotype(DILUTE_MOD).equalsIgnoreCase(DiluteMod.CARAMELIZED.toString().toLowerCase()))
+                    tortie = tortie + "_" + this.getPhenotype(DILUTE_MOD);
             }
         }
 

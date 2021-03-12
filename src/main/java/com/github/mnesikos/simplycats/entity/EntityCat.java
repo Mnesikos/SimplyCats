@@ -85,8 +85,9 @@ public class EntityCat extends AbstractCat {
         this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(6, new CatAIAttack(this));
         this.tasks.addTask(7, new CatAIWander(this, 1.0D));
-        this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
-        this.tasks.addTask(10, new EntityAILookIdle(this));
+        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 4.0F, 1.0F));
+        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
+        this.tasks.addTask(11, new EntityAILookIdle(this));
         if (SCConfig.ATTACK_AI) {
             this.aiTargetNearest = new CatAITargetNearest<>(this, EntityLivingBase.class, true, entity -> {
                 if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
