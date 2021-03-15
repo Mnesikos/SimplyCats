@@ -57,11 +57,10 @@ public class CatAIWander extends EntityAIBase {
         int yRange = 3;
 
         if (cat.hasHomePos()) {
-            double d0 = cat.getHomePos().distanceSq((double) MathHelper.floor(cat.posX), (double)MathHelper.floor(cat.posY), (double)MathHelper.floor(cat.posZ)) + 4.0D;
-            double d1 = (SCConfig.WANDER_AREA_LIMIT + (float)xzRange);
+            double d0 = cat.getHomePos().distanceSq(MathHelper.floor(cat.posX), MathHelper.floor(cat.posY), MathHelper.floor(cat.posZ)) + 4.0D;
+            double d1 = (SCConfig.WANDER_AREA_LIMIT + (float) xzRange);
             outsideBounds = d0 < d1 * d1;
-        }
-        else
+        } else
             outsideBounds = false;
 
         boolean flag1 = false;
@@ -78,18 +77,18 @@ public class CatAIWander extends EntityAIBase {
             if (cat.hasHomePos()) {
                 BlockPos blockpos = cat.getHomePos();
 
-                if (cat.posX > (double)blockpos.getX())
+                if (cat.posX > (double) blockpos.getX())
                     l -= random.nextInt(xzRange / 2);
                 else
                     l += random.nextInt(xzRange / 2);
 
-                if (cat.posZ > (double)blockpos.getZ())
+                if (cat.posZ > (double) blockpos.getZ())
                     j1 -= random.nextInt(xzRange / 2);
                 else
                     j1 += random.nextInt(xzRange / 2);
             }
 
-            BlockPos blockpos1 = new BlockPos((double)l + cat.posX, (double)i1 + cat.posY, (double)j1 + cat.posZ);
+            BlockPos blockpos1 = new BlockPos((double) l + cat.posX, (double) i1 + cat.posY, (double) j1 + cat.posZ);
 
             if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SCConfig.WANDER_AREA_LIMIT * SCConfig.WANDER_AREA_LIMIT))) && pathnavigate.canEntityStandOnPos(blockpos1)) {
                 blockpos1 = moveAboveSolid(blockpos1, cat);
@@ -110,7 +109,7 @@ public class CatAIWander extends EntityAIBase {
         }
 
         if (flag1)
-            return new Vec3d((double)k1 + cat.posX, (double)i + cat.posY, (double)j + cat.posZ);
+            return new Vec3d((double) k1 + cat.posX, (double) i + cat.posY, (double) j + cat.posZ);
         else
             return null;
     }

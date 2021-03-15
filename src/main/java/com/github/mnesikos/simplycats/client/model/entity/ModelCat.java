@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.client.model.entity;
 
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -156,25 +157,27 @@ public class ModelCat extends ModelBase {
             EntityCat entityCat = (EntityCat) entity;
             ModelRenderer tailType = entityCat.isBobtail() ? tailBobbed : tail1;
             if (this.isChild) {
-                float var8 = 2.0F;
+                float ageScale = entityCat.getAge() / (float) SCConfig.KITTEN_MATURE_TIMER + 1;
+                float headScale = ageScale * (1f - 0.625f) + 0.625f;
                 GlStateManager.pushMatrix();
-                GlStateManager.scale(1.25F / var8, 1.25F / var8, 1.25F / var8);
-                GlStateManager.translate(0.0F, 15.6F * scale, 2.5F * scale);
+                GlStateManager.scale(headScale, headScale, headScale);
+                GlStateManager.translate(0.0f, 0.975 * (1.0f - headScale), 0.25f - 0.25f * headScale);
                 this.head1.render(scale);
                 GlStateManager.popMatrix();
 
+                float tailScale = ageScale * (1f - 0.35f) + 0.35f;
                 GlStateManager.pushMatrix();
-                GlStateManager.scale(0.7F / var8, 0.7F / var8, 0.7F / var8);
-                GlStateManager.translate(0.0F, 41.0F * scale, 1.4F * scale);
+                GlStateManager.scale(tailScale, tailScale, tailScale);
+                GlStateManager.translate(0.0f, 7.32f - 7.32f * tailScale, 0.25f - 0.25f * tailScale);
                 tailType.render(scale);
                 GlStateManager.popMatrix();
 
+                float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
                 GlStateManager.pushMatrix();
-                GlStateManager.scale(1.0F / var8, 1.0F / var8, 0.8F / var8);
-                GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
+                GlStateManager.scale(bodyScale, bodyScale, ageScale * (1f - 0.4f) + 0.4f);
+                GlStateManager.translate(0.0f, 1.5f - 1.5f * bodyScale, 0.0F);
                 this.body1.render(scale);
                 GlStateManager.popMatrix();
-
             } else {
                 ModelRenderer head = entityCat.isLongFur() ? head2 : head1;
                 GlStateManager.pushMatrix();

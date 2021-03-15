@@ -72,8 +72,8 @@ public class CatAIBirth extends EntityAIBase {
         if (child != null) {
             child.setGrowingAge(-SCConfig.KITTEN_MATURE_TIMER);
             child.setLocationAndAngles(this.MOTHER.posX, this.MOTHER.posY, this.MOTHER.posZ, 0.0F, 0.0F);
-            child.setParent("father", this.FATHER.getCustomNameTag());
-            child.setParent("mother", this.MOTHER.getCustomNameTag());
+            child.setFather(this.FATHER.getUniqueID());
+            child.setMother(this.MOTHER.getUniqueID());
             this.WORLD.spawnEntity(child);
 
             Random random = this.MOTHER.getRNG();

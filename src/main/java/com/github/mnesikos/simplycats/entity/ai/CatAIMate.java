@@ -50,6 +50,9 @@ public class CatAIMate extends EntityAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
+        if (this.cat.isSitting() || this.target.isSitting())
+            return false;
+
         World world = this.cat.world;
         boolean maleCooldownCheck = this.cat.getSex() == Genetics.Sex.MALE && this.cat.getMateTimer() == 0;
         boolean femaleHeatCheck = this.target.getSex() == Genetics.Sex.FEMALE && this.target.getBreedingStatus("inheat");

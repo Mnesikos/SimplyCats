@@ -6,6 +6,7 @@ import com.github.mnesikos.simplycats.entity.ai.*;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.item.CatItems;
+import com.google.common.base.Optional;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.IMob;
@@ -20,8 +21,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.pathfinding.PathNavigateClimber;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -34,6 +33,7 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class EntityCat extends AbstractCat {
     private static final DataParameter<Byte> FIXED = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
@@ -41,9 +41,11 @@ public class EntityCat extends AbstractCat {
     private static final DataParameter<Byte> IS_PREGNANT = EntityDataManager.createKey(EntityCat.class, DataSerializers.BYTE);
     private static final DataParameter<Integer> MATE_TIMER = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> KITTENS = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
-    private static final DataParameter<String> MOTHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.STRING);
-    private static final DataParameter<String> FATHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.STRING);
+    private static final DataParameter<Optional<UUID>> MOTHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final DataParameter<Optional<UUID>> FATHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final DataParameter<Integer> AGE = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
 
+    private EntityCat followParent;
     private EntityAITempt aiTempt;
     private CatAITargetNearest aiTargetNearest;
     private Vec3d nearestLaser;
@@ -51,24 +53,8 @@ public class EntityCat extends AbstractCat {
     public EntityCat(World world) {
         super(world);
         this.setSize(0.6F, 0.8F);
-        this.setParent("mother", "Unknown");
-        this.setParent("father", "Unknown");
-    }
-
-    @Override
-    protected PathNavigate createNavigator(World worldIn) {
-        return new PathNavigateClimber(this, worldIn);
-    }
-
-    public Vec3d getNearestLaser() {
-        return nearestLaser;
-    } //todo
-
-    public void setNearestLaser(Vec3d vec) {
-        this.nearestLaser = vec;
-        if (vec == null) {
-            this.getNavigator().clearPath();
-        }
+        /*this.setMother(null);
+        this.setFather(null);*/
     }
 
     @Override
@@ -78,16 +64,16 @@ public class EntityCat extends AbstractCat {
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiSit);
         this.tasks.addTask(3, this.aiTempt);
-        this.tasks.addTask(3, new EntityAIFollowParent(this, 1.0D));
+        this.tasks.addTask(4, new CatAIFollowParent(this, 1.0D));
+        this.tasks.addTask(5, new CatAIOcelotSit(this, 0.8D));
+        this.tasks.addTask(6, new CatAIBirth(this));
+        this.tasks.addTask(7, new EntityAILeapAtTarget(this, 0.4F));
+        this.tasks.addTask(8, new CatAIAttack(this));
         if (!this.isFixed())
-            this.tasks.addTask(3, new CatAIMate(this, 1.2D));
-        this.tasks.addTask(4, new CatAIBirth(this));
-        this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
-        this.tasks.addTask(6, new CatAIAttack(this));
-        this.tasks.addTask(7, new CatAIWander(this, 1.0D));
-        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 4.0F, 1.0F));
-        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
-        this.tasks.addTask(11, new EntityAILookIdle(this));
+            this.tasks.addTask(9, new CatAIMate(this, 1.2D));
+        this.tasks.addTask(10, new CatAIWander(this, 1.0D));
+        this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityLiving.class, 7.0F));
+        this.tasks.addTask(12, new EntityAILookIdle(this));
         if (SCConfig.ATTACK_AI) {
             this.aiTargetNearest = new CatAITargetNearest<>(this, EntityLivingBase.class, true, entity -> {
                 if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
@@ -118,8 +104,9 @@ public class EntityCat extends AbstractCat {
         this.dataManager.register(IS_PREGNANT, (byte) 0);
         this.dataManager.register(MATE_TIMER, 0);
         this.dataManager.register(KITTENS, 0);
-        this.dataManager.register(MOTHER, "Unknown");
-        this.dataManager.register(FATHER, "Unknown");
+        this.dataManager.register(MOTHER, Optional.absent());
+        this.dataManager.register(FATHER, Optional.absent());
+        this.dataManager.register(AGE, 0);
     }
 
     @Override
@@ -270,22 +257,53 @@ public class EntityCat extends AbstractCat {
         }
     }
 
-    public void setParent(String parent, String name) {
-        if (parent.equals("mother"))
-            this.dataManager.set(MOTHER, name);
-        else if (parent.equals("father"))
-            this.dataManager.set(FATHER, name);
+    public Vec3d getNearestLaser() {
+        return nearestLaser;
     }
 
-    public String getParent(String parent) {
-        switch (parent) {
-            case "mother":
-                return this.dataManager.get(MOTHER);
-            case "father":
-                return this.dataManager.get(FATHER);
-            default:
-                return "Error";
+    public void setNearestLaser(Vec3d vec) {
+        this.nearestLaser = vec;
+        if (vec == null) {
+            this.getNavigator().clearPath();
         }
+    }
+
+    public int getAge() {
+        return this.dataManager.get(AGE);
+    }
+
+    public void setAge(int age) {
+        this.dataManager.set(AGE, age);
+    }
+
+    @Override
+    public void setGrowingAge(int age) {
+        this.setAge(age);
+        super.setGrowingAge(age);
+    }
+
+    public EntityCat getFollowParent() {
+        return followParent;
+    }
+
+    public void setFollowParent(EntityCat followParent) {
+        this.followParent = followParent;
+    }
+
+    public void setMother(UUID uuid) {
+        this.dataManager.set(MOTHER, Optional.of(uuid));
+    }
+
+    public UUID getMother() {
+        return this.dataManager.get(MOTHER).orNull();
+    }
+
+    public void setFather(UUID uuid) {
+        this.dataManager.set(FATHER, Optional.of(uuid));
+    }
+
+    public UUID getFather() {
+        return this.dataManager.get(FATHER).orNull();
     }
 
     public void setFixed(byte fixed) { // 1 = fixed, 0 = intact
@@ -385,8 +403,10 @@ public class EntityCat extends AbstractCat {
                 nbt.setTag("Father" + i, this.getFather(i));
         }
         nbt.setInteger("Timer", this.getMateTimer());
-        nbt.setString("Mother", this.getParent("mother"));
-        nbt.setString("Father", this.getParent("father"));
+        nbt.setUniqueId("Mother", this.getMother());
+        nbt.setUniqueId("Father", this.getFather());
+        if (this.isChild())
+            nbt.setInteger("AgeTracker", this.getAge());
     }
 
     @Override
@@ -403,8 +423,10 @@ public class EntityCat extends AbstractCat {
         }
         if (!this.isFixed())
             this.setMateTimer(nbt.getInteger("Timer"));
-        this.setParent("mother", nbt.getString("Mother"));
-        this.setParent("father", nbt.getString("Father"));
+        this.setMother(nbt.getUniqueId("Mother"));
+        this.setFather(nbt.getUniqueId("Father"));
+        if (this.isChild())
+            this.setAge(nbt.getInteger("AgeTracker"));
     }
 
     @Override
@@ -474,6 +496,8 @@ public class EntityCat extends AbstractCat {
             if (stack.getItem() == Items.BONE && player.isSneaking()) {
                 if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
                     player.sendStatusMessage(new TextComponentTranslation("chat.info.kitten_count", this.getKittens()), true);
+                if (this.isChild())
+                    player.sendStatusMessage(new TextComponentString(this.getGrowingAge() + " // " + this.getAge()), true);
                 return true;
             }
 
