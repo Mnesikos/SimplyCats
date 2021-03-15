@@ -53,8 +53,8 @@ public class EntityCat extends AbstractCat {
     public EntityCat(World world) {
         super(world);
         this.setSize(0.6F, 0.8F);
-        /*this.setMother(null);
-        this.setFather(null);*/
+        this.setMother(null);
+        this.setFather(null);
     }
 
     @Override
@@ -290,20 +290,20 @@ public class EntityCat extends AbstractCat {
         this.followParent = followParent;
     }
 
-    public void setMother(UUID uuid) {
-        this.dataManager.set(MOTHER, Optional.of(uuid));
+    public void setMother(@Nullable UUID uuid) {
+        this.dataManager.set(MOTHER, Optional.fromNullable(uuid));
     }
 
     public UUID getMother() {
-        return this.dataManager.get(MOTHER).orNull();
+        return (UUID) ((Optional) this.dataManager.get(MOTHER)).orNull();
     }
 
-    public void setFather(UUID uuid) {
-        this.dataManager.set(FATHER, Optional.of(uuid));
+    public void setFather(@Nullable UUID uuid) {
+        this.dataManager.set(FATHER, Optional.fromNullable(uuid));
     }
 
     public UUID getFather() {
-        return this.dataManager.get(FATHER).orNull();
+        return (UUID) ((Optional) this.dataManager.get(FATHER)).orNull();
     }
 
     public void setFixed(byte fixed) { // 1 = fixed, 0 = intact
@@ -403,8 +403,10 @@ public class EntityCat extends AbstractCat {
                 nbt.setTag("Father" + i, this.getFather(i));
         }
         nbt.setInteger("Timer", this.getMateTimer());
-        nbt.setUniqueId("Mother", this.getMother());
-        nbt.setUniqueId("Father", this.getFather());
+        if (this.getMother() == null) nbt.setString("Mother", "");
+        else nbt.setString("Mother", this.getMother().toString());
+        if (this.getFather() == null) nbt.setString("Father", "");
+        else nbt.setString("Father", this.getFather().toString());
         if (this.isChild())
             nbt.setInteger("AgeTracker", this.getAge());
     }
@@ -423,8 +425,16 @@ public class EntityCat extends AbstractCat {
         }
         if (!this.isFixed())
             this.setMateTimer(nbt.getInteger("Timer"));
-        this.setMother(nbt.getUniqueId("Mother"));
-        this.setFather(nbt.getUniqueId("Father"));
+        if (nbt.hasKey("Mother", 8)) {
+            String s;
+            s = nbt.getString("Mother");
+            if (!s.isEmpty()) this.setMother(UUID.fromString(s));
+        }
+        if (nbt.hasKey("Father", 8)) {
+            String s;
+            s = nbt.getString("Father");
+            if (!s.isEmpty()) this.setFather(UUID.fromString(s));
+        }
         if (this.isChild())
             this.setAge(nbt.getInteger("AgeTracker"));
     }
