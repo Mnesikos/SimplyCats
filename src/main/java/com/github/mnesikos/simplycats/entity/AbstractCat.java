@@ -6,6 +6,7 @@ import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityTameable;
@@ -294,7 +295,7 @@ public abstract class AbstractCat extends EntityTameable {
         }
     }
 
-    private String getGenotype(DataParameter<String> parameter) {
+    protected String getGenotype(DataParameter<String> parameter) {
         return this.dataManager.get(parameter);
     }
 
@@ -593,6 +594,12 @@ public abstract class AbstractCat extends EntityTameable {
         super.onDeath(cause);
     }
 
+    private String inheritGene(String motherAlleles, String fatherAlleles) {
+        String[] maternal = motherAlleles.split("-");
+        String[] paternal = fatherAlleles.split("-");
+        return maternal[rand.nextInt(2)] + "-" + paternal[rand.nextInt(2)];
+    }
+
     @Nullable
     @Override
     public EntityAgeable createChild(EntityAgeable parFather) {
@@ -600,66 +607,27 @@ public abstract class AbstractCat extends EntityTameable {
         EntityDataManager mother = this.getDataManager();
         EntityCat child = new EntityCat(this.world);
 
-        String[] matFur = mother.get(FUR_LENGTH).split("-");
-        String[] patFur = father.get(FUR_LENGTH).split("-");
-        String fur = matFur[rand.nextInt(2)] + "-" + patFur[rand.nextInt(2)];
+        ImmutableList<DataParameter<String>> parameters = ImmutableList.of(
+            FUR_LENGTH,
+            EUMELANIN,
+            PHAEOMELANIN,
+            DILUTION,
+            DILUTE_MOD,
+            AGOUTI,
+            TABBY,
+            SPOTTED,
+            TICKED,
+            COLORPOINT,
+            WHITE,
+            BOBTAIL
+        );
 
-        String[] matEum = mother.get(EUMELANIN).split("-");
-        String[] patEum = father.get(EUMELANIN).split("-");
-        String eum = matEum[rand.nextInt(2)] + "-" + patEum[rand.nextInt(2)];
+        for (DataParameter<String> geneParameter : parameters) {
+            String inherited = inheritGene(mother.get(geneParameter),
+                                            father.get(geneParameter));
+            child.setGenotype(geneParameter, inherited);
+        }
 
-        String[] matPhae = mother.get(PHAEOMELANIN).split("-");
-        String[] patPhae = father.get(PHAEOMELANIN).split("-");
-        String phae = matPhae[rand.nextInt(2)] + "-" + patPhae[rand.nextInt(2)];
-
-        String[] matDil = mother.get(DILUTION).split("-");
-        String[] patDil = father.get(DILUTION).split("-");
-        String dil = matDil[rand.nextInt(2)] + "-" + patDil[rand.nextInt(2)];
-
-        String[] matDilm = mother.get(DILUTE_MOD).split("-");
-        String[] patDilm = father.get(DILUTE_MOD).split("-");
-        String dilm = matDilm[rand.nextInt(2)] + "-" + patDilm[rand.nextInt(2)];
-
-        String[] matAgo = mother.get(AGOUTI).split("-");
-        String[] patAgo = father.get(AGOUTI).split("-");
-        String ago = matAgo[rand.nextInt(2)] + "-" + patAgo[rand.nextInt(2)];
-
-        String[] matTab = mother.get(TABBY).split("-");
-        String[] patTab = father.get(TABBY).split("-");
-        String tab = matTab[rand.nextInt(2)] + "-" + patTab[rand.nextInt(2)];
-
-        String[] matSpot = mother.get(SPOTTED).split("-");
-        String[] patSpot = father.get(SPOTTED).split("-");
-        String spot = matSpot[rand.nextInt(2)] + "-" + patSpot[rand.nextInt(2)];
-
-        String[] matTick = mother.get(TICKED).split("-");
-        String[] patTick = father.get(TICKED).split("-");
-        String tick = matTick[rand.nextInt(2)] + "-" + patTick[rand.nextInt(2)];
-
-        String[] matPoint = mother.get(COLORPOINT).split("-");
-        String[] patPoint = father.get(COLORPOINT).split("-");
-        String point = matPoint[rand.nextInt(2)] + "-" + patPoint[rand.nextInt(2)];
-
-        String[] matWhite = mother.get(WHITE).split("-");
-        String[] patWhite = father.get(WHITE).split("-");
-        String white = matWhite[rand.nextInt(2)] + "-" + patWhite[rand.nextInt(2)];
-
-        String[] matBobtail = mother.get(BOBTAIL).split("-");
-        String[] patBobtail = father.get(BOBTAIL).split("-");
-        String bobtail = matBobtail[rand.nextInt(2)] + "-" + patBobtail[rand.nextInt(2)];
-
-        child.setGenotype(FUR_LENGTH, fur);
-        child.setGenotype(EUMELANIN, eum);
-        child.setGenotype(PHAEOMELANIN, phae);
-        child.setGenotype(DILUTION, dil);
-        child.setGenotype(DILUTE_MOD, dilm);
-        child.setGenotype(AGOUTI, ago);
-        child.setGenotype(TABBY, tab);
-        child.setGenotype(SPOTTED, spot);
-        child.setGenotype(TICKED, tick);
-        child.setGenotype(COLORPOINT, point);
-        child.setGenotype(WHITE, white);
-        child.setGenotype(BOBTAIL, bobtail);
         child.selectWhiteMarkings();
 
         int eyesMin;
@@ -674,12 +642,14 @@ public abstract class AbstractCat extends EntityTameable {
             eyesMax = patEye;
         }
         eyesMin = eyesMin < 0 ? 0 : eyesMin;
+        String white = child.getGenotype(WHITE);
         if (white.contains(White.DOMINANT.getAllele()))
             eyesMax = 4;
         else
             eyesMax = eyesMax >= 4 ? (eyesMin < 3 ? eyesMin + 1 : 3) : eyesMax;
         int eyes = rand.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
         String eye = EyeColor.init(matEye == 4 && patEye == 4 ? (eyesMax == 4 ? 4 : rand.nextInt(4)) : eyes);
+        String point = child.getGenotype(COLORPOINT);
         if (point.contentEquals(Colorpoint.COLORPOINT.getAllele() + "-" + Colorpoint.COLORPOINT.getAllele()))
             eye = EyeColor.init(4);
 
