@@ -158,24 +158,32 @@ public class ModelCat extends ModelBase {
             ModelRenderer tailType = entityCat.isBobtail() ? tailBobbed : tail1;
             if (this.isChild) {
                 float ageScale = entityCat.getAge() / (float) SCConfig.KITTEN_MATURE_TIMER + 1;
+                float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
                 float headScale = ageScale * (1f - 0.625f) + 0.625f;
                 GlStateManager.pushMatrix();
+                // The head should stay attached to the body, so how much to
+                // move the head depends on where the body is
+                float yHeadOffset = (15.6F * (1F - bodyScale) + 4F * (1F - headScale)) * scale;
+                float zHeadOffset = 2.5F * (1 - bodyScale) * scale;
+                GlStateManager.translate(0.0F, yHeadOffset, zHeadOffset);
                 GlStateManager.scale(headScale, headScale, headScale);
-                GlStateManager.translate(0.0f, 0.975 * (1.0f - headScale), 0.25f - 0.25f * headScale);
                 this.head1.render(scale);
                 GlStateManager.popMatrix();
 
                 float tailScale = ageScale * (1f - 0.35f) + 0.35f;
                 GlStateManager.pushMatrix();
+                float yTailOffset = 23.0F * (1F - tailScale) * scale;
+                // Need to move the tail in the negative z direction to keep it
+                // from moving away from the body when it shrinks
+                float zTailOffset = 1.4F * (1F - tailScale) * scale;
+                GlStateManager.translate(0.0F, yTailOffset, zTailOffset);
                 GlStateManager.scale(tailScale, tailScale, tailScale);
-                GlStateManager.translate(0.0f, 7.32f - 7.32f * tailScale, 0.25f - 0.25f * tailScale);
                 tailType.render(scale);
                 GlStateManager.popMatrix();
 
-                float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
                 GlStateManager.pushMatrix();
-                GlStateManager.scale(bodyScale, bodyScale, ageScale * (1f - 0.4f) + 0.4f);
-                GlStateManager.translate(0.0f, 1.5f - 1.5f * bodyScale, 0.0F);
+                GlStateManager.translate(0.0F, 24F * (1 - bodyScale) * scale, 0.0F);
+                GlStateManager.scale(bodyScale, bodyScale, bodyScale);
                 this.body1.render(scale);
                 GlStateManager.popMatrix();
             } else {
