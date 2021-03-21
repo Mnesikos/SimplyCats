@@ -25,7 +25,7 @@ public class RenderCat extends RenderLiving<EntityCat> {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.newHashMap();
 
     public RenderCat(RenderManager render) {
-        super(render, new ModelCat(), 0.2F);
+        super(render, new ModelCat(), 0.4F);
     }
 
     @Override

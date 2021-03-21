@@ -13,7 +13,7 @@ public class CatAIFollowParent extends EntityAIBase {
     EntityCat parentAnimal;
     double moveSpeed;
     private final PathNavigate petPathfinder;
-    private final float min = 22.0F;
+    private final float min = 12.0F;
     private int delayCounter;
     private float oldWaterCost;
 

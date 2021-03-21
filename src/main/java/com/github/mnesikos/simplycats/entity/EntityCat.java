@@ -52,7 +52,7 @@ public class EntityCat extends AbstractCat {
 
     public EntityCat(World world) {
         super(world);
-        this.setSize(0.6F, 0.8F);
+        this.setSize(0.6F, 0.7F);
         this.setMother(null);
         this.setFather(null);
     }
@@ -141,6 +141,11 @@ public class EntityCat extends AbstractCat {
         if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed())
             this.setTimeCycle("end", this.world.rand.nextInt(SCConfig.HEAT_COOLDOWN));
         return super.onInitialSpawn(difficulty, livingdata);
+    }
+
+    @Override
+    public void setScaleForAge(boolean child) {
+        this.setScale(child ? 0.7f : 1.0f);
     }
 
     @Override

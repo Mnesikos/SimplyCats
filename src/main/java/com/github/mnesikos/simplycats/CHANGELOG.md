@@ -15,6 +15,7 @@ and this project adheres to
 - Cat tree block pieces! A bed, a post, and a box, all in each of the dye colors.
 - Parrot support for the pet carrier and adopt certificates.
 ### Changed
+- Cat hitbox height reduced slightly, and shadow is slightly larger; both now matching vanilla cats.
 - Kittens grow gradually now, and older kittens will explore further from their parent!
 - All chat messages from the mod are status messages now, no more chat spam finally.
 - Litter boxes are no longer tile entities!! ...also all block variants got changed so if I don't remember to data fix them, all existing worlds will lose their cat blocks lol

@@ -163,27 +163,27 @@ public class ModelCat extends ModelBase {
                 GlStateManager.pushMatrix();
                 // The head should stay attached to the body, so how much to
                 // move the head depends on where the body is
-                float yHeadOffset = (15.6F * (1F - bodyScale) + 4F * (1F - headScale)) * scale;
-                float zHeadOffset = 2.5F * (1 - bodyScale) * scale;
-                GlStateManager.translate(0.0F, yHeadOffset, zHeadOffset);
+                float yHeadOffset = (16f * (1f - bodyScale) + 4f * (1f - headScale)) * scale;
+                float zHeadOffset = 2.5f * (1f - bodyScale) * scale;
+                GlStateManager.translate(0.0f, yHeadOffset, zHeadOffset);
                 GlStateManager.scale(headScale, headScale, headScale);
                 this.head1.render(scale);
                 GlStateManager.popMatrix();
 
                 float tailScale = ageScale * (1f - 0.35f) + 0.35f;
                 GlStateManager.pushMatrix();
-                float yTailOffset = 23.0F * (1F - tailScale) * scale;
+                float yTailOffset = 21.5f * (1f - tailScale) * scale;
                 // Need to move the tail in the negative z direction to keep it
                 // from moving away from the body when it shrinks
-                float zTailOffset = 1.4F * (1F - tailScale) * scale;
-                GlStateManager.translate(0.0F, yTailOffset, zTailOffset);
+                float zTailOffset = 0.8f * (1f - tailScale) * scale;
+                GlStateManager.translate(0.0f, yTailOffset, zTailOffset);
                 GlStateManager.scale(tailScale, tailScale, tailScale);
                 tailType.render(scale);
                 GlStateManager.popMatrix();
 
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(0.0F, 24F * (1 - bodyScale) * scale, 0.0F);
-                GlStateManager.scale(bodyScale, bodyScale, bodyScale);
+                GlStateManager.translate(0.0f, 24f * (1f - bodyScale) * scale, 0.0f);
+                GlStateManager.scale(bodyScale, bodyScale, ageScale * (1f - 0.4f) + 0.4f);
                 this.body1.render(scale);
                 GlStateManager.popMatrix();
             } else {
@@ -278,7 +278,7 @@ public class ModelCat extends ModelBase {
 
             if (cat.isSitting()) {
                 if (this.isChild) {
-                    tailType.rotationPointY = 23.5F;
+                    tailType.rotationPointY += 3.0f * (1f - cat.getAge() / (float) SCConfig.KITTEN_MATURE_TIMER + 1 * (1f - 0.35f) + 0.35f);
                 } else {
                     tailType.rotationPointY = 21.5F;
                 }
