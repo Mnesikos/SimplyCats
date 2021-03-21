@@ -13,6 +13,7 @@ and this project adheres to
 - Vanilla cat sitting on stuff AI! Yes, that really annoying feature... good luck.
 - 2 Super Not-So-Secret name tag easter eggs for a couple specific people!
 - Cat tree block pieces! A bed, a post, and a box, all in each of the dye colors.
+- Window perches for the cats to sit on (like chests!), comes in all vanilla plank variants.
 - Parrot support for the pet carrier and adopt certificates.
 ### Changed
 - Cat hitbox height reduced slightly, and shadow is slightly larger; both now matching vanilla cats.

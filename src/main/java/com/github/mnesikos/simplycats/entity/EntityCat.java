@@ -65,7 +65,7 @@ public class EntityCat extends AbstractCat {
         this.tasks.addTask(2, this.aiSit);
         this.tasks.addTask(3, this.aiTempt);
         this.tasks.addTask(4, new CatAIFollowParent(this, 1.0D));
-        this.tasks.addTask(5, new CatAIOcelotSit(this, 0.8D));
+        this.tasks.addTask(5, new CatAIOcelotSit(this, 1.0D));
         this.tasks.addTask(6, new CatAIBirth(this));
         this.tasks.addTask(7, new EntityAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(8, new CatAIAttack(this));

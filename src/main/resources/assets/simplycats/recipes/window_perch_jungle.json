@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    "PPP",
+    "T T"
+  ],
+  "key": {
+    "P": [
+      { "item": "minecraft:planks",
+        "data": 3 }
+    ],
+    "T": [
+      { "item": "minecraft:stick" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:window_perch_jungle",
+    "count": 4
+  }
+}
