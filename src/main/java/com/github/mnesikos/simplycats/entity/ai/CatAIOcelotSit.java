@@ -1,5 +1,7 @@
 package com.github.mnesikos.simplycats.entity.ai;
 
+import com.github.mnesikos.simplycats.block.BlockCatTree;
+import com.github.mnesikos.simplycats.block.BlockWindowPerch;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
@@ -21,13 +23,13 @@ public class CatAIOcelotSit extends EntityAIMoveToBlock {
 
     @Override
     public boolean shouldExecute() {
-        return this.cat.isTamed() && !this.cat.isSitting() && super.shouldExecute();
+        return this.cat.isTamed() && super.shouldExecute();
     }
 
     @Override
     public void startExecuting() {
-        super.startExecuting();
         this.cat.getAISit().setSitting(false);
+        super.startExecuting();
     }
 
     @Override
@@ -56,6 +58,9 @@ public class CatAIOcelotSit extends EntityAIMoveToBlock {
             IBlockState iblockstate = worldIn.getBlockState(pos);
             Block block = iblockstate.getBlock();
 
+            if (block instanceof BlockWindowPerch) return true;
+            if (block instanceof BlockCatTree.Bed) return true;
+            if (block instanceof BlockCatTree.Box) return true;
             if (block == Blocks.CHEST) {
                 TileEntity tileentity = worldIn.getTileEntity(pos);
 

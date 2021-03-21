@@ -24,6 +24,7 @@ public class CatBlocks {
     public static final Map<EnumDyeColor, BlockCatBowl> CAT_BOWLS = new HashMap<>();
     public static final Map<EnumDyeColor, BlockLitterBox> LITTER_BOXES = new HashMap<>();
     public static final Map<BlockPlanks.EnumType, BlockScratchingPost> SCRATCHING_POSTS = new HashMap<>();
+    public static final Map<BlockPlanks.EnumType, BlockWindowPerch> WINDOW_PERCHES = new HashMap<>();
     public static final Map<EnumDyeColor, BlockCatTree.Bed> CAT_TREE_BEDS = new HashMap<>();
     public static final Map<EnumDyeColor, BlockCatTree> CAT_TREE_POSTS = new HashMap<>();
     public static final Map<EnumDyeColor, BlockCatTree.Box> CAT_TREE_BOXES = new HashMap<>();
@@ -52,6 +53,7 @@ public class CatBlocks {
         }
         for (BlockPlanks.EnumType type : BlockPlanks.EnumType.values()) {
             SCRATCHING_POSTS.put(type, registerBlock("scratching_post_" + type.getName(), new BlockScratchingPost()));
+            WINDOW_PERCHES.put(type, registerBlock("window_perch_" + type.getName(), new BlockWindowPerch()));
         }
     }
 }

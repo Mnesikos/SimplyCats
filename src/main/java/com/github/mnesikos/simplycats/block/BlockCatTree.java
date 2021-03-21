@@ -1,7 +1,5 @@
 package com.github.mnesikos.simplycats.block;
 
-import com.github.mnesikos.simplycats.SimplyCats;
-import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
@@ -56,11 +54,6 @@ public class BlockCatTree extends Block {
     @Override
     public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
         return BlockFaceShape.UNDEFINED;
-    }
-
-    @Override
-    public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
-        return false;
     }
 
     public static class Facing extends BlockCatTree {

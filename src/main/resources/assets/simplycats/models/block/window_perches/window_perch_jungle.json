@@ -1,0 +1,8 @@
+{
+  "parent": "simplycats:block/window_perches/window_perch",
+  "textures": {
+    "0": "blocks/planks_jungle",
+    "1": "blocks/log_jungle",
+    "particle": "blocks/planks_jungle"
+  }
+}
