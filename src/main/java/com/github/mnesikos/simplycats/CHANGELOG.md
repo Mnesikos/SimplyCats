@@ -15,6 +15,7 @@ and this project adheres to
 - Cat tree block pieces! A bed, a post, and a box, all in each of the dye colors.
 - Window perches for the cats to sit on (like chests!), comes in all vanilla plank variants.
 - Parrot support for the pet carrier and adopt certificates.
+- Chinese localization thanks to hackwellfox on Github!
 ### Changed
 - Cat hitbox height reduced slightly, and shadow is slightly larger; both now matching vanilla cats.
 - Kittens grow gradually now, and older kittens will explore further from their parent!
