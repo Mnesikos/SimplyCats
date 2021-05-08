@@ -1,7 +1,6 @@
 package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.item.CatItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
@@ -36,7 +35,7 @@ public class CatBlocks {
     public static <T extends Block> T registerBlock(String name, T block, Function<T, Item> itemFunction) {
         block.setRegistryName(name);
         block.setUnlocalizedName(Ref.MODID + "." + name);
-        block.setCreativeTab(SimplyCats.PROXY.SIMPLYCATS);
+        block.setCreativeTab(CatItems.CREATIVE_TAB);
         Item item = itemFunction.apply(block);
         CatItems.registerItem(name, item);
         BLOCKS.add(block);

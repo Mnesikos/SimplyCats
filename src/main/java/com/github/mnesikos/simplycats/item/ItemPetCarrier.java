@@ -39,9 +39,9 @@ public class ItemPetCarrier extends Item {
         this.setHasSubtypes(true);
     }
 
-    public void registerItemModel() {
-        for (int i = 0; i < 5; i++)
-            SimplyCats.PROXY.registerItemRenderer(this, i, "pet_carrier");
+    // The number of item models used by the client
+    public int getNumModels() {
+        return 5;
     }
 
     @Override

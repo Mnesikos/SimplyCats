@@ -34,11 +34,6 @@ public class ItemCertificate extends Item {
         setMaxDamage(0);
     }
 
-    public void registerItemModel() {
-        SimplyCats.PROXY.registerItemRenderer(this, 0, "certificate_adopt");
-        SimplyCats.PROXY.registerItemRenderer(this, 1, "certificate_release");
-    }
-
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
         if (target instanceof EntityCat || target instanceof EntityWolf || target instanceof EntityParrot) {
