@@ -1,8 +1,0 @@
-{
-  "parent": "simplycats:block/window_perches/window_perch",
-  "textures": {
-    "0": "blocks/planks_big_oak",
-    "1": "blocks/log_big_oak",
-    "particle": "blocks/planks_big_oak"
-  }
-}

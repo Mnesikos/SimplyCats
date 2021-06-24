@@ -1,7 +1,0 @@
-{
-  "parent": "simplycats:block/bowls/cat_bowl",
-  "textures": {
-    "1": "blocks/hardened_clay_stained_cyan",
-    "particle": "blocks/hardened_clay_stained_cyan"
-  }
-}
