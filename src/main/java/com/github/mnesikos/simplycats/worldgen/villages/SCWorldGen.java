@@ -1,4 +1,4 @@
-package com.github.mnesikos.simplycats.worldgen;
+package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import net.minecraft.util.ResourceLocation;

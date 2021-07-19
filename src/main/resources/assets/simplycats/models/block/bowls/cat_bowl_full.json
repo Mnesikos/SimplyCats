@@ -1,0 +1,18 @@
+{
+  "parent": "simplycats:block/bowls/cat_bowl",
+  "elements": [
+    {
+      "name": "bowlFull",
+      "from": [6.5, 0.7, 6.5],
+      "to": [9.5, 1.7, 9.5],
+      "faces": {
+        "north": {"uv": [0, 0, 3, 1], "texture": "#full"},
+        "east": {"uv": [0, 0, 3, 1], "texture": "#full"},
+        "south": {"uv": [0, 0, 3, 1], "texture": "#full"},
+        "west": {"uv": [0, 0, 3, 1], "texture": "#full"},
+        "up": {"uv": [0, 0, 3, 3], "texture": "#full"},
+        "down": {"uv": [0, 0, 3, 3], "texture": "#full"}
+      }
+    }
+  ]
+}

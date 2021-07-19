@@ -1,0 +1,108 @@
+{
+	"textures": {
+		"particle": "#wool"
+	},
+	"elements": [
+		{
+			"name": "base",
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 2], "texture": "#wool"},
+				"east": {"uv": [0, 0, 16, 2], "texture": "#wool"},
+				"south": {"uv": [0, 0, 16, 2], "texture": "#wool"},
+				"west": {"uv": [0, 0, 16, 2], "texture": "#wool"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wool"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#wool"}
+			}
+		},
+		{
+			"name": "toybase",
+			"from": [7.5, 1, 1.5],
+			"to": [8.5, 9, 2.5],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 2, 2]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 8], "texture": "#wool"},
+				"east": {"uv": [0, 0, 1, 8], "texture": "#wool"},
+				"south": {"uv": [0, 0, 1, 8], "texture": "#wool"},
+				"west": {"uv": [0, 0, 1, 8], "texture": "#wool"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#wool"},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#wool"}
+			}
+		},
+		{
+			"name": "toyball",
+			"from": [6.5, 8, 0.5],
+			"to": [9.5, 11, 3.5],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 2, 2]},
+			"faces": {
+				"north": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"east": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"south": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"west": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"up": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"down": {"uv": [0, 0, 3, 3], "texture": "#wool"}
+			}
+		},
+		{
+			"name": "toybase",
+			"from": [7.5, -7, 1.5],
+			"to": [8.5, 1, 2.5],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 0, 2]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 8], "texture": "#wool"},
+				"east": {"uv": [0, 0, 1, 8], "texture": "#wool"},
+				"south": {"uv": [0, 0, 1, 8], "texture": "#wool"},
+				"west": {"uv": [0, 0, 1, 8], "texture": "#wool"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#wool"},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#wool"}
+			}
+		},
+		{
+			"name": "toyball",
+			"from": [6.5, -9, 0.5],
+			"to": [9.5, -6, 3.5],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 0, 2]},
+			"faces": {
+				"north": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"east": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"south": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"west": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"up": {"uv": [0, 0, 3, 3], "texture": "#wool"},
+				"down": {"uv": [0, 0, 3, 3], "texture": "#wool"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [32, 0, 0],
+			"translation": [0, 5, 1],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [68, 0, 0],
+			"translation": [6, 4.5, 3.5],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"ground": {
+			"translation": [0, 4, 0]
+		},
+		"gui": {
+			"rotation": [8, 64, 0],
+			"translation": [0, 0.4, 0],
+			"scale": [0.9, 0.9, 0.9]
+		}
+	},
+	"groups": [0,
+		{
+			"name": "toy1",
+			"origin": [8, 8, 8],
+			"children": [1, 2]
+		},
+		{
+			"name": "toy2",
+			"origin": [8, 8, 8],
+			"children": [3, 4]
+		}
+	]
+}
