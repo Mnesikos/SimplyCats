@@ -19,16 +19,31 @@ public class CatAIOcelotSit extends EntityAIMoveToBlock {
     private int timeoutCounter;
     private int maxStayTicks;
     private boolean isAboveDestination;
+    private final int searchLength;
 
-    public CatAIOcelotSit(EntityCat cat, double speed) {
-        super(cat, speed, 8);
+    public CatAIOcelotSit(EntityCat cat, double speed, int length) {
+        super(cat, speed, length);
         this.cat = cat;
         this.movementSpeed = speed;
+        this.searchLength = length;
     }
 
     @Override
     public boolean shouldExecute() {
-        return this.cat.isTamed() && super.shouldExecute();
+        if (!this.cat.isTamed())
+            return false;
+
+        if (this.cat.isTamed() && this.cat.isSitting())
+            return false;
+
+        if (this.runDelay > 0) {
+            --this.runDelay;
+            return false;
+
+        } else {
+            this.runDelay = 200 + this.cat.getRNG().nextInt(200);
+            return this.searchForDestination();
+        }
     }
 
     @Override
@@ -52,29 +67,51 @@ public class CatAIOcelotSit extends EntityAIMoveToBlock {
 
     @Override
     public void updateTask() {
-        if (this.cat.getDistanceSqToCenter(this.destinationBlock.up()) > 1.0D && this.cat.getDistanceSqToCenter(this.destinationBlock) > 1.0D) {
-            this.isAboveDestination = false;
-            ++this.timeoutCounter;
-
-            if (this.timeoutCounter % 40 == 0)
-                this.cat.getNavigator().tryMoveToXYZ((double) ((float) this.destinationBlock.getX()) + 0.5D, (double) (this.destinationBlock.getY() + 1), (double) ((float) this.destinationBlock.getZ()) + 0.5D, this.movementSpeed);
-
-        } else if (this.cat.getDistanceSqToCenter(this.destinationBlock.up()) <= 1.0D || this.cat.getDistanceSqToCenter(this.destinationBlock) <= 1.0D) {
-            this.isAboveDestination = true;
-            --this.timeoutCounter;
-        }
-
         this.cat.getAISit().setSitting(false);
 
         if (!this.getIsAboveDestination())
             this.cat.setSitting(false);
         else if (!this.cat.isSitting())
             this.cat.setSitting(true);
+
+        if (this.cat.getDistanceSqToCenter(this.destinationBlock.up()) > 1.0D && this.cat.getDistanceSqToCenter(this.destinationBlock) > 1.0D) {
+            this.isAboveDestination = false;
+            ++this.timeoutCounter;
+
+            if (this.timeoutCounter % 40 == 0)
+                this.cat.getNavigator().tryMoveToXYZ((double) ((float) this.destinationBlock.getX()) + 0.5D, (this.destinationBlock.getY() + 1), (double) ((float) this.destinationBlock.getZ()) + 0.5D, this.movementSpeed);
+
+        } else if (this.cat.getDistanceSqToCenter(this.destinationBlock.up()) <= 1.0D || this.cat.getDistanceSqToCenter(this.destinationBlock) <= 1.0D) {
+            this.isAboveDestination = true;
+            --this.timeoutCounter;
+        }
     }
 
     @Override
     protected boolean getIsAboveDestination() {
         return this.isAboveDestination;
+    }
+
+    private boolean searchForDestination() {
+        BlockPos blockpos = new BlockPos(this.cat);
+
+//        for (int k = 0; k <= 3; k = k > 0 ? -k : 1 - k) {
+            for (int l = 0; l < this.searchLength; ++l) {
+                int k = this.cat.getRNG().nextInt(5) - 1;
+                for (int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
+                    for (int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
+                        BlockPos blockpos1 = blockpos.add(i1, k - 1, j1);
+
+                        if (this.cat.isWithinHomeDistanceFromPosition(blockpos1) && this.shouldMoveTo(this.cat.world, blockpos1)) {
+                            this.destinationBlock = blockpos1;
+                            return true;
+                        }
+                    }
+                }
+            }
+//        }
+
+        return false;
     }
 
     @Override

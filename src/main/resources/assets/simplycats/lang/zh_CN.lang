@@ -1,6 +1,6 @@
 < Item Names
-item.certificate.adopt.name=领养证明书
-item.certificate.release.name=放归证明书
+item.simplycats.certificate_adopt.name=领养证明书
+item.simplycats.certificate_release.name=放归证明书
 item.simplycats.pet_carrier.empty.name=宠物笼(空)
 item.simplycats.pet_carrier.full.name=宠物笼(满)
 item.simplycats.cat_book.name=猫咪图鉴
@@ -12,8 +12,8 @@ item.simplycats.sterilization_potion.name=绝育药水
 
 < Item Tooltips
 tooltip.cat_book.usage=对着猫咪潜行+右键打开图鉴。
-tooltip.certificate.adopt.desc=右键未驯服的宠物来领养他们。
-tooltip.certificate.release.desc=右键你拥有的宠物来放归他们。
+tooltip.certificate_adopt.desc=右键未驯服的宠物来领养他们。
+tooltip.certificate_release.desc=右键你拥有的宠物来放归他们。
 tooltip.pet_carrier.empty=宠物笼是空的。
 tooltip.pet_carrier.adopt_cat=领养猫咪!
 tooltip.pet_carrier.adopt_dog=领养狗狗!

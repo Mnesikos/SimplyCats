@@ -17,11 +17,12 @@ and this project adheres to
 - Parrot support for the pet carrier and adopt certificates.
 - Chinese localization thanks to hackwellfox on Github!
 ### Changed
+- **IMPORTANT: All blocks have been changed, existing worlds will LOSE all cat blocks!!**
+- **IMPORTANT: Adopt and Release Certificates have been changed, existing worlds will LOSE all certificates!!**
 - Cat hitbox height reduced slightly, and shadow is slightly larger; both now matching vanilla cats.
 - Kittens grow gradually now, and older kittens will explore further from their parent!
 - All chat messages from the mod are status messages now, no more chat spam finally.
 - Litter boxes are no longer tile entities!!
-- **All block variants have been changed, existing worlds will LOSE their cat blocks**
 - Radius of laser pointer is now 4 blocks, and based around where the laser is pointing instead of the player.
 ### Removed
 - Beckon command... useless and not worth keeping around.

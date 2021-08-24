@@ -23,7 +23,8 @@ public class CatItems {
     public static final List<Item> ITEMS = new ArrayList<>();
     public static final ItemCatBook CAT_BOOK = registerItem("cat_book", new ItemCatBook());
     public static final ItemPetCarrier PET_CARRIER = registerItem("pet_carrier", new ItemPetCarrier());
-    public static final ItemCertificate CERTIFICATE = registerItem("certificate", new ItemCertificate());
+    public static final ItemCertificate CERTIFICATE_ADOPT = registerItem("certificate_adopt", new ItemCertificate(true));
+    public static final ItemCertificate CERTIFICATE_RELEASE = registerItem("certificate_release", new ItemCertificate(false));
     public static final ItemTreatBag TREAT_BAG = registerItem("treat_bag", new ItemTreatBag());
     public static final Item CATNIP = registerItem("catnip", new Item());
     public static final ItemLaserPointer LASER_POINTER = registerItem("laser_pointer", new ItemLaserPointer());
@@ -51,9 +52,6 @@ public class CatItems {
         for (int i = 1; i < PET_CARRIER.getNumModels(); i++) {
             VARIANTS.add(new ItemVariant(PET_CARRIER, i, "pet_carrier"));
         }
-        // These may be better as separate items
-        VARIANTS.add(new ItemVariant(CERTIFICATE, 0, "certificate_adopt"));
-        VARIANTS.add(new ItemVariant(CERTIFICATE, 1, "certificate_release"));
     }
 
     // Used by the client for registering item models

@@ -121,11 +121,7 @@ public class BlockCatTree extends Block {
     }
 
     public static class Bed extends Facing {
-        protected static final AxisAlignedBB AABB_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.0625D, 1.0D);
-        protected static final AxisAlignedBB AABB_WALL_NORTH = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.375F, 0.125D);
-        protected static final AxisAlignedBB AABB_WALL_SOUTH = new AxisAlignedBB(0.0D, 0.0D, 0.875D, 1.0D, 0.375F, 1.0D);
-        protected static final AxisAlignedBB AABB_WALL_EAST = new AxisAlignedBB(0.875D, 0.0D, 0.0D, 1.0D, 0.375F, 1.0D);
-        protected static final AxisAlignedBB AABB_WALL_WEST = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.125D, 0.375F, 1.0D);
+        protected static final AxisAlignedBB AABB_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D);
 
         public Bed(EnumDyeColor color, AxisAlignedBB axisAlignedBB) {
             super(color, axisAlignedBB);
@@ -133,12 +129,7 @@ public class BlockCatTree extends Block {
 
         @Override
         public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
-            EnumFacing enumFacing = state.getValue(FACING);
             addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BOTTOM);
-            if (enumFacing != EnumFacing.WEST) addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_WALL_WEST);
-            if (enumFacing != EnumFacing.EAST) addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_WALL_EAST);
-            if (enumFacing != EnumFacing.SOUTH) addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_WALL_SOUTH);
-            if (enumFacing != EnumFacing.NORTH) addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_WALL_NORTH);
         }
     }
 }

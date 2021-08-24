@@ -1,6 +1,6 @@
 < Item Names
-item.certificate.adopt.name=Adoption Certificate
-item.certificate.release.name=Release Certificate
+item.simplycats.certificate_adopt.name=Adoption Certificate
+item.simplycats.certificate_release.name=Release Certificate
 item.simplycats.pet_carrier.empty.name=Pet Carrier (Empty)
 item.simplycats.pet_carrier.full.name=Pet Carrier (Full)
 item.simplycats.cat_book.name=Cat Book
@@ -12,8 +12,8 @@ item.simplycats.sterilization_potion.name=Sterilization Potion
 
 < Item Tooltips
 tooltip.cat_book.usage=Sneak right click on a cat to see their page!
-tooltip.certificate.adopt.desc=Right click on an unowned pet to adopt them!
-tooltip.certificate.release.desc=Right click on your pet to release ownership.
+tooltip.certificate_adopt.desc=Right click on an unowned pet to adopt them!
+tooltip.certificate_release.desc=Right click on your pet to release ownership.
 tooltip.pet_carrier.empty=This carrier is empty.
 tooltip.pet_carrier.adopt_cat=Adopt a Cat!
 tooltip.pet_carrier.adopt_dog=Adopt a Dog!

@@ -3,14 +3,12 @@
   "group": "simplycatsgroup",
   "ingredients": [
     {
-      "item": "simplycats:certificate",
-      "data": 1,
+      "item": "simplycats:certificate_release",
       "count": 1
     }
   ],
   "result": {
-    "item": "simplycats:certificate",
-    "data": 0,
+    "item": "simplycats:certificate_adopt",
     "count": 1
   }
 }

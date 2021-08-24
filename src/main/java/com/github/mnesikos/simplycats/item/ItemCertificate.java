@@ -3,7 +3,6 @@ package com.github.mnesikos.simplycats.item;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityParrot;
 import net.minecraft.entity.passive.EntityTameable;
@@ -13,8 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,19 +21,18 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemCertificate extends Item {
-    private static final String[] TYPES = new String[]{"adopt", "release"};
+    private final boolean isAdoptCertificate;
 
-    public ItemCertificate() {
+    public ItemCertificate(boolean adoptCertificate) {
         super();
-        setHasSubtypes(true);
-        setMaxDamage(0);
+        this.isAdoptCertificate = adoptCertificate;
     }
 
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
         if (target instanceof EntityCat || target instanceof EntityWolf || target instanceof EntityParrot) {
             EntityTameable tameable = (EntityTameable) target;
-            if (stack.getMetadata() == 0) {
+            if (this.isAdoptCertificate) {
                 if ((tameable instanceof EntityCat && ((EntityCat) tameable).canBeTamed(player)) || (!(tameable instanceof EntityCat) && !tameable.isTamed())) {
                     if (tameable instanceof EntityCat)
                         ((EntityCat) tameable).setTamed(true, player);
@@ -58,7 +54,7 @@ public class ItemCertificate extends Item {
                 } else if (tameable instanceof EntityCat && !tameable.isTamed())
                     player.sendStatusMessage(new TextComponentTranslation("chat.info.tamed_limit_reached"), true);
 
-            } else if (stack.getMetadata() == 1) {
+            } else {
                 if (tameable.isOwner(player)) {
                     if (tameable instanceof EntityCat)
                         ((EntityCat) tameable).setTamed(false, player);
@@ -97,30 +93,7 @@ public class ItemCertificate extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (tab == this.getCreativeTab()) {
-            for (int meta = 0; meta < 2; meta++) {
-                items.add(new ItemStack(this, 1, meta));
-            }
-        }
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        int meta = stack.getMetadata();
-        switch (meta) {
-            case 0:
-            default:
-                return "item.certificate." + TYPES[0];
-            case 1:
-                return "item.certificate." + TYPES[1];
-        }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        int i = MathHelper.clamp(stack.getItemDamage(), 0, 1);
-        tooltip.add(I18n.format("tooltip.certificate." + TYPES[i] + ".desc"));
+        tooltip.add(I18n.format("tooltip.certificate_" + (this.isAdoptCertificate ? "adopt" : "release") + ".desc"));
     }
 }

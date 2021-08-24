@@ -59,13 +59,13 @@ public class EntityCat extends AbstractCat {
 
     @Override
     protected void initEntityAI() {
-        this.aiSit = new EntityAISit(this);
+        this.aiSit = new CatAISit(this);
         this.aiTempt = new EntityAITempt(this, 1.2D, CatItems.TREAT_BAG, false);
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiSit);
         this.tasks.addTask(3, this.aiTempt);
         this.tasks.addTask(4, new CatAIFollowParent(this, 1.0D));
-        this.tasks.addTask(5, new CatAIOcelotSit(this, 1.0D));
+        this.tasks.addTask(5, new CatAIOcelotSit(this, 1.0D, 8));
         this.tasks.addTask(6, new CatAIBirth(this));
         this.tasks.addTask(7, new EntityAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(8, new CatAIAttack(this));
