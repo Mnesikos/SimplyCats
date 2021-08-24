@@ -1,6 +1,5 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -16,7 +15,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemCertificate extends Item {
-    private static final String[] TYPES = new String[] { "adopt", "release" };
+    private static final String[] TYPES = new String[]{"adopt", "release"};
 
     public ItemCertificate() {
         super();
@@ -63,7 +61,7 @@ public class ItemCertificate extends Item {
             } else if (stack.getMetadata() == 1) {
                 if (tameable.isOwner(player)) {
                     if (tameable instanceof EntityCat)
-                        ((EntityCat)tameable).setTamed(false, player);
+                        ((EntityCat) tameable).setTamed(false, player);
                     else
                         tameable.setTamed(false);
                     tameable.getNavigator().clearPath();
@@ -93,11 +91,12 @@ public class ItemCertificate extends Item {
             double d0 = world.rand.nextGaussian() * 0.02D;
             double d1 = world.rand.nextGaussian() * 0.02D;
             double d2 = world.rand.nextGaussian() * 0.02D;
-            world.spawnParticle(enumparticletypes, entity.posX + (double)(world.rand.nextFloat() * entity.width * 2.0F) - (double)entity.width, entity.posY + 0.5D + (double)(world.rand.nextFloat() * entity.height), entity.posZ + (double)(world.rand.nextFloat() * entity.width * 2.0F) - (double)entity.width, d0, d1, d2);
+            world.spawnParticle(enumparticletypes, entity.posX + (double) (world.rand.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + 0.5D + (double) (world.rand.nextFloat() * entity.height), entity.posZ + (double) (world.rand.nextFloat() * entity.width * 2.0F) - (double) entity.width, d0, d1, d2);
         }
     }
 
-    @Override @SideOnly(Side.CLIENT)
+    @Override
+    @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
         if (tab == this.getCreativeTab()) {
             for (int meta = 0; meta < 2; meta++) {
@@ -118,7 +117,8 @@ public class ItemCertificate extends Item {
         }
     }
 
-    @Override @SideOnly(Side.CLIENT)
+    @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         int i = MathHelper.clamp(stack.getItemDamage(), 0, 1);
         tooltip.add(I18n.format("tooltip.certificate." + TYPES[i] + ".desc"));

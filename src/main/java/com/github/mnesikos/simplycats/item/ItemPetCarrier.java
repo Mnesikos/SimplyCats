@@ -1,6 +1,5 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.client.resources.I18n;
@@ -33,6 +32,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemPetCarrier extends Item {
+//    public static final int GUI_ID = 2;
+
     public ItemPetCarrier() {
         super();
         this.setMaxStackSize(1);
@@ -84,17 +85,24 @@ public class ItemPetCarrier extends Item {
             return EnumActionResult.FAIL;
         }
 
+        /*if (item.getItemDamage() == 3 && player.capabilities.isCreativeMode && player.isSneaking()) {
+            BlockPos blockpos = pos.offset(facing);
+            player.openGui(SimplyCats.instance, GUI_ID, player.world, blockpos.getX(), blockpos.getY(), blockpos.getZ());
+        }*/
+
         if (!world.isRemote) {
             BlockPos blockpos = pos.offset(facing);
             double d0 = this.getYOffset(world, blockpos);
 
             if (item.getItemDamage() == 3 || item.getItemDamage() == 4) {
+//                if (!(player.capabilities.isCreativeMode && player.isSneaking())) {
                 newPet(item, player, world, (double) blockpos.getX() + 0.5D, (double) blockpos.getY() + d0, (double) blockpos.getZ() + 0.5D);
                 if (!player.capabilities.isCreativeMode) {
                     item.shrink(1);
                     if (item.getCount() <= 0)
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                 }
+//                }
             } else {
                 NBTTagCompound tags;
                 tags = item.getTagCompound();
@@ -132,9 +140,9 @@ public class ItemPetCarrier extends Item {
         return nbttaglist;
     }
 
-    private double getYOffset(World p_190909_1_, BlockPos p_190909_2_) {
-        AxisAlignedBB axisalignedbb = (new AxisAlignedBB(p_190909_2_)).expand(0.0D, -1.0D, 0.0D);
-        List<AxisAlignedBB> list = p_190909_1_.getCollisionBoxes(null, axisalignedbb);
+    private double getYOffset(World world, BlockPos pos) {
+        AxisAlignedBB axisalignedbb = (new AxisAlignedBB(pos)).expand(0.0D, -1.0D, 0.0D);
+        List<AxisAlignedBB> list = world.getCollisionBoxes(null, axisalignedbb);
 
         if (list.isEmpty()) {
             return 0.0D;
@@ -145,7 +153,7 @@ public class ItemPetCarrier extends Item {
                 d0 = Math.max(axisalignedbb1.maxY, d0);
             }
 
-            return d0 - (double) p_190909_2_.getY();
+            return d0 - (double) pos.getY();
         }
     }
 

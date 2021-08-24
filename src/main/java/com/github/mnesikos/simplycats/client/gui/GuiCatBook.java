@@ -17,7 +17,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -118,7 +117,7 @@ public class GuiCatBook extends GuiScreen {
                     --this.currPage;
 
             } else if (button.id == 4) { // add bookmark button
-                
+
             }
 
             this.updateButtons();
@@ -142,9 +141,9 @@ public class GuiCatBook extends GuiScreen {
 
             String sex = (cat.isFixed() ? I18n.format("cat.fixed.name") : I18n.format("cat.intact.name"))
                     + " " + Genetics.Sex.getPrettyName(cat.getSex().getName());
-            this.fontRenderer.drawString(sex, leftX + 66, 14*2, 0);
+            this.fontRenderer.drawString(sex, leftX + 66, 14 * 2, 0);
 
-            this.renderCatHealth(leftX + 66, 14*3);
+            this.renderCatHealth(leftX + 66, 14 * 3);
 
             //this.fontRenderer.drawString("Purrsonality", leftX + 66, 14*4, 0); //todo
 
@@ -155,7 +154,7 @@ public class GuiCatBook extends GuiScreen {
             } else
                 this.fontRenderer.drawString(I18n.format("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
 
-            this.fontRenderer.drawSplitString(Genetics.getPhenotypeDescription(nbt, false), leftX + 16, 14*7, 120, 0);
+            this.fontRenderer.drawSplitString(Genetics.getPhenotypeDescription(nbt, false), leftX + 16, 14 * 7, 120, 0);
 
             /*this.fontRenderer.drawSplitString("Vocal Level Bar Here",
                     leftX + 16, 14*9, 120, 0);
@@ -208,7 +207,7 @@ public class GuiCatBook extends GuiScreen {
         this.catHealth = MathHelper.ceil(cat.getHealth());
         IAttributeInstance iattributeinstance = cat.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
 
-        float maxHealth = (float)iattributeinstance.getAttributeValue();
+        float maxHealth = (float) iattributeinstance.getAttributeValue();
         int l1 = MathHelper.ceil((maxHealth) / 2.0F / 10.0F);
         int i2 = Math.max(10 - (l1 - 2), 3);
 

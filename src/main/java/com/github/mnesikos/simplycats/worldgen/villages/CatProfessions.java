@@ -15,7 +15,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.*;
+import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerCareer;
+import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Random;
@@ -31,9 +32,9 @@ public class CatProfessions {
         public static void onEvent(final RegistryEvent.Register<VillagerProfession> event) {
             final IForgeRegistry<VillagerProfession> registry = event.getRegistry();
 
-            registry.register(new VillagerProfession(Ref.MODID+":shelter_staff",
-                    Ref.MODID+":textures/entity/npcs/shelter_worker.png",
-                    Ref.MODID+":textures/entity/npcs/shelter_worker_zombie.png")
+            registry.register(new VillagerProfession(Ref.MODID + ":shelter_staff",
+                    Ref.MODID + ":textures/entity/npcs/shelter_worker.png",
+                    Ref.MODID + ":textures/entity/npcs/shelter_worker_zombie.png")
             );
         }
     }

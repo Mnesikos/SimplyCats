@@ -211,7 +211,9 @@ public class Genetics {
         Phaeomelanin(String allele) {
             this.allele = allele;
         }
-        Phaeomelanin() {}
+
+        Phaeomelanin() {
+        }
 
         public String getAllele() {
             return allele;
@@ -243,11 +245,14 @@ public class Genetics {
 
         public static String getPhenotype(String phaeomelanin) {
             switch (phaeomelanin) {
-                case "XO-Y": case "XO-XO":
+                case "XO-Y":
+                case "XO-XO":
                     return RED.toString().toLowerCase();
-                case "Xo-Y": case "Xo-Xo":
+                case "Xo-Y":
+                case "Xo-Xo":
                     return NOT_RED.toString().toLowerCase();
-                case "XO-Xo": case "Xo-XO":
+                case "XO-Xo":
+                case "Xo-XO":
                     return TORTOISESHELL.toString().toLowerCase();
                 default:
                     throw new IllegalArgumentException("Invalid phaeomelanin: " + phaeomelanin);
@@ -393,7 +398,9 @@ public class Genetics {
         Spotted(String allele) {
             this.allele = allele;
         }
-        Spotted() {}
+
+        Spotted() {
+        }
 
         public String getAllele() {
             return allele;
@@ -412,7 +419,8 @@ public class Genetics {
             switch (spotted) {
                 case "Sp-Sp":
                     return SPOTTED.toString().toLowerCase();
-                case "Sp-sp": case "sp-Sp":
+                case "Sp-sp":
+                case "sp-Sp":
                     return BROKEN.toString().toLowerCase();
                 case "sp-sp":
                     return NORMAL.toString().toLowerCase();
@@ -473,7 +481,9 @@ public class Genetics {
         Colorpoint(String allele) {
             this.allele = allele;
         }
-        Colorpoint() {}
+
+        Colorpoint() {
+        }
 
         public String getAllele() {
             return allele;
@@ -492,12 +502,16 @@ public class Genetics {
 
         public static String getPhenotype(String colorpoint) {
             switch (colorpoint) {
-                case "C-C": case "C-cs": case "C-cb":
-                case "cs-C": case "cb-C":
+                case "C-C":
+                case "C-cs":
+                case "C-cb":
+                case "cs-C":
+                case "cb-C":
                     return NOT_POINTED.toString().toLowerCase();
                 case "cs-cs":
                     return COLORPOINT.toString().toLowerCase();
-                case "cs-cb": case "cb-cs":
+                case "cs-cb":
+                case "cb-cs":
                     return MINK.toString().toLowerCase();
                 case "cb-cb":
                     return SEPIA.toString().toLowerCase();
@@ -535,10 +549,15 @@ public class Genetics {
 
         public static String getPhenotype(String white) {
             switch (white) {
-                case "Wd-Wd": case "Wd-w": case "Wd-Ws":
-                case "w-Wd": case "Ws-Wd":
+                case "Wd-Wd":
+                case "Wd-w":
+                case "Wd-Ws":
+                case "w-Wd":
+                case "Ws-Wd":
                     return DOMINANT.toString().toLowerCase();
-                case "Ws-Ws": case "Ws-w": case "w-Ws":
+                case "Ws-Ws":
+                case "Ws-w":
+                case "w-Ws":
                     return SPOTTING.toString().toLowerCase();
                 case "w-w":
                     return NONE.toString().toLowerCase();

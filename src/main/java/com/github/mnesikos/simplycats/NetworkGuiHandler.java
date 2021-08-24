@@ -10,12 +10,9 @@ import com.github.mnesikos.simplycats.tileentity.TileEntityCatBowl;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import javax.annotation.Nullable;
@@ -28,8 +25,9 @@ public class NetworkGuiHandler implements IGuiHandler {
     @Override
     public Container getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         if (ID == BlockCatBowl.GUI_ID)
-            return new ContainerBowl(player.inventory, (TileEntityCatBowl)world.getTileEntity(new BlockPos(x, y, z)));
-        else if (ID == ItemCatBook.GUI_ID) {}
+            return new ContainerBowl(player.inventory, (TileEntityCatBowl) world.getTileEntity(new BlockPos(x, y, z)));
+        else if (ID == ItemCatBook.GUI_ID) {
+        }
         return null;
     }
 
@@ -38,7 +36,7 @@ public class NetworkGuiHandler implements IGuiHandler {
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
             case BlockCatBowl.GUI_ID:
-                return new GuiBowl(getServerGuiElement(ID, player, world, x, y, z), (TileEntityCatBowl)world.getTileEntity(new BlockPos(x, y, z)));
+                return new GuiBowl(getServerGuiElement(ID, player, world, x, y, z), (TileEntityCatBowl) world.getTileEntity(new BlockPos(x, y, z)));
             case ItemCatBook.GUI_ID:
                 if (x == 0) return new GuiCatBook();
                 Entity target = player.world.getEntityByID(x);

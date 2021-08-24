@@ -33,7 +33,7 @@ public class SCNetworking implements IMessage {
         buf.writeInt(count);
     }
 
-    public IMessage someMethodIDontUnderstandYet(MessageContext msg) {
+    public IMessage onMessage(MessageContext msg) {
         getPlayer().getEntityData().setInteger("CatCount", count);
         return null;
     }

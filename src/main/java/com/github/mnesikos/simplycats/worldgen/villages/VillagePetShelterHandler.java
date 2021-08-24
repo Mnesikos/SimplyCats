@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class VillagePetShelterHandler implements VillagerRegistry.IVillageCreationHandler {
     @Override
-    public StructureVillagePieces.PieceWeight getVillagePieceWeight (Random random, int i) {
+    public StructureVillagePieces.PieceWeight getVillagePieceWeight(Random random, int i) {
         return new StructureVillagePieces.PieceWeight(ComponentPetShelter.class, 15, 1 + (i > 2 ? random.nextInt(2) : 0));
     }
 

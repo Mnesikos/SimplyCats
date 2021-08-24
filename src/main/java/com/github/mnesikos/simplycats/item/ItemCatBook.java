@@ -69,7 +69,7 @@ public class ItemCatBook extends Item {
             if (player.isSneaking()) {
                 if (player.world.isRemote)
                     GuiCatBook.book = stack;
-                player.openGui(SimplyCats.instance, GUI_ID, player.world, cat.getEntityId(), (int)player.posY, (int)player.posZ);
+                player.openGui(SimplyCats.instance, GUI_ID, player.world, cat.getEntityId(), (int) player.posY, (int) player.posZ);
             }
 
         }

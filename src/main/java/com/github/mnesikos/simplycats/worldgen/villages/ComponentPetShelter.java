@@ -173,7 +173,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         this.fillWithBlocks(world, structureBoundingBox, 2, 3, 7, 2, 3, 9, log, log, false);
         this.setBlockState(world, Blocks.GLASS_PANE.getDefaultState(), 2, 3, 2, structureBoundingBox);
         this.setBlockState(world, Blocks.GLASS_PANE.getDefaultState(), 2, 3, 8, structureBoundingBox);
-        for(int z = 4; z <= 6; z++) {
+        for (int z = 4; z <= 6; z++) {
             this.setBlockState(world, stairs1, 2, 3, z, structureBoundingBox);
             this.setBlockState(world, stairs1, 2, 4, z, structureBoundingBox);
         }
@@ -200,7 +200,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         this.fillWithBlocks(world, structureBoundingBox, 4, 6, 11, 6, 6, 11, planks, planks, false);
         this.fillWithBlocks(world, structureBoundingBox, 9, 3, 11, 10, 3, 11, planks, planks, false);
         this.fillWithBlocks(world, structureBoundingBox, 14, 3, 11, 15, 3, 11, planks, planks, false);
-        for(int x = 4; x <= 6; x++) {
+        for (int x = 4; x <= 6; x++) {
             this.setBlockState(world, stairs3, x, 3, 11, structureBoundingBox);
             this.setBlockState(world, stairs3, x, 4, 11, structureBoundingBox);
         }
@@ -241,7 +241,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                 this.setBlockState(world, Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, EnumDyeColor.LIGHT_BLUE), x, 2, z, structureBoundingBox);
             }
             for (int z = 9; z <= 10; z++) {
-                this.setBlockState(world,Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, EnumDyeColor.LIGHT_BLUE), x, 2, z, structureBoundingBox);
+                this.setBlockState(world, Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, EnumDyeColor.LIGHT_BLUE), x, 2, z, structureBoundingBox);
             }
         }
 
@@ -280,13 +280,13 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
         }
 
         this.fillWithBlocks(world, structureBoundingBox, 6, 7, 7, 16, 7, 7, planks, planks, false);
-        for(int x = 7; x <= 16; x++) {
+        for (int x = 7; x <= 16; x++) {
             this.setBlockState(world, stairs3, x, 7, 6, structureBoundingBox);
         }
-        for(int x = 8; x <= 16; x++) {
+        for (int x = 8; x <= 16; x++) {
             this.setBlockState(world, stairs3, x, 6, 5, structureBoundingBox);
         }
-        for(int x = 9; x <= 16; x++) {
+        for (int x = 9; x <= 16; x++) {
             this.setBlockState(world, stairs3, x, 5, 4, structureBoundingBox);
         }
         for (int x = 10; x <= 16; x++) {
@@ -312,7 +312,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
 
         return true;
     }
-    
+
     @Override
     protected VillagerProfession chooseForgeProfession(int count, VillagerProfession prof) {
         return super.chooseForgeProfession(1, CatProfessions.SHELTER_STAFF);
@@ -336,14 +336,14 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                     EntityCat kitten = new EntityCat(world);
                     kitten.setGrowingAge(-SCConfig.KITTEN_MATURE_TIMER);
                     kitten.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
-                    kitten.setFixed((byte)1);
+                    kitten.setFixed((byte) 1);
                     kitten.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitten)), null);
                     kitten.enablePersistence();
                     world.spawnEntity(kitten);
                 } else {
                     EntityCat cat = new EntityCat(world);
                     cat.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
-                    cat.setFixed((byte)1);
+                    cat.setFixed((byte) 1);
                     cat.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(cat)), null);
                     cat.enablePersistence();
                     world.spawnEntity(cat);
@@ -388,12 +388,12 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
     protected IBlockState getBiomeSpecificBlockState(IBlockState blockstateIn) {
         net.minecraftforge.event.terraingen.BiomeEvent.GetVillageBlockID event = new net.minecraftforge.event.terraingen.BiomeEvent.GetVillageBlockID(startPiece == null ? null : startPiece.biome, blockstateIn);
         net.minecraftforge.common.MinecraftForge.TERRAIN_GEN_BUS.post(event);
-        if (event.getResult() == net.minecraftforge.fml.common.eventhandler.Event.Result.DENY) return event.getReplacement();
+        if (event.getResult() == net.minecraftforge.fml.common.eventhandler.Event.Result.DENY)
+            return event.getReplacement();
         if (this.structureType == 3) {
             if (blockstateIn.getBlock() == Blocks.OAK_FENCE_GATE)
                 return Blocks.SPRUCE_FENCE_GATE.getDefaultState();
-        }
-        else if (this.structureType == 2) {
+        } else if (this.structureType == 2) {
             if (blockstateIn.getBlock() == Blocks.OAK_FENCE_GATE)
                 return Blocks.ACACIA_FENCE_GATE.getDefaultState();
         }

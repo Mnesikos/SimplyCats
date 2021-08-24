@@ -3,8 +3,8 @@ package com.github.mnesikos.simplycats.inventory;
 import com.github.mnesikos.simplycats.tileentity.TileEntityCatBowl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.*;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerBowl extends Container {
@@ -17,7 +17,7 @@ public class ContainerBowl extends Container {
         //Bowl Storage
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 5; j++) {
-                 addSlotToContainer(new SlotCatFood(tileEntityCatBowl, j + i * 5, 44 + j * 18, 21 + i * 18) {
+                addSlotToContainer(new SlotCatFood(tileEntityCatBowl, j + i * 5, 44 + j * 18, 21 + i * 18) {
                     @Override
                     public void onSlotChanged() {
                         bowl.markDirty();

@@ -608,23 +608,23 @@ public abstract class AbstractCat extends EntityTameable {
         EntityCat child = new EntityCat(this.world);
 
         ImmutableList<DataParameter<String>> parameters = ImmutableList.of(
-            FUR_LENGTH,
-            EUMELANIN,
-            PHAEOMELANIN,
-            DILUTION,
-            DILUTE_MOD,
-            AGOUTI,
-            TABBY,
-            SPOTTED,
-            TICKED,
-            COLORPOINT,
-            WHITE,
-            BOBTAIL
+                FUR_LENGTH,
+                EUMELANIN,
+                PHAEOMELANIN,
+                DILUTION,
+                DILUTE_MOD,
+                AGOUTI,
+                TABBY,
+                SPOTTED,
+                TICKED,
+                COLORPOINT,
+                WHITE,
+                BOBTAIL
         );
 
         for (DataParameter<String> geneParameter : parameters) {
             String inherited = inheritGene(mother.get(geneParameter),
-                                            father.get(geneParameter));
+                    father.get(geneParameter));
             child.setGenotype(geneParameter, inherited);
         }
 

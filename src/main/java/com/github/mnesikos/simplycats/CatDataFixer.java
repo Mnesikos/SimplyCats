@@ -12,9 +12,9 @@ public class CatDataFixer implements IFixableData {
 
     @Override
     public NBTTagCompound fixTagCompound(NBTTagCompound compound) {
-        if(compound.hasKey("id")) {
+        if (compound.hasKey("id")) {
             String id = compound.getString("id");
-            if(id.equals("simplycats:cat"))
+            if (id.equals("simplycats:cat"))
                 if (!compound.hasKey("Bobtail") || compound.getString("Bobtail").isEmpty())
                     compound.setString("Bobtail", Genetics.Bobtail.init() + "-" + Genetics.Bobtail.init());
         }

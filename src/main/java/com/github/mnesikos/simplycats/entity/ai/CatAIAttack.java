@@ -25,7 +25,7 @@ public class CatAIAttack extends EntityAIBase {
             return false;
         else
             this.target = entitylivingbase;
-            return true;
+        return true;
     }
 
     public boolean shouldContinueExecuting() {
@@ -44,7 +44,7 @@ public class CatAIAttack extends EntityAIBase {
 
     public void updateTask() {
         this.cat.getLookHelper().setLookPositionWithEntity(this.target, 30.0F, 30.0F);
-        double d0 = (double)(this.cat.width * 2.0F * this.cat.width * 2.0F);
+        double d0 = (double) (this.cat.width * 2.0F * this.cat.width * 2.0F);
         double distanceSq = this.cat.getDistanceSq(this.target.posX, this.target.getEntityBoundingBox().minY, this.target.posZ);
         double speed = 0.8D;
 

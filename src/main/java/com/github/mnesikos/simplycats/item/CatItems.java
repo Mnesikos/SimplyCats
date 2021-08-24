@@ -1,7 +1,6 @@
 package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.Ref;
-import com.github.mnesikos.simplycats.SimplyCats;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
