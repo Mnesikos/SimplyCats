@@ -95,7 +95,6 @@ public class CatAIOcelotSit extends EntityAIMoveToBlock {
     private boolean searchForDestination() {
         BlockPos blockpos = new BlockPos(this.cat);
 
-//        for (int k = 0; k <= 3; k = k > 0 ? -k : 1 - k) {
             for (int l = 0; l < this.searchLength; ++l) {
                 int k = this.cat.getRNG().nextInt(5) - 1;
                 for (int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
@@ -109,7 +108,6 @@ public class CatAIOcelotSit extends EntityAIMoveToBlock {
                     }
                 }
             }
-//        }
 
         return false;
     }

@@ -6,7 +6,11 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
-## [1.12.2-0.0.4.0] -
+## [1.12.2-0.0.4.1] - 2021/08/25
+### Fixed
+- Cats disappearing from existing worlds due to invalid NBT data
+
+## [1.12.2-0.0.4.0] - 2021/08/24
 ### Added
 - Long hair cat model edits! All cats that were genetically long hair before will now use these cute new edits.
 - New colors: double dilutions, adding 70+ new color combinations. The genetics for these existed before this update, now the textures will match their phenotype!
@@ -17,8 +21,8 @@ and this project adheres to
 - Parrot support for the pet carrier and adopt certificates.
 - Chinese localization thanks to hackwellfox on Github!
 ### Changed
-- **IMPORTANT: All blocks have been changed, existing worlds will LOSE all cat blocks!!**
-- **IMPORTANT: Adopt and Release Certificates have been changed, existing worlds will LOSE all certificates!!**
+#####**!!** ALL blocks have been changed, existing worlds WILL LOSE any cat blocks in them **!!**
+#####**!!** Adopt AND release certificates have been changed, existing worlds WILL LOSE all certificates **!!**
 - Cat hitbox height reduced slightly, and shadow is slightly larger; both now matching vanilla cats.
 - Kittens grow gradually now, and older kittens will explore further from their parent!
 - All chat messages from the mod are status messages now, no more chat spam finally.
