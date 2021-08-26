@@ -43,7 +43,7 @@ public class SimplyCats {
     @Mod.Instance
     public static SimplyCats instance;
 
-    public static final int FIXER_VERSION = 4;
+    public static final int FIXER_VERSION = 5;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {

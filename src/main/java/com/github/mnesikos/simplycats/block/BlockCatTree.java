@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.block;
 
+import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
@@ -29,6 +30,11 @@ public class BlockCatTree extends Block {
     public BlockCatTree(EnumDyeColor color, AxisAlignedBB axisAlignedBB) {
         super(Material.CLOTH, MapColor.getBlockColor(color));
         this.axisAlignedBB = axisAlignedBB;
+    }
+
+    @Override
+    public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
+        return entity instanceof EntityCat;
     }
 
     @Override

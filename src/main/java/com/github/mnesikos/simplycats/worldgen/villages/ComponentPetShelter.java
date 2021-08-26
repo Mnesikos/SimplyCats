@@ -335,6 +335,7 @@ public class ComponentPetShelter extends StructureVillagePieces.Village {
                 if (world.rand.nextInt(4) == 0) {
                     EntityCat kitten = new EntityCat(world);
                     kitten.setGrowingAge(-SCConfig.KITTEN_MATURE_TIMER);
+                    kitten.setMatureTimer((float) SCConfig.KITTEN_MATURE_TIMER);
                     kitten.setLocationAndAngles((double) offX + 0.5D, (double) offY, (double) offZ + 0.5D, 0.0F, 0.0F);
                     kitten.setFixed((byte) 1);
                     kitten.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitten)), null);

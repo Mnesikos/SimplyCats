@@ -1,6 +1,5 @@
 package com.github.mnesikos.simplycats.client.model.entity;
 
-import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.EntityCat;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -157,7 +156,7 @@ public class ModelCat extends ModelBase {
             EntityCat entityCat = (EntityCat) entity;
             ModelRenderer tailType = entityCat.isBobtail() ? tailBobbed : tail1;
             if (this.isChild) {
-                float ageScale = entityCat.getAge() / (float) SCConfig.KITTEN_MATURE_TIMER + 1;
+                float ageScale = entityCat.getAgeScale();
                 float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
                 float headScale = ageScale * (1f - 0.625f) + 0.625f;
                 GlStateManager.pushMatrix();
@@ -278,7 +277,7 @@ public class ModelCat extends ModelBase {
 
             if (cat.isSitting()) {
                 if (this.isChild) {
-                    tailType.rotationPointY += 3.0f * (1f - cat.getAge() / (float) SCConfig.KITTEN_MATURE_TIMER + 1 * (1f - 0.35f) + 0.35f);
+                    tailType.rotationPointY += 3.0f * (1f - cat.getAgeScale() * (1f - 0.35f) + 0.35f); //todo
                 } else {
                     tailType.rotationPointY = 21.5F;
                 }

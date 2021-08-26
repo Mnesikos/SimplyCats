@@ -48,7 +48,7 @@ public class CatAIFollowParent extends EntityAIBase {
                 return false;
             } else if (this.childAnimal.isSitting()) {
                 return false;
-            } else if (this.childAnimal.getDistance(parent) < (this.childAnimal.getAge() / (float) SCConfig.KITTEN_MATURE_TIMER + 1) * this.min + 2 + 2.0D) {
+            } else if (this.childAnimal.getDistance(parent) < (this.childAnimal.getAgeScale()) * this.min + 2 + 2.0D) {
                 return false;
             } else {
                 this.parentAnimal = parent;
@@ -64,7 +64,7 @@ public class CatAIFollowParent extends EntityAIBase {
         } else if (!this.parentAnimal.isEntityAlive()) {
             return false;
         } else {
-            double d0 = (this.childAnimal.getAge() / (float) SCConfig.KITTEN_MATURE_TIMER + 1) * this.min + 2;
+            double d0 = (this.childAnimal.getAgeScale()) * this.min + 2;
             return !this.petPathfinder.noPath() && this.childAnimal.getDistanceSq(this.parentAnimal) >= d0 && this.childAnimal.getDistanceSq(this.parentAnimal) <= 256.0D && !this.childAnimal.isSitting();
         }
     }

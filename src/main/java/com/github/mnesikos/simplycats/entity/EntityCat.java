@@ -44,6 +44,7 @@ public class EntityCat extends AbstractCat {
     private static final DataParameter<Optional<UUID>> MOTHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.OPTIONAL_UNIQUE_ID);
     private static final DataParameter<Optional<UUID>> FATHER = EntityDataManager.createKey(EntityCat.class, DataSerializers.OPTIONAL_UNIQUE_ID);
     private static final DataParameter<Integer> AGE = EntityDataManager.createKey(EntityCat.class, DataSerializers.VARINT);
+    private static final DataParameter<Float> MATURE_TIMER = EntityDataManager.createKey(EntityCat.class, DataSerializers.FLOAT);
 
     private EntityCat followParent;
     private EntityAITempt aiTempt;
@@ -107,6 +108,7 @@ public class EntityCat extends AbstractCat {
         this.dataManager.register(MOTHER, Optional.absent());
         this.dataManager.register(FATHER, Optional.absent());
         this.dataManager.register(AGE, 0);
+        this.dataManager.register(MATURE_TIMER, 168000f);
     }
 
     @Override
@@ -273,6 +275,18 @@ public class EntityCat extends AbstractCat {
         }
     }
 
+    public final float getAgeScale() {
+        return this.getAge() / this.getMatureTimer() + 1;
+    }
+
+    public float getMatureTimer() {
+        return this.dataManager.get(MATURE_TIMER);
+    }
+
+    public void setMatureTimer(float maxAge) {
+        this.dataManager.set(MATURE_TIMER, maxAge);
+    }
+
     public int getAge() {
         return this.dataManager.get(AGE);
     }
@@ -412,8 +426,10 @@ public class EntityCat extends AbstractCat {
         else nbt.setString("Mother", this.getMother().toString());
         if (this.getFather() == null) nbt.setString("Father", "");
         else nbt.setString("Father", this.getFather().toString());
-        if (this.isChild())
+        if (this.isChild()) {
             nbt.setInteger("AgeTracker", this.getAge());
+            nbt.setFloat("MatureTimer", this.getMatureTimer());
+        }
     }
 
     @Override
@@ -440,8 +456,10 @@ public class EntityCat extends AbstractCat {
             s = nbt.getString("Father");
             if (!s.isEmpty()) this.setFather(UUID.fromString(s));
         }
-        if (this.isChild())
+        if (this.isChild()) {
             this.setAge(nbt.getInteger("AgeTracker"));
+            this.setMatureTimer(nbt.getFloat("MatureTimer"));
+        }
     }
 
     @Override
@@ -512,7 +530,7 @@ public class EntityCat extends AbstractCat {
                 if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
                     player.sendStatusMessage(new TextComponentTranslation("chat.info.kitten_count", this.getKittens()), true);
                 if (this.isChild())
-                    player.sendStatusMessage(new TextComponentString(this.getGrowingAge() + " // " + this.getAge()), true);
+                    player.sendStatusMessage(new TextComponentString(this.getGrowingAge() + " // " + this.getAge() + " // " + this.getMatureTimer()), true);
                 return true;
             }
 

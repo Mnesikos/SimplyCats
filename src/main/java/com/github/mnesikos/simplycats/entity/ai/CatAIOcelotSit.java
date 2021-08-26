@@ -3,6 +3,7 @@ package com.github.mnesikos.simplycats.entity.ai;
 import com.github.mnesikos.simplycats.block.BlockCatTree;
 import com.github.mnesikos.simplycats.block.BlockWindowPerch;
 import com.github.mnesikos.simplycats.entity.EntityCat;
+import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
@@ -30,7 +31,7 @@ public class CatAIOcelotSit extends EntityAIMoveToBlock {
 
     @Override
     public boolean shouldExecute() {
-        if (!this.cat.isTamed())
+        if (!this.cat.isTamed() || (this.cat.getSex() == Genetics.Sex.FEMALE && this.cat.getBreedingStatus("inheat")))
             return false;
 
         if (this.cat.isTamed() && this.cat.isSitting())
@@ -81,7 +82,7 @@ public class CatAIOcelotSit extends EntityAIMoveToBlock {
             if (this.timeoutCounter % 40 == 0)
                 this.cat.getNavigator().tryMoveToXYZ((double) ((float) this.destinationBlock.getX()) + 0.5D, (this.destinationBlock.getY() + 1), (double) ((float) this.destinationBlock.getZ()) + 0.5D, this.movementSpeed);
 
-        } else if (this.cat.getDistanceSqToCenter(this.destinationBlock.up()) <= 1.0D || this.cat.getDistanceSqToCenter(this.destinationBlock) <= 1.0D) {
+        } else if (this.cat.getDistanceSqToCenter(this.destinationBlock.up()) <= 0.8D || this.cat.getDistanceSqToCenter(this.destinationBlock) <= 0.8D) {
             this.isAboveDestination = true;
             --this.timeoutCounter;
         }

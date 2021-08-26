@@ -6,7 +6,7 @@ import net.minecraft.util.datafix.IFixableData;
 public class CatDataFixer implements IFixableData {
     @Override
     public int getFixVersion() {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -20,6 +20,8 @@ public class CatDataFixer implements IFixableData {
                 if (compound.hasKey("Father") && !compound.getString("Father").isEmpty()) {
                     compound.setString("Father", "");
                 }
+                if (compound.hasKey("AgeTracker") && !compound.hasKey("MatureTimer"))
+                    compound.setFloat("MatureTimer", 168000f);
             }
         }
         return compound;

@@ -9,6 +9,9 @@ and this project adheres to
 ## [1.12.2-0.0.4.1] - 2021/08/25
 ### Fixed
 - Cats disappearing from existing worlds due to invalid NBT data
+- Kitten scaling effected by changing the config's kitten mature timer
+- TODO Kitten tails scaling with body properly through aging
+- Tree posts no longer missing the bottom face texture
 
 ## [1.12.2-0.0.4.0] - 2021/08/24
 ### Added
