@@ -1,7 +1,9 @@
 package com.github.mnesikos.simplycats;
 
+import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
+import com.github.mnesikos.simplycats.item.SCItems;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
 import net.minecraft.entity.EntityClassification;
@@ -30,7 +32,7 @@ public class SimplyCats {
     public static final ItemGroup ITEM_GROUP = new ItemGroup(MOD_ID + ".tab") {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(Items.COD);
+            return new ItemStack(SCItems.PET_CARRIER.get());
         }
     };
 
@@ -45,6 +47,8 @@ public class SimplyCats {
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
         ENTITIES.register(modBus);
+        SCItems.REGISTRAR.register(modBus);
+        SCBlocks.REGISTRAR.register(modBus);
         SCVillagers.PROFESSIONS.register(modBus);
         SCVillagers.POI_TYPES.register(modBus);
 

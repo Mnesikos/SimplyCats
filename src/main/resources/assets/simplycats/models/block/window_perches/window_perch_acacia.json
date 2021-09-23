@@ -1,8 +1,0 @@
-{
-  "parent": "simplycats:block/window_perches/window_perch",
-  "textures": {
-    "0": "blocks/planks_acacia",
-    "1": "blocks/log_acacia",
-    "particle": "blocks/planks_acacia"
-  }
-}

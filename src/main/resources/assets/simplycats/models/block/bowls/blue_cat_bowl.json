@@ -1,0 +1,8 @@
+{
+  "parent": "simplycats:block/bowls/cat_bowl",
+  "textures": {
+    "1": "block/blue_terracotta",
+    "particle": "block/blue_terracotta"
+  }
+}
+

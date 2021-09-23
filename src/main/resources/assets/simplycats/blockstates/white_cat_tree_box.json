@@ -1,0 +1,22 @@
+{
+  "multipart": [
+    { "when": { "facing": "north" },
+      "apply": { "model": "simplycats:block/tree_boxes/white_cat_tree_box" }
+    },
+
+    { "when": { "facing": "south" },
+      "apply": { "model": "simplycats:block/tree_boxes/white_cat_tree_box", "y": 180 }
+    },
+
+    { "when": { "facing": "east" },
+      "apply": { "model": "simplycats:block/tree_boxes/white_cat_tree_box", "y": 90 }
+    },
+
+    { "when": { "facing": "west" },
+      "apply": { "model": "simplycats:block/tree_boxes/white_cat_tree_box", "y": 270 }
+    }
+  ]
+}
+
+
+

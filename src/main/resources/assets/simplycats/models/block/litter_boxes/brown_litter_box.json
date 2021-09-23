@@ -1,0 +1,7 @@
+{
+  "parent": "simplycats:block/litter_boxes/litter_box",
+  "textures": {
+    "1": "block/brown_terracotta",
+    "particle": "block/brown_terracotta"
+  }
+}

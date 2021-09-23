@@ -1,0 +1,8 @@
+  {
+    "parent": "simplycats:block/tree_beds/cat_tree_bed",
+    "textures": {
+      "wool": "block/white_wool",
+      "particle": "block/white_wool",
+      "post": "simplycats:block/cat_blocks"
+    }
+  }

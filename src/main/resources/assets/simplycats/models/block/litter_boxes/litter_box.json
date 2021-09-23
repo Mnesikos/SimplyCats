@@ -1,7 +1,7 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "litter": "blocks/sand"
+    "litter": "block/sand"
   },
   "elements": [
     {

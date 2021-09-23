@@ -1,0 +1,6 @@
+{
+  "parent": "simplycats:item/litter_box",
+  "textures": {
+    "1": "block/white_terracotta"
+  }
+}

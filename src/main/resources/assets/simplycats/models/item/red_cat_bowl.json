@@ -1,0 +1,6 @@
+{
+  "parent": "simplycats:item/cat_bowl",
+  "textures": {
+    "1": "block/red_terracotta"
+  }
+}

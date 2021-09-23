@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -42,11 +43,11 @@ public class SCVillagers {
     }
 
     public static void registerTrades() {
-        VillagerTrades.ITrade[] level1 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(Items.BEETROOT_SEEDS, 1, 12, 4, 8), new VillagerTrades.EmeraldForItemsTrade(Items.BEETROOT, 12, 4, 8)}; //todo beetroot -> catnip
+        VillagerTrades.ITrade[] level1 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.CATNIP_SEEDS.get(), 1, 12, 4, 8), new VillagerTrades.EmeraldForItemsTrade(SCItems.CATNIP.get(), 12, 4, 8)};
         VillagerTrades.ITrade[] level2 = new VillagerTrades.ITrade[]{new ItemsForPetTrade(Items.BONE), new ItemsForPetTrade(Items.COD), new VillagerTrades.ItemsForEmeraldsTrade(Items.COBWEB, 2, 1, 4, 16)}; //todo cobweb -> empty pet carrier
-        VillagerTrades.ITrade[] level3 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(Items.GLASS_BOTTLE, 1, 4, 4, 16)}; //todo glass bottle -> sterilization potion
+        VillagerTrades.ITrade[] level3 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.STERILIZE_POTION.get(), 1, 4, 4, 16)};
         VillagerTrades.ITrade[] level4 = new VillagerTrades.ITrade[]{new ItemsForPetTrade(Items.WHEAT_SEEDS), new ItemsForPetTrade(Items.CARROT), new VillagerTrades.ItemsForEmeraldsTrade(Items.SADDLE, 2, 1, 2, 16)};
-        VillagerTrades.ITrade[] level5 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(Items.STICK, 1, 1, 1, 32)}; //todo stick -> laser pointer
+        VillagerTrades.ITrade[] level5 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.LASER_POINTER.get(), 1, 1, 1, 32)};
         VillagerTrades.TRADES.put(SHELTER_WORKER.get(), toIntMap(ImmutableMap.of(1, level1, 2, level2, 3, level3, 4, level4, 5, level5)));
     }
 
@@ -58,12 +59,12 @@ public class SCVillagers {
         private final ItemStack itemPurchase;
         private final Item itemCost;
 
-        private ItemsForPetTrade(IItemProvider itemProvider/*, int carrierItemDamage*/) { //todo full carrier variants
-            this.itemPurchase = new ItemStack(Items.EMERALD, 1);
+        private ItemsForPetTrade(IItemProvider itemCost/*, IItemProvider itemPurchase --OR-- int carrierItemDamage*/) { //todo full carrier variants
+            this.itemPurchase = new ItemStack(Items.EMERALD, 1); //itemPurchase???
             /*itemPurchase = new ItemStack(CatItems.PET_CARRIER, 1);
             itemPurchase.setTagCompound(new NBTTagCompound());
             itemPurchase.setItemDamage(carrierItemDamage); // 3 = cat, 4 = dog, ...*/
-            this.itemCost = itemProvider.asItem();
+            this.itemCost = itemCost.asItem();
         }
 
         @Nullable

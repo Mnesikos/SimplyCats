@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "simplycats:block/catnip/catnip_stage_0"
+    },
+    "age=1": {
+      "model": "simplycats:block/catnip/catnip_stage_1"
+    },
+    "age=2": {
+      "model": "simplycats:block/catnip/catnip_stage_2"
+    },
+    "age=3": {
+      "model": "simplycats:block/catnip/catnip_stage_3"
+    }
+  }
+}
