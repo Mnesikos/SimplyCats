@@ -1,24 +1,35 @@
 package com.github.mnesikos.simplycats.entity;
 
+import com.github.mnesikos.simplycats.SCReference;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
+import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
+import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
@@ -27,6 +38,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.UUID;
 
 public class SimplyCatEntity extends TameableEntity {
     private static final DataParameter<String> EYE_COLOR = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
@@ -57,6 +70,21 @@ public class SimplyCatEntity extends TameableEntity {
     private final String[] catTexturesArray = new String[12];
 
     public static final DataParameter<String> OWNER_NAME = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
+    private static final DataParameter<Byte> FIXED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
+    private static final DataParameter<Byte> IN_HEAT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
+    private static final DataParameter<Byte> IS_PREGNANT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> MATE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
+    private static final DataParameter<Integer> KITTENS = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
+    private static final DataParameter<Optional<UUID>> MOTHER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_UUID);
+    private static final DataParameter<Optional<UUID>> FATHER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_UUID);
+    private static final DataParameter<Integer> AGE = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
+    private static final DataParameter<Float> MATURE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.FLOAT);
+
+    private SimplyCatEntity followParent;
+    private TemptGoal aiTempt;
+    private CatNearestTargetGoal aiTargetNearest;
+    private CatSitGoal aiSit;
+    private Vector3d nearestLaser;
 
     public SimplyCatEntity(EntityType<? extends TameableEntity> type, World world) {
         super(type, world);
@@ -65,14 +93,34 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Override
     protected void registerGoals() {
-//        super.registerGoals();
+        this.aiSit = new CatSitGoal(this);
+        this.aiTempt = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get()), false);
+        this.goalSelector.addGoal(1, new SwimGoal(this));
+        this.goalSelector.addGoal(2, this.aiSit);
+        this.goalSelector.addGoal(3, this.aiTempt);
+        this.goalSelector.addGoal(4, new CatAIFollowParent(this, 1.0D));
+        this.goalSelector.addGoal(5, new CatAIOcelotSit(this, 1.0D, 8));
+        this.goalSelector.addGoal(6, new CatAIBirth(this));
+        this.goalSelector.addGoal(7, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(8, new CatAIAttack(this));
+        if (!this.isFixed())
+            this.goalSelector.addGoal(9, new CatAIMate(this, 1.2D));
+        this.goalSelector.addGoal(10, new CatAIWander(this, 1.0D));
+        this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
+        this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
+        if (SCConfig.ATTACK_AI) {
+            this.aiTargetNearest = new CatNearestTargetGoal<>(this, LivingEntity.class, true, entity -> {
+                if (entity instanceof TameableEntity && ((TameableEntity) entity).isTamed())
+                    return false;
+
+                return entity != null && !(entity instanceof SimplyCatEntity) && !(entity instanceof PlayerEntity) && !(entity instanceof MonsterEntity) && !entity.isOnSameTeam(SimplyCatEntity.this) && SCEvents.isEntityPrey(entity);
+            });
+            this.targetSelector.addGoal(1, this.aiTargetNearest);
+        }
     }
 
-    @Override
-    public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData entityData, @Nullable CompoundNBT compound) {
-        entityData = super.finalizeSpawn(world, difficulty, spawnReason, entityData, compound);
-        this.setPhenotype();
-        return entityData;
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 14.0D).add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.KNOCKBACK_RESISTANCE, 0.7D).add(Attributes.ATTACK_DAMAGE, 2.0D);
     }
 
     @Override
@@ -101,7 +149,155 @@ public class SimplyCatEntity extends TameableEntity {
         this.entityData.define(WHITE_PAWS_3, "");
 
         this.entityData.define(OWNER_NAME, "");
+        this.entityData.define(FIXED, (byte) 0);
+        this.entityData.define(IN_HEAT, (byte) 0);
+        this.entityData.define(IS_PREGNANT, (byte) 0);
+        this.entityData.define(MATE_TIMER, 0);
+        this.entityData.define(KITTENS, 0);
+        this.entityData.define(MOTHER, Optional.empty());
+        this.entityData.define(FATHER, Optional.empty());
+        this.entityData.define(AGE, 0);
+        this.entityData.define(MATURE_TIMER, 168000f);
     }
+
+    @Override
+    protected void customServerAiStep() {
+        if (this.level.getDifficulty() == Difficulty.PEACEFUL || !SCConfig.ATTACK_AI)
+            this.targetSelector.removeGoal(aiTargetNearest);
+
+        if (this.getMoveControl().hasWanted()) {
+            double d0 = this.getMoveControl().getSpeedModifier();
+
+            if (d0 == 0.6D) {
+                this.setPose(Pose.CROUCHING);
+                this.setSprinting(false);
+            } else if (d0 == 1.33D) {
+                this.setPose(Pose.STANDING);
+                this.setSprinting(true);
+            } else {
+                this.setPose(Pose.STANDING);
+                this.setSprinting(false);
+            }
+        } else {
+            this.setPose(Pose.STANDING);
+            this.setSprinting(false);
+        }
+    }
+
+    @Override
+    public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData entityData, @Nullable CompoundNBT compound) {
+        entityData = super.finalizeSpawn(world, difficulty, spawnReason, entityData, compound);
+        this.setPhenotype();
+
+        if (!this.level.isClientSide)
+            if (this.isTame())
+                this.setOrderedToSit(!this.isOrderedToSit());
+        if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed())
+            this.setTimeCycle("end", random.nextInt(SCConfig.HEAT_COOLDOWN));
+
+        return entityData;
+    }
+
+    @Override
+    public float getScale() { //setScaleForAge ?
+        return this.isBaby() ? 0.7F : 1.0F;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.getNearestLaser() != null) {
+            if (this.aiSit != null && this.isOrderedToSit())
+                this.setOrderedToSit(false);
+            this.getNavigation().moveTo(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 1.2D);
+            this.getLookControl().setLookAt(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 10.0F, (float) this.getHeadRotSpeed());
+        }
+
+        if (!this.level.isClientSide && !this.isBaby() && !this.isFixed() && this.getSex() == Genetics.Sex.FEMALE) { //if female & adult & not fixed
+            if (this.getBreedingStatus("inheat")) //if in heat
+                if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
+                    if (!this.getBreedingStatus("ispregnant")) //and not pregnant
+                        setTimeCycle("end", SCConfig.HEAT_COOLDOWN); //sets out of heat for 16 (default) minecraft days
+                    else { //or if IS pregnant
+                        setTimeCycle("pregnant", SCConfig.PREGNANCY_TIMER); //and heat time runs out, starts pregnancy timer for birth
+                        this.setBreedingStatus("inheat", false); //sets out of heat
+                    }
+                }
+            if (!this.getBreedingStatus("inheat")) { //if not in heat
+                if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
+                    if (!this.getBreedingStatus("ispregnant")) //and not pregnant
+                        setTimeCycle("start", SCConfig.HEAT_TIMER); //sets in heat for 2 minecraft days
+                }
+            }
+        }
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+
+        if (!this.isBaby() && !this.isFixed()) { //if not a child & not fixed
+            int mateTimer = this.getMateTimer();
+            if (this.getSex() == Genetics.Sex.FEMALE) {
+                if (this.getBreedingStatus("inheat") || this.getBreedingStatus("ispregnant")) {
+                    --mateTimer;
+                    if (this.getBreedingStatus("inheat")) {
+                        if (mateTimer % 10 == 0) {
+
+                            double d0 = this.random.nextGaussian() * 0.02D;
+                            double d1 = this.random.nextGaussian() * 0.02D;
+                            double d2 = this.random.nextGaussian() * 0.02D;
+                            this.level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
+                        }
+                    }
+                } else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
+                    ++mateTimer;
+            } else if (this.getSex() == Genetics.Sex.MALE) {
+                if (mateTimer > 0)
+                    --mateTimer;
+                else if (mateTimer <= 0)
+                    mateTimer = 0;
+            }
+            this.setMateTimer(mateTimer);
+        }
+
+        if (!this.level.isClientSide && this.getTarget() == null && this.isAngry())
+            this.setAngry(false);
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source) || (this.isTame() && this.getOwner() == null)) {
+            return false;
+
+        } else {
+            this.setOrderedToSit(false);
+
+            return super.hurt(source, amount);
+        }
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        float damage = (int) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        if (SCEvents.isRatEntity(entity))
+            damage *= 3.0F;
+        if (this.isCrouching() || this.isSprinting())
+            damage *= 2.0F;
+        return entity.hurt(DamageSource.mobAttack(this), damage);
+    }
+
+    @Override
+    public void setTarget(@Nullable LivingEntity entity) {
+        super.setTarget(entity);
+
+        if (entity == null)
+            this.setAngry(false);
+        else if (!this.isTame())
+            this.setAngry(true);
+    }
+
+    // isOnSameTeam
 
     public void setPhenotype() {
         this.setGenotype(FUR_LENGTH, FurLength.init(random) + "-" + FurLength.init(random));
@@ -329,6 +525,155 @@ public class SimplyCatEntity extends TameableEntity {
         this.entityData.set(OWNER_NAME, name);
     }
 
+    public void onBagShake(PlayerEntity player) {
+        if (!this.isTame() || (this.getOwner() == player && !this.isOrderedToSit())) {
+            this.getLookControl().setLookAt(player, 10, (float) this.getHeadRotSpeed());
+            this.getNavigation().moveTo(player, 1.8);
+        }
+    }
+
+    public Vector3d getNearestLaser() {
+        return nearestLaser;
+    }
+
+    public void setNearestLaser(Vector3d vec) {
+        this.nearestLaser = vec;
+        if (vec == null) {
+            this.getNavigation().stop();
+        }
+    }
+
+    public final float getAgeScale() {
+        return this.getAge() / this.getMatureTimer() + 1;
+    }
+
+    public float getMatureTimer() {
+        return this.entityData.get(MATURE_TIMER);
+    }
+
+    public void setMatureTimer(float maxAge) {
+        this.entityData.set(MATURE_TIMER, maxAge);
+    }
+
+    public int getAge() {
+        return this.entityData.get(AGE);
+    }
+
+    public void setAge(int age) {
+        this.entityData.set(AGE, age);
+    }
+
+    // setGrowingAge
+
+    public SimplyCatEntity getFollowParent() {
+        return followParent;
+    }
+
+    public void setFollowParent(SimplyCatEntity followParent) {
+        this.followParent = followParent;
+    }
+
+    public void setMother(@Nullable UUID uuid) {
+        this.entityData.set(MOTHER, Optional.ofNullable(uuid));
+    }
+
+    public UUID getMother() {
+        return (UUID) ((Optional) this.entityData.get(MOTHER)).orElse(null);
+    }
+
+    public void setFather(@Nullable UUID uuid) {
+        this.entityData.set(FATHER, Optional.ofNullable(uuid));
+    }
+
+    public UUID getFather() {
+        return (UUID) ((Optional) this.entityData.get(FATHER)).orElse(null);
+    }
+
+    public void setFixed(byte fixed) { // 1 = fixed, 0 = intact
+        this.entityData.set(FIXED, fixed);
+    }
+
+    public boolean isFixed() {
+        return this.entityData.get(FIXED) == 1;
+    }
+
+    public byte getIsFixed() {
+        return this.entityData.get(FIXED);
+    }
+
+    public void setTimeCycle(String s, int time) {
+        if (s.equals("start")) {
+            this.setBreedingStatus("inheat", true);
+            this.setMateTimer(time);
+        }
+        if (s.equals("end")) {
+            this.setBreedingStatus("inheat", false);
+            this.setMateTimer(-time);
+        }
+        if (s.equals("pregnancy")) {
+            this.setMateTimer(time);
+        }
+    }
+
+    public void setBreedingStatus(String string, boolean parTrue) {
+        if (string.equals("inheat")) {
+            if (parTrue)
+                this.entityData.set(IN_HEAT, (byte) 1);
+            else
+                this.entityData.set(IN_HEAT, (byte) 0);
+        } else if (string.equals("ispregnant")) {
+            if (parTrue)
+                this.entityData.set(IS_PREGNANT, (byte) 1);
+            else
+                this.entityData.set(IS_PREGNANT, (byte) 0);
+        }
+    }
+
+    public boolean getBreedingStatus(String string) {
+        if (string.equals("inheat"))
+            return this.entityData.get(IN_HEAT) == 1;
+        else if (string.equals("ispregnant"))
+            return this.entityData.get(IS_PREGNANT) == 1;
+        return false;
+    }
+
+    public void setMateTimer(int time) {
+        this.entityData.set(MATE_TIMER, time);
+    }
+
+    public int getMateTimer() {
+        return this.entityData.get(MATE_TIMER);
+    }
+
+    public void setKittens(int kittens) {
+        if (getKittens() <= 0 || kittens == 0)
+            this.entityData.set(KITTENS, kittens);
+        else if (getKittens() > 0)
+            this.entityData.set(KITTENS, this.getKittens() + kittens);
+    }
+
+    public int getKittens() {
+        return this.entityData.get(KITTENS);
+    }
+
+    public void addFather(SimplyCatEntity father, int size) { //todo
+        /*for (int i = 0; i < size; i++) {
+            if (!this.getEntityData().hasKey("Father" + i) || (this.getEntityData().hasKey("Father" + i) && this.getEntityData().getCompoundTag("Father" + i) == null)) {
+                this.getEntityData().setTag("Father" + i, father.writeToNBT(new NBTTagCompound()));
+                //break;
+            }
+        }*/
+    }
+
+    private void setFather(int i, INBT father) { //todo
+        /*if (this.getEntityData().hasKey("Father" + i))
+            this.getEntityData().setTag("Father" + i, father);*/
+    }
+
+    public CompoundNBT getFather(int i) {
+        return this.getPersistentData().getCompound("Father" + i);
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
@@ -350,6 +695,24 @@ public class SimplyCatEntity extends TameableEntity {
         for (int i = 0; i <= 3; i++)
             compound.putString("WhitePaws_" + i, this.getWhitePawTextures(i));
         compound.putString("OwnerName", this.entityData.get(OWNER_NAME));
+
+        compound.putByte("Fixed", this.getIsFixed());
+        if (this.getSex() == Genetics.Sex.FEMALE) {
+            compound.putBoolean("InHeat", this.getBreedingStatus("inheat"));
+            compound.putBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
+            compound.putInt("Kittens", this.getKittens());
+            for (int i = 0; i < 5; i++)
+                compound.put("Father" + i, this.getFather(i));
+        }
+        compound.putInt("Timer", this.getMateTimer());
+        if (this.getMother() == null) compound.putString("Mother", "");
+        else compound.putString("Mother", this.getMother().toString());
+        if (this.getFather() == null) compound.putString("Father", "");
+        else compound.putString("Father", this.getFather().toString());
+        if (this.isBaby()) {
+            compound.putInt("AgeTracker", this.getAge());
+            compound.putFloat("MatureTimer", this.getMatureTimer());
+        }
     }
 
     @Override
@@ -373,6 +736,32 @@ public class SimplyCatEntity extends TameableEntity {
         for (int i = 0; i <= 3; i++)
             this.setWhitePawTextures(i, compound.getString("WhitePaws_" + i));
         this.setOwnerName(compound.getString("OwnerName"));
+
+        this.setFixed(compound.getByte("Fixed"));
+        if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed()) {
+            this.setBreedingStatus("inheat", compound.getBoolean("InHeat"));
+            this.setBreedingStatus("ispregnant", compound.getBoolean("IsPregnant"));
+            this.setKittens(compound.getInt("Kittens"));
+            for (int i = 0; i < 5; i++) {
+                this.setFather(i, compound.get("Father" + i));
+            }
+        }
+        if (!this.isFixed())
+            this.setMateTimer(compound.getInt("Timer"));
+        if (compound.contains("Mother", 8)) {
+            String s;
+            s = compound.getString("Mother");
+            if (!s.isEmpty()) this.setMother(UUID.fromString(s));
+        }
+        if (compound.contains("Father", 8)) {
+            String s;
+            s = compound.getString("Father");
+            if (!s.isEmpty()) this.setFather(UUID.fromString(s));
+        }
+        if (this.isBaby()) {
+            this.setAge(compound.getInt("AgeTracker"));
+            this.setMatureTimer(compound.getFloat("MatureTimer"));
+        }
     }
 
     private String getPhenotype(DataParameter<String> dataParameter) {
@@ -492,8 +881,6 @@ public class SimplyCatEntity extends TameableEntity {
         return (SCConfig.TAMED_LIMIT == 0 || player.getPersistentData().getInt("CatCount") < SCConfig.TAMED_LIMIT) && !this.isTame();
     }
 
-    // processInteract
-
     /**
      * A custom setTamed method to set the owner's data along with taming or untaming a cat.
      *
@@ -519,6 +906,32 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     // onDeath
+
+    @Override
+    public boolean canMate(AnimalEntity target) {
+        if (target == this)
+            return false;
+        if (!(target instanceof SimplyCatEntity))
+            return false;
+        if (target.isBaby() || this.isBaby())
+            return false;
+        if (this.isOrderedToSit() || ((SimplyCatEntity) target).isOrderedToSit())
+            return false;
+
+        SimplyCatEntity mate = (SimplyCatEntity) target;
+        if (mate.isFixed() || this.isFixed())
+            return false;
+
+        if ((this.getSex() == Genetics.Sex.MALE && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
+            return (mate.getSex() == Genetics.Sex.FEMALE && mate.getBreedingStatus("inheat")); // returns true if (mate) is female & in heat
+        else
+            return false;
+    }
+
+    @Override
+    public boolean isFood(ItemStack item) {
+        return item.getItem() == Items.BLAZE_POWDER;
+    }
 
     private String inheritGene(String motherAlleles, String fatherAlleles) {
         String[] maternal = motherAlleles.split("-");
@@ -594,22 +1007,41 @@ public class SimplyCatEntity extends TameableEntity {
         return child;
     }
 
+    private boolean isFoodItem(ItemStack item) {
+        return SCReference.catFoodItems(item);
+    }
+
+    /*@Override
+    public ActionResultType mobInteract(PlayerEntity player, Hand hand) { //todo
+
+    }*/
+
     @Override
     public boolean causeFallDamage(float distance, float damageMultiplier) {
         return false;
     }
 
     // canTriggerWalking
-    // isAngry
-    // setAngry
+
+    public boolean isAngry() {
+        return ((this.entityData.get(DATA_FLAGS_ID)) & 2) != 0;
+    }
+
+    public void setAngry(boolean angry) {
+        byte b0 = this.entityData.get(DATA_FLAGS_ID);
+
+        if (angry)
+            this.entityData.set(DATA_FLAGS_ID, (byte) (b0 | 2));
+        else
+            this.entityData.set(DATA_FLAGS_ID, (byte) (b0 & -3));
+    }
 
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        /*if (this.isAngry()) {
+        if (this.isAngry()) {
             return this.random.nextInt(10) == 0 ? SoundEvents.CAT_HISS : null;
-        } else*/
-        if (this.isInLove() /*|| this.PURR*/) {
+        } else if (this.isInLove() /*|| this.PURR*/) {
             return SoundEvents.CAT_PURR;
         } else {
             if (this.isTame())
@@ -639,8 +1071,4 @@ public class SimplyCatEntity extends TameableEntity {
     // setCustomNameTag
     // getName
     // getLootTable
-
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 14.0D).add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.KNOCKBACK_RESISTANCE, 0.7D).add(Attributes.ATTACK_DAMAGE, 2.0D);
-    }
 }
