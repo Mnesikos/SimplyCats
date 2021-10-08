@@ -5,6 +5,7 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
+import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.*;
@@ -40,6 +41,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class SimplyCatEntity extends TameableEntity {
     private static final DataParameter<String> EYE_COLOR = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
@@ -55,7 +57,6 @@ public class SimplyCatEntity extends TameableEntity {
     private static final DataParameter<String> COLORPOINT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> WHITE = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> BOBTAIL = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-
     private static final DataParameter<String> WHITE_0 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> WHITE_1 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> WHITE_2 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
@@ -65,7 +66,6 @@ public class SimplyCatEntity extends TameableEntity {
     private static final DataParameter<String> WHITE_PAWS_3 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private final String[] whiteTexturesArray = new String[3];
     private final String[] whitePawTexturesArray = new String[4];
-
     private String texturePrefix;
     private final String[] catTexturesArray = new String[12];
 
@@ -80,6 +80,12 @@ public class SimplyCatEntity extends TameableEntity {
     private static final DataParameter<Integer> AGE = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
     private static final DataParameter<Float> MATURE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.FLOAT);
 
+    public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
+        if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
+            return false;
+
+        return entity != null && !(entity instanceof SimplyCatEntity) && !(entity instanceof PlayerEntity) && !(entity instanceof MonsterEntity) && !entity.isOnSameTeam(SimplyCatEntity.this) && SCEvents.isEntityPrey(entity);
+    };
     private SimplyCatEntity followParent;
     private TemptGoal aiTempt;
     private CatNearestTargetGoal aiTargetNearest;
@@ -109,12 +115,7 @@ public class SimplyCatEntity extends TameableEntity {
         this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
         this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
         if (SCConfig.ATTACK_AI) {
-            this.aiTargetNearest = new CatNearestTargetGoal<>(this, LivingEntity.class, true, entity -> {
-                if (entity instanceof TameableEntity && ((TameableEntity) entity).isTamed())
-                    return false;
-
-                return entity != null && !(entity instanceof SimplyCatEntity) && !(entity instanceof PlayerEntity) && !(entity instanceof MonsterEntity) && !entity.isOnSameTeam(SimplyCatEntity.this) && SCEvents.isEntityPrey(entity);
-            });
+            this.aiTargetNearest = new CatNearestTargetGoal<>(this, LivingEntity.class, true, PREY_SELECTOR);
             this.targetSelector.addGoal(1, this.aiTargetNearest);
         }
     }
