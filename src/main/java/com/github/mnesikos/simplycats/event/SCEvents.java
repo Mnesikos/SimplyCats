@@ -38,8 +38,8 @@ public class SCEvents {
         return entities.contains(entity.getType());
     }
 
-    public static boolean isRatEntity(EntityType entity) {
-        String entityClass = EntityType.getKey(entity).toString();
+    public static boolean isRatEntity(Entity entity) {
+        String entityClass = EntityType.getKey(entity.getType()).toString();
         return entityClass.equals("rats:rat")/* || entityClass.equals("zawa:brownrat")*/;
     }
 

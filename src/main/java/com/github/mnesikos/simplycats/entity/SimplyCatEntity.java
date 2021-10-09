@@ -5,6 +5,8 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
+import com.github.mnesikos.simplycats.entity.goal.CatSitOnBlockGoal;
+import com.github.mnesikos.simplycats.entity.goal.*;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
@@ -12,7 +14,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +27,9 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -81,14 +85,15 @@ public class SimplyCatEntity extends TameableEntity {
     private static final DataParameter<Float> MATURE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.FLOAT);
 
     public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
+        EntityType<?> entityType = entity.getType();
         if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
             return false;
 
-        return entity != null && !(entity instanceof SimplyCatEntity) && !(entity instanceof PlayerEntity) && !(entity instanceof MonsterEntity) && !entity.isOnSameTeam(SimplyCatEntity.this) && SCEvents.isEntityPrey(entity);
+        return entityType != EntityType.PLAYER && !(entity instanceof IMob) && /*!entity.isAlliedTo(this) &&*/ SCEvents.isEntityPrey(entity);
     };
     private SimplyCatEntity followParent;
     private TemptGoal aiTempt;
-    private CatNearestTargetGoal aiTargetNearest;
+    private CatTargetNearestGoal aiTargetNearest;
     private CatSitGoal aiSit;
     private Vector3d nearestLaser;
 
@@ -104,18 +109,18 @@ public class SimplyCatEntity extends TameableEntity {
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, this.aiSit);
         this.goalSelector.addGoal(3, this.aiTempt);
-        this.goalSelector.addGoal(4, new CatAIFollowParent(this, 1.0D));
-        this.goalSelector.addGoal(5, new CatAIOcelotSit(this, 1.0D, 8));
-        this.goalSelector.addGoal(6, new CatAIBirth(this));
+        this.goalSelector.addGoal(4, new CatFollowParentGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new CatSitOnBlockGoal(this, 1.0D, 8));
+        this.goalSelector.addGoal(6, new CatBirthGoal(this));
         this.goalSelector.addGoal(7, new LeapAtTargetGoal(this, 0.4F));
-        this.goalSelector.addGoal(8, new CatAIAttack(this));
+        this.goalSelector.addGoal(8, new CatAttackGoal(this));
         if (!this.isFixed())
-            this.goalSelector.addGoal(9, new CatAIMate(this, 1.2D));
+            this.goalSelector.addGoal(9, new CatMateGoal(this, 1.2D));
         this.goalSelector.addGoal(10, new CatAIWander(this, 1.0D));
         this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
         this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
         if (SCConfig.ATTACK_AI) {
-            this.aiTargetNearest = new CatNearestTargetGoal<>(this, LivingEntity.class, true, PREY_SELECTOR);
+            this.aiTargetNearest = new CatTargetNearestGoal<>(this, LivingEntity.class, true, PREY_SELECTOR);
             this.targetSelector.addGoal(1, this.aiTargetNearest);
         }
     }
