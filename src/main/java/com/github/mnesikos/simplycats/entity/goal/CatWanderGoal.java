@@ -2,10 +2,11 @@ package com.github.mnesikos.simplycats.entity.goal;
 
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.pathfinding.WalkNodeProcessor;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -13,6 +14,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Random;
+import java.util.function.Predicate;
 
 public class CatWanderGoal extends Goal {
     protected final SimplyCatEntity cat;
@@ -50,69 +52,62 @@ public class CatWanderGoal extends Goal {
 
     @Nullable
     private Vector3d getPosition() {
-        PathNavigator pathnavigate = cat.getNavigation();
+        PathNavigator pathNavigator = cat.getNavigation();
         Random random = cat.getRandom();
         boolean outsideBounds;
-
         int xzRange = 10;
         int yRange = 3;
 
-        if (cat.hasHomePos()) {
-            double d0 = cat.getHomePos().distanceSq(MathHelper.floor(cat.getX()), MathHelper.floor(cat.getY()), MathHelper.floor(cat.getZ())) + 4.0D;
-            double d1 = (SCConfig.WANDER_AREA_LIMIT + (float) xzRange);
-            outsideBounds = d0 < d1 * d1;
+        if (cat.getHomePos().isPresent()) {
+            double homePosDist = cat.getHomePos().get().distSqr(MathHelper.floor(cat.getX()), MathHelper.floor(cat.getY()), MathHelper.floor(cat.getZ()), true) + 4.0D;
+            double wanderRange = (SCConfig.WANDER_AREA_LIMIT + (float) xzRange);
+            outsideBounds = homePosDist < wanderRange * wanderRange;
         } else
             outsideBounds = false;
 
         boolean flag1 = false;
-        float f = -99999.0F;
-        int k1 = 0;
-        int i = 0;
-        int j = 0;
+        double d0 = Double.NEGATIVE_INFINITY;
+        BlockPos blockPos = cat.blockPosition();
 
-        for (int k = 0; k < 10; ++k) {
+        for (int i = 0; i < 10; ++i) {
+            int j = random.nextInt(2 * xzRange + 1) - xzRange;
+            int k = random.nextInt(2 * yRange + 1) - yRange;
             int l = random.nextInt(2 * xzRange + 1) - xzRange;
-            int i1 = random.nextInt(2 * yRange + 1) - yRange;
-            int j1 = random.nextInt(2 * xzRange + 1) - xzRange;
 
-            if (cat.hasHomePos()) {
-                BlockPos blockpos = cat.getHomePos();
+            if (cat.getHomePos().isPresent()) {
+                BlockPos blockPos2 = cat.getHomePos().get();
 
-                if (cat.getX() > (double) blockpos.getX())
+                if (cat.getX() > (double) blockPos2.getX())
+                    j -= random.nextInt(xzRange / 2);
+                else
+                    j += random.nextInt(xzRange / 2);
+
+                if (cat.getZ() > (double) blockPos2.getZ())
                     l -= random.nextInt(xzRange / 2);
                 else
                     l += random.nextInt(xzRange / 2);
-
-                if (cat.getZ() > (double) blockpos.getZ())
-                    j1 -= random.nextInt(xzRange / 2);
-                else
-                    j1 += random.nextInt(xzRange / 2);
             }
 
-            BlockPos blockpos1 = new BlockPos((double) l + cat.getX(), (double) i1 + cat.getY(), (double) j1 + cat.getZ());
+            BlockPos blockPos3 = new BlockPos((double) j + cat.getX(), (double) k + cat.getY(), (double) l + cat.getZ());
 
-            if ((!outsideBounds || (cat.getHomePos().distanceSq(blockpos1) < (SCConfig.WANDER_AREA_LIMIT * SCConfig.WANDER_AREA_LIMIT))) && pathnavigate.isStableDestination(blockpos1)) {
-                blockpos1 = moveAboveSolid(blockpos1, cat);
+            if (blockPos3.getY() >= 0 && blockPos3.getY() <= cat.level.getMaxBuildHeight() && (!outsideBounds || (cat.getHomePos().get().distSqr(blockPos3) < (SCConfig.WANDER_AREA_LIMIT * SCConfig.WANDER_AREA_LIMIT))) && pathNavigator.isStableDestination(blockPos3)) {
+                blockPos3 = moveAboveSolid(blockPos3, cat.level.getMaxBuildHeight(), (block) -> cat.level.getBlockState(block).getMaterial().isSolid());
 
-                if (isWaterDestination(blockpos1, cat))
-                    continue;
-
-                float f1 = cat.getBlockPathWeight(blockpos1);
-
-                if (f1 > f) {
-                    f = f1;
-                    k1 = l;
-                    i = i1;
-                    j = j1;
-                    flag1 = true;
+                if (!cat.level.getFluidState(blockPos3).is(FluidTags.WATER)) {
+                    PathNodeType pathNodeType = WalkNodeProcessor.getBlockPathTypeStatic(cat.level, blockPos3.mutable());
+                    if (cat.getPathfindingMalus(pathNodeType) == 0.0F) {
+                        float d1 = cat.getWalkTargetValue(blockPos3);
+                        if (d1 > d0) {
+                            d0 = d1;
+                            blockPos = blockPos3;
+                            flag1 = true;
+                        }
+                    }
                 }
             }
         }
 
-        if (flag1)
-            return new Vector3d((double) k1 + cat.getX(), (double) i + cat.getY(), (double) j + cat.getZ());
-        else
-            return null;
+        return flag1 ? Vector3d.atBottomCenterOf(blockPos) : null;
     }
 
     @Override
@@ -130,20 +125,15 @@ public class CatWanderGoal extends Goal {
         this.cat.getNavigation().stop();
     }
 
-    private static BlockPos moveAboveSolid(BlockPos blockPos, CreatureEntity creatureEntity) {
-        if (!creatureEntity.level.getBlockState(blockPos).getMaterial().isSolid())
-            return blockPos;
+    private static BlockPos moveAboveSolid(BlockPos pos, int maxBuildHeight, Predicate<BlockPos> isSolid) {
+        if (!isSolid.test(pos))
+            return pos;
         else {
-            BlockPos blockpos;
+            BlockPos blockPos;
+            for (blockPos = pos.above(); blockPos.getY() < maxBuildHeight && isSolid.test(blockPos); blockPos = blockPos.above()) {
+            }
 
-            for (blockpos = blockPos.above(); blockpos.getY() < creatureEntity.level.getHeight() && creatureEntity.level.getBlockState(blockpos).getMaterial().isSolid(); blockpos = blockpos.above())
-                ;
-
-            return blockpos;
+            return blockPos;
         }
-    }
-
-    private static boolean isWaterDestination(BlockPos blockPos, CreatureEntity creatureEntity) {
-        return creatureEntity.level.getBlockState(blockPos).getMaterial() == Material.WATER;
     }
 }

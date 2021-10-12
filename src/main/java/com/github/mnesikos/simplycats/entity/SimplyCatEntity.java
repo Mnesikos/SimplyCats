@@ -30,6 +30,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -73,6 +74,7 @@ public class SimplyCatEntity extends TameableEntity {
     private String texturePrefix;
     private final String[] catTexturesArray = new String[12];
 
+    private static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
     public static final DataParameter<String> OWNER_NAME = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<Byte> FIXED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
     private static final DataParameter<Byte> IN_HEAT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
@@ -105,7 +107,7 @@ public class SimplyCatEntity extends TameableEntity {
     @Override
     protected void registerGoals() {
         this.aiSit = new CatSitGoal(this);
-        this.aiTempt = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get()), false);
+        this.aiTempt = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), false);
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, this.aiSit);
         this.goalSelector.addGoal(3, this.aiTempt);
@@ -154,6 +156,7 @@ public class SimplyCatEntity extends TameableEntity {
         this.entityData.define(WHITE_PAWS_2, "");
         this.entityData.define(WHITE_PAWS_3, "");
 
+        this.entityData.define(HOME_POSITION, Optional.empty());
         this.entityData.define(OWNER_NAME, "");
         this.entityData.define(FIXED, (byte) 0);
         this.entityData.define(IN_HEAT, (byte) 0);
@@ -512,9 +515,17 @@ public class SimplyCatEntity extends TameableEntity {
         return FurLength.getPhenotype(this.entityData.get(FUR_LENGTH)).equalsIgnoreCase(FurLength.LONG.toString());
     }
 
-    // hasHomePos
-    // getHomePos
-    // resetHomePos
+    public Optional<BlockPos> getHomePos() {
+        return this.entityData.get(HOME_POSITION);
+    }
+
+    public void setHomePos(BlockPos position) {
+        this.entityData.set(HOME_POSITION, Optional.of(position));
+    }
+
+    public void resetHomePos() {
+        this.entityData.set(HOME_POSITION, Optional.empty());
+    }
 
     public ITextComponent getOwnerName() {
         if (this.getOwner() != null)
