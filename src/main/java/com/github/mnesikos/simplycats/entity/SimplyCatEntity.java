@@ -116,7 +116,7 @@ public class SimplyCatEntity extends TameableEntity {
         this.goalSelector.addGoal(8, new CatAttackGoal(this));
         if (!this.isFixed())
             this.goalSelector.addGoal(9, new CatMateGoal(this, 1.2D));
-        this.goalSelector.addGoal(10, new CatAIWander(this, 1.0D));
+        this.goalSelector.addGoal(10, new CatWanderGoal(this, 1.0D));
         this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
         this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
         if (SCConfig.ATTACK_AI) {
