@@ -10,6 +10,7 @@ import com.github.mnesikos.simplycats.entity.goal.*;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -18,6 +19,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -905,12 +907,16 @@ public class SimplyCatEntity extends TameableEntity {
      * @param owner - the EntityPlayer who is taming the cat.
      */
     public void setTamed(boolean tamed, PlayerEntity owner) {
+        this.setTame(tamed);
         int catCount = owner.getPersistentData().getInt("CatCount");
         if (tamed) {
 //            owner.getPersistentData().putInt("CatCount", catCount + 1);
 //            if (!level.isClientSide())
 //                CHANNEL.sendTo(new SCNetworking(catCount + 1), (EntityPlayerMP) owner);
             this.setOwnerName(owner.getDisplayName().getString());
+            this.setOwnerUUID(owner.getUUID());
+            if (owner instanceof ServerPlayerEntity)
+                CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayerEntity)owner, this);
 
         } else {
 //            owner.getPersistentData().putInt("CatCount", catCount - 1);
@@ -918,8 +924,6 @@ public class SimplyCatEntity extends TameableEntity {
 //                CHANNEL.sendTo(new SCNetworking(catCount - 1), (EntityPlayerMP) owner);
             this.setOwnerName("");
         }
-
-        this.setTame(tamed);
     }
 
     // onDeath
@@ -1015,7 +1019,6 @@ public class SimplyCatEntity extends TameableEntity {
             PlayerEntity owner = this.level.getPlayerByUUID(this.getOwnerUUID()); // grabs owner by UUID
             if (owner != null && child.canBeTamed(owner)) { // checks if owner is not null (is online), and is able to tame the kitten OR if the tame limit is disabled
                 child.setTamed(this.isTame(), owner); // sets tamed by owner
-                child.setOwnerUUID(this.getOwnerUUID()); // idk if this is needed, don't feel like testing it
 //                if (this.hasHomePos()) // checks mother's home point
 //                    child.setHomePos(this.getHomePos()); // sets kitten's home point to mother's
             }

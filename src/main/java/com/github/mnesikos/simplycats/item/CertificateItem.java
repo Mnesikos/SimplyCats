@@ -40,9 +40,8 @@ public class CertificateItem extends Item {
                     if (tameable instanceof SimplyCatEntity)
                         ((SimplyCatEntity) tameable).setTamed(true, player);
                     else
-                        tameable.setTame(true);
+                        tameable.tame(player);
                     tameable.getNavigation().stop();
-                    tameable.setOwnerUUID(player.getUUID());
                     tameable.setHealth(tameable.getMaxHealth());
                     player.displayClientMessage(new TranslationTextComponent("chat.info.adopt_usage", tameable.getName()), true);
                     if (player.level.isClientSide)
@@ -79,7 +78,7 @@ public class CertificateItem extends Item {
         if (!play)
             iparticledata = ParticleTypes.SMOKE;
 
-        for(int i = 0; i < 7; ++i) {
+        for (int i = 0; i < 7; ++i) {
             double d0 = world.random.nextGaussian() * 0.02D;
             double d1 = world.random.nextGaussian() * 0.02D;
             double d2 = world.random.nextGaussian() * 0.02D;
