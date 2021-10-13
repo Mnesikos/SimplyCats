@@ -10,6 +10,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
+    public boolean isBobtail;
+    public boolean isLongFur;
+    public float ageScale;
     private final ModelRenderer body1;
     private final ModelRenderer body2;
     private final ModelRenderer head1;
@@ -39,6 +42,8 @@ public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
     private final ModelRenderer backLeftLeg;
 
     public SimplyCatModel() {
+        this.texWidth = 64;
+        this.texHeight = 32;
         this.head1 = new ModelRenderer(this, 0, 0);
         this.head1.setPos(0.0F, 14.0F, -6.5F);
         this.head1.addBox(-2.5F, -2.0F, -5.0F, 5, 4, 5, 0.0F);
@@ -149,19 +154,78 @@ public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
     }
 
     @Override
-    public void setupAnim(SimplyCatEntity entity, float speed, float walkSpeed, float v2, float headAngleY, float headAngleX) {
-        head1.xRot = headAngleX / (180F / (float) Math.PI);
-        head1.yRot = headAngleY / (180F / (float) Math.PI);
+    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder iVertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        ModelRenderer tailType = this.isBobtail ? tailBobbed : tail1;
+        float scale = 0.625F;
+        if (this.young) {
+            float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
+            float headScale = ageScale * (1f - 0.625f) + 0.625f;
+            matrixStack.pushPose();
+            // The head should stay attached to the body, so how much to
+            // move the head depends on where the body is
+            float yHeadOffset = (16f * (1f - bodyScale) + 4f * (1f - headScale)) * scale;
+            float zHeadOffset = 2.5f * (1f - bodyScale) * scale;
+            matrixStack.translate(0.0f, yHeadOffset, zHeadOffset);
+            matrixStack.scale(headScale, headScale, headScale);
+            this.head1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            matrixStack.popPose();
+
+            float tailScale = ageScale * (1f - 0.35f) + 0.35f;
+            matrixStack.pushPose();
+            float yTailOffset = 21.5f * (1f - tailScale) * scale;
+            // Need to move the tail in the negative z direction to keep it
+            // from moving away from the body when it shrinks
+            float zTailOffset = 0.8f * (1f - tailScale) * scale;
+            matrixStack.translate(0.0f, yTailOffset, zTailOffset);
+            matrixStack.scale(tailScale, tailScale, tailScale);
+            tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            matrixStack.popPose();
+
+            matrixStack.pushPose();
+            matrixStack.translate(0.0f, 24f * (1f - bodyScale) * scale, 0.0f);
+            matrixStack.scale(bodyScale, bodyScale, ageScale * (1f - 0.4f) + 0.4f);
+            this.body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            matrixStack.popPose();
+        } else {
+            ModelRenderer head = this.isLongFur ? head2 : head1;
+            matrixStack.pushPose();
+            matrixStack.scale(1.01F, 1.01F, 1.01F);
+            head.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            matrixStack.popPose();
+            this.body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            if (isLongFur) {
+                matrixStack.pushPose();
+                matrixStack.translate(this.body2.x, this.body2.y, this.body2.z);
+                matrixStack.translate(this.body2.xRot * scale, this.body2.yRot * scale, this.body2.zRot * scale);
+                matrixStack.scale(1.02F, 1.2F, 1.01F);
+                matrixStack.translate(-this.body2.x, -this.body2.y, -this.body2.z);
+                matrixStack.translate(-this.body2.xRot * scale, -this.body2.yRot * scale, -this.body2.zRot * scale);
+                this.body2.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                matrixStack.popPose();
+                matrixStack.pushPose();
+                matrixStack.translate(tailType.x, tailType.y, tailType.z);
+                matrixStack.translate(tailType.xRot * scale, tailType.yRot * scale, tailType.zRot * scale);
+                matrixStack.scale(1.25F, 1.0F, 1.25F);
+                matrixStack.translate(-tailType.x, -tailType.y, -tailType.z);
+                matrixStack.translate(-tailType.xRot * scale, -tailType.yRot * scale, -tailType.zRot * scale);
+                tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                matrixStack.popPose();
+            } else
+                tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        }
     }
 
     @Override
-    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder iVertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        matrixStack.pushPose();
-        matrixStack.scale(1.01f, 1.01f, 1.01f);
-        head1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStack.popPose();
-        body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        tail1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    public void setupAnim(SimplyCatEntity entity, float speed, float walkSpeed, float v2, float headAngleY, float headAngleX) {
+        ModelRenderer head = !entity.isBaby() && entity.isLongFur() ? head2 : head1;
+
+        head.xRot = headAngleX / (180F / (float) Math.PI);
+        head.yRot = headAngleY / (180F / (float) Math.PI);
+    }
+
+    @Override
+    public void prepareMobModel(SimplyCatEntity entity, float parSpeed, float parWalkSpeed, float f4) {
+        super.prepareMobModel(entity, parSpeed, parWalkSpeed, f4);
     }
 
     private void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
