@@ -20,6 +20,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -981,7 +982,7 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Override
     public boolean isFood(ItemStack item) {
-        return item.getItem() == Items.BLAZE_POWDER;
+        return SCReference.catFoodItems(item);
     }
 
     private String inheritGene(String motherAlleles, String fatherAlleles) {
@@ -1057,16 +1058,20 @@ public class SimplyCatEntity extends TameableEntity {
         return child;
     }
 
-    private boolean isFoodItem(ItemStack item) {
-        return SCReference.catFoodItems(item);
-    }
-
     @Override
     public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        Item item = stack.getItem();
+        if (this.level.isClientSide) {
+            if (this.isTame() && this.isOwnedBy(player))
+                return ActionResultType.SUCCESS;
+            else if (item == Items.BONE || (item == SCItems.TREAT_BAG.get() && !this.isTame()))
+                return ActionResultType.SUCCESS;
+            else
+                return !this.isFood(stack) || !(this.getHealth() < this.getMaxHealth()) && this.isTame() ? ActionResultType.PASS : ActionResultType.SUCCESS;
 
-        if (!stack.isEmpty()) {
-            if (isFood(stack) && player.isCrouching() && this.isTame() && this.isOwnedBy(player)) {
+        } else if (!stack.isEmpty()) {
+            if (item == Items.BLAZE_POWDER && player.isDiscrete() && this.isTame() && this.isOwnedBy(player)) {
                 if (this.isBaby()) {
                     this.usePlayerItem(player, stack);
                     this.ageUp((int) ((float) (-this.getAge() / 20) * 0.8F), true);
@@ -1075,25 +1080,25 @@ public class SimplyCatEntity extends TameableEntity {
                     this.usePlayerItem(player, stack);
                     this.setMateTimer(this.getMateTimer() / 2);
                 }
-                return ActionResultType.SUCCESS;
+                return ActionResultType.CONSUME;
             }
 
-            if (isFoodItem(stack) && this.getHealth() < this.getMaxHealth()) {
+            if (isFood(stack) && this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, stack);
                 this.heal(1.0F);
                 return ActionResultType.CONSUME;
             }
 
-            if (stack.getItem() == Items.BONE && player.isCrouching()) {
+            if (item == Items.BONE && player.isDiscrete()) {
                 if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
                     player.displayClientMessage(new TranslationTextComponent("chat.info.kitten_count", this.getKittens()), true);
                 if (this.isBaby())
                     player.displayClientMessage(new StringTextComponent(this.getAge() + " // " + this.getAgeTracker() + " // " + this.getMatureTimer()), true);
-                return ActionResultType.SUCCESS;
+                return ActionResultType.CONSUME;
             }
 
-            if ((this.temptGoal == null || this.temptGoal.isRunning()) && stack.getItem() == SCItems.TREAT_BAG.get() && player.distanceToSqr(this) < 9.0D) {
-                if (player.isCrouching()) {
+            if (item == SCItems.TREAT_BAG.get() && player.distanceToSqr(this) < 9.0D && (!this.isTame() || this.isOwnedBy(player))) {
+                if (player.isDiscrete()) {
                     if (this.getHomePos().isPresent()) {
                         this.resetHomePos();
                         player.displayClientMessage(new TranslationTextComponent("chat.info.remove_home", this.getName()), true);
@@ -1107,7 +1112,7 @@ public class SimplyCatEntity extends TameableEntity {
             }
         }
 
-        if (this.isOwnedBy(player) && !this.level.isClientSide && !player.isCrouching()) {
+        if (this.isOwnedBy(player) && !player.isDiscrete()) {
             this.setOrderedToSit(!this.isOrderedToSit());
             this.getNavigation().stop();
             this.setTarget(null);
