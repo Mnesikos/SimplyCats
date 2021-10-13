@@ -20,14 +20,16 @@ public class SCReference {
 
     public static void registerCatFoods() { //todo
         // add vanilla raw meats
-        EDIBLE.add(Items.FISH);
+        EDIBLE.add(Items.COD);
+        EDIBLE.add(Items.SALMON);
         EDIBLE.add(Items.RABBIT);
         EDIBLE.add(Items.MUTTON);
         EDIBLE.add(Items.CHICKEN);
         EDIBLE.add(Items.PORKCHOP);
         EDIBLE.add(Items.BEEF);
         // add vanilla cooked meats
-        EDIBLE.add(Items.COOKED_FISH);
+        EDIBLE.add(Items.COOKED_COD);
+        EDIBLE.add(Items.COOKED_SALMON);
         EDIBLE.add(Items.COOKED_RABBIT);
         EDIBLE.add(Items.COOKED_MUTTON);
         EDIBLE.add(Items.COOKED_CHICKEN);
@@ -66,7 +68,7 @@ public class SCReference {
         return true;
     }
 
-    public static void drawNameplateScaled(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float scale) { //todo
+    /*public static void drawNameplateScaled(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float scale) { //todo
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
@@ -104,7 +106,7 @@ public class SCReference {
         GlStateManager.disableBlend();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
-    }
+    }*/
 
     public static Map<UUID, String> getCustomCats() {
         return CUSTOM_CATS;
