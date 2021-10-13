@@ -1,6 +1,8 @@
 package com.github.mnesikos.simplycats.entity.core;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Random;
@@ -9,8 +11,8 @@ public class Genetics {
     public Genetics() {
     }
 
-    public static String getPhenotypeDescription(CompoundNBT nbt, boolean includeSex) {
-        String sex = Sex.getPrettyName(nbt.getString("Phaeomelanin").contains(Phaeomelanin.MALE.getAllele()) ? "male" : "female");
+    public static StringTextComponent getPhenotypeDescription(CompoundNBT nbt, boolean includeSex) {
+        ITextComponent sex = Sex.getPrettyName(nbt.getString("Phaeomelanin"));
 
         String eumelanin = Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
         String phaeomelanin = Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
@@ -58,22 +60,22 @@ public class Genetics {
         if (!white.equals(White.NONE.toString().toLowerCase())) {
             if (white.equals(White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
                 whiteText = new TranslationTextComponent("cat.white.solid_white.name");
-                return whiteText.plainCopy() + (includeSex ? (" " + sex) : "");
+                return new StringTextComponent(whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
             }
             if (nbt.getString("White_0").contains("5")) {
                 whiteText = new TranslationTextComponent("cat.white.mostly_white.name");
-                return whiteText.plainCopy() + " " + base.plainCopy() +
-                        (tabby.plainCopy().equals("") ? "" : " " + tabby.plainCopy()) +
-                        (point.plainCopy().equals("") ? "" : " " + point.plainCopy()) +
-                        (includeSex ? (" " + sex) : "");
+                return new StringTextComponent(whiteText.getString() + " " + base.getString() +
+                        (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
+                        (point.getString().equals("") ? "" : " " + point.getString()) +
+                        (includeSex ? (" " + sex.getString()) : ""));
             } else
                 whiteText = new TranslationTextComponent("cat.white.some_white.name");
         }
 
-        return base.plainCopy() +
-                (tabby.plainCopy().equals("") ? "" : " " + tabby.plainCopy()) +
-                (point.plainCopy().equals("") ? "" : " " + point.plainCopy()) +
-                " " + whiteText.plainCopy() + (includeSex ? (" " + sex) : "");
+        return new StringTextComponent(base.getString() +
+                (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
+                (point.getString().equals("") ? "" : " " + point.getString()) +
+                " " + whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
     }
 
     public enum Sex {
@@ -90,13 +92,13 @@ public class Genetics {
             return name;
         }
 
-        public static String getPrettyName(String name) {
-            if (name.equalsIgnoreCase(MALE.name))
-                return "Male";
-            else if (name.equalsIgnoreCase(FEMALE.name))
-                return "Female";
+        public static ITextComponent getPrettyName(String phaeomelanin) {
+            if (phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
+                return new TranslationTextComponent("cat.sex.male.name");
+            else if (!phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
+                return new TranslationTextComponent("cat.sex.female.name");
             else
-                return name;
+                return new StringTextComponent(phaeomelanin);
         }
     }
 
