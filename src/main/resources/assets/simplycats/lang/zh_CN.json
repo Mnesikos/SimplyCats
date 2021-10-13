@@ -13,8 +13,8 @@
 
     "__comment": "Item Tooltips",
     "tooltip.cat_book.usage": "对着猫咪潜行+右键打开图鉴。",
-    "tooltip.certificate.adopt.desc": "右键未驯服的宠物来领养他们。",
-    "tooltip.certificate.release.desc": "右键你拥有的宠物来放归他们。",
+    "tooltip.certificate_adopt.desc": "右键未驯服的宠物来领养他们。",
+    "tooltip.certificate_release.desc": "右键你拥有的宠物来放归他们。",
     "tooltip.pet_carrier.empty": "宠物笼是空的。",
     "tooltip.pet_carrier.adopt_cat": "领养猫咪!",
     "tooltip.pet_carrier.adopt_dog": "领养狗狗!",
@@ -63,6 +63,8 @@
     "block.simplycats.jungle_scratching_post": "丛林木猫抓板",
     "block.simplycats.acacia_scratching_post": "金合欢木猫抓板",
     "block.simplycats.dark_oak_scratching_post": "深色橡木猫抓板",
+    "block.simplycats.crimson_scratching_post": "Crimson Scratching Post",
+    "block.simplycats.warped_scratching_post": "Warped Scratching Post",
 
     "block.simplycats.oak_window_perch": "Oak Window Perch",
     "block.simplycats.spruce_window_perch": "Spruce Window Perch",
@@ -70,6 +72,8 @@
     "block.simplycats.jungle_window_perch": "Jungle Window Perch",
     "block.simplycats.acacia_window_perch": "Acacia Window Perch",
     "block.simplycats.dark_oak_window_perch": "Dark Oak Window Perch",
+    "block.simplycats.crimson_window_perch": "Crimson Window Perch",
+    "block.simplycats.warped_window_perch": "Warped Window Perch",
 
     "block.simplycats.white_cat_tree_bed": "White Tree Bed",
     "block.simplycats.orange_cat_tree_bed": "Orange Tree Bed",
@@ -126,7 +130,7 @@
     "itemGroup.simplycats.tab": "Simply Cats",
 
     "__comment": "Egg and Entity Names",
-    "entity.simplycats.Cat.name": "猫",
+    "entity.simplycats.cat": "猫",
     "entity.simplycats.cat.unknown_owner": "未知饲主",
     "entity.simplycats.cat.untamed": "未驯服",
     "entity.minecraft.villager.simplycats.shelter_worker": "动物保护员",

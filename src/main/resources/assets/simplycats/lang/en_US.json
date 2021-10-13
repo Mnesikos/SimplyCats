@@ -13,8 +13,8 @@
 
     "__comment": "Item Tooltips",
     "tooltip.cat_book.usage": "Sneak right click on a cat to see their page!",
-    "tooltip.certificate.adopt.desc": "Right click on an unowned pet to adopt them!",
-    "tooltip.certificate.release.desc": "Right click on your pet to release ownership.",
+    "tooltip.certificate_adopt.desc": "Right click on an unowned pet to adopt them!",
+    "tooltip.certificate_release.desc": "Right click on your pet to release ownership.",
     "tooltip.pet_carrier.empty": "This carrier is empty.",
     "tooltip.pet_carrier.adopt_cat": "Adopt a Cat!",
     "tooltip.pet_carrier.adopt_dog": "Adopt a Dog!",
@@ -63,6 +63,8 @@
     "block.simplycats.jungle_scratching_post": "Jungle Scratching Post",
     "block.simplycats.acacia_scratching_post": "Acacia Scratching Post",
     "block.simplycats.dark_oak_scratching_post": "Dark Oak Scratching Post",
+    "block.simplycats.crimson_scratching_post": "Crimson Scratching Post",
+    "block.simplycats.warped_scratching_post": "Warped Scratching Post",
 
     "block.simplycats.oak_window_perch": "Oak Window Perch",
     "block.simplycats.spruce_window_perch": "Spruce Window Perch",
@@ -70,6 +72,8 @@
     "block.simplycats.jungle_window_perch": "Jungle Window Perch",
     "block.simplycats.acacia_window_perch": "Acacia Window Perch",
     "block.simplycats.dark_oak_window_perch": "Dark Oak Window Perch",
+    "block.simplycats.crimson_window_perch": "Crimson Window Perch",
+    "block.simplycats.warped_window_perch": "Warped Window Perch",
 
     "block.simplycats.white_cat_tree_bed": "White Tree Bed",
     "block.simplycats.orange_cat_tree_bed": "Orange Tree Bed",
@@ -126,7 +130,7 @@
     "itemGroup.simplycats.tab": "Simply Cats",
 
     "__comment": "Egg and Entity Names",
-    "entity.simplycats.Cat.name": "Cat",
+    "entity.simplycats.cat": "Cat",
     "entity.simplycats.cat.unknown_owner": "Unknown Owner",
     "entity.simplycats.cat.untamed": "Untamed",
     "entity.minecraft.villager.simplycats.shelter_worker": "Shelter Worker",
