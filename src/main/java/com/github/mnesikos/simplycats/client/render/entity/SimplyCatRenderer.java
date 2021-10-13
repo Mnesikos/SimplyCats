@@ -18,11 +18,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatModel> {
+public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatModel<SimplyCatEntity>> {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.newHashMap();
 
     public SimplyCatRenderer(EntityRendererManager manager) {
-        super(manager, new SimplyCatModel(), 0.4f);
+        super(manager, new SimplyCatModel<>(), 0.4f);
     }
 
     @Override

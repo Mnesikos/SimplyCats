@@ -5,11 +5,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
+public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
     public boolean isBobtail;
     public boolean isLongFur;
     public float ageScale;
@@ -156,15 +157,12 @@ public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
     @Override
     public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder iVertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         ModelRenderer tailType = this.isBobtail ? tailBobbed : tail1;
-        float scale = 0.625F;
         if (this.young) {
             float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
             float headScale = ageScale * (1f - 0.625f) + 0.625f;
             matrixStack.pushPose();
-            // The head should stay attached to the body, so how much to
-            // move the head depends on where the body is
-            float yHeadOffset = (16f * (1f - bodyScale) + 4f * (1f - headScale)) * scale;
-            float zHeadOffset = 2.5f * (1f - bodyScale) * scale;
+            float yHeadOffset = (16f * (1f - bodyScale) + 4f * (1f - headScale)) / 16F;
+            float zHeadOffset = 2.5f * (1f - bodyScale) / 16F;
             matrixStack.translate(0.0f, yHeadOffset, zHeadOffset);
             matrixStack.scale(headScale, headScale, headScale);
             this.head1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -172,17 +170,15 @@ public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
 
             float tailScale = ageScale * (1f - 0.35f) + 0.35f;
             matrixStack.pushPose();
-            float yTailOffset = 21.5f * (1f - tailScale) * scale;
-            // Need to move the tail in the negative z direction to keep it
-            // from moving away from the body when it shrinks
-            float zTailOffset = 0.8f * (1f - tailScale) * scale;
+            float yTailOffset = 21.5f * (1f - tailScale) / 16F;
+            float zTailOffset = 0.8f * (1f - tailScale) / 16F;
             matrixStack.translate(0.0f, yTailOffset, zTailOffset);
             matrixStack.scale(tailScale, tailScale, tailScale);
             tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             matrixStack.popPose();
 
             matrixStack.pushPose();
-            matrixStack.translate(0.0f, 24f * (1f - bodyScale) * scale, 0.0f);
+            matrixStack.translate(0.0f, 24f * (1f - bodyScale) / 16F, 0.0f);
             matrixStack.scale(bodyScale, bodyScale, ageScale * (1f - 0.4f) + 0.4f);
             this.body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             matrixStack.popPose();
@@ -195,19 +191,15 @@ public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
             this.body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (isLongFur) {
                 matrixStack.pushPose();
-                matrixStack.translate(this.body2.x, this.body2.y, this.body2.z);
-                matrixStack.translate(this.body2.xRot * scale, this.body2.yRot * scale, this.body2.zRot * scale);
+                matrixStack.translate(this.body2.x / 16F, this.body2.y / 16F, this.body2.z / 16F);
                 matrixStack.scale(1.02F, 1.2F, 1.01F);
-                matrixStack.translate(-this.body2.x, -this.body2.y, -this.body2.z);
-                matrixStack.translate(-this.body2.xRot * scale, -this.body2.yRot * scale, -this.body2.zRot * scale);
+                matrixStack.translate(-this.body2.x / 16F, -this.body2.y / 16F, -this.body2.z / 16F);
                 this.body2.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 matrixStack.popPose();
                 matrixStack.pushPose();
-                matrixStack.translate(tailType.x, tailType.y, tailType.z);
-                matrixStack.translate(tailType.xRot * scale, tailType.yRot * scale, tailType.zRot * scale);
+                matrixStack.translate(tailType.x / 16F, tailType.y / 16F, tailType.z / 16F);
                 matrixStack.scale(1.25F, 1.0F, 1.25F);
-                matrixStack.translate(-tailType.x, -tailType.y, -tailType.z);
-                matrixStack.translate(-tailType.xRot * scale, -tailType.yRot * scale, -tailType.zRot * scale);
+                matrixStack.translate(-tailType.x / 16F, -tailType.y / 16F, -tailType.z / 16F);
                 tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 matrixStack.popPose();
             } else
@@ -216,7 +208,7 @@ public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
     }
 
     @Override
-    public void setupAnim(SimplyCatEntity entity, float speed, float walkSpeed, float v2, float headAngleY, float headAngleX) {
+    public void setupAnim(T entity, float speed, float walkSpeed, float v2, float headAngleY, float headAngleX) {
         ModelRenderer head = !entity.isBaby() && entity.isLongFur() ? head2 : head1;
 
         head.xRot = headAngleX / (180F / (float) Math.PI);
@@ -224,8 +216,69 @@ public class SimplyCatModel extends EntityModel<SimplyCatEntity> {
     }
 
     @Override
-    public void prepareMobModel(SimplyCatEntity entity, float parSpeed, float parWalkSpeed, float f4) {
-        super.prepareMobModel(entity, parSpeed, parWalkSpeed, f4);
+    public void prepareMobModel(T cat, float parSpeed, float parWalkSpeed, float f4) {
+        ModelRenderer tailType = cat.isBobtail() ? tailBobbed : tail1;
+        ModelRenderer head = !cat.isBaby() && cat.isLongFur() ? head2 : head1;
+
+        head.y = 14.0F;
+        head.z = -6.5F;
+        this.body1.xRot = 0.0F;
+        this.body1.y = 18.0F;
+        if (cat.isLongFur()) {
+            this.body2.xRot = 0.0F;
+            this.body2.y = 18.0F;
+        }
+        this.frontLeftLegPoint.xRot = this.frontRightLegPoint.xRot = 0.0F;
+        this.backLeftLegPoint.xRot = this.backRightLegPoint.xRot = 0.0F;
+        this.backLeftLegPoint.y = this.backRightLegPoint.y = -0.5F;
+        this.frontLeftLegPoint.y = this.frontRightLegPoint.y = -0.5F;
+        this.frontLeftLeg.xRot = MathHelper.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
+        this.backRightLeg.xRot = MathHelper.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
+        this.frontRightLeg.xRot = MathHelper.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
+        this.backLeftLeg.xRot = MathHelper.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
+        tailType.y = 15.0F;
+        this.tail1.xRot = (float) (180 / (180 / Math.PI));
+        this.tail2.xRot = (float) (10 / (180 / Math.PI));
+        this.tailBobbed.xRot = (float) (135 / (180 / Math.PI));
+        this.earLeft1.xRot = 0.0F;
+        this.earLeft1.yRot = 0.0F;
+        this.earRight1.xRot = 0.0F;
+        this.earRight1.yRot = 0.0F;
+
+        if (cat.isAngry() || cat.isCrouching()) {
+            this.earLeft1.xRot = (float) (67 / (180 / Math.PI));
+            this.earLeft1.yRot = (float) (-145 / (180 / Math.PI));
+            this.earRight1.xRot = (float) (67 / (180 / Math.PI));
+            this.earRight1.yRot = (float) (145 / (180 / Math.PI));
+        }
+
+        if (cat.isCrouching()) {
+            head.y += 2.5F;
+            this.body1.y += 2.0F;
+            if (cat.isLongFur()) this.body2.y += 2.0F;
+            this.backLeftLegPoint.y -= 2.0F;
+            this.backRightLegPoint.y -= 2.0F;
+            this.frontLeftLegPoint.y -= 2.0F;
+            this.frontRightLegPoint.y -= 2.0F;
+            tailType.y += 2.0F;
+            tailType.xRot = ((float) Math.PI / 3F);
+        }
+
+        if (cat.isInSittingPose()) {
+            if (this.young) {
+                float tailScale = ageScale * (1f - 0.35f) + 0.35f;
+                float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
+                tailType.y += 6.5F + (24F * (1f - bodyScale) + 21.5F * (1f - tailScale)) / 16F; //todo
+            } else
+                tailType.y = 21.5F;
+            head.z = -4.5F;
+            this.body1.xRot = (float) (-28 / (180 / Math.PI));
+            if (cat.isLongFur()) this.body2.xRot = (float) (-24.3 / (180 / Math.PI));
+            this.frontLeftLeg.xRot = this.frontRightLeg.xRot = (float) (28 / (180 / Math.PI));
+            this.backLeftLegPoint.xRot = this.backRightLegPoint.xRot = (float) (-62.5 / (180 / Math.PI));
+            this.backLeftLeg.xRot = this.backRightLeg.xRot = 0.0F;
+            tailType.xRot = (float) (79 / (180 / Math.PI));
+        }
     }
 
     private void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
