@@ -29,7 +29,7 @@ public class SCEvents {
     public static boolean isEntityPrey(@Nullable Entity entity) {
         if (entities == null) {
             entities = new HashSet<>();
-            for (String s : SCConfig.PREY_LIST) {
+            for (String s : SCConfig.Common.prey_list.get()) {
                 ResourceLocation location = new ResourceLocation(s);
                 if (ForgeRegistries.ENTITIES.containsKey(location))
                     entities.add(Objects.requireNonNull(ForgeRegistries.ENTITIES.getValue(location)).getClass());
@@ -45,7 +45,7 @@ public class SCEvents {
 
     @SubscribeEvent
     public void onPlayerLogsIn(PlayerEvent.PlayerLoggedInEvent event) {
-        if (SCConfig.JOIN_MESSAGE) {
+        if (SCConfig.Common.join_message.get()) {
             PlayerEntity player = event.getPlayer();
             player.sendMessage(new TranslationTextComponent("chat.join.cat_count", player.getPersistentData().getInt("CatCount")), Util.NIL_UUID);
         }

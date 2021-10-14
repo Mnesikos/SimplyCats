@@ -60,7 +60,7 @@ public class CatWanderGoal extends Goal {
 
         if (cat.getHomePos().isPresent()) {
             double homePosDist = cat.getHomePos().get().distSqr(MathHelper.floor(cat.getX()), MathHelper.floor(cat.getY()), MathHelper.floor(cat.getZ()), true) + 4.0D;
-            double wanderRange = (SCConfig.WANDER_AREA_LIMIT + (float) xzRange);
+            double wanderRange = (SCConfig.Common.wander_area_limit.get() + (float) xzRange);
             outsideBounds = homePosDist < wanderRange * wanderRange;
         } else
             outsideBounds = false;
@@ -90,7 +90,7 @@ public class CatWanderGoal extends Goal {
 
             BlockPos blockPos3 = new BlockPos((double) j + cat.getX(), (double) k + cat.getY(), (double) l + cat.getZ());
 
-            if (blockPos3.getY() >= 0 && blockPos3.getY() <= cat.level.getMaxBuildHeight() && (!outsideBounds || (cat.getHomePos().get().distSqr(blockPos3) < (SCConfig.WANDER_AREA_LIMIT * SCConfig.WANDER_AREA_LIMIT))) && pathNavigator.isStableDestination(blockPos3)) {
+            if (blockPos3.getY() >= 0 && blockPos3.getY() <= cat.level.getMaxBuildHeight() && (!outsideBounds || (cat.getHomePos().get().distSqr(blockPos3) < (SCConfig.Common.wander_area_limit.get() * SCConfig.Common.wander_area_limit.get()))) && pathNavigator.isStableDestination(blockPos3)) {
                 blockPos3 = moveAboveSolid(blockPos3, cat.level.getMaxBuildHeight(), (block) -> cat.level.getBlockState(block).getMaterial().isSolid());
 
                 if (!cat.level.getFluidState(blockPos3).is(FluidTags.WATER)) {

@@ -34,7 +34,7 @@ public class CatMateGoal extends Goal {
             return false;
 
         this.nearbyCats = level.getEntitiesOfClass(this.cat.getClass(), this.cat.getBoundingBox().inflate(NEARBY_RADIUS_CHECK));
-        if (this.nearbyCats.size() >= SCConfig.BREEDING_LIMIT)
+        if (this.nearbyCats.size() >= SCConfig.Common.breeding_limit.get())
             return false;
 
         LivingEntity catOwner = this.cat.getOwner();
@@ -62,11 +62,11 @@ public class CatMateGoal extends Goal {
         this.nearbyCats = level.getEntitiesOfClass(this.cat.getClass(), this.cat.getBoundingBox().inflate(NEARBY_RADIUS_CHECK));
 
         return maleCooldownCheck && this.target.isAlive() && femaleHeatCheck && this.mateDelay < 60
-                && this.nearbyCats.size() < SCConfig.BREEDING_LIMIT && this.cat.getSensing().canSee(this.target);
+                && this.nearbyCats.size() < SCConfig.Common.breeding_limit.get() && this.cat.getSensing().canSee(this.target);
     }
 
     private boolean ownerExceedsLimit(SimplyCatEntity tamedCat, LivingEntity owner) {
-        return tamedCat != null && tamedCat.isTame() && SCConfig.TAMED_LIMIT != 0 && owner != null && owner.getPersistentData().getInt("CatCount") >= SCConfig.TAMED_LIMIT;
+        return tamedCat != null && tamedCat.isTame() && SCConfig.Common.tamed_limit.get() != 0 && owner != null && owner.getPersistentData().getInt("CatCount") >= SCConfig.Common.tamed_limit.get();
     }
 
     private boolean ownerIsOffline(SimplyCatEntity tamedCat, LivingEntity owner) {
@@ -91,7 +91,7 @@ public class CatMateGoal extends Goal {
         if (this.mateDelay >= 60 && this.cat.distanceToSqr(this.target) < 4.0D) {
             if (level.random.nextInt(4) <= 2) // 75% chance of success
                 this.startPregnancy();
-            this.cat.setMateTimer(SCConfig.MALE_COOLDOWN); // starts male cooldown
+            this.cat.setMateTimer(SCConfig.Common.male_cooldown.get()); // starts male cooldown
         }
     }
 
@@ -125,7 +125,7 @@ public class CatMateGoal extends Goal {
 
         if (litterSize == 6 || this.target.getKittens() == 6 || level.random.nextInt(4) == 0) { // full litter OR 25% chance ends heat
             this.target.setBreedingStatus("inheat", false);
-            this.target.setTimeCycle("pregnancy", SCConfig.PREGNANCY_TIMER); // starts pregnancy timer
+            this.target.setTimeCycle("pregnancy", SCConfig.Common.pregnancy_timer.get()); // starts pregnancy timer
         }
     }
 }

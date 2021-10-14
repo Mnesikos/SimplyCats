@@ -96,7 +96,6 @@ public class SimplyCatEntity extends TameableEntity {
         return entityType != EntityType.PLAYER && !(entity instanceof IMob) && !this.isAlliedTo(entity) && SCEvents.isEntityPrey(entity);
     };
     private SimplyCatEntity followParent;
-    private TemptGoal temptGoal;
     private CatTargetNearestGoal aiTargetNearest;
     private Vector3d nearestLaser;
 
@@ -107,10 +106,10 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Override
     protected void registerGoals() {
-        this.temptGoal = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), false);
+        TemptGoal temptGoal = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), false);
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(1, new CatSitGoal(this));
-        this.goalSelector.addGoal(3, this.temptGoal);
+        this.goalSelector.addGoal(3, temptGoal);
         this.goalSelector.addGoal(4, new CatFollowParentGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new CatSitOnBlockGoal(this, 1.0D, 8));
         this.goalSelector.addGoal(6, new CatBirthGoal(this));
@@ -121,7 +120,7 @@ public class SimplyCatEntity extends TameableEntity {
         this.goalSelector.addGoal(10, new CatWanderGoal(this, 1.0D));
         this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
         this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
-        if (SCConfig.ATTACK_AI) {
+        if (SCConfig.Common.attack_ai.get()) {
             this.aiTargetNearest = new CatTargetNearestGoal<>(this, LivingEntity.class, true, PREY_SELECTOR);
             this.targetSelector.addGoal(1, this.aiTargetNearest);
         }
@@ -171,7 +170,7 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Override
     protected void customServerAiStep() {
-        if (this.level.getDifficulty() == Difficulty.PEACEFUL || !SCConfig.ATTACK_AI)
+        if (this.level.getDifficulty() == Difficulty.PEACEFUL || !SCConfig.Common.attack_ai.get())
             this.targetSelector.removeGoal(aiTargetNearest);
 
         if (this.getMoveControl().hasWanted()) {
@@ -202,7 +201,7 @@ public class SimplyCatEntity extends TameableEntity {
             if (this.isTame())
                 this.setOrderedToSit(!this.isOrderedToSit());
         if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed())
-            this.setTimeCycle("end", random.nextInt(SCConfig.HEAT_COOLDOWN));
+            this.setTimeCycle("end", random.nextInt(SCConfig.Common.heat_cooldown.get()));
 
         return entityData;
     }
@@ -225,16 +224,16 @@ public class SimplyCatEntity extends TameableEntity {
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("end", SCConfig.HEAT_COOLDOWN); //sets out of heat for 16 (default) minecraft days
+                        setTimeCycle("end", SCConfig.Common.heat_cooldown.get()); //sets out of heat for 16 (default) minecraft days
                     else { //or if IS pregnant
-                        setTimeCycle("pregnant", SCConfig.PREGNANCY_TIMER); //and heat time runs out, starts pregnancy timer for birth
+                        setTimeCycle("pregnant", SCConfig.Common.pregnancy_timer.get()); //and heat time runs out, starts pregnancy timer for birth
                         this.setBreedingStatus("inheat", false); //sets out of heat
                     }
                 }
             if (!this.getBreedingStatus("inheat")) { //if not in heat
                 if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("start", SCConfig.HEAT_TIMER); //sets in heat for 2 minecraft days
+                        setTimeCycle("start", SCConfig.Common.heat_timer.get()); //sets in heat for 2 minecraft days
                 }
             }
         }
@@ -930,7 +929,7 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     public boolean canBeTamed(PlayerEntity player) {
-        return (SCConfig.TAMED_LIMIT == 0 || player.getPersistentData().getInt("CatCount") < SCConfig.TAMED_LIMIT) && !this.isTame();
+        return (SCConfig.Common.tamed_limit.get() == 0 || player.getPersistentData().getInt("CatCount") < SCConfig.Common.tamed_limit.get()) && !this.isTame();
     }
 
     /**

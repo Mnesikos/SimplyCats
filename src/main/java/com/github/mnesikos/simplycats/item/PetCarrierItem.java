@@ -103,8 +103,9 @@ public class PetCarrierItem extends Item {
 
                 if (item.getDamageValue() == 1 || item.getDamageValue() == 2) {
                     Entity entity = EntityType.loadEntityRecursive(tags, world, entity1 -> entity1);
-                    if (entity != null) {
+                    if (entity != null && entity instanceof TameableEntity) {
                         entity.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, context.getRotation(), 0);
+                        ((TameableEntity) entity).setOrderedToSit(true);
                         entity.setUUID(tags.getUUID("UUID"));
                         world.addFreshEntity(entity);
 
@@ -130,6 +131,7 @@ public class PetCarrierItem extends Item {
 
         } else if (pet != null) {
             pet.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, MathHelper.wrapDegrees(world.random.nextFloat() * 360.0F), 0);
+            pet.setOrderedToSit(true);
             world.addFreshEntity(pet);
             if (pet instanceof SimplyCatEntity)
                 ((SimplyCatEntity) pet).setTamed(true, player);
