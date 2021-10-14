@@ -41,6 +41,12 @@ public class CatSitOnBlockGoal extends MoveToBlockGoal {
     }
 
     @Override
+    protected BlockPos getMoveToTarget() {
+        Block block = this.cat.level.getBlockState(this.blockPos).getBlock();
+        return block instanceof CatTreeBlock ? this.blockPos.below() : super.getMoveToTarget();
+    }
+
+    @Override
     public void tick() {
         super.tick();
         this.cat.setInSittingPose(this.isReachedTarget());

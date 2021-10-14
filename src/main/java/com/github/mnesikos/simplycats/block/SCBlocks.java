@@ -2,16 +2,15 @@ package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.item.SCItems;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.WoodType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.state.properties.BedPart;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -54,7 +53,7 @@ public class SCBlocks {
             WINDOW_PERCHES.put(woodType, register(woodType.name() + "_window_perch", WindowPerchBlock::new));
         });
     }
-    
+
     private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block) {
         RegistryObject<T> registryObject = REGISTRAR.register(name, block);
         SCItems.REGISTRAR.register(name, () -> new BlockItem(registryObject.get(), new Item.Properties().tab(SimplyCats.ITEM_GROUP)));

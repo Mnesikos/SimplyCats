@@ -50,8 +50,12 @@ public class CertificateItem extends Item {
                     if (!player.isCreative())
                         stack.shrink(1);
 
-                } else if (tameable instanceof SimplyCatEntity && !tameable.isTame())
+                    return ActionResultType.SUCCESS;
+
+                } else if (tameable instanceof SimplyCatEntity && !tameable.isTame()) {
                     player.displayClientMessage(new TranslationTextComponent("chat.info.tamed_limit_reached"), true);
+                    return ActionResultType.PASS;
+                }
 
             } else {
                 if (tameable.isOwnedBy(player)) {
@@ -66,11 +70,12 @@ public class CertificateItem extends Item {
 
                     if (!player.isCreative())
                         stack.shrink(1);
+
+                    return ActionResultType.SUCCESS;
                 }
-                return ActionResultType.SUCCESS;
             }
         }
-        return ActionResultType.FAIL;
+        return ActionResultType.PASS;
     }
 
     protected void playTameEffect(boolean play, World world, TameableEntity entity) {

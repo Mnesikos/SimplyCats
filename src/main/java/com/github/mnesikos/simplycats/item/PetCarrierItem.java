@@ -17,11 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -32,16 +29,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class PetCarrierItem extends Item {
     public PetCarrierItem() {
         super(new Item.Properties().tab(SimplyCats.ITEM_GROUP).stacksTo(1));
-    }
-
-    // The number of item models used by the client
-    public int getNumModels() {
-        return 5;
     }
 
     @Override
@@ -125,13 +116,6 @@ public class PetCarrierItem extends Item {
             }
         }
         return ActionResultType.SUCCESS;
-    }
-
-    private double getYOffset(World world, BlockPos pos, AxisAlignedBB axisAlignedBB) {
-        AxisAlignedBB axisalignedbb = (new AxisAlignedBB(pos)).expandTowards(0.0D, -1.0D, 0.0D);
-        Stream<VoxelShape> stream = world.getCollisions(null, axisalignedbb, (entity) -> true);
-
-        return 1.0D + VoxelShapes.collide(Direction.Axis.Y, axisAlignedBB, stream, 0.0D);
     }
 
     private void newPet(ItemStack item, PlayerEntity player, World world, BlockPos blockPos) {

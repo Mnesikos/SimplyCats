@@ -67,10 +67,10 @@ public class CatTreeBlock extends Block {
     public static class Box extends Facing {
         private static final VoxelShape INSIDE_NS = box(2.0D, 1.0D, 1.0D, 14.0D, 14.0D, 15.0D);
         public static final VoxelShape INSIDE_EW = box(1.0D, 1.0D, 2.0D, 15.0D, 14.0D, 14.0D);
-        protected static final VoxelShape NORTH_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(4.0D, 1.0D, 0.0D, 12.0D, 11.0D, 1.0D), INSIDE_NS), IBooleanFunction.ONLY_FIRST);
-        protected static final VoxelShape EAST_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(15.0D, 1.0D, 4.0D, 16.0D, 11.0D, 12.0D), INSIDE_EW), IBooleanFunction.ONLY_FIRST);
-        protected static final VoxelShape SOUTH_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(4.0D, 1.0D, 15.0D, 12.0D, 11.0D, 16.0D), INSIDE_NS), IBooleanFunction.ONLY_FIRST);
-        protected static final VoxelShape WEST_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(0.0D, 1.0D, 4.0D, 1.0D, 11.0D, 12.0D), INSIDE_EW), IBooleanFunction.ONLY_FIRST);
+        protected static final VoxelShape NORTH_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(0.0D, 1.0D, 0.0D, 16.0D, 16.0D, 1.0D), INSIDE_NS), IBooleanFunction.ONLY_FIRST);
+        protected static final VoxelShape EAST_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(15.0D, 1.0D, 0.0D, 16.0D, 16.0D, 16.0D), INSIDE_EW), IBooleanFunction.ONLY_FIRST);
+        protected static final VoxelShape SOUTH_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(0.0D, 1.0D, 15.0D, 16.0D, 16.0D, 16.0D), INSIDE_NS), IBooleanFunction.ONLY_FIRST);
+        protected static final VoxelShape WEST_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(0.0D, 1.0D, 0.0D, 1.0D, 16.0D, 16.0D), INSIDE_EW), IBooleanFunction.ONLY_FIRST);
 
         public Box() {
             super(VoxelShapes.block());
