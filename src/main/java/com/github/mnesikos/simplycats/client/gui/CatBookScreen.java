@@ -13,6 +13,7 @@ import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,7 +42,7 @@ public class CatBookScreen extends Screen {
     private NextPageButton buttonNextPage;
     private NextPageButton buttonPreviousPage;
 
-//    public SimplyCatEntity cat;
+    public SimplyCatEntity cat;
 //    CompoundNBT nbt;
     protected int catHealth;
     public static ItemStack book;
@@ -49,7 +50,7 @@ public class CatBookScreen extends Screen {
     public CatBookScreen(SimplyCatEntity cat, int catInList) {
         this();
         this.currPage = catInList;
-//        this.cat = cat;
+        this.cat = (SimplyCatEntity) EntityType.loadEntityRecursive(bookPages.getCompound(catInList), this.minecraft.level, entity1 -> entity1);
 //        nbt = new CompoundNBT();
 //        cat.save(nbt);
     }
@@ -57,7 +58,7 @@ public class CatBookScreen extends Screen {
     public CatBookScreen() {
         super(NarratorChatListener.NO_TITLE);
         if (book != null) {
-            if (book.hasTag() && book.getTag() != null) {
+            if (book.hasTag() && book.getTag() != null && !book.getTag().isEmpty()) {
                 CompoundNBT bookTag = book.getTag();
                 ListNBT pages = bookTag.getList("pages", Constants.NBT.TAG_COMPOUND).copy();
                 this.bookPages.addAll(pages);
@@ -113,7 +114,7 @@ public class CatBookScreen extends Screen {
         this.minecraft.getTextureManager().bind(BG_TEXTURE);
         blit(matrixStack, leftX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
 
-        if (bookPages.get(this.currPage) != null/* || cat != null*/) {
+        if (bookPages.get(this.currPage) != null || !bookPages.getCompound(this.currPage).isEmpty()/* || cat != null*/) {
             InventoryScreen.renderEntityInInventory(leftX + 40, 74, 50, (leftX + 51) - mouseX, 50 - mouseY, cat);
 
             int nameWidth = this.font.width(cat.getName());

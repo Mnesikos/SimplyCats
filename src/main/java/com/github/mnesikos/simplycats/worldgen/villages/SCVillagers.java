@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -31,7 +32,7 @@ public class SCVillagers {
     public static final DeferredRegister<PointOfInterestType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, SimplyCats.MOD_ID);
 
     // todo change interest block (bookshelf) to custom block
-    public static final RegistryObject<PointOfInterestType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PointOfInterestType("shelter_worker", PointOfInterestType.getBlockStates(Blocks.BOOKSHELF.getBlock()), 1, 1));
+    public static final RegistryObject<PointOfInterestType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PointOfInterestType("shelter_worker", PointOfInterestType.getBlockStates(SCBlocks.SHELTER_BOOK.get()), 1, 1));
     public static final RegistryObject<VillagerProfession> SHELTER_WORKER = PROFESSIONS.register("shelter_worker", () -> new VillagerProfession("shelter_worker", ADOPTION_BOOK.get(), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN));
 
     public static void registerPointOfInterests() {

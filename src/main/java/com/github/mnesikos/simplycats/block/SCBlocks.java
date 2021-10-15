@@ -6,6 +6,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.WoodType;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.BlockItem;
@@ -29,6 +30,7 @@ public class SCBlocks {
     public static final DeferredRegister<Block> REGISTRAR = DeferredRegister.create(ForgeRegistries.BLOCKS, SimplyCats.MOD_ID);
 
     public static final RegistryObject<Block> CATNIP_CROP = REGISTRAR.register("catnip", () -> new CatnipBlock(AbstractBlock.Properties.copy(Blocks.WHEAT)));
+    public static final RegistryObject<Block> SHELTER_BOOK = register("shelter_book", ShelterBookBlock::new);
 
 //    public static final Map<DyeColor, RegistryObject<Block>> CAT_BOWLS = new HashMap<>();
     public static final Map<DyeColor, RegistryObject<Block>> LITTER_BOXES = new HashMap<>();

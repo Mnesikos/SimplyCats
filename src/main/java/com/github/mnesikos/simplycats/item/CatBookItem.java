@@ -5,6 +5,7 @@ import com.github.mnesikos.simplycats.client.gui.CatBookScreen;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -25,8 +27,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class CatBookItem extends Item {
-    public static final int GUI_ID = 1;
-
     public CatBookItem() {
         super(new Item.Properties().tab(SimplyCats.ITEM_GROUP).stacksTo(1));
     }
@@ -37,7 +37,7 @@ public class CatBookItem extends Item {
 
     @Override
     public ActionResultType interactLivingEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
-        if (target instanceof SimplyCatEntity) {
+        if (target instanceof SimplyCatEntity && player.isDiscrete()) {
             SimplyCatEntity cat = (SimplyCatEntity) target;
             stack = player.getItemInHand(hand);
 
@@ -62,17 +62,20 @@ public class CatBookItem extends Item {
 
             if (!catExists) {
                 CompoundNBT catTag = new CompoundNBT();
-                cat.saveWithoutId(catTag);
+                cat.save(catTag);
+
+                ResourceLocation key = EntityType.getKey(cat.getType());
+                catTag.putString("id", key.toString());
+                if (cat.hasCustomName()) catTag.putString("DisplayName", cat.getDisplayName().getString());
+
                 tagList.add(catTag);
             }
 
             stack.setTag(compound);
 
-            if (player.isDiscrete()) { // todo
-                if (player.level.isClientSide) {
-                    CatBookScreen.book = stack;
-                    Minecraft.getInstance().setScreen(new CatBookScreen(cat, catInList));
-                }
+            if (player.level.isClientSide) {
+                CatBookScreen.book = stack;
+                Minecraft.getInstance().setScreen(new CatBookScreen(cat, catInList));
             }
 
         }
