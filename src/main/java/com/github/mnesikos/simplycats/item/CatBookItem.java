@@ -1,7 +1,9 @@
 package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.client.gui.CatBookScreen;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,11 +45,13 @@ public class CatBookItem extends Item {
 
             ListNBT tagList;
             boolean catExists = false;
+            int catInList = 0;
             if (compound.contains("pages")) {
                 tagList = compound.getList("pages", Constants.NBT.TAG_COMPOUND);
                 for (int i = 0; i < tagList.size(); ++i) {
                     if (tagList.getCompound(i).getUUID("UUID").equals(cat.getUUID())) {
                         catExists = true;
+                        catInList = i;
                         break;
                     }
                 }
@@ -64,10 +68,11 @@ public class CatBookItem extends Item {
 
             stack.setTag(compound);
 
-            if (player.isCrouching()) { // todo
-//                if (player.level.isClientSide)
-//                    GuiCatBook.book = stack;
-//                player.openGui(SimplyCats.instance, GUI_ID, player.world, cat.getEntityId(), (int) player.posY, (int) player.posZ);
+            if (player.isDiscrete()) { // todo
+                if (player.level.isClientSide) {
+                    CatBookScreen.book = stack;
+                    Minecraft.getInstance().setScreen(new CatBookScreen(cat, catInList));
+                }
             }
 
         }
@@ -76,12 +81,13 @@ public class CatBookItem extends Item {
 
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) { // todo
-        /*ItemStack book = player.getHeldItem(hand);
-        if (!player.isSneaking()) {
-            if (world.isRemote)
-                GuiCatBook.book = book;
-            player.openGui(SimplyCats.instance, GUI_ID, player.world, 0, (int) player.posY, (int) player.posZ);
-        }*/
+        ItemStack book = player.getItemInHand(hand);
+        if (!player.isDiscrete()) {
+            if (world.isClientSide) {
+                CatBookScreen.book = book;
+                Minecraft.getInstance().setScreen(new CatBookScreen());
+            }
+        }
 
         return super.use(world, player, hand);
     }

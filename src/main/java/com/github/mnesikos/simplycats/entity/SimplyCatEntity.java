@@ -96,7 +96,7 @@ public class SimplyCatEntity extends TameableEntity {
         return entityType != EntityType.PLAYER && !(entity instanceof IMob) && !this.isAlliedTo(entity) && SCEvents.isEntityPrey(entity);
     };
     private SimplyCatEntity followParent;
-    private CatTargetNearestGoal aiTargetNearest;
+//    private CatTargetNearestGoal aiTargetNearest;
     private Vector3d nearestLaser;
 
     public SimplyCatEntity(EntityType<? extends TameableEntity> type, World world) {
@@ -114,16 +114,16 @@ public class SimplyCatEntity extends TameableEntity {
         this.goalSelector.addGoal(5, new CatSitOnBlockGoal(this, 1.0D, 8));
         this.goalSelector.addGoal(6, new CatBirthGoal(this));
         this.goalSelector.addGoal(7, new LeapAtTargetGoal(this, 0.4F));
-        this.goalSelector.addGoal(8, new CatAttackGoal(this));
+//        this.goalSelector.addGoal(8, new CatAttackGoal(this));
         if (!this.isFixed())
             this.goalSelector.addGoal(9, new CatMateGoal(this, 1.2D));
         this.goalSelector.addGoal(10, new CatWanderGoal(this, 1.0D));
         this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
         this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
-        if (SCConfig.Common.attack_ai.get()) {
+        /*if (SCConfig.Common.attack_ai.get()) {
             this.aiTargetNearest = new CatTargetNearestGoal<>(this, LivingEntity.class, true, PREY_SELECTOR);
             this.targetSelector.addGoal(1, this.aiTargetNearest);
-        }
+        }*/
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -170,8 +170,8 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Override
     protected void customServerAiStep() {
-        if (this.level.getDifficulty() == Difficulty.PEACEFUL || !SCConfig.Common.attack_ai.get())
-            this.targetSelector.removeGoal(aiTargetNearest);
+        /*if (this.level.getDifficulty() == Difficulty.PEACEFUL || !SCConfig.Common.attack_ai.get())
+            this.targetSelector.removeGoal(aiTargetNearest);*/
 
         if (this.getMoveControl().hasWanted()) {
             double d0 = this.getMoveControl().getSpeedModifier();
