@@ -39,8 +39,8 @@ public class SCEvents {
     }
 
     public static boolean isRatEntity(Entity entity) {
-        String entityClass = EntityType.getKey(entity.getType()).toString();
-        return entityClass.equals("rats:rat")/* || entityClass.equals("zawa:brownrat")*/;
+        String entityType = EntityType.getKey(entity.getType()).toString();
+        return entityType.equals("rats:rat")/* || entityType.equals("zawa:brownrat")*/;
     }
 
     @SubscribeEvent
