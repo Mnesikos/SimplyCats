@@ -38,21 +38,17 @@ public class CatBookScreen extends Screen {
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(SimplyCats.MOD_ID, "textures/gui/cat_book.png");
 
     private int currPage;
-    private ListNBT bookPages;
+    private final ListNBT bookPages = new ListNBT();
     private NextPageButton buttonNextPage;
     private NextPageButton buttonPreviousPage;
 
     public SimplyCatEntity cat;
-//    CompoundNBT nbt;
     protected int catHealth;
     public static ItemStack book;
 
-    public CatBookScreen(SimplyCatEntity cat, int catInList) {
+    public CatBookScreen(int catInList) {
         this();
         this.currPage = catInList;
-        this.cat = (SimplyCatEntity) EntityType.loadEntityRecursive(bookPages.getCompound(catInList), this.minecraft.level, entity1 -> entity1);
-//        nbt = new CompoundNBT();
-//        cat.save(nbt);
     }
 
     public CatBookScreen() {
@@ -62,6 +58,7 @@ public class CatBookScreen extends Screen {
                 CompoundNBT bookTag = book.getTag();
                 ListNBT pages = bookTag.getList("pages", Constants.NBT.TAG_COMPOUND).copy();
                 this.bookPages.addAll(pages);
+                this.cat = (SimplyCatEntity) EntityType.loadEntityRecursive(bookPages.getCompound(this.currPage), this.minecraft.level, entity1 -> entity1);
             }
         }
     }

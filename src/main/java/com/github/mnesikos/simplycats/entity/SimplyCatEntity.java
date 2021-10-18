@@ -711,7 +711,7 @@ public class SimplyCatEntity extends TameableEntity {
         return this.entityData.get(KITTENS);
     }
 
-    public void addFather(SimplyCatEntity father, int size) { //todo
+    public void addFather(SimplyCatEntity father, int size) {
         for (int i = 0; i < size; i++) {
             if (!this.getPersistentData().contains("Father" + i) || (this.getPersistentData().contains("Father" + i) && this.getPersistentData().getCompound("Father" + i).isEmpty())) {
                 this.getPersistentData().put("Father" + i, father.saveWithoutId(new CompoundNBT()));
@@ -720,7 +720,7 @@ public class SimplyCatEntity extends TameableEntity {
         }
     }
 
-    private void setFather(int i, INBT father) { //todo
+    private void setFather(int i, INBT father) {
         if (this.getPersistentData().contains("Father" + i))
             this.getPersistentData().put("Father" + i, father);
     }

@@ -75,7 +75,7 @@ public class CatBookItem extends Item {
 
             if (player.level.isClientSide) {
                 CatBookScreen.book = stack;
-                Minecraft.getInstance().setScreen(new CatBookScreen(cat, catInList));
+                Minecraft.getInstance().setScreen(new CatBookScreen(catInList));
             }
 
         }
