@@ -18,6 +18,8 @@
     "tooltip.pet_carrier.empty": "宠物笼是空的。",
     "tooltip.pet_carrier.adopt_cat": "领养猫咪!",
     "tooltip.pet_carrier.adopt_dog": "领养狗狗!",
+    "tooltip.pet_carrier.adopt_parrot": "Adopt a Parrot!",
+    "tooltip.pet_carrier.adopt_rabbit": "Adopt a Rabbit!",
     "tooltip.pet_carrier.owner": "饲主：%s",
     "tooltip.sterilization_potion.usage": "潜行+右键将猫咪绝育，请注意，绝育是不可逆的!",
 

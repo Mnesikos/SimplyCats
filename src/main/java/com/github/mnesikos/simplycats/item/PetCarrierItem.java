@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.ParrotEntity;
+import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -91,7 +92,7 @@ public class PetCarrierItem extends Item {
         if (!world.isClientSide) {
             BlockPos blockPos = new BlockPos(context.getClickedPos()).relative(context.getClickedFace());
 
-            if (item.getDamageValue() == 3 || item.getDamageValue() == 4) {
+            if (item.getDamageValue() >= 3 && item.getDamageValue() <= 6) {
 //                if (!(player.capabilities.isCreativeMode && player.isSneaking())) {
                 newPet(item, player, world, blockPos);
                 if (!player.isCreative())
@@ -125,6 +126,8 @@ public class PetCarrierItem extends Item {
             pet = SimplyCats.CAT.get().create(world);
         else if (item.getDamageValue() == 4)
             pet = EntityType.WOLF.create(world);
+        else if (item.getDamageValue() == 5)
+            pet = EntityType.PARROT.create(world);
 
         if (pet instanceof SimplyCatEntity && !((SimplyCatEntity) pet).canBeTamed(player)) {
             player.displayClientMessage(new TranslationTextComponent("chat.info.tamed_limit_reached"), true);
@@ -145,6 +148,15 @@ public class PetCarrierItem extends Item {
             pet.getNavigation().stop();
             float health = pet.getMaxHealth();
             pet.setHealth(health);
+
+        } else if (item.getDamageValue() == 6) {
+            RabbitEntity rabbit = EntityType.RABBIT.create(world);
+            if (rabbit != null) {
+                rabbit.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, MathHelper.wrapDegrees(world.random.nextFloat() * 360.0F), 0);
+                world.addFreshEntity(rabbit);
+                rabbit.getNavigation().stop();
+                rabbit.setHealth(rabbit.getMaxHealth());
+            }
         }
     }
 
@@ -173,12 +185,14 @@ public class PetCarrierItem extends Item {
     public void appendHoverText(ItemStack item, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         CompoundNBT nbt = item.getTag();
         if (nbt != null) {
-            TranslationTextComponent cat = new TranslationTextComponent("tooltip.pet_carrier.adopt_cat");
-            TranslationTextComponent dog = new TranslationTextComponent("tooltip.pet_carrier.adopt_dog");
             if (item.getDamageValue() == 3)
-                tooltip.add(cat.withStyle(TextFormatting.ITALIC));
+                tooltip.add(new TranslationTextComponent("tooltip.pet_carrier.adopt_cat").withStyle(TextFormatting.ITALIC));
             else if (item.getDamageValue() == 4)
-                tooltip.add(dog.withStyle(TextFormatting.ITALIC));
+                tooltip.add(new TranslationTextComponent("tooltip.pet_carrier.adopt_dog").withStyle(TextFormatting.ITALIC));
+            else if (item.getDamageValue() == 5)
+                tooltip.add(new TranslationTextComponent("tooltip.pet_carrier.adopt_parrot").withStyle(TextFormatting.ITALIC));
+            else if (item.getDamageValue() == 6)
+                tooltip.add(new TranslationTextComponent("tooltip.pet_carrier.adopt_rabbit").withStyle(TextFormatting.ITALIC));
 
             else if (item.getDamageValue() != 0) {
                 TranslationTextComponent species = new TranslationTextComponent(Util.makeDescriptionId("entity", new ResourceLocation(nbt.getString("id"))));
