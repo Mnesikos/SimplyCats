@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    " B",
+    "RI"
+  ],
+  "key": {
+    "B": [
+      { "item": "minecraft:stone_button" }
+    ],
+    "R": [
+      { "item": "minecraft:redstone_torch" }
+    ],
+    "I": [
+      { "tag": "forge:ingots/iron" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:laser_pointer"
+  }
+}

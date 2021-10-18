@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "simplycatsgroup",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    },
+    { "tag": "forge:ingots/iron",
+      "count": 1 }
+  ],
+  "result": {
+    "item": "simplycats:treat_bag",
+    "count": 1
+  }
+}

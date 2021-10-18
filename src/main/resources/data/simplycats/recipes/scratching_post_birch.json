@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    " P ",
+    "STS",
+    "PPP"
+  ],
+  "key": {
+    "P": [
+      { "item": "minecraft:birch_planks" }
+    ],
+    "S": [
+      { "item": "minecraft:string" }
+    ],
+    "T": [
+      { "item": "minecraft:stick" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:birch_scratching_post"
+  }
+}

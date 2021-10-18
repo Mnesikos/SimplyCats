@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    "CCC",
+    "C C",
+    "CCC"
+  ],
+  "key": {
+    "C": [
+      { "item": "minecraft:black_carpet" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:black_cat_tree_box",
+    "count": 4
+  }
+}

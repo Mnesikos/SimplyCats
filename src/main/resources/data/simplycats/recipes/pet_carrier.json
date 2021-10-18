@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    "ISI",
+    "SBS",
+    "ISI"
+  ],
+  "key": {
+    "I": [
+      { "tag": "forge:ingots/iron" }
+    ],
+    "B": [
+      { "item": "minecraft:iron_bars" }
+    ],
+    "S": [
+      { "item": "minecraft:terracotta" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:pet_carrier",
+    "data": 0
+  }
+}

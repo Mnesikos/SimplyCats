@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    " P ",
+    "STS",
+    "PPP"
+  ],
+  "key": {
+    "P": [
+      { "item": "minecraft:dark_oak_planks" }
+    ],
+    "S": [
+      { "item": "minecraft:string" }
+    ],
+    "T": [
+      { "item": "minecraft:stick" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:dark_oak_scratching_post"
+  }
+}

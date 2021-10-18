@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    " C ",
+    "SWS",
+    " C "
+  ],
+  "key": {
+    "C": [
+      { "item": "minecraft:pink_carpet" }
+    ],
+    "S": [
+      { "item": "minecraft:string" }
+    ],
+    "W": [
+      { "item": "minecraft:stick" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:pink_cat_tree_post",
+    "count": 4
+  }
+}

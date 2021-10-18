@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    "S ",
+    " I"
+  ],
+  "key": {
+    "I": [
+      { "tag": "forge:ingots/iron" },
+      { "tag": "forge:ingots/gold" }
+    ],
+    "S": [
+      {"item": "minecraft:string"}
+    ]
+  },
+  "result": {
+    "item": "minecraft:name_tag"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    "CCC",
+    "C C",
+    "CCC"
+  ],
+  "key": {
+    "C": [
+      { "item": "minecraft:light_gray_terracotta" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:light_gray_litter_box"
+  }
+}

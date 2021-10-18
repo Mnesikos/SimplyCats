@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    " P ",
+    "STS",
+    "PPP"
+  ],
+  "key": {
+    "P": [
+      { "item": "minecraft:acacia_planks" }
+    ],
+    "S": [
+      { "item": "minecraft:string" }
+    ],
+    "T": [
+      { "item": "minecraft:stick" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:acacia_scratching_post"
+  }
+}
