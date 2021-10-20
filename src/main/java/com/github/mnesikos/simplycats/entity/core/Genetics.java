@@ -93,9 +93,9 @@ public class Genetics {
         }
 
         public static ITextComponent getPrettyName(String phaeomelanin) {
-            if (phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
+            if (phaeomelanin.equalsIgnoreCase(MALE.name))
                 return new TranslationTextComponent("cat.sex.male.name");
-            else if (!phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
+            else if (phaeomelanin.equalsIgnoreCase(FEMALE.name))
                 return new TranslationTextComponent("cat.sex.female.name");
             else
                 return new StringTextComponent(phaeomelanin);

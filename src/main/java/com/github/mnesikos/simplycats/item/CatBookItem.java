@@ -60,37 +60,32 @@ public class CatBookItem extends Item {
                 compound.put("pages", tagList);
             }
 
-            if (!catExists) {
-                CompoundNBT catTag = new CompoundNBT();
-                cat.save(catTag);
+            CompoundNBT catTag = new CompoundNBT();
+            cat.save(catTag);
 
-                ResourceLocation key = EntityType.getKey(cat.getType());
-                catTag.putString("id", key.toString());
-                if (cat.hasCustomName()) catTag.putString("DisplayName", cat.getDisplayName().getString());
+            ResourceLocation key = EntityType.getKey(cat.getType());
+            catTag.putString("id", key.toString());
+            if (cat.hasCustomName()) catTag.putString("DisplayName", cat.getDisplayName().getString());
 
-                tagList.add(catTag);
-            }
+            if (!catExists) tagList.add(catTag);
+            else tagList.setTag(catInList, catTag);
 
             stack.setTag(compound);
 
-            if (player.level.isClientSide) {
-                CatBookScreen.book = stack;
-                Minecraft.getInstance().setScreen(new CatBookScreen(catInList));
-            }
+            /*if (player.level.isClientSide) // todo ???
+                Minecraft.getInstance().setScreen(new CatBookScreen(compound, player.level, catInList));*/
 
+            return ActionResultType.SUCCESS;
         }
-        return super.interactLivingEntity(stack, player, target, hand);
+
+        return ActionResultType.PASS;
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) { // todo
-        ItemStack book = player.getItemInHand(hand);
-        if (!player.isDiscrete()) {
-            if (world.isClientSide) {
-                CatBookScreen.book = book;
-                Minecraft.getInstance().setScreen(new CatBookScreen());
-            }
-        }
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        CompoundNBT bookTag = player.getItemInHand(hand).getTag();
+            if (world.isClientSide)
+                Minecraft.getInstance().setScreen(new CatBookScreen(bookTag, world));
 
         return super.use(world, player, hand);
     }

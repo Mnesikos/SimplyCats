@@ -25,6 +25,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -37,6 +38,7 @@ public class CatBookScreen extends Screen {
     private static final int bookImageWidth = 281;
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(SimplyCats.MOD_ID, "textures/gui/cat_book.png");
 
+    private World world;
     private int currPage;
     private final ListNBT bookPages = new ListNBT();
     private NextPageButton buttonNextPage;
@@ -44,22 +46,19 @@ public class CatBookScreen extends Screen {
 
     public SimplyCatEntity cat;
     protected int catHealth;
-    public static ItemStack book;
+//    public static ItemStack book;
 
-    public CatBookScreen(int catInList) {
-        this();
+    public CatBookScreen(CompoundNBT bookTag, World world, int catInList) {
+        this(bookTag, world);
         this.currPage = catInList;
     }
 
-    public CatBookScreen() {
+    public CatBookScreen(CompoundNBT bookTag, World world) {
         super(NarratorChatListener.NO_TITLE);
-        if (book != null) {
-            if (book.hasTag() && book.getTag() != null && !book.getTag().isEmpty()) {
-                CompoundNBT bookTag = book.getTag();
-                ListNBT pages = bookTag.getList("pages", Constants.NBT.TAG_COMPOUND).copy();
-                this.bookPages.addAll(pages);
-                this.cat = (SimplyCatEntity) EntityType.loadEntityRecursive(bookPages.getCompound(this.currPage), this.minecraft.level, entity1 -> entity1);
-            }
+        if (bookTag != null && !bookTag.isEmpty()) {
+            ListNBT pages = bookTag.getList("pages", Constants.NBT.TAG_COMPOUND).copy();
+            this.bookPages.addAll(pages);
+            this.world = world;
         }
     }
 
@@ -78,6 +77,7 @@ public class CatBookScreen extends Screen {
     }
 
     private void updateButtons() {
+        this.cat = (SimplyCatEntity) EntityType.loadEntityRecursive(bookPages.getCompound(this.currPage), world, entity1 -> entity1);
         this.buttonNextPage.visible = this.currPage < this.bookPages.size() - 1;
         this.buttonPreviousPage.visible = this.currPage > 0;
     }
@@ -111,14 +111,15 @@ public class CatBookScreen extends Screen {
         this.minecraft.getTextureManager().bind(BG_TEXTURE);
         blit(matrixStack, leftX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
 
-        if (bookPages.get(this.currPage) != null || !bookPages.getCompound(this.currPage).isEmpty()/* || cat != null*/) {
+        if (bookPages.get(this.currPage) != null || !bookPages.getCompound(this.currPage).isEmpty() || cat != null) {
             InventoryScreen.renderEntityInInventory(leftX + 40, 74, 50, (leftX + 51) - mouseX, 50 - mouseY, cat);
 
             int nameWidth = this.font.width(cat.getName());
             this.font.draw(matrixStack, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
 
-            String sex = (cat.isFixed() ? new TranslationTextComponent("cat.fixed.name") : new TranslationTextComponent("cat.intact.name"))
-                    + " " + Genetics.Sex.getPrettyName(cat.getSex().getName());
+            StringTextComponent sex = new StringTextComponent(new TranslationTextComponent(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
+                    + " "
+                    + Genetics.Sex.getPrettyName(cat.getSex().getName()).getString());
             this.font.draw(matrixStack, sex, leftX + 66, 14 * 2, 0);
 
             this.renderCatHealth(matrixStack, leftX + 66, 14 * 3);
@@ -171,10 +172,10 @@ public class CatBookScreen extends Screen {
 
             //this.font.drawWordWrap("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 
-        } else if (book != null) {
-            this.font.drawWordWrap(new TranslationTextComponent("book.index_page.info"), leftX + 16, 60, 120, 0);
-        } else
-            this.font.drawWordWrap(new StringTextComponent("Error page, this should not happen, please report to github issue tracker, thanks."), leftX + 16, 60, 120, 0); //todo remove when done
+        } /*else if (bookPages != null) {*/
+//            this.font.drawWordWrap(new TranslationTextComponent("book.index_page.info"), leftX + 16, 60, 120, 0);
+//        } else
+//            this.font.drawWordWrap(new StringTextComponent("Error page, this should not happen, please report to github issue tracker, thanks."), leftX + 16, 60, 120, 0); //todo remove when done
 
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }

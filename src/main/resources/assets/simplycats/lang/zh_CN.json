@@ -24,6 +24,7 @@
     "tooltip.sterilization_potion.usage": "潜行+右键将猫咪绝育，请注意，绝育是不可逆的!",
 
     "__comment": "Block Names",
+    "block.simplycats.shelter_book": "Shelter Book",
     "container.cat_bowl.name": "猫碗",
     "block.simplycats.white_cat_bowl": "白色猫碗",
     "block.simplycats.orange_cat_bowl": "橙色猫碗",

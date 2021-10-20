@@ -31,7 +31,7 @@ public class SCVillagers {
     public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, SimplyCats.MOD_ID);
     public static final DeferredRegister<PointOfInterestType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, SimplyCats.MOD_ID);
 
-    public static final RegistryObject<PointOfInterestType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PointOfInterestType("shelter_worker", PointOfInterestType.getBlockStates(SCBlocks.SHELTER_BOOK.get()), 1, 1));
+    public static final RegistryObject<PointOfInterestType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PointOfInterestType("shelter_worker", PointOfInterestType.getBlockStates(SCBlocks.SHELTER_BOOK.get()), 2, 1));
     public static final RegistryObject<VillagerProfession> SHELTER_WORKER = PROFESSIONS.register("shelter_worker", () -> new VillagerProfession("shelter_worker", ADOPTION_BOOK.get(), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN));
 
     public static void registerPointOfInterests() {

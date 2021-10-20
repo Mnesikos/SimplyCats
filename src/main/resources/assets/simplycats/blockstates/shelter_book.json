@@ -1,19 +1,19 @@
 {
   "multipart": [
     { "when": { "facing": "north" },
-      "apply": { "model": "simplycats:block/shelter_book" }
-    },
-
-    { "when": { "facing": "south" },
       "apply": { "model": "simplycats:block/shelter_book", "y": 180 }
     },
 
     { "when": { "facing": "east" },
-      "apply": { "model": "simplycats:block/shelter_book", "y": 90 }
+      "apply": { "model": "simplycats:block/shelter_book", "y": 270 }
+    },
+
+    { "when": { "facing": "south" },
+      "apply": { "model": "simplycats:block/shelter_book" }
     },
 
     { "when": { "facing": "west" },
-      "apply": { "model": "simplycats:block/shelter_book", "y": 270 }
+      "apply": { "model": "simplycats:block/shelter_book", "y": 90 }
     }
   ]
 }
