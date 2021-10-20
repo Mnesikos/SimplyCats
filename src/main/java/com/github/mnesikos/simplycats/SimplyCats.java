@@ -9,7 +9,6 @@ import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,7 +20,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -56,20 +54,10 @@ public class SimplyCats {
         SCVillagers.PROFESSIONS.register(modBus);
         SCVillagers.POI_TYPES.register(modBus);
 
-        modBus.addListener(this::setupCommon);
-
         if (FMLEnvironment.dist == Dist.CLIENT)
             modBus.addListener(this::setupClient);
 
         forgeBus.addListener(SimplyCats::setupVillages);
-    }
-
-    private void setupCommon(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            GlobalEntityTypeAttributes.put(CAT.get(), SimplyCatEntity.createAttributes().build());
-            SCVillagers.registerPointOfInterests();
-            SCVillagers.registerTrades();
-        });
     }
 
     public static void setupVillages(FMLServerAboutToStartEvent event) {

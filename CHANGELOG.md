@@ -6,6 +6,10 @@ The format is based on
 and this project adheres to
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
+## [1.16.5-0.1.1] - 2021/10/19
+### Fixed
+- Rearranged where the shelter worker's trades were registered, previously they only worked in a dev space.
+
 ## [1.16.5-0.1.0] - 2021/10/19
 ### Initial port release notes
 - Shelter structures have changed what they look like to accommodate the new village styles! You can find shelters with their Shelter Workers in any vanilla village. (However, cats and dogs currently do not spawn with the structure!)
