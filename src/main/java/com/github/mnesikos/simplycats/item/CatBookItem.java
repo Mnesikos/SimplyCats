@@ -84,10 +84,15 @@ public class CatBookItem extends Item {
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         CompoundNBT bookTag = player.getItemInHand(hand).getTag();
-            if (world.isClientSide)
-                Minecraft.getInstance().setScreen(new CatBookScreen(bookTag, world));
+        if (world.isClientSide)
+            this.openCatBook(bookTag, world);
 
         return super.use(world, player, hand);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void openCatBook(CompoundNBT bookTag, World world) {
+        Minecraft.getInstance().setScreen(new CatBookScreen(bookTag, world));
     }
 
     @OnlyIn(Dist.CLIENT)

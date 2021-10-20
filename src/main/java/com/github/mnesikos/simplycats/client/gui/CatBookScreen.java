@@ -119,7 +119,7 @@ public class CatBookScreen extends Screen {
 
             StringTextComponent sex = new StringTextComponent(new TranslationTextComponent(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
                     + " "
-                    + Genetics.Sex.getPrettyName(cat.getSex().getName()).getString());
+                    + Genetics.Sex.getPrettyName(bookPages.getCompound(this.currPage).getString("Phaeomelanin")).getString());
             this.font.draw(matrixStack, sex, leftX + 66, 14 * 2, 0);
 
             this.renderCatHealth(matrixStack, leftX + 66, 14 * 3);
