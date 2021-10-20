@@ -3,16 +3,13 @@
   "group": "simplycatsgroup",
   "ingredients": [
     {
-      "item": "minecraft:paper",
-      "count": 1
+      "item": "minecraft:paper"
     },
     {
       "item": "minecraft:black_dye"
     }
   ],
   "result": {
-    "item": "simplycats:certificate",
-    "data": 0,
-    "count": 1
+    "item": "simplycats:adopt_certificate"
   }
 }

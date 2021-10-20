@@ -133,6 +133,7 @@ public class PetCarrierItem extends Item {
             player.displayClientMessage(new TranslationTextComponent("chat.info.tamed_limit_reached"), true);
 
         } else if (pet != null) {
+            if (pet instanceof ParrotEntity) ((ParrotEntity) pet).setVariant(random.nextInt(5));
             pet.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, MathHelper.wrapDegrees(world.random.nextFloat() * 360.0F), 0);
             pet.setOrderedToSit(true);
             world.addFreshEntity(pet);
@@ -152,6 +153,7 @@ public class PetCarrierItem extends Item {
         } else if (item.getDamageValue() == 6) {
             RabbitEntity rabbit = EntityType.RABBIT.create(world);
             if (rabbit != null) {
+                rabbit.setRabbitType(random.nextInt(6));
                 rabbit.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, MathHelper.wrapDegrees(world.random.nextFloat() * 360.0F), 0);
                 world.addFreshEntity(rabbit);
                 rabbit.getNavigation().stop();
