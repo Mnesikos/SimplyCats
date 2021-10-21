@@ -38,8 +38,8 @@ public class SCBlocks {
     public static final Map<DyeColor, RegistryObject<Block>> CAT_TREE_POSTS = new HashMap<>();
     public static final Map<DyeColor, RegistryObject<Block>> CAT_TREE_BOXES = new HashMap<>();
 
-    public static final Map<WoodType, RegistryObject<Block>> SCRATCHING_POSTS = new HashMap<>();
-    public static final Map<WoodType, RegistryObject<Block>> WINDOW_PERCHES = new HashMap<>();
+    public static final Map<String, RegistryObject<Block>> SCRATCHING_POSTS = new HashMap<>();
+    public static final Map<String, RegistryObject<Block>> WINDOW_PERCHES = new HashMap<>();
 
     static {
         for (DyeColor color : DyeColor.values()) {
@@ -50,10 +50,11 @@ public class SCBlocks {
             CAT_TREE_BOXES.put(color, register(color.getName() + "_cat_tree_box", CatTreeBlock.Box::new));
         }
 
-        WoodType.values().forEach((woodType) -> {
-            SCRATCHING_POSTS.put(woodType, register(woodType.name() + "_scratching_post", ScratchingPostBlock::new));
-            WINDOW_PERCHES.put(woodType, register(woodType.name() + "_window_perch", WindowPerchBlock::new));
-        });
+        String[] woodTypes = new String[]{"oak", "spruce", "birch", "acacia", "jungle", "dark_oak", "crimson", "warped"};
+        for (String woodType : woodTypes) {
+            SCRATCHING_POSTS.put(woodType, register(woodType + "_scratching_post", ScratchingPostBlock::new));
+            WINDOW_PERCHES.put(woodType, register(woodType + "_window_perch", WindowPerchBlock::new));
+        }
     }
 
     private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block) {

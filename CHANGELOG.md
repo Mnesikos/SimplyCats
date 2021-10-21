@@ -6,6 +6,10 @@ The format is based on
 and this project adheres to
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
+## [1.16.5-0.1.2] -
+### Fixed
+- Error during the load_registries phase, caused by registering wood types of other mods for my block variants. 
+
 ## [1.16.5-0.1.1] - 2021/10/19
 ### Fixed
 - Rearranged where the shelter worker's trades were registered, previously they only worked in a dev space.
