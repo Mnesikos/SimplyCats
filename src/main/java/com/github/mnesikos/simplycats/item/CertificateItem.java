@@ -42,6 +42,7 @@ public class CertificateItem extends Item {
                     else
                         tameable.tame(player);
                     tameable.getNavigation().stop();
+                    tameable.setOrderedToSit(true);
                     tameable.setHealth(tameable.getMaxHealth());
                     player.displayClientMessage(new TranslationTextComponent("chat.info.adopt_usage", tameable.getName()), true);
                     if (player.level.isClientSide)
