@@ -7,6 +7,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -19,12 +20,12 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -123,20 +124,17 @@ public class PetCarrierItem extends Item {
     private void newPet(ItemStack item, PlayerEntity player, World world, BlockPos blockPos) {
         TameableEntity pet = null;
         if (item.getDamageValue() == 3)
-            pet = SimplyCats.CAT.get().create(world);
+            pet = (SimplyCatEntity) SimplyCats.CAT.get().spawn((ServerWorld) world, null, player, blockPos, SpawnReason.SPAWN_EGG, false, false);
         else if (item.getDamageValue() == 4)
-            pet = EntityType.WOLF.create(world);
+            pet = (WolfEntity) EntityType.WOLF.spawn((ServerWorld) world, null, player, blockPos, SpawnReason.SPAWN_EGG, false, false);
         else if (item.getDamageValue() == 5)
-            pet = EntityType.PARROT.create(world);
+            pet = (ParrotEntity) EntityType.PARROT.spawn((ServerWorld) world, null, player, blockPos, SpawnReason.SPAWN_EGG, false, false);
 
         if (pet instanceof SimplyCatEntity && !((SimplyCatEntity) pet).canBeTamed(player)) {
             player.displayClientMessage(new TranslationTextComponent("chat.info.tamed_limit_reached"), true);
 
         } else if (pet != null) {
-            if (pet instanceof ParrotEntity) ((ParrotEntity) pet).setVariant(random.nextInt(5));
-            pet.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, MathHelper.wrapDegrees(world.random.nextFloat() * 360.0F), 0);
             pet.setOrderedToSit(true);
-            world.addFreshEntity(pet);
             if (pet instanceof SimplyCatEntity)
                 ((SimplyCatEntity) pet).setTamed(true, player);
             else
@@ -151,11 +149,8 @@ public class PetCarrierItem extends Item {
             pet.setHealth(health);
 
         } else if (item.getDamageValue() == 6) {
-            RabbitEntity rabbit = EntityType.RABBIT.create(world);
+            RabbitEntity rabbit = (RabbitEntity) EntityType.RABBIT.spawn((ServerWorld) world, null, player, blockPos, SpawnReason.SPAWN_EGG, false, false);
             if (rabbit != null) {
-                rabbit.setRabbitType(random.nextInt(6));
-                rabbit.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, MathHelper.wrapDegrees(world.random.nextFloat() * 360.0F), 0);
-                world.addFreshEntity(rabbit);
                 rabbit.getNavigation().stop();
                 rabbit.setHealth(rabbit.getMaxHealth());
             }
