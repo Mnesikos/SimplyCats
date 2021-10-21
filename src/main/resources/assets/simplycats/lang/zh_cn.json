@@ -222,7 +222,7 @@
     "config.simplycats.male_cooldown": "雄猫冷却时间",
     "config.simplycats.male_cooldown.tooltip": "公猫在繁殖一次后，开始下一次繁殖前的冷却时间，默认为1/4个minecraft天。",
 
-    "__comment": "Chat Messages",
+    "__comment": "Player Messages",
     "chat.join.cat_count": "你拥有 %d 只猫咪！",
     "chat.pet_carrier.empty": "这个宠物箱是空的！",
     "chat.pet_carrier.full": "这个宠物箱已经有猫了！",
@@ -242,6 +242,9 @@
     "chat.info.release_usage": "%s 已经放归了猫咪，说再见了吗？",
     "chat.info.remove_home": "删除 %s 家的位置",
     "chat.info.set_home": "%s' 的新家被设定为 %d, %d, %d",
+    "chat.book.save_cat_data": "%s saved to book!",
+    "chat.book.update_cat_data": "%s's page has been updated.",
+    "chat.book.empty_book": "This book's pages are empty!",
 
     "__comment": "Subtitles",
     "simplycats.subtitle.shake_treats": "摇摇你的零食袋！"

@@ -12,7 +12,7 @@
     "item.simplycats.sterilization_potion": "Sterilization Potion",
 
     "__comment": "Item Tooltips",
-    "tooltip.cat_book.usage": "Sneak and use on a cat to save their info to this book! You must then use the book elsewhere to read its contents.",
+    "tooltip.cat_book.usage": "Sneak and use on a cat to save their info to this book!",
     "tooltip.certificate_adopt.desc": "Right click on an unowned pet to adopt them!",
     "tooltip.certificate_release.desc": "Right click on your pet to release ownership.",
     "tooltip.pet_carrier.empty": "This carrier is empty.",
@@ -222,7 +222,7 @@
     "config.simplycats.male_cooldown": "Male Cooldown",
     "config.simplycats.male_cooldown.tooltip": "Number of minecraft ticks that a male cat will not try to breed after breeding once already. Default is 1/4th a minecraft day.",
 
-    "__comment": "Chat Messages",
+    "__comment": "Player Messages",
     "chat.join.cat_count": "You have %d tamed cats!",
     "chat.pet_carrier.empty": "This carrier is empty.",
     "chat.pet_carrier.full": "This carrier is already full!",
@@ -242,6 +242,9 @@
     "chat.info.release_usage": "%s has been released of your ownership. Did you say goodbye?",
     "chat.info.remove_home": "Removed previously set home spot for %s",
     "chat.info.set_home": "%s's home spot has been set to %d, %d, %d",
+    "chat.book.save_cat_data": "%s saved to book!",
+    "chat.book.update_cat_data": "%s's page has been updated.",
+    "chat.book.empty_book": "This book's pages are empty!",
 
     "__comment": "Subtitles",
     "simplycats.subtitle.shake_treats": "Treat bag shakes"

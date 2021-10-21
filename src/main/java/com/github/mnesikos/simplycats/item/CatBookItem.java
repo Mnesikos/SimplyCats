@@ -67,8 +67,13 @@ public class CatBookItem extends Item {
             catTag.putString("id", key.toString());
             if (cat.hasCustomName()) catTag.putString("DisplayName", cat.getDisplayName().getString());
 
-            if (!catExists) tagList.add(catTag);
-            else tagList.setTag(catInList, catTag);
+            if (!catExists) {
+                tagList.add(catTag);
+                player.displayClientMessage(new TranslationTextComponent("chat.book.save_cat_data", cat.getName()), true);
+            } else {
+                tagList.setTag(catInList, catTag);
+                player.displayClientMessage(new TranslationTextComponent("chat.book.update_cat_data", cat.getName()), true);
+            }
 
             stack.setTag(compound);
 
@@ -84,7 +89,9 @@ public class CatBookItem extends Item {
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         CompoundNBT bookTag = player.getItemInHand(hand).getTag();
-        if (world.isClientSide)
+        if (bookTag == null || bookTag.isEmpty())
+            player.displayClientMessage(new TranslationTextComponent("chat.book.empty_book"), true);
+        else if (world.isClientSide)
             this.openCatBook(bookTag, world);
 
         return super.use(world, player, hand);
