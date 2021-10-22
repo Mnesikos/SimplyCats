@@ -378,6 +378,7 @@ public class SimplyCatEntity extends TameableEntity {
                 break;
 
             case "w-w":
+            default:
                 base = 0;
                 body = 0;
                 face = 0;
@@ -412,9 +413,6 @@ public class SimplyCatEntity extends TameableEntity {
                 if (base == 3)
                     face = random.nextInt(5) + 1;
                 break;
-
-            default:
-                throw new IllegalArgumentException("Error selecting white markings; " + this.getGenotype(WHITE));
         }
 
         this.whiteTexturesArray[0] = body == 0 ? "" : "white_" + base + "_body" + body;
@@ -941,6 +939,9 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     private String inheritGene(String motherAlleles, String fatherAlleles) {
+        if (motherAlleles.isEmpty()) return "";
+        if (fatherAlleles.isEmpty()) return "";
+
         String[] maternal = motherAlleles.split("-");
         String[] paternal = fatherAlleles.split("-");
         return maternal[random.nextInt(2)] + "-" + paternal[random.nextInt(2)];
@@ -978,8 +979,8 @@ public class SimplyCatEntity extends TameableEntity {
 
         int eyesMin;
         int eyesMax;
-        int matEye = EyeColor.valueOf(mother.get(EYE_COLOR).toUpperCase()).ordinal();
-        int patEye = EyeColor.valueOf(father.get(EYE_COLOR).toUpperCase()).ordinal();
+        int matEye = !mother.get(EYE_COLOR).isEmpty() ? EyeColor.valueOf(mother.get(EYE_COLOR).toUpperCase()).ordinal() : 2;
+        int patEye = !father.get(EYE_COLOR).isEmpty() ? EyeColor.valueOf(father.get(EYE_COLOR).toUpperCase()).ordinal() : 2;
         if (matEye > patEye) {
             eyesMin = patEye - 1;
             eyesMax = matEye;
