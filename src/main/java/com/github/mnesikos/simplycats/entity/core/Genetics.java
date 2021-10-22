@@ -122,13 +122,28 @@ public class Genetics {
                 case 1:
                     return GOLD.toString().toLowerCase();
                 case 2:
+                default:
                     return HAZEL.toString().toLowerCase();
                 case 3:
                     return GREEN.toString().toLowerCase();
                 case 4:
                     return BLUE.toString().toLowerCase();
+            }
+        }
+
+        public static String getPhenotype(String eyes) {
+            switch (eyes) {
+                case "copper":
+                    return COPPER.toString().toLowerCase();
+                case "gold":
+                    return GOLD.toString().toLowerCase();
+                case "hazel":
                 default:
-                    throw new IllegalArgumentException("Invalid eye color value: " + value);
+                    return HAZEL.toString().toLowerCase();
+                case "green":
+                    return GREEN.toString().toLowerCase();
+                case "blue":
+                    return BLUE.toString().toLowerCase();
             }
         }
     }
@@ -155,8 +170,10 @@ public class Genetics {
                 return LONG.getAllele(); // 25% chance
         }
 
-        public static String getPhenotype(String furLength) {
-            String[] value = furLength.split("-");
+        public static String getPhenotype(String alleles) {
+            if (alleles.isEmpty()) return SHORT.toString().toLowerCase();
+
+            String[] value = alleles.split("-");
             if (value[0].equals("L") || value[1].equals("L"))
                 return SHORT.toString().toLowerCase();
             else
@@ -189,8 +206,10 @@ public class Genetics {
                 return CINNAMON.getAllele(); // 4% chance
         }
 
-        public static String getPhenotype(String eumelanin) {
-            String[] value = eumelanin.split("-");
+        public static String getPhenotype(String alleles) {
+            if (alleles.isEmpty()) return BLACK.toString().toLowerCase();
+
+            String[] value = alleles.split("-");
             if (value[0].equals("B") || value[1].equals("B"))
                 return BLACK.toString().toLowerCase();
             else if (value[0].equals("b") || value[1].equals("b"))
@@ -242,19 +261,18 @@ public class Genetics {
             return allele1 + "-" + (rand.nextInt(2) == 0 ? MALE.getAllele() : allele2);
         }
 
-        public static String getPhenotype(String phaeomelanin) {
-            switch (phaeomelanin) {
+        public static String getPhenotype(String alleles) {
+            switch (alleles) {
                 case "XO-Y":
                 case "XO-XO":
                     return RED.toString().toLowerCase();
                 case "Xo-Y":
                 case "Xo-Xo":
+                default:
                     return NOT_RED.toString().toLowerCase();
                 case "XO-Xo":
                 case "Xo-XO":
                     return TORTOISESHELL.toString().toLowerCase();
-                default:
-                    throw new IllegalArgumentException("Invalid phaeomelanin: " + phaeomelanin);
             }
         }
     }
@@ -281,8 +299,10 @@ public class Genetics {
                 return DILUTE.getAllele(); // 40% chance
         }
 
-        public static String getPhenotype(String dilution) {
-            String[] value = dilution.split("-");
+        public static String getPhenotype(String alleles) {
+            if (alleles.isEmpty()) return NON_DILUTE.toString().toLowerCase();
+
+            String[] value = alleles.split("-");
             if (value[0].equals("D") || value[1].equals("D"))
                 return NON_DILUTE.toString().toLowerCase();
             else
@@ -312,8 +332,10 @@ public class Genetics {
                 return CARAMELIZED.getAllele(); // 4% chance
         }
 
-        public static String getPhenotype(String diluteMod) {
-            String[] value = diluteMod.split("-");
+        public static String getPhenotype(String alleles) {
+            if (alleles.isEmpty()) return NON_CARAMEL.toString().toLowerCase();
+
+            String[] value = alleles.split("-");
             if (value[0].equals("Dm") || value[1].equals("Dm"))
                 return CARAMELIZED.toString().toLowerCase();
             else
@@ -343,8 +365,10 @@ public class Genetics {
                 return TABBY.getAllele(); // 20% chance
         }
 
-        public static String getPhenotype(String agouti) {
-            String[] value = agouti.split("-");
+        public static String getPhenotype(String alleles) {
+            if (alleles.isEmpty()) return SOLID.toString().toLowerCase();
+
+            String[] value = alleles.split("-");
             if (value[0].equals("A") || value[1].equals("A"))
                 return TABBY.toString().toLowerCase();
             else
@@ -374,8 +398,10 @@ public class Genetics {
                 return CLASSIC.getAllele(); // 50% chance
         }
 
-        public static String getPhenotype(String tabby) {
-            String[] value = tabby.split("-");
+        public static String getPhenotype(String alleles) {
+            if (alleles.isEmpty()) return MACKEREL.toString().toLowerCase();
+
+            String[] value = alleles.split("-");
             if (value[0].equals("Mc") || value[1].equals("Mc"))
                 return MACKEREL.toString().toLowerCase();
             else
@@ -409,17 +435,16 @@ public class Genetics {
                 return SPOTTED.getAllele(); // 20% chance
         }
 
-        public static String getPhenotype(String spotted) {
-            switch (spotted) {
+        public static String getPhenotype(String alleles) {
+            switch (alleles) {
                 case "Sp-Sp":
                     return SPOTTED.toString().toLowerCase();
                 case "Sp-sp":
                 case "sp-Sp":
                     return BROKEN.toString().toLowerCase();
                 case "sp-sp":
-                    return NON_SPOTTED.toString().toLowerCase();
                 default:
-                    throw new IllegalArgumentException("Invalid spotted: " + spotted);
+                    return NON_SPOTTED.toString().toLowerCase();
             }
         }
     }
@@ -446,8 +471,10 @@ public class Genetics {
                 return TICKED.getAllele(); // 4% chance
         }
 
-        public static String getPhenotype(String ticked) {
-            String[] value = ticked.split("-");
+        public static String getPhenotype(String alleles) {
+            if (alleles.isEmpty()) return NON_TICKED.toString().toLowerCase();
+
+            String[] value = alleles.split("-");
             if (value[0].equals("Ta") || value[1].equals("Ta"))
                 return TICKED.toString().toLowerCase();
             else
@@ -479,8 +506,10 @@ public class Genetics {
                 return SILVER.getAllele(); // 4% chance
         }
 
-        public static String getPhenotype(String diluteMod) {
-            String[] value = diluteMod.split("-");
+        public static String getPhenotype(String alleles) {
+            if (alleles.isEmpty()) return NON_SILVER.toString().toLowerCase();
+
+            String[] value = alleles.split("-");
             if (value[0].equals("I") || value[1].equals("I"))
                 return SILVER.toString().toLowerCase();
             else
@@ -521,13 +550,14 @@ public class Genetics {
                 return SEPIA.getAllele(); // 4% chance
         }
 
-        public static String getPhenotype(String colorpoint) {
-            switch (colorpoint) {
+        public static String getPhenotype(String alleles) {
+            switch (alleles) {
                 case "C-C":
                 case "C-cs":
                 case "C-cb":
                 case "cs-C":
                 case "cb-C":
+                default:
                     return NOT_POINTED.toString().toLowerCase();
                 case "cs-cs":
                     return COLORPOINT.toString().toLowerCase();
@@ -536,8 +566,6 @@ public class Genetics {
                     return MINK.toString().toLowerCase();
                 case "cb-cb":
                     return SEPIA.toString().toLowerCase();
-                default:
-                    throw new IllegalArgumentException("Invalid colorpoint: " + colorpoint);
             }
         }
     }
@@ -567,8 +595,8 @@ public class Genetics {
                 return DOMINANT.getAllele(); // 2% chance
         }
 
-        public static String getPhenotype(String white) {
-            switch (white) {
+        public static String getPhenotype(String alleles) {
+            switch (alleles) {
                 case "Wd-Wd":
                 case "Wd-w":
                 case "Wd-Ws":
@@ -580,9 +608,8 @@ public class Genetics {
                 case "w-Ws":
                     return SPOTTING.toString().toLowerCase();
                 case "w-w":
-                    return NONE.toString().toLowerCase();
                 default:
-                    throw new IllegalArgumentException("Invalid white: " + white);
+                    return NONE.toString().toLowerCase();
             }
         }
     }
@@ -609,8 +636,8 @@ public class Genetics {
                 return BOBTAIL.getAllele(); // 2% chance
         }
 
-        public static boolean isBobtail(String bobtail) {
-            return bobtail.equals("jb-jb");
+        public static boolean isBobtail(String alleles) {
+            return !alleles.isEmpty() && alleles.equals("jb-jb");
         }
     }
 }

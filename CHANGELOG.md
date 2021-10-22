@@ -7,8 +7,12 @@ and this project adheres to
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
 ## [1.16.5-0.1.2] -
+### Changed
+- Adoption certificates will now have newly tamed animals to sit upon taming.
+- Added defaults for the cat genetics to prevent crashes upon funky summon commands!
 ### Fixed
 - Error during the load_registries phase, caused by registering wood types of other mods for my block variants. 
+- Crash when using an empty cat book, also added helpful message pop ups when using the book!
 
 ## [1.16.5-0.1.1] - 2021/10/19
 ### Fixed
@@ -25,3 +29,11 @@ and this project adheres to
 - The cat count for each player is not yet implemented (including the command that goes along with this), meaning you cannot currently limit the number of cats tamed per player. (But this will be returning as well!)
 
 **I am but one person and probably missed quite a bit of bugs so please be sure to report any you find!**
+
+## [Unreleased] - YYYY/MM/DD
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
