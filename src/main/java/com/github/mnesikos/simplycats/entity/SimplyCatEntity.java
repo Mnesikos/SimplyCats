@@ -456,6 +456,8 @@ public class SimplyCatEntity extends TameableEntity {
     private String getWhiteTextures(int i) {
         switch (i) {
             case 0:
+                if (this.entityData.get(WHITE_0).isEmpty() && !this.getGenotype(WHITE).equals("w-w"))
+                    this.selectWhiteMarkings();
                 return this.entityData.get(WHITE_0);
             case 1:
                 return this.entityData.get(WHITE_1);
@@ -513,11 +515,41 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     protected String getGenotype(DataParameter<String> parameter) {
+        if (this.entityData.get(parameter).isEmpty()) fixEmptyGenes(parameter);
         return this.entityData.get(parameter);
     }
 
     void setGenotype(DataParameter<String> parameter, String value) {
         this.entityData.set(parameter, value);
+    }
+
+    private void fixEmptyGenes(DataParameter<String> dataParameter) {
+        if (dataParameter == FUR_LENGTH)
+            this.setGenotype(FUR_LENGTH, "L-L");
+        else if (dataParameter == EUMELANIN)
+            this.setGenotype(EUMELANIN, "B-B");
+        else if (dataParameter == PHAEOMELANIN)
+            this.setGenotype(PHAEOMELANIN, "Xo-" + (random.nextBoolean() ? Phaeomelanin.NOT_RED.getAllele() : Phaeomelanin.MALE.getAllele()));
+        else if (dataParameter == DILUTION)
+            this.setGenotype(DILUTION, "D-D");
+        else if (dataParameter == DILUTE_MOD)
+            this.setGenotype(DILUTE_MOD, "dm-dm");
+        else if (dataParameter == AGOUTI)
+            this.setGenotype(AGOUTI, "a-a");
+        else if (dataParameter == TABBY)
+            this.setGenotype(TABBY, "Mc-Mc");
+        else if (dataParameter == SPOTTED)
+            this.setGenotype(SPOTTED, "sp-sp");
+        else if (dataParameter == TICKED)
+            this.setGenotype(TICKED, "ta-ta");
+        else if (dataParameter == COLORPOINT)
+            this.setGenotype(COLORPOINT, "C-C");
+        else if (dataParameter == WHITE)
+            this.setGenotype(WHITE, "w-w");
+        else if (dataParameter == BOBTAIL)
+            this.setGenotype(BOBTAIL, "Jb-Jb");
+        else // EYES
+            this.setGenotype(EYE_COLOR, selectEyeColor());
     }
 
     public Sex getSex() {
