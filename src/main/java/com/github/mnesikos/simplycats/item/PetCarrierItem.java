@@ -67,7 +67,6 @@ public class PetCarrierItem extends Item {
                     else
                         newStack.setDamageValue(2);
 
-                    stack.shrink(1);
                     player.setItemInHand(hand, newStack);
                 }
             }

@@ -6,7 +6,11 @@ The format is based on
 and this project adheres to
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
-## [1.16.5-0.1.2] -
+## [1.16.5-0.1.3] - 2021/12/22
+### Fixed
+- Survival's pet carriers will no longer delete themselves, sorry!!
+
+## [1.16.5-0.1.2] - 2021/10/21
 ### Changed
 - Adoption certificates will now have newly tamed animals to sit upon taming.
 - Added defaults for the cat genetics to prevent crashes upon funky summon commands!
