@@ -45,6 +45,7 @@ public abstract class AbstractCat extends EntityTameable {
     private static final DataParameter<String> TABBY = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> SPOTTED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> TICKED = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
+    private static final DataParameter<String> INHIBITOR = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> COLORPOINT = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> WHITE = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
     private static final DataParameter<String> BOBTAIL = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
@@ -92,6 +93,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.dataManager.register(TABBY, "Mc-Mc");
         this.dataManager.register(SPOTTED, "sp-sp");
         this.dataManager.register(TICKED, "ta-ta");
+        this.dataManager.register(INHIBITOR, "i-i");
         this.dataManager.register(COLORPOINT, "C-C");
         this.dataManager.register(WHITE, "w-w");
         this.dataManager.register(BOBTAIL, "Jb-Jb");
@@ -118,6 +120,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.setGenotype(TABBY, Tabby.init() + "-" + Tabby.init());
         this.setGenotype(SPOTTED, Spotted.init() + "-" + Spotted.init());
         this.setGenotype(TICKED, Ticked.init() + "-" + Ticked.init());
+        this.setGenotype(INHIBITOR, Inhibitor.init() + "-" + Inhibitor.init());
         this.setGenotype(COLORPOINT, Colorpoint.init() + "-" + Colorpoint.init());
         this.setGenotype(WHITE, White.init() + "-" + White.init());
         this.setGenotype(BOBTAIL, Bobtail.init() + "-" + Bobtail.init());
@@ -359,6 +362,7 @@ public abstract class AbstractCat extends EntityTameable {
         compound.setString("Tabby", this.getGenotype(TABBY));
         compound.setString("Spotted", this.getGenotype(SPOTTED));
         compound.setString("Ticked", this.getGenotype(TICKED));
+        compound.setString("Inhibitor", this.getGenotype(INHIBITOR));
         compound.setString("Colorpoint", this.getGenotype(COLORPOINT));
         compound.setString("White", this.getGenotype(WHITE));
         compound.setString("Bobtail", this.getGenotype(BOBTAIL));
@@ -387,6 +391,7 @@ public abstract class AbstractCat extends EntityTameable {
         this.setGenotype(TABBY, compound.getString("Tabby"));
         this.setGenotype(SPOTTED, compound.getString("Spotted"));
         this.setGenotype(TICKED, compound.getString("Ticked"));
+        this.setGenotype(INHIBITOR, compound.getString("Inhibitor"));
         this.setGenotype(COLORPOINT, compound.getString("Colorpoint"));
         this.setGenotype(WHITE, compound.getString("White"));
         this.setGenotype(BOBTAIL, compound.getString("Bobtail"));
@@ -418,6 +423,8 @@ public abstract class AbstractCat extends EntityTameable {
             return Genetics.Spotted.getPhenotype(this.getGenotype(dataParameter));
         else if (dataParameter == TICKED)
             return Genetics.Ticked.getPhenotype(this.getGenotype(dataParameter));
+        else if (dataParameter == INHIBITOR)
+            return Genetics.Inhibitor.getPhenotype(this.getGenotype(dataParameter));
         else if (dataParameter == COLORPOINT)
             return Genetics.Colorpoint.getPhenotype(this.getGenotype(dataParameter));
         else if (dataParameter == WHITE)
@@ -441,11 +448,13 @@ public abstract class AbstractCat extends EntityTameable {
                 solid = solid + "_" + this.getPhenotype(DILUTE_MOD);
         }
 
-        String tabby = this.getPhenotype(TABBY) + "_" + solid;
+        boolean isSilver = this.getGenotype(INHIBITOR).contains(Inhibitor.SILVER.getAllele());
+        String silver = this.getPhenotype(INHIBITOR);
+        String tabby = this.getPhenotype(TABBY) + "_" + solid + (isSilver ? "_" + silver : "");
         if (this.getGenotype(SPOTTED).contains(Spotted.SPOTTED.getAllele()))
             tabby = this.getPhenotype(SPOTTED) + "_" + tabby;
         if (this.getPhenotype(TICKED).equalsIgnoreCase(Ticked.TICKED.toString().toLowerCase()))
-            tabby = this.getPhenotype(TICKED) + (this.getGenotype(TICKED).contains(Ticked.NORMAL.getAllele()) ? "_residual" : "") + "_" + solid;
+            tabby = this.getPhenotype(TICKED) + (this.getGenotype(TICKED).contains(Ticked.NORMAL.getAllele()) ? "_residual" : "") + "_" + solid + (isSilver ? "_" + silver : "");
 
         String tortie = "";
         if (this.getPhenotype(PHAEOMELANIN).equalsIgnoreCase(Phaeomelanin.TORTOISESHELL.toString().toLowerCase())) {
@@ -617,6 +626,7 @@ public abstract class AbstractCat extends EntityTameable {
                 TABBY,
                 SPOTTED,
                 TICKED,
+                INHIBITOR,
                 COLORPOINT,
                 WHITE,
                 BOBTAIL
@@ -743,6 +753,7 @@ public abstract class AbstractCat extends EntityTameable {
                         cat.setGenotype(TABBY, "mc-mc");
                         cat.setGenotype(SPOTTED, "sp-sp");
                         cat.setGenotype(TICKED, "ta-ta");
+                        cat.setGenotype(INHIBITOR, "i-i");
                         cat.setGenotype(COLORPOINT, "C-cs");
                         cat.setGenotype(WHITE, "Ws-w");
                         cat.setGenotype(BOBTAIL, "Jb-Jb");
@@ -760,6 +771,7 @@ public abstract class AbstractCat extends EntityTameable {
                         cat.setGenotype(TABBY, "mc-mc");
                         cat.setGenotype(SPOTTED, "sp-sp");
                         cat.setGenotype(TICKED, "ta-ta");
+                        cat.setGenotype(INHIBITOR, "i-i");
                         cat.setGenotype(COLORPOINT, "C-cs");
                         cat.setGenotype(WHITE, "w-w");
                         cat.setGenotype(BOBTAIL, "Jb-Jb");

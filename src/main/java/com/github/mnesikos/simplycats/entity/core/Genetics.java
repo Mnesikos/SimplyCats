@@ -1,6 +1,8 @@
 package com.github.mnesikos.simplycats.entity.core;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.Random;
@@ -16,30 +18,28 @@ public class Genetics {
         String phaeomelanin = Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
         String dilution = Dilution.getPhenotype(nbt.getString("Dilution"));
         String diluteMod = DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
-        TextComponentTranslation base = new TextComponentTranslation("cat.base." + eumelanin + (phaeomelanin.equals(Phaeomelanin.NOT_RED.toString().toLowerCase()) ? "" : "_" + phaeomelanin) + ".name");
-        boolean dilute = dilution.equals(Dilution.DILUTE.toString().toLowerCase());
-        boolean caramelized = diluteMod.equals(DiluteMod.CARAMELIZED.toString().toLowerCase());
-        if (dilute) {
-            base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + dilution + ".name");
-            if (caramelized)
-                base = new TextComponentTranslation("cat.base." + eumelanin + "_" + phaeomelanin + "_" + diluteMod + ".name");
-        }
-        boolean red = phaeomelanin.equals(Phaeomelanin.RED.toString().toLowerCase());
-        if (red) {
-            base = new TextComponentTranslation("cat.base." + phaeomelanin + ".name");
-            if (dilute) {
-                base = new TextComponentTranslation("cat.base." + phaeomelanin + "_" + dilution + ".name");
-                if (caramelized)
-                    base = new TextComponentTranslation("cat.base." + phaeomelanin + "_" + diluteMod + ".name");
-            }
+        boolean isRed = phaeomelanin.equals(Phaeomelanin.RED.toString().toLowerCase());
+        String redElseBlack = isRed ? phaeomelanin : eumelanin;
+        ITextComponent base = new TextComponentTranslation("cat.base." + (redElseBlack) + ".name");
+        if (dilution.equals(Dilution.DILUTE.toString().toLowerCase())) {
+            base = new TextComponentTranslation("cat.base." + (redElseBlack) + "_" + dilution + ".name");
+            if (diluteMod.equals(DiluteMod.CARAMELIZED.toString().toLowerCase()))
+                base = new TextComponentTranslation("cat.base." + (redElseBlack) + "_" + diluteMod + ".name");
         }
 
         String agouti = Agouti.getPhenotype(nbt.getString("Agouti"));
+        boolean isAgouti = agouti.equals(Agouti.TABBY.toString().toLowerCase());
+        String inhibitor = Inhibitor.getPhenotype(nbt.getString("Inhibitor"));
+        if (inhibitor.equals(Inhibitor.SILVER.toString().toLowerCase()) && isAgouti)
+            base = new TextComponentString(base.getUnformattedText() + " " + (new TextComponentTranslation("cat.base." + inhibitor + ".name")).getUnformattedText());
+        if (phaeomelanin.equals(Phaeomelanin.TORTOISESHELL.toString().toLowerCase()))
+            base = new TextComponentString(base.getUnformattedText() + " " + (new TextComponentTranslation("cat.base." + phaeomelanin + ".name")).getUnformattedText());
+
         String tabby1 = Tabby.getPhenotype(nbt.getString("Tabby"));
         String spotted = Spotted.getPhenotype(nbt.getString("Spotted"));
         String ticked = Ticked.getPhenotype(nbt.getString("Ticked"));
-        TextComponentTranslation tabby = new TextComponentTranslation("");
-        if (agouti.equals(Agouti.TABBY.toString().toLowerCase()) || red) {
+        ITextComponent tabby = new TextComponentTranslation("");
+        if (isAgouti || isRed) {
             tabby = new TextComponentTranslation("cat.tabby." + tabby1 + ".name");
             if (spotted.equals(Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Spotted.SPOTTED.toString().toLowerCase()))
                 tabby = new TextComponentTranslation("cat.tabby." + spotted + ".name");
@@ -48,13 +48,13 @@ public class Genetics {
         }
 
         String colorpoint = Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
-        TextComponentTranslation point = new TextComponentTranslation("");
+        ITextComponent point = new TextComponentTranslation("");
         if (!colorpoint.equals(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
             point = new TextComponentTranslation("cat.point." + colorpoint + ".name");
         }
 
         String white = White.getPhenotype(nbt.getString("White"));
-        TextComponentTranslation whiteText = new TextComponentTranslation("");
+        ITextComponent whiteText = new TextComponentTranslation("");
         if (!white.equals(White.NONE.toString().toLowerCase())) {
             if (white.equals(White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
                 whiteText = new TextComponentTranslation("cat.white.solid_white.name");
@@ -464,7 +464,37 @@ public class Genetics {
 
     // bengal modifier
 
-    // silver/smoke
+    public enum Inhibitor {
+        NORMAL("i"),
+        SILVER("I");
+
+        private String allele;
+
+        Inhibitor(String allele) {
+            this.allele = allele;
+        }
+
+        public String getAllele() {
+            return allele;
+        }
+
+        public static String init() {
+            Random rand = new Random();
+            float chance = rand.nextFloat();
+            if (chance <= 0.96F)
+                return NORMAL.getAllele();
+            else
+                return SILVER.getAllele();
+        }
+
+        public static String getPhenotype(String inhibitor) {
+            String[] value = inhibitor.split("-");
+            if (value[0].equals("I") || value[1].equals("I"))
+                return SILVER.toString().toLowerCase();
+            else
+                return NORMAL.toString().toLowerCase();
+        }
+    }
 
     // wide band
 

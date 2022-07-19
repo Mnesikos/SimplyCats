@@ -173,23 +173,25 @@ public class GuiCatBook extends GuiScreen {
             String tabby = TextFormatting.GRAY + nbt.getString("Tabby");
             String spotted = TextFormatting.GRAY + nbt.getString("Spotted");
             String ticked = TextFormatting.GRAY + nbt.getString("Ticked");
+            String inhibitor = TextFormatting.GRAY + nbt.getString("Inhibitor");
             String colorpoint = TextFormatting.GRAY + nbt.getString("Colorpoint");
             String white = TextFormatting.GRAY + nbt.getString("White");
             String bobtail = TextFormatting.GRAY + nbt.getString("Bobtail");
 
-            this.fontRenderer.drawString(I18n.format("book.genetics.eye_color", eyeColor), leftX + 152, 24, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.fur_length", furLength), leftX + 152, 34, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.eumelanin", eumelanin), leftX + 152, 44, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.dilute", dilution), leftX + 152, 64, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.agouti", agouti), leftX + 152, 84, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.tabby", tabby), leftX + 152, 94, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.spotted", spotted), leftX + 152, 104, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.ticked", ticked), leftX + 152, 114, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.colorpoint", colorpoint), leftX + 152, 124, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.white", white), leftX + 152, 134, 0);
-            this.fontRenderer.drawString(I18n.format("book.genetics.bobtail", bobtail), leftX + 152, 144, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.eye_color", eyeColor), leftX + 152, 24-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.fur_length", furLength), leftX + 152, 34-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.eumelanin", eumelanin), leftX + 152, 44-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.dilute", dilution), leftX + 152, 64-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.agouti", agouti), leftX + 152, 84-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.tabby", tabby), leftX + 152, 94-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.spotted", spotted), leftX + 152, 104-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.ticked", ticked), leftX + 152, 114-5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.colorpoint", colorpoint), leftX + 152, 124+5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.white", white), leftX + 152, 134+5, 0);
+            this.fontRenderer.drawString(I18n.format("book.genetics.bobtail", bobtail), leftX + 152, 144+5, 0);
 
             //this.fontRenderer.drawSplitString("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 

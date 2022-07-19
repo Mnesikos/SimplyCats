@@ -6,6 +6,10 @@ The format is based on
 and this project adheres to 
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
+## [1.12.2-0.2.0] - 2022/07/19
+### Added
+- Color inhibitor gene; adds silver tabbies!
+
 ## [1.12.2-0.0.4.1] - 2021/08/25
 ### Fixed
 - Cats disappearing from existing worlds due to invalid NBT data
