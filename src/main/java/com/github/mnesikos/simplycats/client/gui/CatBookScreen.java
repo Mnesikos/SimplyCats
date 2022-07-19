@@ -3,7 +3,6 @@ package com.github.mnesikos.simplycats.client.gui;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -15,9 +14,7 @@ import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -29,8 +26,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
-
-import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class CatBookScreen extends Screen {
@@ -152,23 +147,25 @@ public class CatBookScreen extends Screen {
             String tabby = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Tabby");
             String spotted = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Spotted");
             String ticked = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Ticked");
+            String inhibitor = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Inhibitor");
             String colorpoint = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Colorpoint");
             String white = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("White");
             String bobtail = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Bobtail");
 
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.eye_color", eyeColor), leftX + 152, 24, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.fur_length", furLength), leftX + 152, 34, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.eumelanin", eumelanin), leftX + 152, 44, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.dilute", dilution), leftX + 152, 64, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.agouti", agouti), leftX + 152, 84, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.tabby", tabby), leftX + 152, 94, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.spotted", spotted), leftX + 152, 104, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.ticked", ticked), leftX + 152, 114, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.colorpoint", colorpoint), leftX + 152, 124, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.white", white), leftX + 152, 134, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.bobtail", bobtail), leftX + 152, 144, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.white", white), leftX + 152, 134 + 5, 0);
+            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0);
 
             //this.font.drawWordWrap("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 

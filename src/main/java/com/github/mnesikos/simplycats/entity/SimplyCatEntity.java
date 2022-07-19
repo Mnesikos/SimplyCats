@@ -58,6 +58,7 @@ public class SimplyCatEntity extends TameableEntity {
     private static final DataParameter<String> TABBY = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> SPOTTED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> TICKED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
+    private static final DataParameter<String> INHIBITOR = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> COLORPOINT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> WHITE = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> BOBTAIL = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
@@ -127,6 +128,7 @@ public class SimplyCatEntity extends TameableEntity {
         this.entityData.define(TABBY, "Mc-Mc");
         this.entityData.define(SPOTTED, "sp-sp");
         this.entityData.define(TICKED, "ta-ta");
+        this.entityData.define(INHIBITOR, "i-i");
         this.entityData.define(COLORPOINT, "C-C");
         this.entityData.define(WHITE, "w-w");
         this.entityData.define(BOBTAIL, "Jb-Jb");
@@ -337,6 +339,7 @@ public class SimplyCatEntity extends TameableEntity {
         this.setGenotype(TABBY, Tabby.init(random) + "-" + Tabby.init(random));
         this.setGenotype(SPOTTED, Spotted.init(random) + "-" + Spotted.init(random));
         this.setGenotype(TICKED, Ticked.init(random) + "-" + Ticked.init(random));
+        this.setGenotype(INHIBITOR, Inhibitor.init(random) + "-" + Inhibitor.init(random));
         this.setGenotype(COLORPOINT, Colorpoint.init(random) + "-" + Colorpoint.init(random));
         this.setGenotype(WHITE, White.init(random) + "-" + White.init(random));
         this.setGenotype(BOBTAIL, Bobtail.init(random) + "-" + Bobtail.init(random));
@@ -542,6 +545,8 @@ public class SimplyCatEntity extends TameableEntity {
             this.setGenotype(SPOTTED, "sp-sp");
         else if (dataParameter == TICKED)
             this.setGenotype(TICKED, "ta-ta");
+        else if (dataParameter == INHIBITOR)
+            this.setGenotype(INHIBITOR, "i-i");
         else if (dataParameter == COLORPOINT)
             this.setGenotype(COLORPOINT, "C-C");
         else if (dataParameter == WHITE)
@@ -755,6 +760,7 @@ public class SimplyCatEntity extends TameableEntity {
         compound.putString("Tabby", this.getGenotype(TABBY));
         compound.putString("Spotted", this.getGenotype(SPOTTED));
         compound.putString("Ticked", this.getGenotype(TICKED));
+        compound.putString("Inhibitor", this.getGenotype(INHIBITOR));
         compound.putString("Colorpoint", this.getGenotype(COLORPOINT));
         compound.putString("White", this.getGenotype(WHITE));
         compound.putString("Bobtail", this.getGenotype(BOBTAIL));
@@ -796,6 +802,7 @@ public class SimplyCatEntity extends TameableEntity {
         this.setGenotype(TABBY, compound.getString("Tabby"));
         this.setGenotype(SPOTTED, compound.getString("Spotted"));
         this.setGenotype(TICKED, compound.getString("Ticked"));
+        this.setGenotype(INHIBITOR, compound.getString("Inhibitor"));
         this.setGenotype(COLORPOINT, compound.getString("Colorpoint"));
         this.setGenotype(WHITE, compound.getString("White"));
         this.setGenotype(BOBTAIL, compound.getString("Bobtail"));
@@ -847,11 +854,13 @@ public class SimplyCatEntity extends TameableEntity {
                 solid = solid + "_" + DiluteMod.getPhenotype(this.getGenotype(DILUTE_MOD));
         }
 
-        String tabby = Tabby.getPhenotype(this.getGenotype(TABBY)) + "_" + solid;
+        boolean isSilver = this.getGenotype(INHIBITOR).contains(Inhibitor.SILVER.getAllele());
+        String silver = Inhibitor.getPhenotype(this.getGenotype(INHIBITOR));
+        String tabby = Tabby.getPhenotype(this.getGenotype(TABBY)) + "_" + solid + (isSilver ? "_" + silver : "");
         if (this.getGenotype(SPOTTED).contains(Spotted.SPOTTED.getAllele()))
             tabby = Spotted.getPhenotype(this.getGenotype(SPOTTED)) + "_" + tabby;
         if (Ticked.getPhenotype(this.getGenotype(TICKED)).equalsIgnoreCase(Ticked.TICKED.toString().toLowerCase()))
-            tabby = Ticked.getPhenotype(this.getGenotype(TICKED)) + (this.getGenotype(TICKED).contains(Ticked.NON_TICKED.getAllele()) ? "_residual" : "") + "_" + solid;
+            tabby = Ticked.getPhenotype(this.getGenotype(TICKED)) + (this.getGenotype(TICKED).contains(Ticked.NON_TICKED.getAllele()) ? "_residual" : "") + "_" + solid + (isSilver ? "_" + silver : "");
 
         String tortie = "";
         if (Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.TORTOISESHELL.toString().toLowerCase())) {
@@ -996,6 +1005,7 @@ public class SimplyCatEntity extends TameableEntity {
                 TABBY,
                 SPOTTED,
                 TICKED,
+                INHIBITOR,
                 COLORPOINT,
                 WHITE,
                 BOBTAIL
@@ -1175,6 +1185,7 @@ public class SimplyCatEntity extends TameableEntity {
                         cat.setGenotype(TABBY, "mc-mc");
                         cat.setGenotype(SPOTTED, "sp-sp");
                         cat.setGenotype(TICKED, "ta-ta");
+                        cat.setGenotype(INHIBITOR, "i-i");
                         cat.setGenotype(COLORPOINT, "C-cs");
                         cat.setGenotype(WHITE, "Ws-w");
                         cat.setGenotype(BOBTAIL, "Jb-Jb");
@@ -1192,6 +1203,7 @@ public class SimplyCatEntity extends TameableEntity {
                         cat.setGenotype(TABBY, "mc-mc");
                         cat.setGenotype(SPOTTED, "sp-sp");
                         cat.setGenotype(TICKED, "ta-ta");
+                        cat.setGenotype(INHIBITOR, "i-i");
                         cat.setGenotype(COLORPOINT, "C-cs");
                         cat.setGenotype(WHITE, "w-w");
                         cat.setGenotype(BOBTAIL, "Jb-Jb");

@@ -6,6 +6,10 @@ The format is based on
 and this project adheres to
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
+## [1.16.5-0.2.0] - 2022/07/19
+### Added
+- Color inhibitor gene; adds silver tabbies!
+
 ## [1.16.5-0.1.3] - 2021/12/22
 ### Fixed
 - Survival's pet carriers will no longer delete themselves, sorry!!
