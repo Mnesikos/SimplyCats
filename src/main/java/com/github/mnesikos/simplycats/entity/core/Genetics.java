@@ -30,8 +30,8 @@ public class Genetics {
         String agouti = Agouti.getPhenotype(nbt.getString("Agouti"));
         boolean isAgouti = agouti.equals(Agouti.TABBY.toString().toLowerCase());
         String inhibitor = Inhibitor.getPhenotype(nbt.getString("Inhibitor"));
-        if (inhibitor.equals(Inhibitor.SILVER.toString().toLowerCase()) && isAgouti)
-            base = new TextComponentString(base.getUnformattedText() + " " + (new TextComponentTranslation("cat.base." + inhibitor + ".name")).getUnformattedText());
+        if (inhibitor.equals(Inhibitor.SILVER.toString().toLowerCase()))
+            base = new TextComponentString(base.getUnformattedText() + " " + (new TextComponentTranslation("cat.base." + inhibitor + (isAgouti ? "" : "_smoke") + ".name")).getUnformattedText());
         if (phaeomelanin.equals(Phaeomelanin.TORTOISESHELL.toString().toLowerCase()))
             base = new TextComponentString(base.getUnformattedText() + " " + (new TextComponentTranslation("cat.base." + phaeomelanin + ".name")).getUnformattedText());
 

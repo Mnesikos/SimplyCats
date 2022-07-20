@@ -61,7 +61,7 @@ public abstract class AbstractCat extends EntityTameable {
     private final String[] whitePawTexturesArray = new String[4];
 
     private String texturePrefix;
-    private final String[] catTexturesArray = new String[12];
+    private final String[] catTexturesArray = new String[13];
 
     private static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.createKey(AbstractCat.class, DataSerializers.OPTIONAL_BLOCK_POS);
     public static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(AbstractCat.class, DataSerializers.STRING);
@@ -450,6 +450,15 @@ public abstract class AbstractCat extends EntityTameable {
 
         boolean isSilver = this.getGenotype(INHIBITOR).contains(Inhibitor.SILVER.getAllele());
         String silver = this.getPhenotype(INHIBITOR);
+
+        String smoke = isSilver ? silver : "";
+        if (isSilver) {
+            if (this.getPhenotype(PHAEOMELANIN).equalsIgnoreCase(Phaeomelanin.RED.toString().toLowerCase()))
+                smoke = silver + "_" + this.getPhenotype(PHAEOMELANIN);
+            else if (this.getPhenotype(DILUTION).equalsIgnoreCase(Dilution.DILUTE.toString().toLowerCase()))
+                smoke = silver + "_" + this.getPhenotype(DILUTION);
+        }
+
         String tabby = this.getPhenotype(TABBY) + "_" + solid + (isSilver ? "_" + silver : "");
         if (this.getGenotype(SPOTTED).contains(Spotted.SPOTTED.getAllele()))
             tabby = this.getPhenotype(SPOTTED) + "_" + tabby;
@@ -484,22 +493,22 @@ public abstract class AbstractCat extends EntityTameable {
 
         this.catTexturesArray[0] = Ref.MODID + ":textures/entity/cat/solid/" + solid + ".png";
         this.catTexturesArray[1] = tabby.equals("") ? null : (Ref.MODID + ":textures/entity/cat/tabby/" + tabby + ".png");
-        this.catTexturesArray[2] = tortie.equals("") ? null : (Ref.MODID + ":textures/entity/cat/tortie/" + tortie + ".png");
-        this.catTexturesArray[3] = colorpoint.equals("") ? null : (Ref.MODID + ":textures/entity/cat/colorpoint/" + colorpoint + ".png");
-        this.catTexturesArray[4] = this.getWhiteTextures(0).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhiteTextures(0) + ".png");
-        this.catTexturesArray[5] = this.getWhiteTextures(1).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhiteTextures(1) + ".png");
-        this.catTexturesArray[6] = this.getWhiteTextures(2).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhiteTextures(2) + ".png");
-        this.catTexturesArray[7] = this.getWhitePawTextures(0).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhitePawTextures(0) + ".png");
-        this.catTexturesArray[8] = this.getWhitePawTextures(1).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhitePawTextures(1) + ".png");
-        this.catTexturesArray[9] = this.getWhitePawTextures(2).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhitePawTextures(2) + ".png");
-        this.catTexturesArray[10] = this.getWhitePawTextures(3).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhitePawTextures(3) + ".png");
-        this.catTexturesArray[11] = Ref.MODID + ":textures/entity/cat/eyes/" + this.getPhenotype(EYE_COLOR) + ".png";
-        this.texturePrefix = "cat/" + solid + tabby + tortie + colorpoint +
+        this.catTexturesArray[2] = smoke.equals("") ? null : (Ref.MODID + ":textures/entity/cat/solid/" + smoke + ".png");
+        this.catTexturesArray[3] = tortie.equals("") ? null : (Ref.MODID + ":textures/entity/cat/tortie/" + tortie + ".png");
+        this.catTexturesArray[4] = colorpoint.equals("") ? null : (Ref.MODID + ":textures/entity/cat/colorpoint/" + colorpoint + ".png");
+        this.catTexturesArray[5] = this.getWhiteTextures(0).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhiteTextures(0) + ".png");
+        this.catTexturesArray[6] = this.getWhiteTextures(1).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhiteTextures(1) + ".png");
+        this.catTexturesArray[7] = this.getWhiteTextures(2).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhiteTextures(2) + ".png");
+        this.catTexturesArray[8] = this.getWhitePawTextures(0).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhitePawTextures(0) + ".png");
+        this.catTexturesArray[9] = this.getWhitePawTextures(1).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhitePawTextures(1) + ".png");
+        this.catTexturesArray[10] = this.getWhitePawTextures(2).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhitePawTextures(2) + ".png");
+        this.catTexturesArray[11] = this.getWhitePawTextures(3).equals("") ? null : (Ref.MODID + ":textures/entity/cat/white/" + this.getWhitePawTextures(3) + ".png");
+        this.catTexturesArray[12] = Ref.MODID + ":textures/entity/cat/eyes/" + this.getPhenotype(EYE_COLOR) + ".png";
+        this.texturePrefix = "cat/" + solid + tabby + smoke + tortie + colorpoint +
                 this.getWhiteTextures(0) + this.getWhiteTextures(1) + this.getWhiteTextures(2) +
                 this.getWhitePawTextures(0) + this.getWhitePawTextures(1) +
                 this.getWhitePawTextures(2) + this.getWhitePawTextures(3) +
                 getPhenotype(EYE_COLOR);
-        // todo System.out.println(this.texturePrefix);
     }
 
     @SideOnly(Side.CLIENT)

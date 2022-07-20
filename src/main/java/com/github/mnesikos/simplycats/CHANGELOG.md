@@ -8,7 +8,7 @@ and this project adheres to
 
 ## [1.12.2-0.2.0] - 2022/07/19
 ### Added
-- Color inhibitor gene; adds silver tabbies!
+- Color inhibitor gene; adds silver tabbies and smokes!
 
 ## [1.12.2-0.0.4.1] - 2021/08/25
 ### Fixed
