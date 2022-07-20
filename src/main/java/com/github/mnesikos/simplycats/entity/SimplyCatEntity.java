@@ -72,7 +72,7 @@ public class SimplyCatEntity extends TameableEntity {
     private final String[] whiteTexturesArray = new String[3];
     private final String[] whitePawTexturesArray = new String[4];
     private String texturePrefix;
-    private final String[] catTexturesArray = new String[12];
+    private final String[] catTexturesArray = new String[13];
 
     private static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
     public static final DataParameter<String> OWNER_NAME = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
@@ -856,6 +856,15 @@ public class SimplyCatEntity extends TameableEntity {
 
         boolean isSilver = this.getGenotype(INHIBITOR).contains(Inhibitor.SILVER.getAllele());
         String silver = Inhibitor.getPhenotype(this.getGenotype(INHIBITOR));
+
+        String smoke = isSilver ? silver : "";
+        if (isSilver) {
+            if (Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString().toLowerCase()))
+                smoke = silver + "_" + Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN));
+            else if (Dilution.getPhenotype(this.getGenotype(DILUTION)).equalsIgnoreCase(Dilution.DILUTE.toString().toLowerCase()))
+                smoke = silver + "_" + Dilution.getPhenotype(this.getGenotype(DILUTION));
+        }
+
         String tabby = Tabby.getPhenotype(this.getGenotype(TABBY)) + "_" + solid + (isSilver ? "_" + silver : "");
         if (this.getGenotype(SPOTTED).contains(Spotted.SPOTTED.getAllele()))
             tabby = Spotted.getPhenotype(this.getGenotype(SPOTTED)) + "_" + tabby;
@@ -890,17 +899,18 @@ public class SimplyCatEntity extends TameableEntity {
 
         this.catTexturesArray[0] = SimplyCats.MOD_ID + ":textures/entity/cat/solid/" + solid + ".png";
         this.catTexturesArray[1] = tabby.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/tabby/" + tabby + ".png");
-        this.catTexturesArray[2] = tortie.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/tortie/" + tortie + ".png");
-        this.catTexturesArray[3] = colorpoint.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/colorpoint/" + colorpoint + ".png");
-        this.catTexturesArray[4] = this.getWhiteTextures(0).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(0) + ".png");
-        this.catTexturesArray[5] = this.getWhiteTextures(1).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(1) + ".png");
-        this.catTexturesArray[6] = this.getWhiteTextures(2).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(2) + ".png");
-        this.catTexturesArray[7] = this.getWhitePawTextures(0).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(0) + ".png");
-        this.catTexturesArray[8] = this.getWhitePawTextures(1).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(1) + ".png");
-        this.catTexturesArray[9] = this.getWhitePawTextures(2).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(2) + ".png");
-        this.catTexturesArray[10] = this.getWhitePawTextures(3).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(3) + ".png");
-        this.catTexturesArray[11] = SimplyCats.MOD_ID + ":textures/entity/cat/eyes/" + EyeColor.getPhenotype(this.getGenotype(EYE_COLOR)) + ".png";
-        this.texturePrefix = "cat/" + solid + tabby + tortie + colorpoint +
+        this.catTexturesArray[2] = smoke.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/solid/" + smoke + ".png");
+        this.catTexturesArray[3] = tortie.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/tortie/" + tortie + ".png");
+        this.catTexturesArray[4] = colorpoint.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/colorpoint/" + colorpoint + ".png");
+        this.catTexturesArray[5] = this.getWhiteTextures(0).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(0) + ".png");
+        this.catTexturesArray[6] = this.getWhiteTextures(1).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(1) + ".png");
+        this.catTexturesArray[7] = this.getWhiteTextures(2).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(2) + ".png");
+        this.catTexturesArray[8] = this.getWhitePawTextures(0).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(0) + ".png");
+        this.catTexturesArray[9] = this.getWhitePawTextures(1).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(1) + ".png");
+        this.catTexturesArray[10] = this.getWhitePawTextures(2).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(2) + ".png");
+        this.catTexturesArray[11] = this.getWhitePawTextures(3).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(3) + ".png");
+        this.catTexturesArray[12] = SimplyCats.MOD_ID + ":textures/entity/cat/eyes/" + EyeColor.getPhenotype(this.getGenotype(EYE_COLOR)) + ".png";
+        this.texturePrefix = "cat/" + solid + tabby + smoke + tortie + colorpoint +
                 this.getWhiteTextures(0) + this.getWhiteTextures(1) + this.getWhiteTextures(2) +
                 this.getWhitePawTextures(0) + this.getWhitePawTextures(1) +
                 this.getWhitePawTextures(2) + this.getWhitePawTextures(3) +
