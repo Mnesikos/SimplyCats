@@ -2,6 +2,7 @@ package com.github.mnesikos.simplycats;
 
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -14,6 +15,10 @@ public class CatDataFixer {
             SimplyCatEntity cat = (SimplyCatEntity) event.getEntity();
             if (!cat.getPersistentData().contains("Inhibitor")) {
                 cat.getPersistentData().putString("Inhibitor", Genetics.Inhibitor.NORMAL.getAllele() + "-" + Genetics.Inhibitor.init(new Random()));
+            }
+
+            if (cat.hasCustomName() && cat.getCustomName().equals(new StringTextComponent("SHELTER_SPAWN"))) {
+                System.out.println("Shelter cat spawned!");
             }
         }
     }
