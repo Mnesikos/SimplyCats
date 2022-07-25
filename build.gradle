@@ -41,21 +41,10 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            // The markers can be changed as needed. 
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                simplycats {
                     source sourceSets.main
                 }
             }
@@ -63,21 +52,10 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            // The markers can be changed as needed. 
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                simplycats {
                     source sourceSets.main
                 }
             }
@@ -85,24 +63,13 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            // The markers can be changed as needed. 
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'simplycats', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                simplycats {
                     source sourceSets.main
                 }
             }
@@ -143,13 +110,9 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Title"  : project.name,
+            "Implementation-Version": "${archiveVersion.get()}",
+            "Implementation-Vendor" : "Mnesikos"
         ])
     }
 }
