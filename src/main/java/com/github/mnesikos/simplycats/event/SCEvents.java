@@ -28,7 +28,7 @@ public class SCEvents {
 
     /*@SubscribeEvent
     public void onPlayerLogsIn(PlayerEvent.PlayerLoggedInEvent event) { // todo
-        if (SCConfig.Common.join_message.get()) {
+        if (SCConfig.join_message.get()) {
             PlayerEntity player = event.getPlayer();
             player.sendMessage(new TranslationTextComponent("chat.join.cat_count", player.getPersistentData().getInt("CatCount")), Util.NIL_UUID);
         }

@@ -57,7 +57,7 @@ public class CatBirthGoal extends Goal {
 
         this.mother.setKittens(0); // resets kitten counter
         this.mother.setBreedingStatus("ispregnant", false); // ends pregnancy
-        this.mother.setTimeCycle("end", SCConfig.Common.heat_cooldown.get()); // sets out of heat timer
+        this.mother.setTimeCycle("end", SCConfig.heat_cooldown.get()); // sets out of heat timer
     }
 
     private void spawnBaby(SimplyCatEntity father) {
@@ -72,8 +72,8 @@ public class CatBirthGoal extends Goal {
             return;
         }
         if (child != null) {
-            child.setAge(-SCConfig.Common.kitten_mature_timer.get());
-            child.setMatureTimer((float) SCConfig.Common.kitten_mature_timer.get());
+            child.setAge(-SCConfig.kitten_mature_timer.get());
+            child.setMatureTimer((float) SCConfig.kitten_mature_timer.get());
             child.moveTo(this.mother.getX(), this.mother.getY(), this.mother.getZ(), 0.0F, 0.0F);
             child.setFather(this.father.getUUID());
             child.setMother(this.mother.getUUID());

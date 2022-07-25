@@ -184,7 +184,7 @@ public class SimplyCatEntity extends TameableEntity {
             if (this.isTame())
                 this.setOrderedToSit(!this.isOrderedToSit());
         if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed())
-            this.setTimeCycle("end", random.nextInt(SCConfig.Common.heat_cooldown.get()));
+            this.setTimeCycle("end", random.nextInt(SCConfig.heat_cooldown.get()));
 
         return entityData;
     }
@@ -207,16 +207,16 @@ public class SimplyCatEntity extends TameableEntity {
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("end", SCConfig.Common.heat_cooldown.get()); //sets out of heat for 16 (default) minecraft days
+                        setTimeCycle("end", SCConfig.heat_cooldown.get()); //sets out of heat for 16 (default) minecraft days
                     else { //or if IS pregnant
-                        setTimeCycle("pregnant", SCConfig.Common.pregnancy_timer.get()); //and heat time runs out, starts pregnancy timer for birth
+                        setTimeCycle("pregnant", SCConfig.pregnancy_timer.get()); //and heat time runs out, starts pregnancy timer for birth
                         this.setBreedingStatus("inheat", false); //sets out of heat
                     }
                 }
             if (!this.getBreedingStatus("inheat")) { //if not in heat
                 if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("start", SCConfig.Common.heat_timer.get()); //sets in heat for 2 minecraft days
+                        setTimeCycle("start", SCConfig.heat_timer.get()); //sets in heat for 2 minecraft days
                 }
             }
         }
@@ -934,7 +934,7 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     public boolean canBeTamed(PlayerEntity player) {
-        return (SCConfig.Common.tamed_limit.get() == 0 || player.getPersistentData().getInt("CatCount") < SCConfig.Common.tamed_limit.get()) && !this.isTame();
+        return (SCConfig.tamed_limit.get() == 0 || player.getPersistentData().getInt("CatCount") < SCConfig.tamed_limit.get()) && !this.isTame();
     }
 
     /**
