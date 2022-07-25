@@ -43,11 +43,11 @@ public class SCVillagers {
     }
 
     public static void registerTrades() {
-        VillagerTrades.ITrade[] level1 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.CATNIP_SEEDS.get(), 1, 1, 4, 8), new VillagerTrades.EmeraldForItemsTrade(SCItems.CATNIP.get(), 20, 16, 2)};
-        VillagerTrades.ITrade[] level2 = new VillagerTrades.ITrade[]{new ItemsForPetTrade(Items.COD, 3), new ItemsForPetTrade(Items.BONE, 4), new VillagerTrades.ItemsForEmeraldsTrade(SCItems.STERILIZE_POTION.get(), 1, 4, 4, 16)};
-        VillagerTrades.ITrade[] level3 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.PET_CARRIER.get(), 2, 1, 4, 16)};
-        VillagerTrades.ITrade[] level4 = new VillagerTrades.ITrade[]{new ItemsForPetTrade(Items.WHEAT_SEEDS, 5), new ItemsForPetTrade(Items.CARROT, 6), new VillagerTrades.ItemsForEmeraldsTrade(Items.SADDLE, 2, 1, 2, 16)};
-        VillagerTrades.ITrade[] level5 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.LASER_POINTER.get(), 1, 1, 1, 32)};
+        VillagerTrades.ITrade[] level1 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.CATNIP_SEEDS.get(), 1, 8, 4, 8), new VillagerTrades.EmeraldForItemsTrade(SCItems.CATNIP.get(), 20, 16, 2), new VillagerTrades.ItemsForEmeraldsTrade(SCItems.STERILIZE_POTION.get(), 1, 8, 4, 16)};
+        VillagerTrades.ITrade[] level2 = new VillagerTrades.ITrade[]{new ItemsForPetTrade(Items.COD, 3), new ItemsForPetTrade(Items.BONE, 4)};
+        VillagerTrades.ITrade[] level3 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.PET_CARRIER.get(), 2, 1, 4, 16), new VillagerTrades.EmeraldForItemsTrade(SCItems.CATNIP_SEEDS.get(), 20, 16, 2)};
+        VillagerTrades.ITrade[] level4 = new VillagerTrades.ITrade[]{new ItemsForPetTrade(Items.WHEAT_SEEDS, 5), new ItemsForPetTrade(Items.CARROT, 6)};
+        VillagerTrades.ITrade[] level5 = new VillagerTrades.ITrade[]{new VillagerTrades.ItemsForEmeraldsTrade(SCItems.LASER_POINTER.get(), 1, 1, 1, 32), new VillagerTrades.ItemsForEmeraldsTrade(SCItems.TREAT_BAG.get(), 1, 1, 1, 32)};
         VillagerTrades.TRADES.put(SHELTER_WORKER.get(), toIntMap(ImmutableMap.of(1, level1, 2, level2, 3, level3, 4, level4, 5, level5)));
     }
 

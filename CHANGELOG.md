@@ -10,6 +10,10 @@ and this project adheres to
 ### Added
 - Color inhibitor gene; adds silver tabbies and smokes!
 - Cats and dogs spawning in shelters again.
+### Changed
+- Shelter worker trades have been slightly adjusted in hopes for better gameplay.
+### Fixed
+- Config file base code has been changed around, shouldn't continue to create unnecessary backups.
 
 ## [1.16.5-0.1.3] - 2021/12/22
 ### Fixed
