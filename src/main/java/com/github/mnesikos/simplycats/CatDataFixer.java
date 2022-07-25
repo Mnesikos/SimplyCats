@@ -16,10 +16,6 @@ public class CatDataFixer {
             if (!cat.getPersistentData().contains("Inhibitor")) {
                 cat.getPersistentData().putString("Inhibitor", Genetics.Inhibitor.NORMAL.getAllele() + "-" + Genetics.Inhibitor.init(new Random()));
             }
-
-            if (cat.hasCustomName() && cat.getCustomName().equals(new StringTextComponent("SHELTER_SPAWN"))) {
-                System.out.println("Shelter cat spawned!");
-            }
         }
     }
 }
