@@ -11,6 +11,7 @@ and this project adheres to
 - Color inhibitor gene; adds silver tabbies and smokes!
 - Cats and dogs spawning in shelters again.
 - Recipe for the shelter book.
+- Replacing vanilla cat spawns (& configuration options for this).
 ### Changed
 - Shelter worker trades have been slightly adjusted in hopes for better gameplay.
 ### Fixed

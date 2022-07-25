@@ -58,6 +58,8 @@ public class SimplyCats {
             modBus.addListener(this::setupClient);
 
         forgeBus.addListener(SimplyCats::setupVillages);
+
+        forgeBus.register(CatDataFixer.class);
     }
 
     public static void setupVillages(FMLServerAboutToStartEvent event) {
