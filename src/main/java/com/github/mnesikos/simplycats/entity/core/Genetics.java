@@ -51,6 +51,12 @@ public class Genetics {
         ITextComponent point = new TranslationTextComponent("");
         if (!colorpoint.equals(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
             point = new TranslationTextComponent("cat.point." + colorpoint + ".name");
+            if (colorpoint.equals(Colorpoint.ALBINO.toString().toLowerCase())) {
+                ITextComponent eyes = new TranslationTextComponent("cat.point.red_eyed.name");
+                if (nbt.getString("Colorpoint").contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()))
+                    eyes = new TranslationTextComponent("cat.point.blue_eyed.name");
+                return new StringTextComponent(eyes.getString() + " " + point.getString() + (includeSex ? (" " + sex.getString()) : ""));
+            }
         }
 
         String white = White.getPhenotype(nbt.getString("White"));
@@ -106,8 +112,8 @@ public class Genetics {
         HAZEL,
         GREEN,
         BLUE,
-        ODD_LEFT, // todo
-        ODD_RIGHT; // am I really gonna do this idek
+        ALBINO_BLUE,
+        ALBINO_RED;
 
         EyeColor() {
 
@@ -126,6 +132,10 @@ public class Genetics {
                     return GREEN.toString().toLowerCase();
                 case 4:
                     return BLUE.toString().toLowerCase();
+                case 5:
+                    return ALBINO_BLUE.toString().toLowerCase();
+                case 6:
+                    return ALBINO_RED.toString().toLowerCase();
             }
         }
 
@@ -142,6 +152,10 @@ public class Genetics {
                     return GREEN.toString().toLowerCase();
                 case "blue":
                     return BLUE.toString().toLowerCase();
+                case "albino_blue":
+                    return ALBINO_BLUE.toString().toLowerCase();
+                case "albino_red":
+                    return ALBINO_RED.toString().toLowerCase();
             }
         }
     }
@@ -523,7 +537,10 @@ public class Genetics {
         NOT_POINTED("C"),
         COLORPOINT("cs"),
         SEPIA("cb"),
-        MINK;
+        MINK,
+        BLUE_EYED_ALBINO("ca"),
+        RED_EYED_ALBINO("c"),
+        ALBINO;
 
         private String allele;
 
@@ -542,29 +559,31 @@ public class Genetics {
             float chance = rand.nextFloat();
             if (chance <= 0.80F)
                 return NOT_POINTED.getAllele(); // 80% chance
-            else if (chance > 0.80F && chance <= 0.96F)
-                return COLORPOINT.getAllele(); // 16% chance
-            else
+            else if (chance <= 0.94F)
+                return COLORPOINT.getAllele(); // 14% chance
+            else if (chance <= 0.98F)
                 return SEPIA.getAllele(); // 4% chance
+            else {
+                if (rand.nextFloat() <= 0.70F)
+                    return BLUE_EYED_ALBINO.getAllele(); // 70% chance of initial 2% chance
+                else
+                    return RED_EYED_ALBINO.getAllele(); // 30% chance of initial 2% chance
+            }
         }
 
         public static String getPhenotype(String alleles) {
-            switch (alleles) {
-                case "C-C":
-                case "C-cs":
-                case "C-cb":
-                case "cs-C":
-                case "cb-C":
-                default:
-                    return NOT_POINTED.toString().toLowerCase();
-                case "cs-cs":
-                    return COLORPOINT.toString().toLowerCase();
-                case "cs-cb":
-                case "cb-cs":
-                    return MINK.toString().toLowerCase();
-                case "cb-cb":
-                    return SEPIA.toString().toLowerCase();
-            }
+            if (alleles.contains("C"))
+                return NOT_POINTED.toString().toLowerCase();
+            else if (alleles.contains("cs") && alleles.contains("cb"))
+                return MINK.toString().toLowerCase();
+            else if (alleles.contains("cs"))
+                return COLORPOINT.toString().toLowerCase();
+            else if (alleles.contains("cb"))
+                return SEPIA.toString().toLowerCase();
+            else if (alleles.contains("ca") || alleles.contains("c"))
+                return ALBINO.toString().toLowerCase();
+            else
+                return NOT_POINTED.toString().toLowerCase();
         }
     }
 

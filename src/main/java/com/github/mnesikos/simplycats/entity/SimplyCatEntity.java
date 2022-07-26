@@ -354,6 +354,8 @@ public class SimplyCatEntity extends TameableEntity {
             color = EyeColor.init(random.nextInt(5));
         if (Colorpoint.getPhenotype(this.getGenotype(COLORPOINT)).equalsIgnoreCase(Colorpoint.COLORPOINT.toString()))
             color = EyeColor.init(4);
+        if (Colorpoint.getPhenotype(this.getGenotype(COLORPOINT)).equalsIgnoreCase(Colorpoint.ALBINO.toString()))
+            color = getGenotype(COLORPOINT).contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()) ? EyeColor.init(5) : EyeColor.init(6);
         return color;
     }
 
@@ -887,14 +889,16 @@ public class SimplyCatEntity extends TameableEntity {
         String colorpoint = "";
         if (!Colorpoint.getPhenotype(this.getGenotype(COLORPOINT)).equalsIgnoreCase(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
             colorpoint = Colorpoint.getPhenotype(this.getGenotype(COLORPOINT));
-            if (!tabby.equals("") && !Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString()))
-                colorpoint = colorpoint + "_" + "tabby";
-            else if (solid.equalsIgnoreCase(Eumelanin.BLACK.toString()))
-                colorpoint = colorpoint + "_" + solid;
-            else if (Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString()))
-                colorpoint = colorpoint + "_red";
-            if (!tortie.equals(""))
-                tortie = tortie + "_point";
+            if (!Colorpoint.getPhenotype(this.getGenotype(COLORPOINT)).equalsIgnoreCase(Colorpoint.ALBINO.toString())) {
+                if (!tabby.equals("") && !Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString()))
+                    colorpoint = colorpoint + "_" + "tabby";
+                else if (solid.equalsIgnoreCase(Eumelanin.BLACK.toString()))
+                    colorpoint = colorpoint + "_" + solid;
+                else if (Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString()))
+                    colorpoint = colorpoint + "_red";
+                if (!tortie.equals(""))
+                    tortie = tortie + "_point";
+            }
         }
 
         this.catTexturesArray[0] = SimplyCats.MOD_ID + ":textures/entity/cat/solid/" + solid + ".png";
@@ -1049,8 +1053,10 @@ public class SimplyCatEntity extends TameableEntity {
         int eyes = random.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
         String eye = EyeColor.init(matEye == 4 && patEye == 4 ? (eyesMax == 4 ? 4 : random.nextInt(4)) : eyes);
         String point = child.getGenotype(COLORPOINT);
-        if (point.contentEquals(Colorpoint.COLORPOINT.getAllele() + "-" + Colorpoint.COLORPOINT.getAllele()))
+        if (Colorpoint.getPhenotype(point).equalsIgnoreCase(Colorpoint.COLORPOINT.toString().toLowerCase()))
             eye = EyeColor.init(4);
+        else if (Colorpoint.getPhenotype(point).equalsIgnoreCase(Colorpoint.ALBINO.toString().toLowerCase()))
+            eye = point.contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()) ? EyeColor.init(5) : EyeColor.init(6);
 
         child.setGenotype(EYE_COLOR, eye);
 

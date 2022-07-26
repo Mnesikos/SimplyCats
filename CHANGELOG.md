@@ -9,6 +9,7 @@ and this project adheres to
 ## [1.16.5-0.2.0] - 2022/07/19
 ### Added
 - Color inhibitor gene; adds silver tabbies and smokes!
+- Blue-eyed and red-eyed albino alleles; true albino cats!
 - Cats and dogs spawning in shelters again.
 - Recipe for the shelter book.
 - Replacing vanilla cat spawns (& configuration options for this).
