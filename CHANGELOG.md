@@ -12,7 +12,8 @@ and this project adheres to
 - Blue-eyed and red-eyed albino alleles; true albino cats!
 - Cats and dogs spawning in shelters again.
 - Recipe for the shelter book.
-- Replacing vanilla cat spawns (& configuration options for this).
+- Stop vanilla cats spawning (& configuration option for this).
+- Config option to replace existing, tamed vanilla cats with a Simply cat alternative.
 ### Changed
 - Shelter worker trades have been slightly adjusted in hopes for better gameplay.
 ### Fixed

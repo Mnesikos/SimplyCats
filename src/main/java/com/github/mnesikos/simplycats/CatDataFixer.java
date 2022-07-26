@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class CatDataFixer {
     @SubscribeEvent
-    public static void fixCatData(EntityJoinWorldEvent event) {
+    public static void joinWorldEvent(EntityJoinWorldEvent event) {
         if (event.getEntity() instanceof SimplyCatEntity) {
             SimplyCatEntity cat = (SimplyCatEntity) event.getEntity();
             if (!cat.getPersistentData().contains("Inhibitor")) {
@@ -23,11 +23,10 @@ public class CatDataFixer {
             }
         }
 
-        if (SCConfig.replace_vanilla_spawns.get() && event.getEntity().getClass() == CatEntity.class && !event.getWorld().isClientSide) {
+        if (event.getEntity().getClass() == CatEntity.class && !event.getWorld().isClientSide) {
             CatEntity vanillaCat = (CatEntity) event.getEntity();
-
-            if (!vanillaCat.isTame() || SCConfig.replace_tamed_vanilla.get()) {
-                if (!vanillaCat.getPersistentData().contains("SimplyCatsSpawn")) {
+            if (!vanillaCat.getPersistentData().contains("SimplyCatsSpawn")) {
+                if (vanillaCat.isTame() && SCConfig.replace_tamed_vanilla.get()) {
                     World world = event.getWorld();
                     SimplyCatEntity simplyCatEntity = SimplyCats.CAT.get().create(world);
                     simplyCatEntity.load(vanillaCat.saveWithoutId(new CompoundNBT()));
@@ -38,16 +37,18 @@ public class CatDataFixer {
                     simplyCatEntity.heal(4.0F);
                     simplyCatEntity.setHomePos(simplyCatEntity.blockPosition());
                     simplyCatEntity.setPhenotype();
-                    if (!vanillaCat.isTame() && !SCConfig.intact_stray_spawns.get()) simplyCatEntity.setFixed((byte) 1);
+//                    if (!vanillaCat.isTame() && !SCConfig.intact_stray_spawns.get()) simplyCatEntity.setFixed((byte) 1);
                     if (simplyCatEntity.getSex() == Genetics.Sex.FEMALE && !simplyCatEntity.isFixed())
                         simplyCatEntity.setTimeCycle("end", simplyCatEntity.getRandom().nextInt(SCConfig.heat_cooldown.get()));
 
                     if (world instanceof ServerWorld) ((ServerWorld) world).loadFromChunk(simplyCatEntity);
-
                     vanillaCat.getPersistentData().putBoolean("SimplyCatsSpawn", true);
-                }
+                    event.setCanceled(true);
 
-                event.setCanceled(true);
+                } else if (!vanillaCat.isTame() && SCConfig.stop_vanilla_spawns.get()) {
+                    vanillaCat.getPersistentData().putBoolean("SimplyCatsSpawn", true);
+                    event.setCanceled(true);
+                }
             }
         }
     }

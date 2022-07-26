@@ -12,8 +12,8 @@ public class SCConfig {
     public static ForgeConfigSpec.BooleanValue join_message;
     public static ForgeConfigSpec.BooleanValue attack_ai;
     public static ForgeConfigSpec.BooleanValue replace_tamed_vanilla;
-    public static ForgeConfigSpec.BooleanValue replace_vanilla_spawns;
-    public static ForgeConfigSpec.BooleanValue intact_stray_spawns;
+    public static ForgeConfigSpec.BooleanValue stop_vanilla_spawns;
+//    public static ForgeConfigSpec.BooleanValue intact_stray_spawns;
     public static ForgeConfigSpec.ConfigValue<Double> wander_area_limit;
     public static ForgeConfigSpec.ConfigValue<Integer> tamed_limit;
     public static ForgeConfigSpec.ConfigValue<Integer> breeding_limit;
@@ -37,15 +37,15 @@ public class SCConfig {
                 .translation(PREFIX + ".replace_tamed_vanilla")
                 .define("replace_tamed_vanilla", false);
 
-        replace_vanilla_spawns = builder
-                .comment(" Enable or disable replacing vanilla cat spawns with Simply Cats.")
-                .translation(PREFIX + ".replace_vanilla_spawns")
-                .define("replace_vanilla_spawns", true);
+        stop_vanilla_spawns = builder
+                .comment(" Disables vanilla cats spawning, set to false to allow them to spawn again.")
+                .translation(PREFIX + ".stop_vanilla_spawns")
+                .define("stop_vanilla_spawns", true);
 
-        intact_stray_spawns = builder
+        /*intact_stray_spawns = builder
                 .comment(" Disable this if you want stray village cats spawning fixed (enabled for intact cat spawns).")
                 .translation(PREFIX + ".intact_stray_spawns")
-                .define("intact_stray_spawns", true);
+                .define("intact_stray_spawns", true); todo*/
 
         join_message = builder
                 .comment(" Enable or disable the initial join message with a player's cat count.")
