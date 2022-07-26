@@ -51,6 +51,12 @@ public class Genetics {
         ITextComponent point = new TextComponentTranslation("");
         if (!colorpoint.equals(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
             point = new TextComponentTranslation("cat.point." + colorpoint + ".name");
+            if (colorpoint.equals(Colorpoint.ALBINO.toString().toLowerCase())) {
+                ITextComponent eyes = new TextComponentTranslation("cat.point.red_eyed.name");
+                if (nbt.getString("Colorpoint").contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()))
+                    eyes = new TextComponentTranslation("cat.point.blue_eyed.name");
+                return eyes.getUnformattedText() + " " + point.getUnformattedText() + (includeSex ? (" ") + sex : "");
+            }
         }
 
         String white = White.getPhenotype(nbt.getString("White"));
@@ -106,8 +112,8 @@ public class Genetics {
         HAZEL,
         GREEN,
         BLUE,
-        ODD_LEFT, // todo
-        ODD_RIGHT; // am I really gonna do this idek
+        ALBINO_BLUE,
+        ALBINO_RED;
 
         EyeColor() {
 
@@ -125,6 +131,10 @@ public class Genetics {
                     return GREEN.toString().toLowerCase();
                 case 4:
                     return BLUE.toString().toLowerCase();
+                case 5:
+                    return ALBINO_BLUE.toString().toLowerCase();
+                case 6:
+                    return ALBINO_RED.toString().toLowerCase();
                 default:
                     throw new IllegalArgumentException("Invalid eye color value: " + value);
             }
@@ -504,7 +514,10 @@ public class Genetics {
         NOT_POINTED("C"),
         COLORPOINT("cs"),
         SEPIA("cb"),
-        MINK;
+        MINK,
+        BLUE_EYED_ALBINO("ca"),
+        RED_EYED_ALBINO("c"),
+        ALBINO;
 
         private String allele;
 
@@ -524,30 +537,31 @@ public class Genetics {
             float chance = rand.nextFloat();
             if (chance <= 0.80F)
                 return NOT_POINTED.getAllele(); // 80% chance
-            else if (chance > 0.80F && chance <= 0.96F)
-                return COLORPOINT.getAllele(); // 16% chance
-            else
+            else if (chance <= 0.94F)
+                return COLORPOINT.getAllele(); // 14% chance
+            else if (chance <= 0.98F)
                 return SEPIA.getAllele(); // 4% chance
+            else {
+                if (rand.nextFloat() <= 0.70F)
+                    return BLUE_EYED_ALBINO.getAllele(); // 70% chance of initial 2% chance
+                else
+                    return RED_EYED_ALBINO.getAllele(); // 30% chance of initial 2% chance
+            }
         }
 
         public static String getPhenotype(String colorpoint) {
-            switch (colorpoint) {
-                case "C-C":
-                case "C-cs":
-                case "C-cb":
-                case "cs-C":
-                case "cb-C":
-                    return NOT_POINTED.toString().toLowerCase();
-                case "cs-cs":
-                    return COLORPOINT.toString().toLowerCase();
-                case "cs-cb":
-                case "cb-cs":
-                    return MINK.toString().toLowerCase();
-                case "cb-cb":
-                    return SEPIA.toString().toLowerCase();
-                default:
-                    throw new IllegalArgumentException("Invalid colorpoint: " + colorpoint);
-            }
+            if (colorpoint.contains("C"))
+                return NOT_POINTED.toString().toLowerCase();
+            else if (colorpoint.contains("cs") && colorpoint.contains("cb"))
+                return MINK.toString().toLowerCase();
+            else if (colorpoint.contains("cs"))
+                return COLORPOINT.toString().toLowerCase();
+            else if (colorpoint.contains("cb"))
+                return SEPIA.toString().toLowerCase();
+            else if (colorpoint.contains("ca") || colorpoint.contains("c"))
+                return ALBINO.toString().toLowerCase();
+            else
+                throw new IllegalArgumentException("Invalid colorpoint: " + colorpoint);
         }
     }
 

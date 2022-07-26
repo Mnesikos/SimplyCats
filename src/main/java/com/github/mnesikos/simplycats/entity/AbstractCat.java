@@ -135,6 +135,8 @@ public abstract class AbstractCat extends EntityTameable {
             color = EyeColor.init(rand.nextInt(5));
         if (getPhenotype(COLORPOINT).equalsIgnoreCase(Colorpoint.COLORPOINT.toString()))
             color = EyeColor.init(4);
+        if (getPhenotype(COLORPOINT).equalsIgnoreCase(Colorpoint.ALBINO.toString()))
+            color = getGenotype(COLORPOINT).contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()) ? EyeColor.init(5) : EyeColor.init(6);
         return color;
     }
 
@@ -481,14 +483,16 @@ public abstract class AbstractCat extends EntityTameable {
         String colorpoint = "";
         if (!this.getPhenotype(COLORPOINT).equalsIgnoreCase(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
             colorpoint = this.getPhenotype(COLORPOINT);
-            if (!tabby.equals("") && !this.getPhenotype(PHAEOMELANIN).equalsIgnoreCase(Phaeomelanin.RED.toString()))
-                colorpoint = colorpoint + "_" + "tabby";
-            else if (solid.equalsIgnoreCase(Eumelanin.BLACK.toString()))
-                colorpoint = colorpoint + "_" + solid;
-            else if (this.getPhenotype(PHAEOMELANIN).equalsIgnoreCase(Phaeomelanin.RED.toString()))
-                colorpoint = colorpoint + "_red";
-            if (!tortie.equals(""))
-                tortie = tortie + "_point";
+            if (!this.getPhenotype(COLORPOINT).equalsIgnoreCase(Colorpoint.ALBINO.toString())) {
+                if (!tabby.equals("") && !this.getPhenotype(PHAEOMELANIN).equalsIgnoreCase(Phaeomelanin.RED.toString()))
+                    colorpoint = colorpoint + "_" + "tabby";
+                else if (solid.equalsIgnoreCase(Eumelanin.BLACK.toString()))
+                    colorpoint = colorpoint + "_" + solid;
+                else if (this.getPhenotype(PHAEOMELANIN).equalsIgnoreCase(Phaeomelanin.RED.toString()))
+                    colorpoint = colorpoint + "_red";
+                if (!tortie.equals(""))
+                    tortie = tortie + "_point";
+            }
         }
 
         this.catTexturesArray[0] = Ref.MODID + ":textures/entity/cat/solid/" + solid + ".png";
@@ -669,8 +673,10 @@ public abstract class AbstractCat extends EntityTameable {
         int eyes = rand.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
         String eye = EyeColor.init(matEye == 4 && patEye == 4 ? (eyesMax == 4 ? 4 : rand.nextInt(4)) : eyes);
         String point = child.getGenotype(COLORPOINT);
-        if (point.contentEquals(Colorpoint.COLORPOINT.getAllele() + "-" + Colorpoint.COLORPOINT.getAllele()))
+        if (Colorpoint.getPhenotype(point).equalsIgnoreCase(Colorpoint.COLORPOINT.toString().toLowerCase()))
             eye = EyeColor.init(4);
+        else if (Colorpoint.getPhenotype(point).equalsIgnoreCase(Colorpoint.ALBINO.toString().toLowerCase()))
+            eye = point.contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()) ? EyeColor.init(5) : EyeColor.init(6);
 
         child.setGenotype(EYE_COLOR, eye);
 
