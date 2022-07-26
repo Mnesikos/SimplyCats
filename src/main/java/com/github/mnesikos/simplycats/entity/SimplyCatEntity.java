@@ -15,6 +15,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -109,6 +110,12 @@ public class SimplyCatEntity extends TameableEntity {
         this.goalSelector.addGoal(10, new CatWanderGoal(this, 1.0D));
         this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
         this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
+        this.targetSelector.addGoal(1, new CatTargetNearestGoal<>(this, LivingEntity.class, true, (entity) -> {
+            EntityType<?> entityType = entity.getType();
+            if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
+                return false;
+            return !(entity instanceof SimplyCatEntity) && !(entity instanceof PlayerEntity) && !(entity instanceof IMob) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(entityType.getRegistryName().toString());
+        }));
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {

@@ -14,6 +14,7 @@ and this project adheres to
 - Recipe for the shelter book.
 - Stop vanilla cats spawning (& configuration option for this).
 - Config option to replace existing, tamed vanilla cats with a Simply cat alternative.
+- Cat attack AI from 1.12.2 is back and functional!
 ### Changed
 - Shelter worker trades have been slightly adjusted in hopes for better gameplay.
 ### Fixed

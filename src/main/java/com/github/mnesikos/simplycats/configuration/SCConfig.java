@@ -113,9 +113,9 @@ public class SCConfig {
         prey_list = builder
                 .comment(" This is a list of entities all cats will attack on sight if cat attack AI is enabled.")
                 .translation(PREFIX + ".prey_list")
-                .define("prey_list", Arrays.asList("minecraft:bat", "minecraft:parrot", "minecraft:chicken", "minecraft:rabbit",
-                        "minecraft:silverfish", "rats:rat", "zawa:brownrat", "zawa:cockatoo", "zawa:frigate", "zawa:macaw",
-                        "zawa:rattlesnake", "zawa:toucan", "zawa:treefrog", "exoticbirds:woodpecker", "birdwmod:brown_booby",
+                .define("prey_list", Arrays.asList("minecraft:bat", "minecraft:parrot", "minecraft:chicken", "minecraft:rabbit", "minecraft:parrot",
+                        "minecraft:silverfish", "rats:rat", "zawa:brown_rat", "zawa:macaw", "zawa:black_footed_ferret", "zawa:kakapo",
+                        "zawa:butterfly", "exoticbirds:woodpecker", "birdwmod:brown_booby",
                         "birdwmod:eastern_bluebird", "birdwmod:eurasian_bullfinch", "birdwmod:great_grey_owl", "birdwmod:green_heron",
                         "birdwmod:hoatzin", "birdwmod:killdeer", "birdwmod:kingofsaxony_bird_of_paradise", "birdwmod:northern_mockingbird",
                         "birdwmod:redflanked_bluetail", "birdwmod:rednecked_nightjar", "birdwmod:stellers_eider", "birdwmod:turquoisebrowed_motmot",
