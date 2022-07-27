@@ -646,9 +646,14 @@ public abstract class AbstractCat extends EntityTameable {
         );
 
         for (DataParameter<String> geneParameter : parameters) {
-            String inherited = inheritGene(mother.get(geneParameter),
-                    father.get(geneParameter));
-            child.setGenotype(geneParameter, inherited);
+            if (geneParameter.equals(INHIBITOR)) { // todo: remove this soon!
+                child.setGenotype(INHIBITOR, Inhibitor.init() + "-" + Inhibitor.NORMAL.getAllele());
+
+            } else {
+                String inherited = inheritGene(mother.get(geneParameter),
+                        father.get(geneParameter));
+                child.setGenotype(geneParameter, inherited);
+            }
         }
 
         child.selectWhiteMarkings();
