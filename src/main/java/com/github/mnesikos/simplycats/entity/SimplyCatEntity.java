@@ -1056,7 +1056,7 @@ public class SimplyCatEntity extends TameableEntity {
             eyesMin = matEye - 1;
             eyesMax = patEye;
         }
-        eyesMin = eyesMin < 0 ? 0 : eyesMin;
+        eyesMin = eyesMin < 0 ? 0 : (eyesMin >= 4 ? 3 : eyesMin);
         String white = child.getGenotype(WHITE);
         if (white.contains(White.DOMINANT.getAllele()))
             eyesMax = 4;
