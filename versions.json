@@ -1,0 +1,19 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/simply-cats/files/all",
+  "1.16.5": {
+    "1.16.5-0.2.2": "Fixed kittens not inheriting Inhibitor properly",
+    "1.16.5-0.2.1": "Fixed kittens crashing and corrupting worlds",
+    "1.16.5-0.2.0": "Added Color inhibitor gene (silver tabbies and smokes), blue-eyed and red-eyed albino alleles (true albino cats), and more see full log uploaded with curseforge file"
+  },
+  "1.12.2": {
+    "1.12.2-0.2.2": "Fixed kittens not inheriting Inhibitor properly",
+    "1.12.2-0.2.1": "Fixed kittens crashing and corrupting worlds",
+    "1.12.2-0.2.0": "Added Color inhibitor gene (silver tabbies and smokes), blue-eyed and red-eyed albino alleles (true albino cats)"
+  },
+  "promos": {
+    "1.16.5-latest": "1.16.5-0.2.2",
+    "1.16.5-recommended": "1.16.5-0.2.2",
+    "1.12.2-latest": "1.12.2-0.2.2",
+    "1.12.2-recommended": "1.12.2-0.2.2"
+  }
+}
