@@ -38,7 +38,8 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = Ref.MODID, name = Ref.MODNAME, version = Ref.VERSION,
-        acceptedMinecraftVersions = Ref.ACCEPTED_VERSIONS)
+        acceptedMinecraftVersions = Ref.ACCEPTED_VERSIONS,
+        updateJSON = "https://raw.githubusercontent.com/Mnesikos/SimplyCats/forge/1.16.5/versions.json")
 public class SimplyCats {
     @Mod.Instance
     public static SimplyCats instance;

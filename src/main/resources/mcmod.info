@@ -5,12 +5,11 @@
   "description": "Cats! Cats everywhere!",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
+  "url": "https://github.com/Mnesikos/SimplyCats/wiki",
+  "updateJSON": "https://raw.githubusercontent.com/Mnesikos/SimplyCats/forge/1.16.5/versions.json",
   "authorList": ["Mnesikos"],
   "credits": "Thank you Captain and fisk for the extra texture help! <3 Also big thanks to Ms. Random and Soggy for dealing with my lack of proper coding know-how. (:",
-  "logoFile": "",
-  "screenshots": [],
+  "logoFile": "logo.png",
   "dependencies": ["forge"]
 }
 ]
