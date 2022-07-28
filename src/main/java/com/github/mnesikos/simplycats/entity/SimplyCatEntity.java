@@ -1034,11 +1034,13 @@ public class SimplyCatEntity extends TameableEntity {
 
         for (DataParameter<String> geneParameter : parameters) {
             if (geneParameter.equals(INHIBITOR)) { // todo: remove this soon!
-                child.setGenotype(INHIBITOR, Inhibitor.init(child.random) + "-" + Inhibitor.NORMAL.getAllele());
+                if (father.get(INHIBITOR) == null || father.get(INHIBITOR).isEmpty())
+                    child.setGenotype(INHIBITOR, inheritGene(mother.get(INHIBITOR), "i-i"));
+                else
+                    child.setGenotype(INHIBITOR, inheritGene(mother.get(INHIBITOR), father.get(INHIBITOR)));
 
             } else {
-                String inherited = inheritGene(mother.get(geneParameter),
-                        father.get(geneParameter));
+                String inherited = inheritGene(mother.get(geneParameter), father.get(geneParameter));
                 child.setGenotype(geneParameter, inherited);
             }
         }

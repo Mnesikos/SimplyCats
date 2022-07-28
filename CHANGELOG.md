@@ -6,7 +6,13 @@ The format is based on
 and this project adheres to
 [Forge Versioning Conventions](https://mcforge.readthedocs.io/en/latest/conventions/versioning/).
 
-## [1.12.2-0.2.1] - 2022/07/26
+## [1.16.5-0.2.2] - 2022/07/28
+### Added
+- Update checker
+### Fixed
+- Kittens accidentally not inheriting Inhibitor properly (sorry) 
+
+## [1.16.5-0.2.1] - 2022/07/26
 ### Fixed
 - Kittens crashing and corrupting worlds... again :')
 
