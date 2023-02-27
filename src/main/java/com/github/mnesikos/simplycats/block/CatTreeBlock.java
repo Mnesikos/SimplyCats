@@ -1,28 +1,30 @@
 package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class CatTreeBlock extends Block {
-    public static final DirectionProperty FACING = HorizontalBlock.FACING;
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     protected final VoxelShape voxelShape;
 
     public CatTreeBlock(VoxelShape axisAlignedBB) {
@@ -31,12 +33,12 @@ public class CatTreeBlock extends Block {
     }
 
     @Override
-    public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity) {
+    public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity) {
         return entity instanceof SimplyCatEntity;
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
         return voxelShape;
     }
 
@@ -48,7 +50,7 @@ public class CatTreeBlock extends Block {
 
         @Nullable
         @Override
-        public BlockState getStateForPlacement(BlockItemUseContext context) {
+        public BlockState getStateForPlacement(BlockPlaceContext context) {
             Direction direction = context.getHorizontalDirection().getOpposite();
             return super.getStateForPlacement(context).setValue(FACING, direction);
         }
@@ -59,7 +61,7 @@ public class CatTreeBlock extends Block {
         }
 
         @Override
-        protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> blockStateBuilder) {
+        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> blockStateBuilder) {
             blockStateBuilder.add(FACING);
         }
     }
@@ -67,17 +69,17 @@ public class CatTreeBlock extends Block {
     public static class Box extends Facing {
         private static final VoxelShape INSIDE_NS = box(2.0D, 1.0D, 1.0D, 14.0D, 14.0D, 15.0D);
         public static final VoxelShape INSIDE_EW = box(1.0D, 1.0D, 2.0D, 15.0D, 14.0D, 14.0D);
-        protected static final VoxelShape NORTH_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(0.0D, 1.0D, 0.0D, 16.0D, 16.0D, 1.0D), INSIDE_NS), IBooleanFunction.ONLY_FIRST);
-        protected static final VoxelShape EAST_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(15.0D, 1.0D, 0.0D, 16.0D, 16.0D, 16.0D), INSIDE_EW), IBooleanFunction.ONLY_FIRST);
-        protected static final VoxelShape SOUTH_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(0.0D, 1.0D, 15.0D, 16.0D, 16.0D, 16.0D), INSIDE_NS), IBooleanFunction.ONLY_FIRST);
-        protected static final VoxelShape WEST_SHAPE = VoxelShapes.join(VoxelShapes.block(), VoxelShapes.or(box(0.0D, 1.0D, 0.0D, 1.0D, 16.0D, 16.0D), INSIDE_EW), IBooleanFunction.ONLY_FIRST);
+        protected static final VoxelShape NORTH_SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(0.0D, 1.0D, 0.0D, 16.0D, 16.0D, 1.0D), INSIDE_NS), BooleanOp.ONLY_FIRST);
+        protected static final VoxelShape EAST_SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(15.0D, 1.0D, 0.0D, 16.0D, 16.0D, 16.0D), INSIDE_EW), BooleanOp.ONLY_FIRST);
+        protected static final VoxelShape SOUTH_SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(0.0D, 1.0D, 15.0D, 16.0D, 16.0D, 16.0D), INSIDE_NS), BooleanOp.ONLY_FIRST);
+        protected static final VoxelShape WEST_SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(0.0D, 1.0D, 0.0D, 1.0D, 16.0D, 16.0D), INSIDE_EW), BooleanOp.ONLY_FIRST);
 
         public Box() {
-            super(VoxelShapes.block());
+            super(Shapes.block());
         }
 
         @Override
-        public VoxelShape getShape(BlockState state, IBlockReader blockReader, BlockPos pos, ISelectionContext context) {
+        public VoxelShape getShape(BlockState state, BlockGetter blockReader, BlockPos pos, CollisionContext context) {
             Direction direction = state.getValue(FACING);
             switch (direction) {
                 default:
@@ -92,7 +94,7 @@ public class CatTreeBlock extends Block {
         }
 
         @Override
-        public VoxelShape getInteractionShape(BlockState state, IBlockReader blockReader, BlockPos pos) {
+        public VoxelShape getInteractionShape(BlockState state, BlockGetter blockReader, BlockPos pos) {
             Direction direction = state.getValue(FACING);
             return direction.getAxis() == Direction.Axis.X ? INSIDE_NS : INSIDE_EW;
         }
@@ -106,7 +108,7 @@ public class CatTreeBlock extends Block {
         }
 
         @Override
-        public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+        public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
             return AABB_BOTTOM;
         }
     }

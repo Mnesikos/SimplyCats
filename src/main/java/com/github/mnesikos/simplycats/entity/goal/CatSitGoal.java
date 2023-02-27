@@ -1,14 +1,14 @@
 package com.github.mnesikos.simplycats.entity.goal;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.SitGoal;
-import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
+import net.minecraft.world.entity.TamableAnimal;
 
-public class CatSitGoal extends SitGoal {
-    private final TameableEntity tameable;
+public class CatSitGoal extends SitWhenOrderedToGoal {
+    private final TamableAnimal tameable;
     private boolean isSitting;
 
-    public CatSitGoal(TameableEntity entity) {
+    public CatSitGoal(TamableAnimal entity) {
         super(entity);
         this.tameable = entity;
     }

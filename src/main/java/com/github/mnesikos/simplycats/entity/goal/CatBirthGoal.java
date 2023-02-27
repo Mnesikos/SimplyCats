@@ -4,12 +4,12 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Random;
@@ -17,7 +17,7 @@ import java.util.Random;
 public class CatBirthGoal extends Goal {
     private final SimplyCatEntity mother;
     private SimplyCatEntity father;
-    World level;
+    Level level;
 
     public CatBirthGoal(SimplyCatEntity catEntity) {
         this.mother = catEntity;
@@ -61,7 +61,7 @@ public class CatBirthGoal extends Goal {
     }
 
     private void spawnBaby(SimplyCatEntity father) {
-        ServerWorld serverWorld = (ServerWorld) level;
+        ServerLevel serverWorld = (ServerLevel) level;
         SimplyCatEntity child = (SimplyCatEntity) this.mother.getBreedOffspring(serverWorld, father);
 
         final net.minecraftforge.event.entity.living.BabyEntitySpawnEvent event = new net.minecraftforge.event.entity.living.BabyEntitySpawnEvent(mother, father, child);
@@ -89,7 +89,7 @@ public class CatBirthGoal extends Goal {
             }
 
             if (serverWorld.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT))
-                serverWorld.addFreshEntity(new ExperienceOrbEntity(serverWorld, this.mother.getX(), this.mother.getY(), this.mother.getZ(), this.mother.getRandom().nextInt(2) + 1));
+                serverWorld.addFreshEntity(new ExperienceOrb(serverWorld, this.mother.getX(), this.mother.getY(), this.mother.getZ(), this.mother.getRandom().nextInt(2) + 1));
         }
     }
 }

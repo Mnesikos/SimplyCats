@@ -4,21 +4,21 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.client.gui.CatBookScreen;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -36,14 +36,14 @@ public class CatBookItem extends Item {
     }
 
     @Override
-    public ActionResultType interactLivingEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
         if (target instanceof SimplyCatEntity && player.isDiscrete()) {
             SimplyCatEntity cat = (SimplyCatEntity) target;
             stack = player.getItemInHand(hand);
 
-            CompoundNBT compound = stack.getOrCreateTag();
+            CompoundTag compound = stack.getOrCreateTag();
 
-            ListNBT tagList;
+            ListTag tagList;
             boolean catExists = false;
             int catInList = 0;
             if (compound.contains("pages")) {
@@ -56,11 +56,11 @@ public class CatBookItem extends Item {
                     }
                 }
             } else {
-                tagList = new ListNBT();
+                tagList = new ListTag();
                 compound.put("pages", tagList);
             }
 
-            CompoundNBT catTag = new CompoundNBT();
+            CompoundTag catTag = new CompoundTag();
             cat.save(catTag);
 
             ResourceLocation key = EntityType.getKey(cat.getType());
@@ -69,10 +69,10 @@ public class CatBookItem extends Item {
 
             if (!catExists) {
                 tagList.add(catTag);
-                player.displayClientMessage(new TranslationTextComponent("chat.book.save_cat_data", cat.getName()), true);
+                player.displayClientMessage(new TranslatableComponent("chat.book.save_cat_data", cat.getName()), true);
             } else {
                 tagList.setTag(catInList, catTag);
-                player.displayClientMessage(new TranslationTextComponent("chat.book.update_cat_data", cat.getName()), true);
+                player.displayClientMessage(new TranslatableComponent("chat.book.update_cat_data", cat.getName()), true);
             }
 
             stack.setTag(compound);
@@ -80,17 +80,17 @@ public class CatBookItem extends Item {
             /*if (player.level.isClientSide) // todo ???
                 Minecraft.getInstance().setScreen(new CatBookScreen(compound, player.level, catInList));*/
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        CompoundNBT bookTag = player.getItemInHand(hand).getTag();
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+        CompoundTag bookTag = player.getItemInHand(hand).getTag();
         if (bookTag == null || bookTag.isEmpty())
-            player.displayClientMessage(new TranslationTextComponent("chat.book.empty_book"), true);
+            player.displayClientMessage(new TranslatableComponent("chat.book.empty_book"), true);
         else if (world.isClientSide)
             this.openCatBook(bookTag, world);
 
@@ -98,13 +98,13 @@ public class CatBookItem extends Item {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void openCatBook(CompoundNBT bookTag, World world) {
+    public void openCatBook(CompoundTag bookTag, Level world) {
         Minecraft.getInstance().setScreen(new CatBookScreen(bookTag, world));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("tooltip.cat_book.usage"));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(new TranslatableComponent("tooltip.cat_book.usage"));
     }
 }

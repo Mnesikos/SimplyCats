@@ -2,22 +2,22 @@ package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -33,10 +33,10 @@ public class LaserPointerItem extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
         if (stack.getTag() == null) {//Check if we do NOT have NBT data
-            stack.setTag(new CompoundNBT()); //Give the item new data and set it to true since this would be the first right click
+            stack.setTag(new CompoundTag()); //Give the item new data and set it to true since this would be the first right click
             stack.getTag().putBoolean("On", true);
         } else {
             //If we already have data just flip the On tag
@@ -55,31 +55,31 @@ public class LaserPointerItem extends Item {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.getTag() != null)
-            tooltip.add(new StringTextComponent(stack.getTag().getBoolean("On") ? "On" : "Off").withStyle(TextFormatting.ITALIC));
+            tooltip.add(new TextComponent(stack.getTag().getBoolean("On") ? "On" : "Off").withStyle(ChatFormatting.ITALIC));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity e, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level worldIn, Entity e, int itemSlot, boolean isSelected) {
         if (isSelected) {
             if (stack.getTag() != null) {
                 if (stack.getTag().getBoolean("On")) {
                     //Get all cats within a 2 block radius of the player
 //					List<SimplyCatEntity> cats = worldIn.getEntitiesWithinAABB(SimplyCatEntity.class, e.getEntityBoundingBox().grow(2.0D));
 
-                    if (e instanceof PlayerEntity) {
+                    if (e instanceof Player) {
                         //Check to make sure the entity using this is a player and
                         //ray trace the look position
-                        PlayerEntity player = (PlayerEntity) e;
-                        BlockRayTraceResult mop = getPlayerPOVHitResult(worldIn, player, RayTraceContext.FluidMode.NONE);
+                        Player player = (Player) e;
+                        BlockHitResult mop = getPlayerPOVHitResult(worldIn, player, ClipContext.Fluid.NONE);
                         //If the trace returns a point (it hit something and isnt going off thousands of metres away
                         if (mop != null && mop.getLocation() != null) {
                             if (e.tickCount % 5 == 0) //About every 5 ticks we put the particle, just so it isnt spammed too much and kinda goes away on time
-                                worldIn.addParticle(RedstoneParticleData.REDSTONE, mop.getLocation().x, mop.getLocation().y, mop.getLocation().z, 0, 0, 0);
+                                worldIn.addParticle(DustParticleOptions.REDSTONE, mop.getLocation().x, mop.getLocation().y, mop.getLocation().z, 0, 0, 0);
                             //Get all cats within a 2 block radius of the laser position
-                            List<SimplyCatEntity> cats = worldIn.getEntitiesOfClass(SimplyCatEntity.class, new AxisAlignedBB(mop.getBlockPos()).inflate(4.0D));
+                            List<SimplyCatEntity> cats = worldIn.getEntitiesOfClass(SimplyCatEntity.class, new AABB(mop.getBlockPos()).inflate(4.0D));
                             //Most important is here
                             //Go through all the cats and set the hit vector to the laser
                             cats.forEach(eb -> eb.setNearestLaser(mop.getLocation()));

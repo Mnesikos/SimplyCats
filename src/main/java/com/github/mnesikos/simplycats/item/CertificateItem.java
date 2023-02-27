@@ -2,21 +2,21 @@ package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.ParrotEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Parrot;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,9 +32,9 @@ public class CertificateItem extends Item {
     }
 
     @Override
-    public ActionResultType interactLivingEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
-        if (target instanceof SimplyCatEntity || target instanceof WolfEntity || target instanceof ParrotEntity) {
-            TameableEntity tameable = (TameableEntity) target;
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+        if (target instanceof SimplyCatEntity || target instanceof Wolf || target instanceof Parrot) {
+            TamableAnimal tameable = (TamableAnimal) target;
             if (this.adoption) {
                 if ((tameable instanceof SimplyCatEntity && ((SimplyCatEntity) tameable).canBeTamed(player)) || (!(tameable instanceof SimplyCatEntity) && !tameable.isTame())) {
                     if (tameable instanceof SimplyCatEntity)
@@ -44,18 +44,18 @@ public class CertificateItem extends Item {
                     tameable.getNavigation().stop();
                     tameable.setOrderedToSit(true);
                     tameable.setHealth(tameable.getMaxHealth());
-                    player.displayClientMessage(new TranslationTextComponent("chat.info.adopt_usage", tameable.getName()), true);
+                    player.displayClientMessage(new TranslatableComponent("chat.info.adopt_usage", tameable.getName()), true);
                     if (player.level.isClientSide)
                         this.playTameEffect(true, tameable.level, tameable);
 
                     if (!player.isCreative())
                         stack.shrink(1);
 
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
 
                 } else if (tameable instanceof SimplyCatEntity && !tameable.isTame()) {
-                    player.displayClientMessage(new TranslationTextComponent("chat.info.tamed_limit_reached"), true);
-                    return ActionResultType.PASS;
+                    player.displayClientMessage(new TranslatableComponent("chat.info.tamed_limit_reached"), true);
+                    return InteractionResult.PASS;
                 }
 
             } else {
@@ -66,21 +66,21 @@ public class CertificateItem extends Item {
                         tameable.setTame(false);
                     tameable.getNavigation().stop();
                     tameable.setOwnerUUID(null);
-                    player.displayClientMessage(new TranslationTextComponent("chat.info.release_usage", tameable.getName()), true);
+                    player.displayClientMessage(new TranslatableComponent("chat.info.release_usage", tameable.getName()), true);
                     this.playTameEffect(false, tameable.level, tameable);
 
                     if (!player.isCreative())
                         stack.shrink(1);
 
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    protected void playTameEffect(boolean play, World world, TameableEntity entity) {
-        IParticleData iparticledata = ParticleTypes.HEART;
+    protected void playTameEffect(boolean play, Level world, TamableAnimal entity) {
+        ParticleOptions iparticledata = ParticleTypes.HEART;
         if (!play)
             iparticledata = ParticleTypes.SMOKE;
 
@@ -94,7 +94,7 @@ public class CertificateItem extends Item {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("tooltip.certificate_" + (this.adoption ? "adopt" : "release") + ".desc"));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(new TranslatableComponent("tooltip.certificate_" + (this.adoption ? "adopt" : "release") + ".desc"));
     }
 }

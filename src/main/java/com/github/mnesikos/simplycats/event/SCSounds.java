@@ -1,8 +1,8 @@
 package com.github.mnesikos.simplycats.event;
 
 import com.github.mnesikos.simplycats.SimplyCats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 
 public class SCSounds {
     public static SoundEvent SHAKE_TREATS = registerSound("shake_treats");

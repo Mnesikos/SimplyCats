@@ -2,14 +2,14 @@ package com.github.mnesikos.simplycats.entity.goal;
 
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.pathfinding.WalkNodeProcessor;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -38,7 +38,7 @@ public class CatWanderGoal extends Goal {
         else if (this.cat.getRandom().nextInt(this.interval) != 0)
             return false;
 
-        Vector3d vector3d = this.getPosition();
+        Vec3 vector3d = this.getPosition();
 
         if (vector3d == null)
             return false;
@@ -51,15 +51,15 @@ public class CatWanderGoal extends Goal {
     }
 
     @Nullable
-    private Vector3d getPosition() {
-        PathNavigator pathNavigator = cat.getNavigation();
+    private Vec3 getPosition() {
+        PathNavigation pathNavigator = cat.getNavigation();
         Random random = cat.getRandom();
         boolean outsideBounds;
         int xzRange = 10;
         int yRange = 3;
 
         if (cat.getHomePos().isPresent()) {
-            double homePosDist = cat.getHomePos().get().distSqr(MathHelper.floor(cat.getX()), MathHelper.floor(cat.getY()), MathHelper.floor(cat.getZ()), true) + 4.0D;
+            double homePosDist = cat.getHomePos().get().distSqr(Mth.floor(cat.getX()), Mth.floor(cat.getY()), Mth.floor(cat.getZ()), true) + 4.0D;
             double wanderRange = (SCConfig.wander_area_limit.get() + (float) xzRange);
             outsideBounds = homePosDist < wanderRange * wanderRange;
         } else
@@ -94,7 +94,7 @@ public class CatWanderGoal extends Goal {
                 blockPos3 = moveAboveSolid(blockPos3, cat.level.getMaxBuildHeight(), (block) -> cat.level.getBlockState(block).getMaterial().isSolid());
 
                 if (!cat.level.getFluidState(blockPos3).is(FluidTags.WATER)) {
-                    PathNodeType pathNodeType = WalkNodeProcessor.getBlockPathTypeStatic(cat.level, blockPos3.mutable());
+                    BlockPathTypes pathNodeType = WalkNodeEvaluator.getBlockPathTypeStatic(cat.level, blockPos3.mutable());
                     if (cat.getPathfindingMalus(pathNodeType) == 0.0F) {
                         float d1 = cat.getWalkTargetValue(blockPos3);
                         if (d1 > d0) {
@@ -107,7 +107,7 @@ public class CatWanderGoal extends Goal {
             }
         }
 
-        return flag1 ? Vector3d.atBottomCenterOf(blockPos) : null;
+        return flag1 ? Vec3.atBottomCenterOf(blockPos) : null;
     }
 
     @Override

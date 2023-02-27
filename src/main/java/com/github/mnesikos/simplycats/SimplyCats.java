@@ -1,35 +1,29 @@
 package com.github.mnesikos.simplycats;
 
 import com.github.mnesikos.simplycats.block.SCBlocks;
-import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod(SimplyCats.MOD_ID)
 public class SimplyCats {
     public static final String MOD_ID = "simplycats";
-    public static final ItemGroup ITEM_GROUP = new ItemGroup(MOD_ID + ".tab") {
+    public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(MOD_ID + ".tab") {
         @Override
         public ItemStack makeIcon() {
             return new ItemStack(SCItems.PET_CARRIER.get());
@@ -37,7 +31,7 @@ public class SimplyCats {
     };
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, SimplyCats.MOD_ID);
-    public static final RegistryObject<EntityType<SimplyCatEntity>> CAT = ENTITIES.register("cat", () -> EntityType.Builder.of(SimplyCatEntity::new, EntityClassification.CREATURE)
+    public static final RegistryObject<EntityType<SimplyCatEntity>> CAT = ENTITIES.register("cat", () -> EntityType.Builder.of(SimplyCatEntity::new, MobCategory.CREATURE)
             .sized(0.6f, 0.8f)
             .setShouldReceiveVelocityUpdates(true).setTrackingRange(80).setUpdateInterval(1)
             .build("cat"));
@@ -54,9 +48,6 @@ public class SimplyCats {
         SCVillagers.PROFESSIONS.register(modBus);
         SCVillagers.POI_TYPES.register(modBus);
 
-        if (FMLEnvironment.dist == Dist.CLIENT)
-            modBus.addListener(this::setupClient);
-
         forgeBus.addListener(SimplyCats::setupVillages);
 
         forgeBus.register(CatDataFixer.class);
@@ -64,9 +55,5 @@ public class SimplyCats {
 
     public static void setupVillages(FMLServerAboutToStartEvent event) {
         SCWorldGen.setupVillageWorldGen(event.getServer().registryAccess());
-    }
-
-    private void setupClient(final FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(SimplyCats.CAT.get(), SimplyCatRenderer::new);
     }
 }

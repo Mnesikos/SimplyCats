@@ -6,13 +6,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ITag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
@@ -39,14 +39,14 @@ public class SCReference {
         EDIBLE.addAll(ItemTags.FISHES.getValues());
 
         // todo double check tag naming
-        ITag<Item> meatsRawTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats/raw"));
+        Tag<Item> meatsRawTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats/raw"));
         EDIBLE.addAll(meatsRawTag.getValues());
-        ITag<Item> meatsCookedTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats/cooked"));
+        Tag<Item> meatsCookedTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats/cooked"));
         EDIBLE.addAll(meatsCookedTag.getValues());
-        ITag<Item> meatsTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats"));
+        Tag<Item> meatsTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats"));
         EDIBLE.addAll(meatsTag.getValues());
 
-        ITag<Item> tofuTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "tofus"));
+        Tag<Item> tofuTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "tofus"));
         EDIBLE.removeAll(tofuTag.getValues());
     }
 

@@ -12,35 +12,35 @@ import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.scoreboard.Team;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.scores.Team;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -48,56 +48,75 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SimplyCatEntity extends TameableEntity {
-    private static final DataParameter<String> EYE_COLOR = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> FUR_LENGTH = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> EUMELANIN = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> PHAEOMELANIN = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> DILUTION = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> DILUTE_MOD = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> AGOUTI = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> TABBY = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> SPOTTED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> TICKED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> INHIBITOR = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> COLORPOINT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> BOBTAIL = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_0 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_1 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_2 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_PAWS_0 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_PAWS_1 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_PAWS_2 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_PAWS_3 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
+
+public class SimplyCatEntity extends TamableAnimal {
+    private static final EntityDataAccessor<String> EYE_COLOR = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> FUR_LENGTH = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> EUMELANIN = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> PHAEOMELANIN = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DILUTION = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DILUTE_MOD = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> AGOUTI = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> TABBY = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> SPOTTED = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> TICKED = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> INHIBITOR = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> COLORPOINT = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> WHITE = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> BOBTAIL = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> WHITE_0 = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> WHITE_1 = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> WHITE_2 = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> WHITE_PAWS_0 = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> WHITE_PAWS_1 = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> WHITE_PAWS_2 = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> WHITE_PAWS_3 = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
     private final String[] whiteTexturesArray = new String[3];
     private final String[] whitePawTexturesArray = new String[4];
     private String texturePrefix;
     private final String[] catTexturesArray = new String[13];
 
-    private static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
-    public static final DataParameter<String> OWNER_NAME = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<Byte> FIXED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<Byte> IN_HEAT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<Byte> IS_PREGNANT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<Integer> MATE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Integer> KITTENS = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Optional<UUID>> MOTHER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_UUID);
-    private static final DataParameter<Optional<UUID>> FATHER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_UUID);
-    private static final DataParameter<Integer> AGE_TRACKER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Float> MATURE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.FLOAT);
+    private static final EntityDataAccessor<Optional<BlockPos>> HOME_POSITION = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
+    public static final EntityDataAccessor<String> OWNER_NAME = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Byte> FIXED = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> IN_HEAT = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> IS_PREGNANT = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Integer> MATE_TIMER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> KITTENS = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Optional<UUID>> MOTHER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> FATHER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Integer> AGE_TRACKER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> MATURE_TIMER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.FLOAT);
 
     private SimplyCatEntity followParent;
-    private Vector3d nearestLaser;
+    private Vec3 nearestLaser;
 
-    public SimplyCatEntity(EntityType<? extends TameableEntity> type, World world) {
+    public SimplyCatEntity(EntityType<? extends TamableAnimal> type, Level world) {
         super(type, world);
     }
 
     @Override
     protected void registerGoals() {
         TemptGoal temptGoal = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), false);
-        this.goalSelector.addGoal(1, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(1, new CatSitGoal(this));
         this.goalSelector.addGoal(3, temptGoal);
         this.goalSelector.addGoal(4, new CatFollowParentGoal(this, 1.0D));
@@ -108,18 +127,18 @@ public class SimplyCatEntity extends TameableEntity {
         if (!this.isFixed())
             this.goalSelector.addGoal(9, new CatMateGoal(this, 1.2D));
         this.goalSelector.addGoal(10, new CatWanderGoal(this, 1.0D));
-        this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
-        this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(11, new LookAtPlayerGoal(this, LivingEntity.class, 7.0F));
+        this.goalSelector.addGoal(12, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new CatTargetNearestGoal<>(this, LivingEntity.class, true, (entity) -> {
             EntityType<?> entityType = entity.getType();
-            if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
+            if (entity instanceof TamableAnimal && ((TamableAnimal) entity).isTame())
                 return false;
-            return !(entity instanceof SimplyCatEntity) && !(entity instanceof PlayerEntity) && !(entity instanceof IMob) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(entityType.getRegistryName().toString());
+            return !(entity instanceof SimplyCatEntity) && !(entity instanceof Player) && !(entity instanceof Enemy) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(entityType.getRegistryName().toString());
         }));
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 14.0D).add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.KNOCKBACK_RESISTANCE, 0.7D).add(Attributes.ATTACK_DAMAGE, 2.0D);
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 14.0D).add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.KNOCKBACK_RESISTANCE, 0.7D).add(Attributes.ATTACK_DAMAGE, 2.0D);
     }
 
     @Override
@@ -183,7 +202,7 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     @Override
-    public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData entityData, @Nullable CompoundNBT compound) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag compound) {
         entityData = super.finalizeSpawn(world, difficulty, spawnReason, entityData, compound);
         this.setPhenotype();
 
@@ -327,8 +346,8 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Override
     public boolean isAlliedTo(Entity entity) {
-        if (entity instanceof TameableEntity) {
-            TameableEntity tameable = (TameableEntity) entity;
+        if (entity instanceof TamableAnimal) {
+            TamableAnimal tameable = (TamableAnimal) entity;
             if (tameable.isTame() && tameable.getOwnerUUID() != null && this.isTame() && this.getOwnerUUID() != null && this.getOwnerUUID().equals(tameable.getOwnerUUID()))
                 return true;
         }
@@ -526,16 +545,16 @@ public class SimplyCatEntity extends TameableEntity {
         }
     }
 
-    protected String getGenotype(DataParameter<String> parameter) {
+    protected String getGenotype(EntityDataAccessor<String> parameter) {
         if (this.entityData.get(parameter).isEmpty()) fixEmptyGenes(parameter);
         return this.entityData.get(parameter);
     }
 
-    void setGenotype(DataParameter<String> parameter, String value) {
+    void setGenotype(EntityDataAccessor<String> parameter, String value) {
         this.entityData.set(parameter, value);
     }
 
-    private void fixEmptyGenes(DataParameter<String> dataParameter) {
+    private void fixEmptyGenes(EntityDataAccessor<String> dataParameter) {
         if (dataParameter == FUR_LENGTH)
             this.setGenotype(FUR_LENGTH, "L-L");
         else if (dataParameter == EUMELANIN)
@@ -593,33 +612,33 @@ public class SimplyCatEntity extends TameableEntity {
         this.entityData.set(HOME_POSITION, Optional.empty());
     }
 
-    public ITextComponent getOwnerName() {
+    public Component getOwnerName() {
         if (this.getOwner() != null)
             return this.getOwner().getDisplayName();
         else if (!this.entityData.get(OWNER_NAME).isEmpty())
-            return new StringTextComponent(this.entityData.get(OWNER_NAME));
+            return new TextComponent(this.entityData.get(OWNER_NAME));
         else if (this.getOwnerUUID() != null)
-            return new TranslationTextComponent("entity.simplycats.cat.unknown_owner");
+            return new TranslatableComponent("entity.simplycats.cat.unknown_owner");
         else
-            return new TranslationTextComponent("entity.simplycats.cat.untamed");
+            return new TranslatableComponent("entity.simplycats.cat.untamed");
     }
 
     public void setOwnerName(String name) {
         this.entityData.set(OWNER_NAME, name);
     }
 
-    public void onBagShake(PlayerEntity player) {
+    public void onBagShake(Player player) {
         if (!this.isTame() || (this.getOwner() == player && !this.isOrderedToSit())) {
             this.getLookControl().setLookAt(player, 10, (float) this.getHeadRotSpeed());
             this.getNavigation().moveTo(player, 1.8);
         }
     }
 
-    public Vector3d getNearestLaser() {
+    public Vec3 getNearestLaser() {
         return nearestLaser;
     }
 
-    public void setNearestLaser(Vector3d vec) {
+    public void setNearestLaser(Vec3 vec) {
         this.nearestLaser = vec;
         if (vec == null) {
             this.getNavigation().stop();
@@ -742,22 +761,22 @@ public class SimplyCatEntity extends TameableEntity {
     public void addFather(SimplyCatEntity father, int size) {
         for (int i = 0; i < size; i++) {
             if (!this.getPersistentData().contains("Father" + i) || (this.getPersistentData().contains("Father" + i) && this.getPersistentData().getCompound("Father" + i).isEmpty())) {
-                this.getPersistentData().put("Father" + i, father.saveWithoutId(new CompoundNBT()));
+                this.getPersistentData().put("Father" + i, father.saveWithoutId(new CompoundTag()));
             }
         }
     }
 
-    private void setFather(int i, INBT father) {
+    private void setFather(int i, Tag father) {
         if (this.getPersistentData().contains("Father" + i))
             this.getPersistentData().put("Father" + i, father);
     }
 
-    public CompoundNBT getFather(int i) {
+    public CompoundTag getFather(int i) {
         return this.getPersistentData().getCompound("Father" + i);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putString("EyeColor", this.getGenotype(EYE_COLOR));
         compound.putString("FurLength", this.getGenotype(FUR_LENGTH));
@@ -799,7 +818,7 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.setGenotype(EYE_COLOR, compound.getString("EyeColor"));
         this.setGenotype(FUR_LENGTH, compound.getString("FurLength"));
@@ -944,7 +963,7 @@ public class SimplyCatEntity extends TameableEntity {
         return this.catTexturesArray;
     }
 
-    public boolean canBeTamed(PlayerEntity player) {
+    public boolean canBeTamed(Player player) {
         return (SCConfig.tamed_limit.get() == 0 || player.getPersistentData().getInt("CatCount") < SCConfig.tamed_limit.get()) && !this.isTame();
     }
 
@@ -954,7 +973,7 @@ public class SimplyCatEntity extends TameableEntity {
      * @param tamed - true is tamed, false is untamed, used for this.setTamed(tamed) call at the end.
      * @param owner - the EntityPlayer who is taming the cat.
      */
-    public void setTamed(boolean tamed, PlayerEntity owner) {
+    public void setTamed(boolean tamed, Player owner) {
         this.setTame(tamed);
         int catCount = owner.getPersistentData().getInt("CatCount");
         if (tamed) {
@@ -963,8 +982,8 @@ public class SimplyCatEntity extends TameableEntity {
 //                CHANNEL.sendTo(new SCNetworking(catCount + 1), (EntityPlayerMP) owner);
             this.setOwnerName(owner.getDisplayName().getString());
             this.setOwnerUUID(owner.getUUID());
-            if (owner instanceof ServerPlayerEntity)
-                CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayerEntity) owner, this);
+            if (owner instanceof ServerPlayer)
+                CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayer) owner, this);
 
         } else {
 //            owner.getPersistentData().putInt("CatCount", catCount - 1);
@@ -975,7 +994,7 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     @Override
-    public boolean canMate(AnimalEntity target) {
+    public boolean canMate(Animal target) {
         if (target == this)
             return false;
         if (!(target instanceof SimplyCatEntity))
@@ -1011,12 +1030,12 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Nullable
     @Override
-    public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity parFather) {
-        EntityDataManager father = parFather.getEntityData();
-        EntityDataManager mother = this.getEntityData();
+    public AgableMob getBreedOffspring(ServerLevel world, AgableMob parFather) {
+        SynchedEntityData father = parFather.getEntityData();
+        SynchedEntityData mother = this.getEntityData();
         SimplyCatEntity child = SimplyCats.CAT.get().create(this.level);
 
-        ImmutableList<DataParameter<String>> parameters = ImmutableList.of(
+        ImmutableList<EntityDataAccessor<String>> parameters = ImmutableList.of(
                 FUR_LENGTH,
                 EUMELANIN,
                 PHAEOMELANIN,
@@ -1032,7 +1051,7 @@ public class SimplyCatEntity extends TameableEntity {
                 BOBTAIL
         );
 
-        for (DataParameter<String> geneParameter : parameters) {
+        for (EntityDataAccessor<String> geneParameter : parameters) {
             if (geneParameter.equals(INHIBITOR)) { // todo: remove this soon!
                 if (father.get(INHIBITOR) == null || father.get(INHIBITOR).isEmpty())
                     child.setGenotype(INHIBITOR, inheritGene(mother.get(INHIBITOR), "i-i"));
@@ -1075,7 +1094,7 @@ public class SimplyCatEntity extends TameableEntity {
         child.setGenotype(EYE_COLOR, eye);
 
         if (this.isTame() && this.getOwnerUUID() != null) { // checks if mother is tamed & her owner's UUID exists
-            PlayerEntity owner = this.level.getPlayerByUUID(this.getOwnerUUID()); // grabs owner by UUID
+            Player owner = this.level.getPlayerByUUID(this.getOwnerUUID()); // grabs owner by UUID
             if (owner != null && child.canBeTamed(owner)) { // checks if owner is not null (is online), and is able to tame the kitten OR if the tame limit is disabled
                 child.setTamed(this.isTame(), owner); // sets tamed by owner
                 if (this.getHomePos().isPresent()) // checks mother's home point
@@ -1087,16 +1106,16 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     @Override
-    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         Item item = stack.getItem();
         if (this.level.isClientSide) {
             if (this.isTame() && this.isOwnedBy(player))
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             else if (item == Items.BONE || (item == SCItems.TREAT_BAG.get() && !this.isTame()))
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             else
-                return !this.isFood(stack) || !(this.getHealth() < this.getMaxHealth()) && this.isTame() ? ActionResultType.PASS : ActionResultType.SUCCESS;
+                return !this.isFood(stack) || !(this.getHealth() < this.getMaxHealth()) && this.isTame() ? InteractionResult.PASS : InteractionResult.SUCCESS;
 
         } else if (!stack.isEmpty()) {
             if (item == Items.BLAZE_POWDER && player.isDiscrete() && this.isTame() && this.isOwnedBy(player)) {
@@ -1108,35 +1127,35 @@ public class SimplyCatEntity extends TameableEntity {
                     this.usePlayerItem(player, stack);
                     this.setMateTimer(this.getMateTimer() / 2);
                 }
-                return ActionResultType.CONSUME;
+                return InteractionResult.CONSUME;
             }
 
             if (isFood(stack) && this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, stack);
                 this.heal(1.0F);
-                return ActionResultType.CONSUME;
+                return InteractionResult.CONSUME;
             }
 
             if (item == Items.BONE && player.isDiscrete()) {
                 if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
-                    player.displayClientMessage(new TranslationTextComponent("chat.info.kitten_count", this.getKittens()), true);
+                    player.displayClientMessage(new TranslatableComponent("chat.info.kitten_count", this.getKittens()), true);
                 if (this.isBaby())
-                    player.displayClientMessage(new StringTextComponent(this.getAge() + " // " + this.getAgeTracker() + " // " + this.getMatureTimer()), true);
-                return ActionResultType.CONSUME;
+                    player.displayClientMessage(new TextComponent(this.getAge() + " // " + this.getAgeTracker() + " // " + this.getMatureTimer()), true);
+                return InteractionResult.CONSUME;
             }
 
             if (item == SCItems.TREAT_BAG.get() && player.distanceToSqr(this) < 9.0D && (!this.isTame() || this.isOwnedBy(player))) {
                 if (player.isDiscrete()) {
                     if (this.getHomePos().isPresent()) {
                         this.resetHomePos();
-                        player.displayClientMessage(new TranslationTextComponent("chat.info.remove_home", this.getName()), true);
+                        player.displayClientMessage(new TranslatableComponent("chat.info.remove_home", this.getName()), true);
                     } else {
                         this.setHomePos(this.getOnPos());
-                        player.displayClientMessage(new TranslationTextComponent("chat.info.set_home", this.getName(), getHomePos().get().getX(), getHomePos().get().getY(), getHomePos().get().getZ()), true);
+                        player.displayClientMessage(new TranslatableComponent("chat.info.set_home", this.getName(), getHomePos().get().getX(), getHomePos().get().getY(), getHomePos().get().getZ()), true);
                     }
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 } else if (this.getHomePos().isPresent())
-                    player.displayClientMessage(new StringTextComponent(getHomePos().get().getX() + ", " + getHomePos().get().getY() + ", " + getHomePos().get().getZ()), true);
+                    player.displayClientMessage(new TextComponent(getHomePos().get().getX() + ", " + getHomePos().get().getY() + ", " + getHomePos().get().getZ()), true);
             }
         }
 
@@ -1199,7 +1218,7 @@ public class SimplyCatEntity extends TameableEntity {
     }
 
     @Override
-    public void setCustomName(@Nullable ITextComponent name) {
+    public void setCustomName(@Nullable Component name) {
         if (this.getOwnerUUID() != null) {
             String key = SCReference.getCustomCats().get(this.getOwnerUUID());
             if (key != null && key.equalsIgnoreCase(name.getString())) {

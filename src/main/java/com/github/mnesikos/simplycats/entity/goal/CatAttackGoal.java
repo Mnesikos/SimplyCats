@@ -1,20 +1,22 @@
 package com.github.mnesikos.simplycats.entity.goal;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.BlockGetter;
 
 import java.util.EnumSet;
 
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
 public class CatAttackGoal extends Goal {
-    private final IBlockReader level;
-    private final MobEntity cat;
+    private final BlockGetter level;
+    private final Mob cat;
     private LivingEntity target;
     private int attackCountdown;
 
-    public CatAttackGoal(MobEntity cat) {
+    public CatAttackGoal(Mob cat) {
         this.cat = cat;
         this.level = cat.level;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));

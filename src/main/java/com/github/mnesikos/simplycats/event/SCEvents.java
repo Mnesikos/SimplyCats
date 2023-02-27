@@ -1,11 +1,16 @@
 package com.github.mnesikos.simplycats.event;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
+import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -15,10 +20,26 @@ public class SCEvents {
     @SubscribeEvent
     public static void setupCommon(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            GlobalEntityTypeAttributes.put(SimplyCats.CAT.get(), SimplyCatEntity.createAttributes().build());
             SCVillagers.registerTrades();
             SCVillagers.registerPointOfInterests();
         });
+    }
+
+    @SubscribeEvent
+    public static void registerAttributes(EntityAttributeCreationEvent event) {
+        event.put(SimplyCats.CAT.get(), SimplyCatEntity.createAttributes().build());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(SimplyCats.CAT.get(), SimplyCatRenderer::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(SimplyCatModel.LAYER_LOCATION, SimplyCatModel::createBodyLayer);
     }
 
     public static boolean isRatEntity(Entity entity) {

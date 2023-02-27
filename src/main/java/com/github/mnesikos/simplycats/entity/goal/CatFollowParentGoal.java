@@ -1,7 +1,7 @@
 package com.github.mnesikos.simplycats.entity.goal;
 
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.List;
 

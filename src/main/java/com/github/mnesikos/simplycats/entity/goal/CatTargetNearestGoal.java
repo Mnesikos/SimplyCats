@@ -2,8 +2,8 @@ package com.github.mnesikos.simplycats.entity.goal;
 
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.Difficulty;
 
 import java.util.function.Predicate;

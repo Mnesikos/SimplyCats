@@ -1,12 +1,12 @@
 package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.SimplyCats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.LegacySingleJigsawPiece;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElement;
+import net.minecraft.world.level.levelgen.feature.structures.LegacySinglePoolElement;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class SCWorldGen {
     private static final ResourceLocation snowyShelterStructure = new ResourceLocation(SimplyCats.MOD_ID, "village/snowy_shelter_1");
     private static final ResourceLocation taigaShelterStructure = new ResourceLocation(SimplyCats.MOD_ID, "village/taiga_shelter_1");
 
-    public static void setupVillageWorldGen(DynamicRegistries dynamicRegistries) {
+    public static void setupVillageWorldGen(RegistryAccess dynamicRegistries) {
         addStructureToVillage(dynamicRegistries, "village/desert/houses", desertShelterStructure, 6);
         addStructureToVillage(dynamicRegistries, "village/plains/houses", plainsShelterStructure, 6);
         addStructureToVillage(dynamicRegistries, "village/savanna/houses", savannaShelterStructure, 6);
@@ -28,12 +28,12 @@ public class SCWorldGen {
         addStructureToVillage(dynamicRegistries, "village/taiga/houses", taigaShelterStructure, 6);
     }
 
-    private static void addStructureToVillage(DynamicRegistries dynamicRegistries, String villagePool, ResourceLocation structureLocation, int weight) {
-        LegacySingleJigsawPiece piece = JigsawPiece.legacy(structureLocation.toString()).apply(JigsawPattern.PlacementBehaviour.RIGID);
-        JigsawPattern pool = dynamicRegistries.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY).getOptional(new ResourceLocation(villagePool)).orElse(null);
+    private static void addStructureToVillage(RegistryAccess dynamicRegistries, String villagePool, ResourceLocation structureLocation, int weight) {
+        LegacySinglePoolElement piece = StructurePoolElement.legacy(structureLocation.toString()).apply(StructureTemplatePool.Projection.RIGID);
+        StructureTemplatePool pool = dynamicRegistries.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY).getOptional(new ResourceLocation(villagePool)).orElse(null);
 
         if (pool != null) {
-            List<JigsawPiece> piecesList = new ArrayList<>(pool.templates);
+            List<StructurePoolElement> piecesList = new ArrayList<>(pool.templates);
             for (int i = 0; i < weight; i++) {
                 piecesList.add(piece);
             }

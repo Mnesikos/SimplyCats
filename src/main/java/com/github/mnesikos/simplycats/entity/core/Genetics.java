@@ -1,9 +1,9 @@
 package com.github.mnesikos.simplycats.entity.core;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Random;
 
@@ -11,8 +11,8 @@ public class Genetics {
     public Genetics() {
     }
 
-    public static StringTextComponent getPhenotypeDescription(CompoundNBT nbt, boolean includeSex) {
-        ITextComponent sex = Sex.getPrettyName(nbt.getString("Phaeomelanin"));
+    public static TextComponent getPhenotypeDescription(CompoundTag nbt, boolean includeSex) {
+        Component sex = Sex.getPrettyName(nbt.getString("Phaeomelanin"));
 
         String eumelanin = Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
         String phaeomelanin = Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
@@ -20,63 +20,63 @@ public class Genetics {
         String diluteMod = DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
         boolean isRed = phaeomelanin.equals(Phaeomelanin.RED.toString().toLowerCase());
         String redElseBlack = isRed ? phaeomelanin : eumelanin;
-        ITextComponent base = new TranslationTextComponent("cat.base." + (redElseBlack) + ".name");
+        Component base = new TranslatableComponent("cat.base." + (redElseBlack) + ".name");
         if (dilution.equals(Dilution.DILUTE.toString().toLowerCase())) {
-            base = new TranslationTextComponent("cat.base." + (redElseBlack) + "_" + dilution + ".name");
+            base = new TranslatableComponent("cat.base." + (redElseBlack) + "_" + dilution + ".name");
             if (diluteMod.equals(DiluteMod.CARAMELIZED.toString().toLowerCase()))
-                base = new TranslationTextComponent("cat.base." + (redElseBlack) + "_" + diluteMod + ".name");
+                base = new TranslatableComponent("cat.base." + (redElseBlack) + "_" + diluteMod + ".name");
         }
 
         String agouti = Agouti.getPhenotype(nbt.getString("Agouti"));
         boolean isAgouti = agouti.equals(Agouti.TABBY.toString().toLowerCase());
         String inhibitor = Inhibitor.getPhenotype(nbt.getString("Inhibitor"));
         if (inhibitor.equals(Inhibitor.SILVER.toString().toLowerCase()))
-            base = new StringTextComponent(base.getString() + " " + (new TranslationTextComponent("cat.base." + inhibitor + (isAgouti ? "" : "_smoke") + ".name")).getString());
+            base = new TextComponent(base.getString() + " " + (new TranslatableComponent("cat.base." + inhibitor + (isAgouti ? "" : "_smoke") + ".name")).getString());
         if (phaeomelanin.equals(Phaeomelanin.TORTOISESHELL.toString().toLowerCase()))
-            base = new StringTextComponent(base.getString() + " " + (new TranslationTextComponent("cat.base." + phaeomelanin + ".name")).getString());
+            base = new TextComponent(base.getString() + " " + (new TranslatableComponent("cat.base." + phaeomelanin + ".name")).getString());
 
         String tabby1 = Tabby.getPhenotype(nbt.getString("Tabby"));
         String spotted = Spotted.getPhenotype(nbt.getString("Spotted"));
         String ticked = Ticked.getPhenotype(nbt.getString("Ticked"));
-        ITextComponent tabby = new TranslationTextComponent("");
+        Component tabby = new TranslatableComponent("");
         if (isAgouti || isRed) {
-            tabby = new TranslationTextComponent("cat.tabby." + tabby1 + ".name");
+            tabby = new TranslatableComponent("cat.tabby." + tabby1 + ".name");
             if (spotted.equals(Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Spotted.SPOTTED.toString().toLowerCase()))
-                tabby = new TranslationTextComponent("cat.tabby." + spotted + ".name");
+                tabby = new TranslatableComponent("cat.tabby." + spotted + ".name");
             if (ticked.equals(Ticked.TICKED.toString().toLowerCase()))
-                tabby = new TranslationTextComponent("cat.tabby." + ticked + ".name");
+                tabby = new TranslatableComponent("cat.tabby." + ticked + ".name");
         }
 
         String colorpoint = Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
-        ITextComponent point = new TranslationTextComponent("");
+        Component point = new TranslatableComponent("");
         if (!colorpoint.equals(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
-            point = new TranslationTextComponent("cat.point." + colorpoint + ".name");
+            point = new TranslatableComponent("cat.point." + colorpoint + ".name");
             if (colorpoint.equals(Colorpoint.ALBINO.toString().toLowerCase())) {
-                ITextComponent eyes = new TranslationTextComponent("cat.point.red_eyed.name");
+                Component eyes = new TranslatableComponent("cat.point.red_eyed.name");
                 if (nbt.getString("Colorpoint").contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()))
-                    eyes = new TranslationTextComponent("cat.point.blue_eyed.name");
-                return new StringTextComponent(eyes.getString() + " " + point.getString() + (includeSex ? (" " + sex.getString()) : ""));
+                    eyes = new TranslatableComponent("cat.point.blue_eyed.name");
+                return new TextComponent(eyes.getString() + " " + point.getString() + (includeSex ? (" " + sex.getString()) : ""));
             }
         }
 
         String white = White.getPhenotype(nbt.getString("White"));
-        ITextComponent whiteText = new TranslationTextComponent("");
+        Component whiteText = new TranslatableComponent("");
         if (!white.equals(White.NONE.toString().toLowerCase())) {
             if (white.equals(White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
-                whiteText = new TranslationTextComponent("cat.white.solid_white.name");
-                return new StringTextComponent(whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
+                whiteText = new TranslatableComponent("cat.white.solid_white.name");
+                return new TextComponent(whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
             }
             if (nbt.getString("White_0").contains("5")) {
-                whiteText = new TranslationTextComponent("cat.white.mostly_white.name");
-                return new StringTextComponent(whiteText.getString() + " " + base.getString() +
+                whiteText = new TranslatableComponent("cat.white.mostly_white.name");
+                return new TextComponent(whiteText.getString() + " " + base.getString() +
                         (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
                         (point.getString().equals("") ? "" : " " + point.getString()) +
                         (includeSex ? (" " + sex.getString()) : ""));
             } else
-                whiteText = new TranslationTextComponent("cat.white.some_white.name");
+                whiteText = new TranslatableComponent("cat.white.some_white.name");
         }
 
-        return new StringTextComponent(base.getString() +
+        return new TextComponent(base.getString() +
                 (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
                 (point.getString().equals("") ? "" : " " + point.getString()) +
                 " " + whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
@@ -96,13 +96,13 @@ public class Genetics {
             return name;
         }
 
-        public static ITextComponent getPrettyName(String phaeomelanin) {
+        public static Component getPrettyName(String phaeomelanin) {
             if (phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
-                return new TranslationTextComponent("cat.sex.male.name");
+                return new TranslatableComponent("cat.sex.male.name");
             else if (!phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
-                return new TranslationTextComponent("cat.sex.female.name");
+                return new TranslatableComponent("cat.sex.female.name");
             else
-                return new StringTextComponent(phaeomelanin);
+                return new TextComponent(phaeomelanin);
         }
     }
 

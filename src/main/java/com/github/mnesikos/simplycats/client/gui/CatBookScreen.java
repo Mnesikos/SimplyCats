@@ -3,29 +3,31 @@ package com.github.mnesikos.simplycats.client.gui;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.gui.chat.NarratorChatListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
+
+import net.minecraft.client.gui.components.Button.OnPress;
 
 @OnlyIn(Dist.CLIENT)
 public class CatBookScreen extends Screen {
@@ -33,9 +35,9 @@ public class CatBookScreen extends Screen {
     private static final int bookImageWidth = 281;
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(SimplyCats.MOD_ID, "textures/gui/cat_book.png");
 
-    private World world;
+    private Level world;
     private int currPage;
-    private final ListNBT bookPages = new ListNBT();
+    private final ListTag bookPages = new ListTag();
     private NextPageButton buttonNextPage;
     private NextPageButton buttonPreviousPage;
 
@@ -43,15 +45,15 @@ public class CatBookScreen extends Screen {
     protected int catHealth;
 //    public static ItemStack book;
 
-    public CatBookScreen(CompoundNBT bookTag, World world, int catInList) {
+    public CatBookScreen(CompoundTag bookTag, Level world, int catInList) {
         this(bookTag, world);
         this.currPage = catInList;
     }
 
-    public CatBookScreen(CompoundNBT bookTag, World world) {
+    public CatBookScreen(CompoundTag bookTag, Level world) {
         super(NarratorChatListener.NO_TITLE);
         if (bookTag != null && !bookTag.isEmpty()) {
-            ListNBT pages = bookTag.getList("pages", Constants.NBT.TAG_COMPOUND).copy();
+            ListTag pages = bookTag.getList("pages", Constants.NBT.TAG_COMPOUND).copy();
             this.bookPages.addAll(pages);
             this.world = world;
         }
@@ -97,7 +99,7 @@ public class CatBookScreen extends Screen {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         RenderSystem.color4f(1, 1, 1, 1);
         int leftX = (width - bookImageWidth) / 2;
@@ -112,7 +114,7 @@ public class CatBookScreen extends Screen {
             int nameWidth = this.font.width(cat.getName());
             this.font.draw(matrixStack, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
 
-            StringTextComponent sex = new StringTextComponent(new TranslationTextComponent(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
+            TextComponent sex = new TextComponent(new TranslatableComponent(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
                     + " "
                     + Genetics.Sex.getPrettyName(bookPages.getCompound(this.currPage).getString("Phaeomelanin")).getString());
             this.font.draw(matrixStack, sex, leftX + 66, 14 * 2, 0);
@@ -124,9 +126,9 @@ public class CatBookScreen extends Screen {
             String ownerName;
             if (cat.isTame()) {
                 ownerName = cat.getOwnerName().getString();
-                this.font.draw(matrixStack, new TranslationTextComponent("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0);
+                this.font.draw(matrixStack, new TranslatableComponent("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0);
             } else
-                this.font.draw(matrixStack, new TranslationTextComponent("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
+                this.font.draw(matrixStack, new TranslatableComponent("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
 
             this.font.drawWordWrap(Genetics.getPhenotypeDescription(bookPages.getCompound(this.currPage), false), leftX + 16, 14 * 7, 120, 0);
 
@@ -137,35 +139,35 @@ public class CatBookScreen extends Screen {
 
             //this.font.drawWordWrap("Pregnancy Data", leftX + 16, 14*11-5, 120, 0); //todo
 
-            String eyeColor = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("EyeColor");
-            String furLength = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("FurLength");
-            String eumelanin = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Eumelanin");
-            String phaeomelanin = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Phaeomelanin");
-            String dilution = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Dilution");
-            String diluteMod = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("DiluteMod");
-            String agouti = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Agouti");
-            String tabby = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Tabby");
-            String spotted = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Spotted");
-            String ticked = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Ticked");
-            String inhibitor = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Inhibitor");
-            String colorpoint = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Colorpoint");
-            String white = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("White");
-            String bobtail = TextFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Bobtail");
+            String eyeColor = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("EyeColor");
+            String furLength = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("FurLength");
+            String eumelanin = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Eumelanin");
+            String phaeomelanin = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Phaeomelanin");
+            String dilution = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Dilution");
+            String diluteMod = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("DiluteMod");
+            String agouti = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Agouti");
+            String tabby = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Tabby");
+            String spotted = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Spotted");
+            String ticked = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Ticked");
+            String inhibitor = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Inhibitor");
+            String colorpoint = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Colorpoint");
+            String white = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("White");
+            String bobtail = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Bobtail");
 
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.white", white), leftX + 152, 134 + 5, 0);
-            this.font.draw(matrixStack, new TranslationTextComponent("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.white", white), leftX + 152, 134 + 5, 0);
+            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0);
 
             //this.font.drawWordWrap("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 
@@ -177,20 +179,20 @@ public class CatBookScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    private void renderCatHealth(MatrixStack matrixStack, int x, int y) {
+    private void renderCatHealth(PoseStack matrixStack, int x, int y) {
         RenderSystem.color4f(1, 1, 1, 1);
         this.minecraft.getTextureManager().bind(GUI_ICONS_LOCATION);
-        this.catHealth = MathHelper.ceil(cat.getHealth());
+        this.catHealth = Mth.ceil(cat.getHealth());
 
         float maxHealth = (float) cat.getAttributeValue(Attributes.MAX_HEALTH);
-        int l1 = MathHelper.ceil((maxHealth) / 2.0F / 10.0F);
+        int l1 = Mth.ceil((maxHealth) / 2.0F / 10.0F);
         int i2 = Math.max(10 - (l1 - 2), 3);
 
-        for (int wholeHearts = MathHelper.ceil((maxHealth) / 2.0F) - 1; wholeHearts >= 0; --wholeHearts) {
+        for (int wholeHearts = Mth.ceil((maxHealth) / 2.0F) - 1; wholeHearts >= 0; --wholeHearts) {
             int textureX = 16;
             int textureY = 0;
 
-            int j4 = MathHelper.ceil((float) (wholeHearts + 1) / 10.0F) - 1;
+            int j4 = Mth.ceil((float) (wholeHearts + 1) / 10.0F) - 1;
             int guiX = x + wholeHearts % 10 * 8;
             int guiY = y - j4 * i2;
 
@@ -208,13 +210,13 @@ public class CatBookScreen extends Screen {
     public class NextPageButton extends Button {
         private final boolean isNextButton;
 
-        NextPageButton(int x, int y, boolean nextButton, IPressable pressable) {
-            super(x, y, 20, 12, StringTextComponent.EMPTY, pressable);
+        NextPageButton(int x, int y, boolean nextButton, OnPress pressable) {
+            super(x, y, 20, 12, TextComponent.EMPTY, pressable);
             isNextButton = nextButton;
         }
 
         @Override
-        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (visible) {
                 boolean isButtonPressed = (mouseX >= x && mouseY >= y
                         && mouseX < x + width && mouseY < y + height);
@@ -235,8 +237,8 @@ public class CatBookScreen extends Screen {
         }
 
         @Override
-        public void playDownSound(SoundHandler soundHandler) {
-            soundHandler.play(SimpleSound.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+        public void playDownSound(SoundManager soundHandler) {
+            soundHandler.play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
         }
     }
 }

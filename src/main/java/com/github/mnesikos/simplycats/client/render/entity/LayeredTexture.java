@@ -1,12 +1,12 @@
 package com.github.mnesikos.simplycats.client.render.entity;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.client.renderer.texture.Texture;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import com.mojang.blaze3d.platform.TextureUtil;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * Credit for this goes to sekelsta and the horse-colors code, thank you!
  */
 @OnlyIn(Dist.CLIENT)
-public class LayeredTexture extends Texture {
+public class LayeredTexture extends AbstractTexture {
     public final String[] texturePaths;
 
     public LayeredTexture(String[] texturePaths) {
@@ -29,7 +29,7 @@ public class LayeredTexture extends Texture {
     }
 
     @Override
-    public void load(IResourceManager manager) throws IOException {
+    public void load(ResourceManager manager) throws IOException {
         NativeImage image = getLayer(manager, texturePaths);
 
         if (!RenderSystem.isOnRenderThreadOrInit()) {
@@ -40,7 +40,7 @@ public class LayeredTexture extends Texture {
             this.loadImage(image);
     }
 
-    public NativeImage getLayer(IResourceManager manager, String[] texturePaths) {
+    public NativeImage getLayer(ResourceManager manager, String[] texturePaths) {
         List<String> layers = Arrays.asList(texturePaths);
         Iterator<String> iterator = layers.iterator();
         String baseLayer = iterator.next();
@@ -60,11 +60,11 @@ public class LayeredTexture extends Texture {
         return baseImage;
     }
 
-    public NativeImage tryLayer(IResourceManager manager, String layer) {
+    public NativeImage tryLayer(ResourceManager manager, String layer) {
         if (layer == null)
             return null;
 
-        try (IResource resource = manager.getResource(new ResourceLocation(layer))) {
+        try (Resource resource = manager.getResource(new ResourceLocation(layer))) {
             NativeImage image = net.minecraftforge.client.MinecraftForgeClient.getImageLayer(new ResourceLocation(layer), manager);
             return image;
         } catch (IOException exception) {

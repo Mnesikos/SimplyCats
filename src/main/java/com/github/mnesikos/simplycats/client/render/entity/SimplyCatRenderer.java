@@ -6,16 +6,17 @@ import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Matrix4f;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -26,12 +27,12 @@ import java.util.Map;
 public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatModel<SimplyCatEntity>> {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.newHashMap();
 
-    public SimplyCatRenderer(EntityRendererManager manager) {
-        super(manager, new SimplyCatModel<>(), 0.4f);
+    public SimplyCatRenderer(EntityRendererProvider.Context context) {
+        super(context, new SimplyCatModel<>(context.bakeLayer(SimplyCatModel.LAYER_LOCATION)), 0.4f);
     }
 
     @Override
-    public void render(SimplyCatEntity cat, float v, float v1, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int i) {
+    public void render(SimplyCatEntity cat, float v, float v1, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, int i) {
         this.model.isBobtail = cat.isBobtail();
         this.model.isLongFur = cat.isLongFur();
         this.model.ageScale = cat.getAgeScale();
@@ -39,7 +40,7 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
     }
 
     @Override
-    protected void scale(SimplyCatEntity entity, MatrixStack matrixStack, float partialTickTime) {
+    protected void scale(SimplyCatEntity entity, PoseStack matrixStack, float partialTickTime) {
         matrixStack.scale(0.8F, 0.9F, 0.8F);
         super.scale(entity, matrixStack, partialTickTime);
     }
@@ -67,7 +68,7 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
     }
 
     @Override
-    protected void renderNameTag(SimplyCatEntity cat, ITextComponent textComponent, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int p_225629_5_) { // todo
+    protected void renderNameTag(SimplyCatEntity cat, Component textComponent, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, int p_225629_5_) { // todo
         super.renderNameTag(cat, textComponent, matrixStack, renderTypeBuffer, p_225629_5_);
 
         double distance = this.entityRenderDispatcher.distanceToSqr(cat);
@@ -84,11 +85,11 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
             float backgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
             int j = (int) (backgroundOpacity * 255.0F) << 24;
 
-            TranslationTextComponent info = new TranslationTextComponent((cat.getSex() == Genetics.Sex.FEMALE ? (cat.getBreedingStatus("inheat") ? "chat.info.in_heat" : "chat.info.not_in_heat") : "chat.info.male"), cat.getMateTimer());
+            TranslatableComponent info = new TranslatableComponent((cat.getSex() == Genetics.Sex.FEMALE ? (cat.getBreedingStatus("inheat") ? "chat.info.in_heat" : "chat.info.not_in_heat") : "chat.info.male"), cat.getMateTimer());
             if (cat.getBreedingStatus("ispregnant"))
-                info = new TranslationTextComponent(cat.getBreedingStatus("inheat") ? "chat.info.pregnant_heat" : "chat.info.pregnant", cat.getMateTimer());
+                info = new TranslatableComponent(cat.getBreedingStatus("inheat") ? "chat.info.pregnant_heat" : "chat.info.pregnant", cat.getMateTimer());
 
-            FontRenderer fontRenderer = this.getFont();
+            Font fontRenderer = this.getFont();
             float centeredPos = (float) (-fontRenderer.width(info) / 2);
 
             fontRenderer.drawInBatch(info, centeredPos, 0, 553648127, false, matrix4f, renderTypeBuffer, catNotSneaking, j, p_225629_5_);
