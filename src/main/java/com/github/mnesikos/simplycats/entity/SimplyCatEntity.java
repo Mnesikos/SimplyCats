@@ -3,19 +3,16 @@ package com.github.mnesikos.simplycats.entity;
 import com.github.mnesikos.simplycats.SCReference;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
-import com.github.mnesikos.simplycats.entity.core.Genetics;
-import com.github.mnesikos.simplycats.entity.core.Genetics.*;
-import com.github.mnesikos.simplycats.entity.goal.CatSitOnBlockGoal;
-import com.github.mnesikos.simplycats.entity.goal.*;
+import com.github.mnesikos.simplycats.entity.genetics.CatAlleles;
+import com.github.mnesikos.simplycats.entity.genetics.FelineGenome;
+import com.github.mnesikos.simplycats.entity.genetics.Genetics;
+import com.github.mnesikos.simplycats.entity.genetics.Genetics.Sex;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.item.SCItems;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,7 +20,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -41,51 +37,26 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
 public class SimplyCatEntity extends TameableEntity {
-    private static final DataParameter<String> EYE_COLOR = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> FUR_LENGTH = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> EUMELANIN = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> PHAEOMELANIN = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> DILUTION = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> DILUTE_MOD = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> AGOUTI = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> TABBY = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> SPOTTED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> TICKED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> INHIBITOR = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> COLORPOINT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> BOBTAIL = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_0 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_1 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_2 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_PAWS_0 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_PAWS_1 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_PAWS_2 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> WHITE_PAWS_3 = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private final String[] whiteTexturesArray = new String[3];
-    private final String[] whitePawTexturesArray = new String[4];
-    private String texturePrefix;
-    private final String[] catTexturesArray = new String[13];
-
-    private static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
-    public static final DataParameter<String> OWNER_NAME = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
-    private static final DataParameter<Byte> FIXED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<Byte> IN_HEAT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<Byte> IS_PREGNANT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<Integer> MATE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Integer> KITTENS = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Optional<UUID>> MOTHER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_UUID);
-    private static final DataParameter<Optional<UUID>> FATHER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_UUID);
-    private static final DataParameter<Integer> AGE_TRACKER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Float> MATURE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.FLOAT);
+    protected FelineGenome genes = new FelineGenome(this);
+    protected static final DataParameter<String> GENES = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
+    protected static final DataParameter<String> MARKINGS = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
+    protected static final DataParameter<Optional<BlockPos>> HOME_POSITION = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
+    protected static final DataParameter<String> OWNER_NAME = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.STRING);
+    protected static final DataParameter<Byte> FIXED = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> IN_HEAT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> IS_PREGNANT = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.BYTE);
+    protected static final DataParameter<Integer> MATE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
+    protected static final DataParameter<Integer> KITTENS = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
+    protected static final DataParameter<Optional<UUID>> MOTHER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_UUID);
+    protected static final DataParameter<Optional<UUID>> FATHER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.OPTIONAL_UUID);
+    protected static final DataParameter<Integer> AGE_TRACKER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.INT);
+    protected static final DataParameter<Float> MATURE_TIMER = EntityDataManager.defineId(SimplyCatEntity.class, DataSerializers.FLOAT);
 
     private SimplyCatEntity followParent;
     private Vector3d nearestLaser;
@@ -96,26 +67,26 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Override
     protected void registerGoals() {
-        TemptGoal temptGoal = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), false);
-        this.goalSelector.addGoal(1, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new CatSitGoal(this));
-        this.goalSelector.addGoal(3, temptGoal);
-        this.goalSelector.addGoal(4, new CatFollowParentGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new CatSitOnBlockGoal(this, 1.0D, 8));
-        this.goalSelector.addGoal(6, new CatBirthGoal(this));
-        this.goalSelector.addGoal(7, new LeapAtTargetGoal(this, 0.4F));
-        this.goalSelector.addGoal(8, new CatAttackGoal(this));
-        if (!this.isFixed())
-            this.goalSelector.addGoal(9, new CatMateGoal(this, 1.2D));
-        this.goalSelector.addGoal(10, new CatWanderGoal(this, 1.0D));
-        this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
-        this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
-        this.targetSelector.addGoal(1, new CatTargetNearestGoal<>(this, LivingEntity.class, true, (entity) -> {
-            EntityType<?> entityType = entity.getType();
-            if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
-                return false;
-            return !(entity instanceof SimplyCatEntity) && !(entity instanceof PlayerEntity) && !(entity instanceof IMob) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(entityType.getRegistryName().toString());
-        }));
+//        TemptGoal temptGoal = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), false);
+//        this.goalSelector.addGoal(1, new SwimGoal(this));
+//        this.goalSelector.addGoal(1, new CatSitGoal(this));
+//        this.goalSelector.addGoal(3, temptGoal);
+//        this.goalSelector.addGoal(4, new CatFollowParentGoal(this, 1.0D));
+//        this.goalSelector.addGoal(5, new CatSitOnBlockGoal(this, 1.0D, 8));
+//        this.goalSelector.addGoal(6, new CatBirthGoal(this));
+//        this.goalSelector.addGoal(7, new LeapAtTargetGoal(this, 0.4F));
+//        this.goalSelector.addGoal(8, new CatAttackGoal(this));
+//        if (!this.isFixed())
+//            this.goalSelector.addGoal(9, new CatMateGoal(this, 1.2D));
+//        this.goalSelector.addGoal(10, new CatWanderGoal(this, 1.0D));
+//        this.goalSelector.addGoal(11, new LookAtGoal(this, LivingEntity.class, 7.0F));
+//        this.goalSelector.addGoal(12, new LookRandomlyGoal(this));
+//        this.targetSelector.addGoal(1, new CatTargetNearestGoal<>(this, LivingEntity.class, true, (entity) -> {
+//            EntityType<?> entityType = entity.getType();
+//            if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
+//                return false;
+//            return !(entity instanceof SimplyCatEntity) && !(entity instanceof PlayerEntity) && !(entity instanceof IMob) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(entityType.getRegistryName().toString());
+//        }));
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -125,29 +96,8 @@ public class SimplyCatEntity extends TameableEntity {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(EYE_COLOR, EyeColor.COPPER.toString());
-        this.entityData.define(FUR_LENGTH, "L-L");
-        this.entityData.define(EUMELANIN, "B-B");
-        this.entityData.define(PHAEOMELANIN, "Xo-Xo");
-        this.entityData.define(DILUTION, "D-D");
-        this.entityData.define(DILUTE_MOD, "dm-dm");
-        this.entityData.define(AGOUTI, "a-a");
-        this.entityData.define(TABBY, "Mc-Mc");
-        this.entityData.define(SPOTTED, "sp-sp");
-        this.entityData.define(TICKED, "ta-ta");
-        this.entityData.define(INHIBITOR, "i-i");
-        this.entityData.define(COLORPOINT, "C-C");
-        this.entityData.define(WHITE, "w-w");
-        this.entityData.define(BOBTAIL, "Jb-Jb");
-
-        this.entityData.define(WHITE_0, "");
-        this.entityData.define(WHITE_1, "");
-        this.entityData.define(WHITE_2, "");
-        this.entityData.define(WHITE_PAWS_0, "");
-        this.entityData.define(WHITE_PAWS_1, "");
-        this.entityData.define(WHITE_PAWS_2, "");
-        this.entityData.define(WHITE_PAWS_3, "");
-
+        this.entityData.define(GENES, "");
+        this.entityData.define(MARKINGS, "");
         this.entityData.define(HOME_POSITION, Optional.empty());
         this.entityData.define(OWNER_NAME, "");
         this.entityData.define(FIXED, (byte) 0);
@@ -185,7 +135,7 @@ public class SimplyCatEntity extends TameableEntity {
     @Override
     public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData entityData, @Nullable CompoundNBT compound) {
         entityData = super.finalizeSpawn(world, difficulty, spawnReason, entityData, compound);
-        this.setPhenotype();
+        this.getGenome().randomize();
 
         if (!this.level.isClientSide)
             if (this.isTame())
@@ -235,7 +185,7 @@ public class SimplyCatEntity extends TameableEntity {
 
         if (this.level.isClientSide && this.entityData.isDirty()) {
             this.entityData.clearDirty();
-            this.resetTexturePrefix();
+            this.getGenome().resetTexturePrefix();
         }
     }
 
@@ -336,249 +286,28 @@ public class SimplyCatEntity extends TameableEntity {
         return super.isAlliedTo(entity);
     }
 
-    public void setPhenotype() {
-        this.setGenotype(FUR_LENGTH, FurLength.init(random) + "-" + FurLength.init(random));
-        this.setGenotype(EUMELANIN, Eumelanin.init(random) + "-" + Eumelanin.init(random));
-        this.setGenotype(PHAEOMELANIN, Phaeomelanin.init(random));
-        this.setGenotype(DILUTION, Dilution.init(random) + "-" + Dilution.init(random));
-        this.setGenotype(DILUTE_MOD, DiluteMod.init(random) + "-" + DiluteMod.init(random));
-        this.setGenotype(AGOUTI, Agouti.init(random) + "-" + Agouti.init(random));
-        this.setGenotype(TABBY, Tabby.init(random) + "-" + Tabby.init(random));
-        this.setGenotype(SPOTTED, Spotted.init(random) + "-" + Spotted.init(random));
-        this.setGenotype(TICKED, Ticked.init(random) + "-" + Ticked.init(random));
-        this.setGenotype(INHIBITOR, Inhibitor.init(random) + "-" + Inhibitor.init(random));
-        this.setGenotype(COLORPOINT, Colorpoint.init(random) + "-" + Colorpoint.init(random));
-        this.setGenotype(WHITE, White.init(random) + "-" + White.init(random));
-        this.setGenotype(BOBTAIL, Bobtail.init(random) + "-" + Bobtail.init(random));
-        this.selectWhiteMarkings();
-        this.setGenotype(EYE_COLOR, selectEyeColor());
+    public FelineGenome getGenome() {
+        return genes;
     }
 
-    private String selectEyeColor() {
-        String color = EyeColor.init(random.nextInt(4));
-        // todo change whiteCheck == White.Spotting to a better check for proper white face check
-        if (getGenotype(WHITE).contains(White.DOMINANT.getAllele()))
-            color = EyeColor.init(random.nextInt(5));
-        if (Colorpoint.getPhenotype(this.getGenotype(COLORPOINT)).equalsIgnoreCase(Colorpoint.COLORPOINT.toString()))
-            color = EyeColor.init(4);
-        if (Colorpoint.getPhenotype(this.getGenotype(COLORPOINT)).equalsIgnoreCase(Colorpoint.ALBINO.toString()))
-            color = getGenotype(COLORPOINT).contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()) ? EyeColor.init(5) : EyeColor.init(6);
-        return color;
+    public void setGeneData(String genes) {
+        this.entityData.set(GENES, genes);
     }
 
-    void selectWhiteMarkings() {
-        int base;
-        int body = 0;
-        int face = 0;
-        int tail = 0;
-
-        for (int j = 0; j <= 3; j++) {
-            this.whitePawTexturesArray[j] = "";
-            this.setWhitePawTextures(j, "");
-        }
-
-        switch (this.getGenotype(WHITE)) {
-            case "Wd-Wd":
-            case "Wd-w":
-            case "Wd-Ws":
-            case "w-Wd":
-            case "Ws-Wd":
-                base = 6;
-                body = 1;
-                face = 0;
-                tail = 0;
-                break;
-
-            case "w-w":
-            default:
-                base = 0;
-                body = 0;
-                face = 0;
-                tail = 0;
-                break;
-
-            case "Ws-Ws":
-                base = random.nextInt(2) + 4; //4-5
-                if (base == 5) {
-                    body = random.nextInt(4) + 1;
-                    face = random.nextInt(6) + 1;
-                    if (body > 1)
-                        tail = random.nextInt(3) + 1;
-                } else if (base == 4) {
-                    body = 1;
-                    face = random.nextInt(5) + 1;
-                }
-                if (random.nextInt(10) == 0) { //10% chance for solid white
-                    base = 6;
-                    body = 1;
-                    face = 0;
-                    tail = 0;
-                }
-                break;
-
-            case "Ws-w":
-            case "w-Ws":
-                base = random.nextInt(3) + 1; //1-3
-                body = 1;
-                if (base == 2 || base == 3)
-                    this.selectWhitePaws(base);
-                if (base == 3)
-                    face = random.nextInt(5) + 1;
-                break;
-        }
-
-        this.whiteTexturesArray[0] = body == 0 ? "" : "white_" + base + "_body" + body;
-        this.setWhiteTextures(0, whiteTexturesArray[0]);
-
-        this.whiteTexturesArray[1] = face == 0 ? "" : "white_" + (base == 3 || base == 4 ? 34 : base) + "_face" + face;
-        this.setWhiteTextures(1, whiteTexturesArray[1]);
-
-        this.whiteTexturesArray[2] = tail == 0 ? "" : "white_" + base + "_tail" + tail;
-        this.setWhiteTextures(2, whiteTexturesArray[2]);
+    public String getGeneData() {
+        return (String) this.entityData.get(GENES);
     }
 
-    private void selectWhitePaws(int base) {
-        /*
-         * boolean all is set so all 4 paws are white
-         * making it more common than only random 1-4 white paws
-         */
-        boolean all = random.nextInt(4) <= 2;
-
-        if (all || random.nextInt(4) <= 2) {
-            this.whitePawTexturesArray[0] = "white_" + base + "_paw1";
-            this.setWhitePawTextures(0, whitePawTexturesArray[0]);
-        }
-
-        if (all || random.nextInt(4) <= 2) {
-            this.whitePawTexturesArray[1] = "white_" + base + "_paw2";
-            this.setWhitePawTextures(1, whitePawTexturesArray[1]);
-        }
-
-        if (all || random.nextInt(4) <= 2) {
-            this.whitePawTexturesArray[2] = "white_" + base + "_paw3";
-            this.setWhitePawTextures(2, whitePawTexturesArray[2]);
-        }
-
-        if (all || random.nextInt(4) <= 2) {
-            this.whitePawTexturesArray[3] = "white_" + base + "_paw4";
-            this.setWhitePawTextures(3, whitePawTexturesArray[3]);
-        }
+    public void setMarkingsData(String markings) {
+        this.entityData.set(MARKINGS, markings);
     }
 
-    private String getWhiteTextures(int i) {
-        switch (i) {
-            case 0:
-                if (this.entityData.get(WHITE_0).isEmpty() && !this.getGenotype(WHITE).equals("w-w"))
-                    this.selectWhiteMarkings();
-                return this.entityData.get(WHITE_0);
-            case 1:
-                return this.entityData.get(WHITE_1);
-            case 2:
-                return this.entityData.get(WHITE_2);
-            default:
-                return "";
-        }
-    }
-
-    private void setWhiteTextures(int i, String value) {
-        switch (i) {
-            case 0:
-                this.entityData.set(WHITE_0, value);
-                break;
-            case 1:
-                this.entityData.set(WHITE_1, value);
-                break;
-            case 2:
-                this.entityData.set(WHITE_2, value);
-                break;
-        }
-    }
-
-    private String getWhitePawTextures(int i) {
-        switch (i) {
-            case 0:
-                return this.entityData.get(WHITE_PAWS_0);
-            case 1:
-                return this.entityData.get(WHITE_PAWS_1);
-            case 2:
-                return this.entityData.get(WHITE_PAWS_2);
-            case 3:
-                return this.entityData.get(WHITE_PAWS_3);
-            default:
-                return "";
-        }
-    }
-
-    private void setWhitePawTextures(int i, String value) {
-        switch (i) {
-            case 0:
-                this.entityData.set(WHITE_PAWS_0, value);
-                break;
-            case 1:
-                this.entityData.set(WHITE_PAWS_1, value);
-                break;
-            case 2:
-                this.entityData.set(WHITE_PAWS_2, value);
-                break;
-            case 3:
-                this.entityData.set(WHITE_PAWS_3, value);
-                break;
-        }
-    }
-
-    protected String getGenotype(DataParameter<String> parameter) {
-        if (this.entityData.get(parameter).isEmpty()) fixEmptyGenes(parameter);
-        return this.entityData.get(parameter);
-    }
-
-    void setGenotype(DataParameter<String> parameter, String value) {
-        this.entityData.set(parameter, value);
-    }
-
-    private void fixEmptyGenes(DataParameter<String> dataParameter) {
-        if (dataParameter == FUR_LENGTH)
-            this.setGenotype(FUR_LENGTH, "L-L");
-        else if (dataParameter == EUMELANIN)
-            this.setGenotype(EUMELANIN, "B-B");
-        else if (dataParameter == PHAEOMELANIN)
-            this.setGenotype(PHAEOMELANIN, "Xo-" + (random.nextBoolean() ? Phaeomelanin.NOT_RED.getAllele() : Phaeomelanin.MALE.getAllele()));
-        else if (dataParameter == DILUTION)
-            this.setGenotype(DILUTION, "D-D");
-        else if (dataParameter == DILUTE_MOD)
-            this.setGenotype(DILUTE_MOD, "dm-dm");
-        else if (dataParameter == AGOUTI)
-            this.setGenotype(AGOUTI, "a-a");
-        else if (dataParameter == TABBY)
-            this.setGenotype(TABBY, "Mc-Mc");
-        else if (dataParameter == SPOTTED)
-            this.setGenotype(SPOTTED, "sp-sp");
-        else if (dataParameter == TICKED)
-            this.setGenotype(TICKED, "ta-ta");
-        else if (dataParameter == INHIBITOR)
-            this.setGenotype(INHIBITOR, "i-i");
-        else if (dataParameter == COLORPOINT)
-            this.setGenotype(COLORPOINT, "C-C");
-        else if (dataParameter == WHITE)
-            this.setGenotype(WHITE, "w-w");
-        else if (dataParameter == BOBTAIL)
-            this.setGenotype(BOBTAIL, "Jb-Jb");
-        else // EYES
-            this.setGenotype(EYE_COLOR, selectEyeColor());
+    public String getMarkingsData() {
+        return (String) this.entityData.get(MARKINGS);
     }
 
     public Sex getSex() {
-        String phaeomelanin = this.entityData.get(PHAEOMELANIN);
-        return !phaeomelanin.isEmpty() && phaeomelanin.contains(Phaeomelanin.MALE.getAllele()) ? Sex.MALE : Sex.FEMALE;
-    }
-
-    public boolean isBobtail() {
-        String bobtail = this.entityData.get(BOBTAIL);
-        return !bobtail.isEmpty() && Bobtail.isBobtail(bobtail);
-    }
-
-    public boolean isLongFur() {
-        String furLength = this.entityData.get(FUR_LENGTH);
-        return !furLength.isEmpty() && FurLength.getPhenotype(furLength).equalsIgnoreCase(FurLength.LONG.toString());
+        return getGenome().isMale() ? Sex.MALE : Sex.FEMALE;
     }
 
     public Optional<BlockPos> getHomePos() {
@@ -759,26 +488,9 @@ public class SimplyCatEntity extends TameableEntity {
     @Override
     public void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
-        compound.putString("EyeColor", this.getGenotype(EYE_COLOR));
-        compound.putString("FurLength", this.getGenotype(FUR_LENGTH));
-        compound.putString("Eumelanin", this.getGenotype(EUMELANIN));
-        compound.putString("Phaeomelanin", this.getGenotype(PHAEOMELANIN));
-        compound.putString("Dilution", this.getGenotype(DILUTION));
-        compound.putString("DiluteMod", this.getGenotype(DILUTE_MOD));
-        compound.putString("Agouti", this.getGenotype(AGOUTI));
-        compound.putString("Tabby", this.getGenotype(TABBY));
-        compound.putString("Spotted", this.getGenotype(SPOTTED));
-        compound.putString("Ticked", this.getGenotype(TICKED));
-        compound.putString("Inhibitor", this.getGenotype(INHIBITOR));
-        compound.putString("Colorpoint", this.getGenotype(COLORPOINT));
-        compound.putString("White", this.getGenotype(WHITE));
-        compound.putString("Bobtail", this.getGenotype(BOBTAIL));
-        for (int i = 0; i <= 2; i++)
-            compound.putString("White_" + i, this.getWhiteTextures(i));
-        for (int i = 0; i <= 3; i++)
-            compound.putString("WhitePaws_" + i, this.getWhitePawTextures(i));
+        compound.putString("Genes", this.getGeneData());
+        compound.putString("Markings", this.getMarkingsData());
         compound.putString("OwnerName", this.entityData.get(OWNER_NAME));
-
         compound.putByte("Fixed", this.getIsFixed());
         if (this.getSex() == Genetics.Sex.FEMALE) {
             compound.putBoolean("InHeat", this.getBreedingStatus("inheat"));
@@ -801,26 +513,10 @@ public class SimplyCatEntity extends TameableEntity {
     @Override
     public void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
-        this.setGenotype(EYE_COLOR, compound.getString("EyeColor"));
-        this.setGenotype(FUR_LENGTH, compound.getString("FurLength"));
-        this.setGenotype(EUMELANIN, compound.getString("Eumelanin"));
-        this.setGenotype(PHAEOMELANIN, compound.getString("Phaeomelanin"));
-        this.setGenotype(DILUTION, compound.getString("Dilution"));
-        this.setGenotype(DILUTE_MOD, compound.getString("DiluteMod"));
-        this.setGenotype(AGOUTI, compound.getString("Agouti"));
-        this.setGenotype(TABBY, compound.getString("Tabby"));
-        this.setGenotype(SPOTTED, compound.getString("Spotted"));
-        this.setGenotype(TICKED, compound.getString("Ticked"));
-        this.setGenotype(INHIBITOR, compound.getString("Inhibitor"));
-        this.setGenotype(COLORPOINT, compound.getString("Colorpoint"));
-        this.setGenotype(WHITE, compound.getString("White"));
-        this.setGenotype(BOBTAIL, compound.getString("Bobtail"));
-        for (int i = 0; i <= 2; i++)
-            this.setWhiteTextures(i, compound.getString("White_" + i));
-        for (int i = 0; i <= 3; i++)
-            this.setWhitePawTextures(i, compound.getString("WhitePaws_" + i));
+        if (compound.contains("Genes")) this.setGeneData(compound.getString("Genes"));
+        else this.getGenome().randomize();
+        this.setMarkingsData(compound.getString("Markings"));
         this.setOwnerName(compound.getString("OwnerName"));
-
         this.setFixed(compound.getByte("Fixed"));
         if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed()) {
             this.setBreedingStatus("inheat", compound.getBoolean("InHeat"));
@@ -848,101 +544,29 @@ public class SimplyCatEntity extends TameableEntity {
         }
     }
 
-    private void resetTexturePrefix() {
-        this.texturePrefix = null;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void setCatTexturePaths() {
-        String solid = Eumelanin.getPhenotype(this.getGenotype(EUMELANIN));
-        if (Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString().toLowerCase()))
-            solid = Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN));
-        if (Dilution.getPhenotype(this.getGenotype(DILUTION)).equalsIgnoreCase(Dilution.DILUTE.toString().toLowerCase())) {
-            solid = solid + "_" + Dilution.getPhenotype(this.getGenotype(DILUTION));
-            if (DiluteMod.getPhenotype(this.getGenotype(DILUTE_MOD)).equalsIgnoreCase(DiluteMod.CARAMELIZED.toString().toLowerCase()))
-                solid = solid + "_" + DiluteMod.getPhenotype(this.getGenotype(DILUTE_MOD));
-        }
-
-        boolean isSilver = this.getGenotype(INHIBITOR).contains(Inhibitor.SILVER.getAllele());
-        String silver = Inhibitor.getPhenotype(this.getGenotype(INHIBITOR));
-
-        String smoke = isSilver ? silver : "";
-        if (isSilver) {
-            if (Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString().toLowerCase()))
-                smoke = silver + "_" + Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN));
-            else if (Dilution.getPhenotype(this.getGenotype(DILUTION)).equalsIgnoreCase(Dilution.DILUTE.toString().toLowerCase()))
-                smoke = silver + "_" + Dilution.getPhenotype(this.getGenotype(DILUTION));
-        }
-
-        String tabby = Tabby.getPhenotype(this.getGenotype(TABBY)) + "_" + solid + (isSilver ? "_" + silver : "");
-        if (this.getGenotype(SPOTTED).contains(Spotted.SPOTTED.getAllele()))
-            tabby = Spotted.getPhenotype(this.getGenotype(SPOTTED)) + "_" + tabby;
-        if (Ticked.getPhenotype(this.getGenotype(TICKED)).equalsIgnoreCase(Ticked.TICKED.toString().toLowerCase()))
-            tabby = Ticked.getPhenotype(this.getGenotype(TICKED)) + (this.getGenotype(TICKED).contains(Ticked.NON_TICKED.getAllele()) ? "_residual" : "") + "_" + solid + (isSilver ? "_" + silver : "");
-
-        String tortie = "";
-        if (Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.TORTOISESHELL.toString().toLowerCase())) {
-            tortie = Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)) + "_" + (tabby.replace(("_" + solid), ""));
-            if (Dilution.getPhenotype(this.getGenotype(DILUTION)).equalsIgnoreCase(Dilution.DILUTE.toString().toLowerCase())) {
-                tortie = tortie + "_" + Dilution.getPhenotype(this.getGenotype(DILUTION));
-                if (DiluteMod.getPhenotype(this.getGenotype(DILUTE_MOD)).equalsIgnoreCase(DiluteMod.CARAMELIZED.toString().toLowerCase()))
-                    tortie = tortie + "_" + DiluteMod.getPhenotype(this.getGenotype(DILUTE_MOD));
-            }
-        }
-
-        if (!Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString()) && Agouti.getPhenotype(this.getGenotype(AGOUTI)).equalsIgnoreCase(Agouti.SOLID.toString().toLowerCase()))
-            tabby = "";
-
-        String colorpoint = "";
-        if (!Colorpoint.getPhenotype(this.getGenotype(COLORPOINT)).equalsIgnoreCase(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
-            colorpoint = Colorpoint.getPhenotype(this.getGenotype(COLORPOINT));
-            if (!Colorpoint.getPhenotype(this.getGenotype(COLORPOINT)).equalsIgnoreCase(Colorpoint.ALBINO.toString())) {
-                if (!tabby.equals("") && !Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString()))
-                    colorpoint = colorpoint + "_" + "tabby";
-                else if (solid.equalsIgnoreCase(Eumelanin.BLACK.toString()))
-                    colorpoint = colorpoint + "_" + solid;
-                else if (Phaeomelanin.getPhenotype(this.getGenotype(PHAEOMELANIN)).equalsIgnoreCase(Phaeomelanin.RED.toString()))
-                    colorpoint = colorpoint + "_red";
-                if (!tortie.equals(""))
-                    tortie = tortie + "_point";
-            }
-        }
-
-        this.catTexturesArray[0] = SimplyCats.MOD_ID + ":textures/entity/cat/solid/" + solid + ".png";
-        this.catTexturesArray[1] = tabby.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/tabby/" + tabby + ".png");
-        this.catTexturesArray[2] = smoke.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/solid/" + smoke + ".png");
-        this.catTexturesArray[3] = tortie.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/tortie/" + tortie + ".png");
-        this.catTexturesArray[4] = colorpoint.equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/colorpoint/" + colorpoint + ".png");
-        this.catTexturesArray[5] = this.getWhiteTextures(0).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(0) + ".png");
-        this.catTexturesArray[6] = this.getWhiteTextures(1).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(1) + ".png");
-        this.catTexturesArray[7] = this.getWhiteTextures(2).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhiteTextures(2) + ".png");
-        this.catTexturesArray[8] = this.getWhitePawTextures(0).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(0) + ".png");
-        this.catTexturesArray[9] = this.getWhitePawTextures(1).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(1) + ".png");
-        this.catTexturesArray[10] = this.getWhitePawTextures(2).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(2) + ".png");
-        this.catTexturesArray[11] = this.getWhitePawTextures(3).equals("") ? null : (SimplyCats.MOD_ID + ":textures/entity/cat/white/" + this.getWhitePawTextures(3) + ".png");
-        this.catTexturesArray[12] = SimplyCats.MOD_ID + ":textures/entity/cat/eyes/" + EyeColor.getPhenotype(this.getGenotype(EYE_COLOR)) + ".png";
-        this.texturePrefix = "cat/" + solid + tabby + smoke + tortie + colorpoint +
-                this.getWhiteTextures(0) + this.getWhiteTextures(1) + this.getWhiteTextures(2) +
-                this.getWhitePawTextures(0) + this.getWhitePawTextures(1) +
-                this.getWhitePawTextures(2) + this.getWhitePawTextures(3) +
-                EyeColor.getPhenotype(this.getGenotype(EYE_COLOR));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public String getCatTexture() {
-        if (this.texturePrefix == null)
-            this.setCatTexturePaths();
-
-        return this.texturePrefix;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public String[] getTexturePaths() {
-        if (this.texturePrefix == null)
-            this.setCatTexturePaths();
-
-        return this.catTexturesArray;
-    }
+//    private void resetTexturePrefix() {
+//        this.texturePrefix = null;
+//    }
+//
+//    @OnlyIn(Dist.CLIENT)
+//    private void setCatTexturePaths() {
+//    }
+//
+//    @OnlyIn(Dist.CLIENT)
+//    public String getCatTexture() {
+//        if (this.texturePrefix == null)
+//            this.setCatTexturePaths();
+//
+//        return this.texturePrefix;
+//    }
+//
+//    @OnlyIn(Dist.CLIENT)
+//    public String[] getTexturePaths() {
+//        if (this.texturePrefix == null)
+//            this.setCatTexturePaths();
+//
+//        return this.catTexturesArray;
+//    }
 
     public boolean canBeTamed(PlayerEntity player) {
         return (SCConfig.tamed_limit.get() == 0 || player.getPersistentData().getInt("CatCount") < SCConfig.tamed_limit.get()) && !this.isTame();
@@ -1000,57 +624,18 @@ public class SimplyCatEntity extends TameableEntity {
         return SCReference.catFoodItems(item);
     }
 
-    private String inheritGene(String motherAlleles, String fatherAlleles) {
-        if (motherAlleles.isEmpty()) return "";
-        if (fatherAlleles.isEmpty()) return "";
-
-        String[] maternal = motherAlleles.split("-");
-        String[] paternal = fatherAlleles.split("-");
-        return maternal[random.nextInt(2)] + "-" + paternal[random.nextInt(2)];
-    }
-
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity parFather) {
-        EntityDataManager father = parFather.getEntityData();
-        EntityDataManager mother = this.getEntityData();
-        SimplyCatEntity child = SimplyCats.CAT.get().create(this.level);
+        SimplyCatEntity father = ((SimplyCatEntity) parFather);
+        SimplyCatEntity child = SimplyCats.CAT.get().create(level);
 
-        ImmutableList<DataParameter<String>> parameters = ImmutableList.of(
-                FUR_LENGTH,
-                EUMELANIN,
-                PHAEOMELANIN,
-                DILUTION,
-                DILUTE_MOD,
-                AGOUTI,
-                TABBY,
-                SPOTTED,
-                TICKED,
-                INHIBITOR,
-                COLORPOINT,
-                WHITE,
-                BOBTAIL
-        );
-
-        for (DataParameter<String> geneParameter : parameters) {
-            if (geneParameter.equals(INHIBITOR)) { // todo: remove this soon!
-                if (father.get(INHIBITOR) == null || father.get(INHIBITOR).isEmpty())
-                    child.setGenotype(INHIBITOR, inheritGene(mother.get(INHIBITOR), "i-i"));
-                else
-                    child.setGenotype(INHIBITOR, inheritGene(mother.get(INHIBITOR), father.get(INHIBITOR)));
-
-            } else {
-                String inherited = inheritGene(mother.get(geneParameter), father.get(geneParameter));
-                child.setGenotype(geneParameter, inherited);
-            }
-        }
-
-        child.selectWhiteMarkings();
+        child.getGenome().inheritGenes(getGenome(), ((SimplyCatEntity) parFather).getGenome());
 
         int eyesMin;
         int eyesMax;
-        int matEye = !mother.get(EYE_COLOR).isEmpty() ? EyeColor.valueOf(mother.get(EYE_COLOR).toUpperCase()).ordinal() : 2;
-        int patEye = !father.get(EYE_COLOR).isEmpty() ? EyeColor.valueOf(father.get(EYE_COLOR).toUpperCase()).ordinal() : 2;
+        int matEye = getGenome().getMarking(FelineGenome.Marking.eye_color);
+        int patEye = father.getGenome().getMarking(FelineGenome.Marking.eye_color);
         if (matEye > patEye) {
             eyesMin = patEye - 1;
             eyesMax = matEye;
@@ -1059,27 +644,21 @@ public class SimplyCatEntity extends TameableEntity {
             eyesMax = patEye;
         }
         eyesMin = eyesMin < 0 ? 0 : (eyesMin >= 4 ? 3 : eyesMin);
-        String white = child.getGenotype(WHITE);
-        if (white.contains(White.DOMINANT.getAllele()))
-            eyesMax = 4;
-        else
-            eyesMax = eyesMax >= 4 ? (eyesMin < 3 ? eyesMin + 1 : 3) : eyesMax;
-        int eyes = random.nextInt((eyesMax - eyesMin) + 1) + eyesMin;
-        String eye = EyeColor.init(matEye == 4 && patEye == 4 ? (eyesMax == 4 ? 4 : random.nextInt(4)) : eyes);
-        String point = child.getGenotype(COLORPOINT);
-        if (Colorpoint.getPhenotype(point).equalsIgnoreCase(Colorpoint.COLORPOINT.toString().toLowerCase()))
-            eye = EyeColor.init(4);
-        else if (Colorpoint.getPhenotype(point).equalsIgnoreCase(Colorpoint.ALBINO.toString().toLowerCase()))
-            eye = point.contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()) ? EyeColor.init(5) : EyeColor.init(6);
+        if (child.getGenome().hasAllele(FelineGenome.Gene.white, CatAlleles.DOMINANT_WHITE)) eyesMax = 4;
+        else eyesMax = eyesMax >= 4 ? (eyesMin < 3 ? eyesMin + 1 : 3) : eyesMax;
+        int eyeColor = (matEye == 4 && patEye == 4 ? (eyesMax == 4 ? 4 : random.nextInt(4)) : random.nextInt((eyesMax - eyesMin) + 1) + eyesMin);
+        if (child.getGenome().isHomozygous(FelineGenome.Gene.colorpoint, CatAlleles.COLORPOINT)) eyeColor = 4;
+        else if (child.getGenome().isAlbino())
+            eyeColor = child.getGenome().hasAllele(FelineGenome.Gene.colorpoint, CatAlleles.BLUE_EYED_ALBINO) ? 5 : 6;
 
-        child.setGenotype(EYE_COLOR, eye);
+        child.getGenome().setMarking(FelineGenome.Marking.eye_color, eyeColor);
 
-        if (this.isTame() && this.getOwnerUUID() != null) { // checks if mother is tamed & her owner's UUID exists
-            PlayerEntity owner = this.level.getPlayerByUUID(this.getOwnerUUID()); // grabs owner by UUID
+        if (isTame() && getOwnerUUID() != null) { // checks if mother is tamed & her owner's UUID exists
+            PlayerEntity owner = level.getPlayerByUUID(getOwnerUUID()); // grabs owner by UUID
             if (owner != null && child.canBeTamed(owner)) { // checks if owner is not null (is online), and is able to tame the kitten OR if the tame limit is disabled
-                child.setTamed(this.isTame(), owner); // sets tamed by owner
-                if (this.getHomePos().isPresent()) // checks mother's home point
-                    child.setHomePos(this.getHomePos().get()); // sets kitten's home point to mother's
+                child.setTamed(isTame(), owner); // sets tamed by owner
+                if (getHomePos().isPresent()) // checks mother's home point
+                    child.setHomePos(getHomePos().get()); // sets kitten's home point to mother's
             }
         }
 
@@ -1200,48 +779,48 @@ public class SimplyCatEntity extends TameableEntity {
 
     @Override
     public void setCustomName(@Nullable ITextComponent name) {
-        if (this.getOwnerUUID() != null) {
-            String key = SCReference.getCustomCats().get(this.getOwnerUUID());
-            if (key != null && key.equalsIgnoreCase(name.getString())) {
-                SimplyCatEntity cat = this;
-                switch (name.getString().toLowerCase()) {
-                    case "penny":
-                        cat.setGenotype(FUR_LENGTH, "L-l");
-                        cat.setGenotype(EUMELANIN, "B-B");
-                        cat.setGenotype(PHAEOMELANIN, "XO-Xo");
-                        cat.setGenotype(DILUTION, "D-d");
-                        cat.setGenotype(DILUTE_MOD, "dm-dm");
-                        cat.setGenotype(AGOUTI, "A-a");
-                        cat.setGenotype(TABBY, "mc-mc");
-                        cat.setGenotype(SPOTTED, "sp-sp");
-                        cat.setGenotype(TICKED, "ta-ta");
-                        cat.setGenotype(INHIBITOR, "i-i");
-                        cat.setGenotype(COLORPOINT, "C-cs");
-                        cat.setGenotype(WHITE, "Ws-w");
-                        cat.setGenotype(BOBTAIL, "Jb-Jb");
-                        cat.selectWhiteMarkings();
-                        cat.setGenotype(EYE_COLOR, "green");
-                        cat.setFixed((byte) 1);
-
-                    case "spinny":
-                        cat.setGenotype(FUR_LENGTH, "L-l");
-                        cat.setGenotype(EUMELANIN, "B-B");
-                        cat.setGenotype(PHAEOMELANIN, "Xo-Xo");
-                        cat.setGenotype(DILUTION, "D-d");
-                        cat.setGenotype(DILUTE_MOD, "dm-dm");
-                        cat.setGenotype(AGOUTI, "a-a");
-                        cat.setGenotype(TABBY, "mc-mc");
-                        cat.setGenotype(SPOTTED, "sp-sp");
-                        cat.setGenotype(TICKED, "ta-ta");
-                        cat.setGenotype(INHIBITOR, "i-i");
-                        cat.setGenotype(COLORPOINT, "C-cs");
-                        cat.setGenotype(WHITE, "w-w");
-                        cat.setGenotype(BOBTAIL, "Jb-Jb");
-                        cat.selectWhiteMarkings();
-                        cat.setGenotype(EYE_COLOR, "gold");
-                }
-            }
-        }
+//        if (this.getOwnerUUID() != null) {
+//            String key = SCReference.getCustomCats().get(this.getOwnerUUID());
+//            if (key != null && key.equalsIgnoreCase(name.getString())) {
+//                SimplyCatEntity cat = this;
+//                switch (name.getString().toLowerCase()) {
+//                    case "penny":
+//                        cat.setGenotype(FUR_LENGTH, "L-l");
+//                        cat.setGenotype(EUMELANIN, "B-B");
+//                        cat.setGenotype(PHAEOMELANIN, "XO-Xo");
+//                        cat.setGenotype(DILUTION, "D-d");
+//                        cat.setGenotype(DILUTE_MOD, "dm-dm");
+//                        cat.setGenotype(AGOUTI, "A-a");
+//                        cat.setGenotype(TABBY, "mc-mc");
+//                        cat.setGenotype(SPOTTED, "sp-sp");
+//                        cat.setGenotype(TICKED, "ta-ta");
+//                        cat.setGenotype(INHIBITOR, "i-i");
+//                        cat.setGenotype(COLORPOINT, "C-cs");
+//                        cat.setGenotype(WHITE, "Ws-w");
+//                        cat.setGenotype(BOBTAIL, "Jb-Jb");
+//                        cat.selectWhiteMarkings();
+//                        cat.setGenotype(EYE_COLOR, "green");
+//                        cat.setFixed((byte) 1);
+//
+//                    case "spinny":
+//                        cat.setGenotype(FUR_LENGTH, "L-l");
+//                        cat.setGenotype(EUMELANIN, "B-B");
+//                        cat.setGenotype(PHAEOMELANIN, "Xo-Xo");
+//                        cat.setGenotype(DILUTION, "D-d");
+//                        cat.setGenotype(DILUTE_MOD, "dm-dm");
+//                        cat.setGenotype(AGOUTI, "a-a");
+//                        cat.setGenotype(TABBY, "mc-mc");
+//                        cat.setGenotype(SPOTTED, "sp-sp");
+//                        cat.setGenotype(TICKED, "ta-ta");
+//                        cat.setGenotype(INHIBITOR, "i-i");
+//                        cat.setGenotype(COLORPOINT, "C-cs");
+//                        cat.setGenotype(WHITE, "w-w");
+//                        cat.setGenotype(BOBTAIL, "Jb-Jb");
+//                        cat.selectWhiteMarkings();
+//                        cat.setGenotype(EYE_COLOR, "gold");
+//                }
+//            }
+//        }
         super.setCustomName(name);
     }
 }

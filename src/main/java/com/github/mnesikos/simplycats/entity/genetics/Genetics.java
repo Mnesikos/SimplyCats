@@ -1,4 +1,4 @@
-package com.github.mnesikos.simplycats.entity.core;
+package com.github.mnesikos.simplycats.entity.genetics;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;

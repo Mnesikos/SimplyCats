@@ -2,7 +2,7 @@ package com.github.mnesikos.simplycats;
 
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.core.Genetics;
+import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.nbt.CompoundNBT;

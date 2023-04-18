@@ -3,7 +3,7 @@ package com.github.mnesikos.simplycats.entity.goal;
 import com.github.mnesikos.simplycats.block.CatTreeBlock;
 import com.github.mnesikos.simplycats.block.WindowPerchBlock;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.core.Genetics;
+import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.state.properties.BedPart;

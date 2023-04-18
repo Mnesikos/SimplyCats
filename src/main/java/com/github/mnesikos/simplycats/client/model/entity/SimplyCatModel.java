@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
     public boolean isBobtail;
-    public boolean isLongFur;
+    public boolean isLonghair;
     public float ageScale;
     private final ModelRenderer body1;
     private final ModelRenderer body2;
@@ -183,13 +183,13 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
             this.body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             matrixStack.popPose();
         } else {
-            ModelRenderer head = this.isLongFur ? head2 : head1;
+            ModelRenderer head = this.isLonghair ? head2 : head1;
             matrixStack.pushPose();
             matrixStack.scale(1.01F, 1.01F, 1.01F);
             head.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             matrixStack.popPose();
             this.body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            if (isLongFur) {
+            if (isLonghair) {
                 matrixStack.pushPose();
                 matrixStack.translate(this.body2.x / 16F, this.body2.y / 16F, this.body2.z / 16F);
                 matrixStack.scale(1.02F, 1.2F, 1.01F);
@@ -209,7 +209,7 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
 
     @Override
     public void setupAnim(T entity, float speed, float walkSpeed, float v2, float headAngleY, float headAngleX) {
-        ModelRenderer head = !entity.isBaby() && entity.isLongFur() ? head2 : head1;
+        ModelRenderer head = !entity.isBaby() && entity.getGenome().isLonghair() ? head2 : head1;
 
         head.xRot = headAngleX / (180F / (float) Math.PI);
         head.yRot = headAngleY / (180F / (float) Math.PI);
@@ -217,14 +217,14 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
 
     @Override
     public void prepareMobModel(T cat, float parSpeed, float parWalkSpeed, float f4) {
-        ModelRenderer tailType = cat.isBobtail() ? tailBobbed : tail1;
-        ModelRenderer head = !cat.isBaby() && cat.isLongFur() ? head2 : head1;
+        ModelRenderer tailType = cat.getGenome().isBobtail() ? tailBobbed : tail1;
+        ModelRenderer head = !cat.isBaby() && cat.getGenome().isLonghair() ? head2 : head1;
 
         head.y = 14.0F;
         head.z = -6.5F;
         this.body1.xRot = 0.0F;
         this.body1.y = 18.0F;
-        if (cat.isLongFur()) {
+        if (cat.getGenome().isLonghair()) {
             this.body2.xRot = 0.0F;
             this.body2.y = 18.0F;
         }
@@ -255,7 +255,7 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
         if (cat.isCrouching()) {
             head.y += 2.5F;
             this.body1.y += 2.0F;
-            if (cat.isLongFur()) this.body2.y += 2.0F;
+            if (cat.getGenome().isLonghair()) this.body2.y += 2.0F;
             this.backLeftLegPoint.y -= 2.0F;
             this.backRightLegPoint.y -= 2.0F;
             this.frontLeftLegPoint.y -= 2.0F;
@@ -273,7 +273,7 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
                 tailType.y = 21.5F;
             head.z = -4.5F;
             this.body1.xRot = (float) (-28 / (180 / Math.PI));
-            if (cat.isLongFur()) this.body2.xRot = (float) (-24.3 / (180 / Math.PI));
+            if (cat.getGenome().isLonghair()) this.body2.xRot = (float) (-24.3 / (180 / Math.PI));
             this.frontLeftLeg.xRot = this.frontRightLeg.xRot = (float) (28 / (180 / Math.PI));
             this.backLeftLegPoint.xRot = this.backRightLegPoint.xRot = (float) (-62.5 / (180 / Math.PI));
             this.backLeftLeg.xRot = this.backRightLeg.xRot = 0.0F;

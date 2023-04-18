@@ -4,7 +4,7 @@ import com.github.mnesikos.simplycats.SCReference;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.core.Genetics;
+import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -32,8 +32,8 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
 
     @Override
     public void render(SimplyCatEntity cat, float v, float v1, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int i) {
-        this.model.isBobtail = cat.isBobtail();
-        this.model.isLongFur = cat.isLongFur();
+        this.model.isBobtail = cat.getGenome().isBobtail();
+        this.model.isLonghair = cat.getGenome().isLonghair();
         this.model.ageScale = cat.getAgeScale();
         super.render(cat, v, v1, matrixStack, renderTypeBuffer, i);
     }
@@ -54,12 +54,12 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
             }
         }
 
-        String s = entity.getCatTexture();
+        String s = entity.getGenome().getTexture();
         ResourceLocation resourceLocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourceLocation == null) {
             resourceLocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().register(resourceLocation, new LayeredTexture(entity.getTexturePaths()));
+            Minecraft.getInstance().getTextureManager().register(resourceLocation, new LayeredTexture(entity.getGenome().getTexturePaths()));
             LAYERED_LOCATION_CACHE.put(s, resourceLocation);
         }
 

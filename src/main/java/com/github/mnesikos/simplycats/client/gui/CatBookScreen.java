@@ -2,7 +2,7 @@ package com.github.mnesikos.simplycats.client.gui;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.core.Genetics;
+import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
