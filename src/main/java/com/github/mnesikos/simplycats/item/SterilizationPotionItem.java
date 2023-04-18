@@ -2,7 +2,6 @@ package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,7 +37,7 @@ public class SterilizationPotionItem extends Item {
                     double d2 = random.nextGaussian() * 0.02D;
                     cat.level.addParticle(ParticleTypes.HAPPY_VILLAGER, cat.getRandomX(1.0D), cat.getRandomY() + 0.5D, cat.getRandomZ(1.0D), d0, d1, d2);
                 }
-                player.displayClientMessage(new TranslationTextComponent(cat.getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()), true);
+                player.displayClientMessage(new TranslationTextComponent(cat.getSex() == SimplyCatEntity.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()), true);
 
                 if (!player.isCreative()) {
                     ItemStack emptyBottle = new ItemStack(Items.GLASS_BOTTLE);

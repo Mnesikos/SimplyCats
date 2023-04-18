@@ -2,7 +2,7 @@ package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.genetics.Genetics;
+import com.github.mnesikos.simplycats.entity.genetics.FelineGenome;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -200,7 +200,7 @@ public class PetCarrierItem extends Item {
                     tooltip.add(species.withStyle(TextFormatting.AQUA));
 
                 if (item.getDamageValue() == 1)
-                    tooltip.add(Genetics.getPhenotypeDescription(nbt, true).withStyle(TextFormatting.ITALIC));
+                    tooltip.add(FelineGenome.getPhenotypeDescription(nbt, true).withStyle(TextFormatting.ITALIC));
 
                 tooltip.add(owner);
             }

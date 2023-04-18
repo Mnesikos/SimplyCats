@@ -3,7 +3,6 @@ package com.github.mnesikos.simplycats.entity.goal;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.particles.ParticleTypes;
@@ -26,7 +25,7 @@ public class CatBirthGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (this.mother.getSex() != Genetics.Sex.FEMALE || !this.mother.getBreedingStatus("ispregnant") || this.mother.getBreedingStatus("inheat"))
+        if (this.mother.getSex() != SimplyCatEntity.Sex.FEMALE || !this.mother.getBreedingStatus("ispregnant") || this.mother.getBreedingStatus("inheat"))
             return false;
 
         else if (this.mother.getMateTimer() >= 0)

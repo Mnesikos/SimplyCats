@@ -4,7 +4,6 @@ import com.github.mnesikos.simplycats.SCReference;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -84,7 +83,7 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
             float backgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
             int j = (int) (backgroundOpacity * 255.0F) << 24;
 
-            TranslationTextComponent info = new TranslationTextComponent((cat.getSex() == Genetics.Sex.FEMALE ? (cat.getBreedingStatus("inheat") ? "chat.info.in_heat" : "chat.info.not_in_heat") : "chat.info.male"), cat.getMateTimer());
+            TranslationTextComponent info = new TranslationTextComponent((cat.getSex() == SimplyCatEntity.Sex.FEMALE ? (cat.getBreedingStatus("inheat") ? "chat.info.in_heat" : "chat.info.not_in_heat") : "chat.info.male"), cat.getMateTimer());
             if (cat.getBreedingStatus("ispregnant"))
                 info = new TranslationTextComponent(cat.getBreedingStatus("inheat") ? "chat.info.pregnant_heat" : "chat.info.pregnant", cat.getMateTimer());
 

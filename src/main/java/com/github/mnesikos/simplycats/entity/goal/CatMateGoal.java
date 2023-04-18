@@ -2,7 +2,6 @@ package com.github.mnesikos.simplycats.entity.goal;
 
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -30,7 +29,7 @@ public class CatMateGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (this.cat.getSex() == Genetics.Sex.FEMALE)
+        if (this.cat.getSex() == SimplyCatEntity.Sex.FEMALE)
             return false;
 
         this.nearbyCats = level.getEntitiesOfClass(this.cat.getClass(), this.cat.getBoundingBox().inflate(NEARBY_RADIUS_CHECK));
@@ -56,8 +55,8 @@ public class CatMateGoal extends Goal {
         if (this.cat.isOrderedToSit() || this.target.isOrderedToSit())
             return false;
 
-        boolean maleCooldownCheck = this.cat.getSex() == Genetics.Sex.MALE && this.cat.getMateTimer() == 0;
-        boolean femaleHeatCheck = this.target.getSex() == Genetics.Sex.FEMALE && this.target.getBreedingStatus("inheat");
+        boolean maleCooldownCheck = this.cat.getSex() == SimplyCatEntity.Sex.MALE && this.cat.getMateTimer() == 0;
+        boolean femaleHeatCheck = this.target.getSex() == SimplyCatEntity.Sex.FEMALE && this.target.getBreedingStatus("inheat");
 
         this.nearbyCats = level.getEntitiesOfClass(this.cat.getClass(), this.cat.getBoundingBox().inflate(NEARBY_RADIUS_CHECK));
 

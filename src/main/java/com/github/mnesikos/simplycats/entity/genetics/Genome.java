@@ -10,16 +10,11 @@ import java.util.Random;
 
 public abstract class Genome {
     public abstract List<Enum> listGenes();
-
     public static Random random = new Random();
     protected SimplyCatEntity entity;
     protected String texturePrefix;
     protected final String[] texturesArray = new String[13];
     protected final String[] markingsTexturesArray = new String[8];
-
-//    public Genome(Random rand) {
-//        this(new FakeGeneticEntity(), rand);
-//    }
 
     public Genome(SimplyCatEntity entityIn) {
         this.entity = entityIn;

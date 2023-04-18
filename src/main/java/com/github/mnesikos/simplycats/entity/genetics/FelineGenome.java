@@ -3,6 +3,10 @@ package com.github.mnesikos.simplycats.entity.genetics;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -304,5 +308,76 @@ public class FelineGenome extends Genome {
                 markingsTexturesArray[1] + markingsTexturesArray[2] + markingsTexturesArray[3] +
                 markingsTexturesArray[4] + markingsTexturesArray[5] + markingsTexturesArray[6] + markingsTexturesArray[7] +
                 eyeColor;
+    }
+
+    public static StringTextComponent getPhenotypeDescription(CompoundNBT nbt, boolean includeSex) {
+        ITextComponent sex = Genetics.Sex.getPrettyName(nbt.getString("Phaeomelanin"));
+
+        String eumelanin = Genetics.Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
+        String phaeomelanin = Genetics.Phaeomelanin.getPhenotype(nbt.getString("Phaeomelanin"));
+        String dilution = Genetics.Dilution.getPhenotype(nbt.getString("Dilution"));
+        String diluteMod = Genetics.DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
+        boolean isRed = phaeomelanin.equals(Genetics.Phaeomelanin.RED.toString().toLowerCase());
+        String redElseBlack = isRed ? phaeomelanin : eumelanin;
+        ITextComponent base = new TranslationTextComponent("cat.base." + (redElseBlack) + ".name");
+        if (dilution.equals(Genetics.Dilution.DILUTE.toString().toLowerCase())) {
+            base = new TranslationTextComponent("cat.base." + (redElseBlack) + "_" + dilution + ".name");
+            if (diluteMod.equals(Genetics.DiluteMod.CARAMELIZED.toString().toLowerCase()))
+                base = new TranslationTextComponent("cat.base." + (redElseBlack) + "_" + diluteMod + ".name");
+        }
+
+        String agouti = Genetics.Agouti.getPhenotype(nbt.getString("Agouti"));
+        boolean isAgouti = agouti.equals(Genetics.Agouti.TABBY.toString().toLowerCase());
+        String inhibitor = Genetics.Inhibitor.getPhenotype(nbt.getString("Inhibitor"));
+        if (inhibitor.equals(Genetics.Inhibitor.SILVER.toString().toLowerCase()))
+            base = new StringTextComponent(base.getString() + " " + (new TranslationTextComponent("cat.base." + inhibitor + (isAgouti ? "" : "_smoke") + ".name")).getString());
+        if (phaeomelanin.equals(Genetics.Phaeomelanin.TORTOISESHELL.toString().toLowerCase()))
+            base = new StringTextComponent(base.getString() + " " + (new TranslationTextComponent("cat.base." + phaeomelanin + ".name")).getString());
+
+        String tabby1 = Genetics.Tabby.getPhenotype(nbt.getString("Tabby"));
+        String spotted = Genetics.Spotted.getPhenotype(nbt.getString("Spotted"));
+        String ticked = Genetics.Ticked.getPhenotype(nbt.getString("Ticked"));
+        ITextComponent tabby = new TranslationTextComponent("");
+        if (isAgouti || isRed) {
+            tabby = new TranslationTextComponent("cat.tabby." + tabby1 + ".name");
+            if (spotted.equals(Genetics.Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Genetics.Spotted.SPOTTED.toString().toLowerCase()))
+                tabby = new TranslationTextComponent("cat.tabby." + spotted + ".name");
+            if (ticked.equals(Genetics.Ticked.TICKED.toString().toLowerCase()))
+                tabby = new TranslationTextComponent("cat.tabby." + ticked + ".name");
+        }
+
+        String colorpoint = Genetics.Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
+        ITextComponent point = new TranslationTextComponent("");
+        if (!colorpoint.equals(Genetics.Colorpoint.NOT_POINTED.toString().toLowerCase())) {
+            point = new TranslationTextComponent("cat.point." + colorpoint + ".name");
+            if (colorpoint.equals(Genetics.Colorpoint.ALBINO.toString().toLowerCase())) {
+                ITextComponent eyes = new TranslationTextComponent("cat.point.red_eyed.name");
+                if (nbt.getString("Colorpoint").contains(Genetics.Colorpoint.BLUE_EYED_ALBINO.getAllele()))
+                    eyes = new TranslationTextComponent("cat.point.blue_eyed.name");
+                return new StringTextComponent(eyes.getString() + " " + point.getString() + (includeSex ? (" " + sex.getString()) : ""));
+            }
+        }
+
+        String white = Genetics.White.getPhenotype(nbt.getString("White"));
+        ITextComponent whiteText = new TranslationTextComponent("");
+        if (!white.equals(Genetics.White.NONE.toString().toLowerCase())) {
+            if (white.equals(Genetics.White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
+                whiteText = new TranslationTextComponent("cat.white.solid_white.name");
+                return new StringTextComponent(whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
+            }
+            if (nbt.getString("White_0").contains("5")) {
+                whiteText = new TranslationTextComponent("cat.white.mostly_white.name");
+                return new StringTextComponent(whiteText.getString() + " " + base.getString() +
+                        (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
+                        (point.getString().equals("") ? "" : " " + point.getString()) +
+                        (includeSex ? (" " + sex.getString()) : ""));
+            } else
+                whiteText = new TranslationTextComponent("cat.white.some_white.name");
+        }
+
+        return new StringTextComponent(base.getString() +
+                (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
+                (point.getString().equals("") ? "" : " " + point.getString()) +
+                " " + whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
     }
 }

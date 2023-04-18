@@ -3,7 +3,6 @@ package com.github.mnesikos.simplycats.entity.goal;
 import com.github.mnesikos.simplycats.block.CatTreeBlock;
 import com.github.mnesikos.simplycats.block.WindowPerchBlock;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.entity.genetics.Genetics;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.state.properties.BedPart;
@@ -22,7 +21,7 @@ public class CatSitOnBlockGoal extends MoveToBlockGoal {
 
     @Override
     public boolean canUse() {
-        if (this.cat.getSex() == Genetics.Sex.FEMALE && this.cat.getBreedingStatus("inheat"))
+        if (this.cat.getSex() == SimplyCatEntity.Sex.FEMALE && this.cat.getBreedingStatus("inheat"))
             return false;
 
         return this.cat.isTame() && !this.cat.isOrderedToSit() && super.canUse();
