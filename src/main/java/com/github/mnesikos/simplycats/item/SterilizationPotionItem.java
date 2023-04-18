@@ -37,7 +37,7 @@ public class SterilizationPotionItem extends Item {
                     double d2 = random.nextGaussian() * 0.02D;
                     cat.level.addParticle(ParticleTypes.HAPPY_VILLAGER, cat.getRandomX(1.0D), cat.getRandomY() + 0.5D, cat.getRandomZ(1.0D), d0, d1, d2);
                 }
-                player.displayClientMessage(new TranslationTextComponent(cat.getSex() == SimplyCatEntity.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()), true);
+                player.displayClientMessage(new TranslationTextComponent(cat.getGenome().isMale() ? "chat.info.success_fixed_male" : "chat.info.success_fixed_female", cat.getName()), true);
 
                 if (!player.isCreative()) {
                     ItemStack emptyBottle = new ItemStack(Items.GLASS_BOTTLE);

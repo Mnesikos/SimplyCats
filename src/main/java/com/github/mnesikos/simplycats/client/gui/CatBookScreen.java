@@ -112,9 +112,9 @@ public class CatBookScreen extends Screen {
             int nameWidth = this.font.width(cat.getName());
             this.font.draw(matrixStack, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
 
-            StringTextComponent sex = new StringTextComponent(new TranslationTextComponent(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
-                    + " "
-                    + SimplyCatEntity.Sex.getPrettyName(bookPages.getCompound(this.currPage).getString("Phaeomelanin")).getString());
+            StringTextComponent sex = new StringTextComponent(new TranslationTextComponent(
+                    cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString() + " "
+                    + (cat.getGenome().isMale() ? new TranslationTextComponent("cat.sex.male.name") : new TranslationTextComponent("cat.sex.female.name")));
             this.font.draw(matrixStack, sex, leftX + 66, 14 * 2, 0);
 
             this.renderCatHealth(matrixStack, leftX + 66, 14 * 3);
@@ -128,7 +128,7 @@ public class CatBookScreen extends Screen {
             } else
                 this.font.draw(matrixStack, new TranslationTextComponent("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
 
-            this.font.drawWordWrap(FelineGenome.getPhenotypeDescription(bookPages.getCompound(this.currPage), false), leftX + 16, 14 * 7, 120, 0);
+            this.font.drawWordWrap(cat.getGenome().getPhenotypeDescription(false), leftX + 16, 14 * 7, 120, 0);
 
             /*this.font.drawWordWrap("Vocal Level Bar Here",
                     leftX + 16, 14*9, 120, 0);

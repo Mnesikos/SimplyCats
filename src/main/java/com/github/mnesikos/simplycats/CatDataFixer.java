@@ -28,7 +28,7 @@ public class CatDataFixer {
                     simplyCatEntity.setHomePos(simplyCatEntity.blockPosition());
                     simplyCatEntity.getGenome().randomize();
 //                    if (!vanillaCat.isTame() && !SCConfig.intact_stray_spawns.get()) simplyCatEntity.setFixed((byte) 1);
-                    if (simplyCatEntity.getSex() == SimplyCatEntity.Sex.FEMALE && !simplyCatEntity.isFixed())
+                    if (!simplyCatEntity.getGenome().isMale() && !simplyCatEntity.isFixed())
                         simplyCatEntity.setTimeCycle("end", simplyCatEntity.getRandom().nextInt(SCConfig.heat_cooldown.get()));
 
                     if (world instanceof ServerWorld) ((ServerWorld) world).loadFromChunk(simplyCatEntity);

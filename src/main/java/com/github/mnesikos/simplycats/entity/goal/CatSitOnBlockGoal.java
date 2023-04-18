@@ -21,7 +21,7 @@ public class CatSitOnBlockGoal extends MoveToBlockGoal {
 
     @Override
     public boolean canUse() {
-        if (this.cat.getSex() == SimplyCatEntity.Sex.FEMALE && this.cat.getBreedingStatus("inheat"))
+        if (!this.cat.getGenome().isMale() && this.cat.getBreedingStatus("inheat"))
             return false;
 
         return this.cat.isTame() && !this.cat.isOrderedToSit() && super.canUse();

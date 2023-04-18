@@ -199,8 +199,8 @@ public class PetCarrierItem extends Item {
                 else
                     tooltip.add(species.withStyle(TextFormatting.AQUA));
 
-                if (item.getDamageValue() == 1)
-                    tooltip.add(FelineGenome.getPhenotypeDescription(nbt, true).withStyle(TextFormatting.ITALIC));
+//                if (item.getDamageValue() == 1) todo
+//                    tooltip.add(FelineGenome.getPhenotypeDescription(nbt, true).withStyle(TextFormatting.ITALIC));
 
                 tooltip.add(owner);
             }

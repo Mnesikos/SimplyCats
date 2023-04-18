@@ -138,7 +138,7 @@ public class SimplyCatEntity extends TameableEntity {
         if (!this.level.isClientSide)
             if (this.isTame())
                 this.setOrderedToSit(!this.isOrderedToSit());
-        if (this.getSex() == Sex.FEMALE && !this.isFixed())
+        if (!this.getGenome().isMale() && !this.isFixed())
             this.setTimeCycle("end", random.nextInt(SCConfig.heat_cooldown.get()));
 
         return entityData;
@@ -158,7 +158,7 @@ public class SimplyCatEntity extends TameableEntity {
             this.getLookControl().setLookAt(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 10.0F, (float) this.getHeadRotSpeed());
         }
 
-        if (!this.level.isClientSide && !this.isBaby() && !this.isFixed() && this.getSex() == Sex.FEMALE) { //if female & adult & not fixed
+        if (!this.level.isClientSide && !this.isBaby() && !this.isFixed() && !this.getGenome().isMale()) { //if female & adult & not fixed
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
@@ -193,7 +193,7 @@ public class SimplyCatEntity extends TameableEntity {
 
         if (!this.isBaby() && !this.isFixed()) { //if not a child & not fixed
             int mateTimer = this.getMateTimer();
-            if (this.getSex() == Sex.FEMALE) {
+            if (!this.getGenome().isMale()) {
                 if (this.getBreedingStatus("inheat") || this.getBreedingStatus("ispregnant")) {
                     --mateTimer;
                     if (this.getBreedingStatus("inheat")) {
@@ -207,7 +207,7 @@ public class SimplyCatEntity extends TameableEntity {
                     }
                 } else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
                     ++mateTimer;
-            } else if (this.getSex() == Sex.MALE) {
+            } else if (this.getGenome().isMale()) {
                 if (mateTimer > 0)
                     --mateTimer;
                 else if (mateTimer <= 0)
@@ -302,10 +302,6 @@ public class SimplyCatEntity extends TameableEntity {
 
     public String getMarkingsData() {
         return (String) this.entityData.get(MARKINGS);
-    }
-
-    public Sex getSex() {
-        return getGenome().isMale() ? Sex.MALE : Sex.FEMALE;
     }
 
     public Optional<BlockPos> getHomePos() {
@@ -490,7 +486,7 @@ public class SimplyCatEntity extends TameableEntity {
         compound.putString("Markings", this.getMarkingsData());
         compound.putString("OwnerName", this.entityData.get(OWNER_NAME));
         compound.putByte("Fixed", this.getIsFixed());
-        if (this.getSex() == Sex.FEMALE) {
+        if (!this.getGenome().isMale()) {
             compound.putBoolean("InHeat", this.getBreedingStatus("inheat"));
             compound.putBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
             compound.putInt("Kittens", this.getKittens());
@@ -516,7 +512,7 @@ public class SimplyCatEntity extends TameableEntity {
         this.setMarkingsData(compound.getString("Markings"));
         this.setOwnerName(compound.getString("OwnerName"));
         this.setFixed(compound.getByte("Fixed"));
-        if (this.getSex() == Sex.FEMALE && !this.isFixed()) {
+        if (!this.getGenome().isMale() && !this.isFixed()) {
             this.setBreedingStatus("inheat", compound.getBoolean("InHeat"));
             this.setBreedingStatus("ispregnant", compound.getBoolean("IsPregnant"));
             this.setKittens(compound.getInt("Kittens"));
@@ -587,8 +583,8 @@ public class SimplyCatEntity extends TameableEntity {
         if (mate.isFixed() || this.isFixed())
             return false;
 
-        if ((this.getSex() == Sex.MALE && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
-            return (mate.getSex() == Sex.FEMALE && mate.getBreedingStatus("inheat")); // returns true if (mate) is female & in heat
+        if ((this.getGenome().isMale() && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
+            return (!mate.getGenome().isMale() && mate.getBreedingStatus("inheat")); // returns true if (mate) is female & in heat
         else
             return false;
     }
@@ -671,7 +667,7 @@ public class SimplyCatEntity extends TameableEntity {
             }
 
             if (item == Items.BONE && player.isDiscrete()) {
-                if (this.getSex() == Sex.FEMALE && this.getBreedingStatus("ispregnant"))
+                if (!this.getGenome().isMale() && this.getBreedingStatus("ispregnant"))
                     player.displayClientMessage(new TranslationTextComponent("chat.info.kitten_count", this.getKittens()), true);
                 if (this.isBaby())
                     player.displayClientMessage(new StringTextComponent(this.getAge() + " // " + this.getAgeTracker() + " // " + this.getMatureTimer()), true);
@@ -796,29 +792,5 @@ public class SimplyCatEntity extends TameableEntity {
 //            }
 //        }
         super.setCustomName(name);
-    }
-
-    public enum Sex {
-        MALE("male"),
-        FEMALE("female");
-
-        private String name;
-
-        Sex(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public static ITextComponent getPrettyName(String phaeomelanin) {
-            if (phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
-                return new TranslationTextComponent("cat.sex.male.name");
-            else if (!phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
-                return new TranslationTextComponent("cat.sex.female.name");
-            else
-                return new StringTextComponent(phaeomelanin);
-        }
     }
 }

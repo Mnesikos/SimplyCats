@@ -25,7 +25,7 @@ public class CatBirthGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (this.mother.getSex() != SimplyCatEntity.Sex.FEMALE || !this.mother.getBreedingStatus("ispregnant") || this.mother.getBreedingStatus("inheat"))
+        if (this.mother.getGenome().isMale() || !this.mother.getBreedingStatus("ispregnant") || this.mother.getBreedingStatus("inheat"))
             return false;
 
         else if (this.mother.getMateTimer() >= 0)
