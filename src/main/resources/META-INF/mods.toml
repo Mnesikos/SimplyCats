@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[43,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/Mnesikos/SimplyCats/issues"
 
@@ -18,13 +18,13 @@ For a very, very long time the cats of Minecraft have been neglected. This mod a
 [[dependencies.simplycats]]
     modId="forge"
     mandatory=true
-    versionRange="[40,)"
+    versionRange="[43,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.simplycats]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.2,1.19)"
+    versionRange="[1.19.2,1.20)"
     ordering="NONE"
     side="BOTH"
