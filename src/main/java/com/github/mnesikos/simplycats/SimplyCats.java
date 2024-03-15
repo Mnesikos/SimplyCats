@@ -3,6 +3,7 @@ package com.github.mnesikos.simplycats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
+import com.github.mnesikos.simplycats.event.SCSounds;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
@@ -46,6 +47,7 @@ public class SimplyCats {
         ENTITIES.register(modBus);
         SCItems.REGISTRAR.register(modBus);
         SCBlocks.REGISTRAR.register(modBus);
+        SCSounds.REGISTRAR.register(modBus);
         SCVillagers.PROFESSIONS.register(modBus);
         SCVillagers.POI_TYPES.register(modBus);
 

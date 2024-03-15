@@ -20,7 +20,7 @@ public class TreatBagItem extends Item {
         for (SimplyCatEntity cat : world.getEntitiesOfClass(SimplyCatEntity.class, player.getBoundingBox().inflate(128)))
             cat.onBagShake(player);
 
-        player.playSound(SCSounds.SHAKE_TREATS, 1.0F, 1.0F);
+        player.playSound(SCSounds.SHAKE_TREATS.get(), 1.0F, 1.0F);
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
 }

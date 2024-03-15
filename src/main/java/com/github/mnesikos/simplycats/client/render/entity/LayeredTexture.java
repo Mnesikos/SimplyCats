@@ -1,12 +1,12 @@
 package com.github.mnesikos.simplycats.client.render.entity;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import com.mojang.blaze3d.platform.TextureUtil;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -64,9 +64,9 @@ public class LayeredTexture extends AbstractTexture {
         if (layer == null)
             return null;
 
-        try (Resource resource = manager.getResource(new ResourceLocation(layer))) {
-            NativeImage image = net.minecraftforge.client.MinecraftForgeClient.getImageLayer(new ResourceLocation(layer), manager);
-            return image;
+        try {
+            Resource resource = manager.getResource(new ResourceLocation(layer)).orElseThrow();
+            return NativeImage.read(resource.open());
         } catch (IOException exception) {
             throw new IllegalStateException("Couldn't load texture layers.", exception);
         }
