@@ -12,7 +12,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -51,12 +50,8 @@ public class SimplyCats {
         SCVillagers.PROFESSIONS.register(modBus);
         SCVillagers.POI_TYPES.register(modBus);
 
-        forgeBus.addListener(SimplyCats::setupVillages);
+        forgeBus.addListener(SCWorldGen::setupVillageWorldGen);
 
         forgeBus.register(CatDataFixer.class);
-    }
-
-    public static void setupVillages(ServerAboutToStartEvent event) {
-        SCWorldGen.setupVillageWorldGen(event.getServer().registryAccess());
     }
 }
