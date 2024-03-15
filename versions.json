@@ -1,5 +1,8 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/simply-cats/files/all",
+  "1.19.2": {
+    "1.19.2-0.2.2": "Initial port! Nothing new yet."
+  },
   "1.18.2": {
     "1.18.2-0.2.2": "Initial port! Nothing new yet."
   },
@@ -14,6 +17,8 @@
     "1.12.2-0.2.0": "Added Color inhibitor gene (silver tabbies and smokes), blue-eyed and red-eyed albino alleles (true albino cats)"
   },
   "promos": {
+    "1.19.2-latest": "1.19.2-0.2.2",
+    "1.19.2-recommended": "1.19.2-0.2.2",
     "1.18.2-latest": "1.18.2-0.2.2",
     "1.18.2-recommended": "1.18.2-0.2.2",
     "1.16.5-latest": "1.16.5-0.2.2",
