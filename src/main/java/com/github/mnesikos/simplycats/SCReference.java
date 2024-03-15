@@ -1,18 +1,15 @@
 package com.github.mnesikos.simplycats;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -36,18 +33,18 @@ public class SCReference {
         EDIBLE.add(Items.COOKED_PORKCHOP);
         EDIBLE.add(Items.COOKED_BEEF);
 
-        EDIBLE.addAll(ItemTags.FISHES.getValues());
+        EDIBLE.addAll(ForgeRegistries.ITEMS.tags().getTag(ItemTags.FISHES).stream().toList());
 
-        // todo double check tag naming
-        Tag<Item> meatsRawTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats/raw"));
-        EDIBLE.addAll(meatsRawTag.getValues());
-        Tag<Item> meatsCookedTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats/cooked"));
-        EDIBLE.addAll(meatsCookedTag.getValues());
-        Tag<Item> meatsTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "meats"));
-        EDIBLE.addAll(meatsTag.getValues());
+        // todo double check tag naming && fix this
+        TagKey<Item> meatsRawTag = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation("forge", "meats/raw"));
+        EDIBLE.addAll(ForgeRegistries.ITEMS.tags().getTag(meatsRawTag).stream().toList());
+        TagKey<Item> meatsCookedTag = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation("forge", "meats/cooked"));
+        EDIBLE.addAll(ForgeRegistries.ITEMS.tags().getTag(meatsCookedTag).stream().toList());
+        TagKey<Item> meatsTag = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation("forge", "meats"));
+        EDIBLE.addAll(ForgeRegistries.ITEMS.tags().getTag(meatsTag).stream().toList());
 
-        Tag<Item> tofuTag = ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("forge", "tofus"));
-        EDIBLE.removeAll(tofuTag.getValues());
+        TagKey<Item> tofuTag = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation("forge", "tofus"));
+        EDIBLE.removeAll(ForgeRegistries.ITEMS.tags().getTag(tofuTag).stream().toList());
     }
 
     public static boolean catFoodItems(ItemStack stack) {

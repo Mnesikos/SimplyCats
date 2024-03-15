@@ -11,6 +11,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -53,7 +54,7 @@ public class SimplyCats {
         forgeBus.register(CatDataFixer.class);
     }
 
-    public static void setupVillages(FMLServerAboutToStartEvent event) {
+    public static void setupVillages(ServerAboutToStartEvent event) {
         SCWorldGen.setupVillageWorldGen(event.getServer().registryAccess());
     }
 }

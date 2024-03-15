@@ -59,7 +59,7 @@ public class CatWanderGoal extends Goal {
         int yRange = 3;
 
         if (cat.getHomePos().isPresent()) {
-            double homePosDist = cat.getHomePos().get().distSqr(Mth.floor(cat.getX()), Mth.floor(cat.getY()), Mth.floor(cat.getZ()), true) + 4.0D;
+            double homePosDist = cat.getHomePos().get().distSqr(cat.blockPosition()) + 4.0D;
             double wanderRange = (SCConfig.wander_area_limit.get() + (float) xzRange);
             outsideBounds = homePosDist < wanderRange * wanderRange;
         } else

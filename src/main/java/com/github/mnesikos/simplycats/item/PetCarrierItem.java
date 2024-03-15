@@ -63,7 +63,7 @@ public class PetCarrierItem extends Item {
                         tags.putString("OwnerName", player.getName().getString());
                     if (target.hasCustomName()) tags.putString("DisplayName", target.getDisplayName().getString());
 
-                    target.remove();
+                    target.discard();
                     player.displayClientMessage(new TranslatableComponent("chat.pet_carrier.retrieve_pet"), true);
 
                     ItemStack newStack = new ItemStack(this);

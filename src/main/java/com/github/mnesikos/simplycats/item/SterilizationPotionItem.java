@@ -33,9 +33,9 @@ public class SterilizationPotionItem extends Item {
             if ((!cat.isTame() || (cat.isTame() && cat.isOwnedBy(player))) && player.isCrouching() && !cat.isFixed()) {
                 cat.setFixed((byte) 1);
                 for (int i = 0; i < 7; ++i) {
-                    double d0 = random.nextGaussian() * 0.02D;
-                    double d1 = random.nextGaussian() * 0.02D;
-                    double d2 = random.nextGaussian() * 0.02D;
+                    double d0 = cat.getRandom().nextGaussian() * 0.02D;
+                    double d1 = cat.getRandom().nextGaussian() * 0.02D;
+                    double d2 = cat.getRandom().nextGaussian() * 0.02D;
                     cat.level.addParticle(ParticleTypes.HAPPY_VILLAGER, cat.getRandomX(1.0D), cat.getRandomY() + 0.5D, cat.getRandomZ(1.0D), d0, d1, d2);
                 }
                 player.displayClientMessage(new TranslatableComponent(cat.getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()), true);
@@ -45,7 +45,7 @@ public class SterilizationPotionItem extends Item {
                     stack.shrink(1);
                     if (stack.isEmpty())
                         player.setItemInHand(hand, emptyBottle);
-                    else if (!player.inventory.add(emptyBottle))
+                    else if (!player.getInventory().add(emptyBottle))
                         player.drop(emptyBottle, false);
                 }
             }

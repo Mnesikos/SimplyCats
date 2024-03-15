@@ -3,26 +3,20 @@ package com.github.mnesikos.simplycats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cat;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class CatDataFixer {
     @SubscribeEvent
     public static void joinWorldEvent(EntityJoinWorldEvent event) {
-        if (event.getEntity() instanceof SimplyCatEntity) {
-            SimplyCatEntity cat = (SimplyCatEntity) event.getEntity();
-            if (!cat.getPersistentData().contains("Inhibitor")) {
-                cat.getPersistentData().putString("Inhibitor", Genetics.Inhibitor.NORMAL.getAllele() + "-" + Genetics.Inhibitor.init(new Random()));
-            }
-        }
-
         if (event.getEntity().getClass() == Cat.class && !event.getWorld().isClientSide) {
             Cat vanillaCat = (Cat) event.getEntity();
             if (!vanillaCat.getPersistentData().contains("SimplyCatsSpawn")) {
@@ -41,7 +35,8 @@ public class CatDataFixer {
                     if (simplyCatEntity.getSex() == Genetics.Sex.FEMALE && !simplyCatEntity.isFixed())
                         simplyCatEntity.setTimeCycle("end", simplyCatEntity.getRandom().nextInt(SCConfig.heat_cooldown.get()));
 
-                    if (world instanceof ServerLevel) ((ServerLevel) world).loadFromChunk(simplyCatEntity);
+                    if (world instanceof ServerLevel)
+                        ((ServerLevel) world).addWorldGenChunkEntities(Stream.of(simplyCatEntity));
                     vanillaCat.getPersistentData().putBoolean("SimplyCatsSpawn", true);
                     event.setCanceled(true);
 

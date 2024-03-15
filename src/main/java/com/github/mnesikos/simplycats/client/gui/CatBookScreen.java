@@ -6,6 +6,7 @@ import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.gui.chat.NarratorChatListener;
@@ -25,9 +26,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
-
-import net.minecraft.client.gui.components.Button.OnPress;
 
 @OnlyIn(Dist.CLIENT)
 public class CatBookScreen extends Screen {
@@ -53,7 +51,7 @@ public class CatBookScreen extends Screen {
     public CatBookScreen(CompoundTag bookTag, Level world) {
         super(NarratorChatListener.NO_TITLE);
         if (bookTag != null && !bookTag.isEmpty()) {
-            ListTag pages = bookTag.getList("pages", Constants.NBT.TAG_COMPOUND).copy();
+            ListTag pages = bookTag.getList("pages", 8).copy();
             this.bookPages.addAll(pages);
             this.world = world;
         }
@@ -64,10 +62,10 @@ public class CatBookScreen extends Screen {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         int centerX = (width - bookImageWidth) / 2;
-        this.buttonNextPage = this.addButton(new NextPageButton(centerX + 236, 157, true, (button) -> {
+        this.buttonNextPage = this.addRenderableWidget(new NextPageButton(centerX + 236, 157, true, (button) -> {
             this.pageForward();
         }));
-        this.buttonPreviousPage = this.addButton(new NextPageButton(centerX + 25, 157, false, (button) -> {
+        this.buttonPreviousPage = this.addRenderableWidget(new NextPageButton(centerX + 25, 157, false, (button) -> {
             this.pageBack();
         }));
         this.updateButtons();
@@ -101,11 +99,12 @@ public class CatBookScreen extends Screen {
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
-        RenderSystem.color4f(1, 1, 1, 1);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         int leftX = (width - bookImageWidth) / 2;
         int leftCenterX = leftX + (bookImageWidth / 4);
 
-        this.minecraft.getTextureManager().bind(BG_TEXTURE);
+        RenderSystem.setShaderTexture(0, BG_TEXTURE);
         blit(matrixStack, leftX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
 
         if (bookPages.get(this.currPage) != null || !bookPages.getCompound(this.currPage).isEmpty() || cat != null) {
@@ -180,8 +179,9 @@ public class CatBookScreen extends Screen {
     }
 
     private void renderCatHealth(PoseStack matrixStack, int x, int y) {
-        RenderSystem.color4f(1, 1, 1, 1);
-        this.minecraft.getTextureManager().bind(GUI_ICONS_LOCATION);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
         this.catHealth = Mth.ceil(cat.getHealth());
 
         float maxHealth = (float) cat.getAttributeValue(Attributes.MAX_HEALTH);
@@ -221,8 +221,9 @@ public class CatBookScreen extends Screen {
                 boolean isButtonPressed = (mouseX >= x && mouseY >= y
                         && mouseX < x + width && mouseY < y + height);
 
-                RenderSystem.color4f(1, 1, 1, 1);
-                Minecraft.getInstance().getTextureManager().bind(BG_TEXTURE);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1, 1, 1, 1);
+                RenderSystem.setShaderTexture(0, BG_TEXTURE);
                 int textureX = 2;
                 int textureY = 193;
 

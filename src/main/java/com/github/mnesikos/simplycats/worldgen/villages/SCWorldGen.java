@@ -4,13 +4,9 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Registry;
-import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
-import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElement;
-import net.minecraft.world.level.levelgen.feature.structures.LegacySinglePoolElement;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = SimplyCats.MOD_ID)
 public class SCWorldGen {
