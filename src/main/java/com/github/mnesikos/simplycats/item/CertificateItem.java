@@ -15,7 +15,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,7 +43,7 @@ public class CertificateItem extends Item {
                     tameable.getNavigation().stop();
                     tameable.setOrderedToSit(true);
                     tameable.setHealth(tameable.getMaxHealth());
-                    player.displayClientMessage(new TranslatableComponent("chat.info.adopt_usage", tameable.getName()), true);
+                    player.displayClientMessage(Component.translatable("chat.info.adopt_usage", tameable.getName()), true);
                     if (player.level.isClientSide)
                         this.playTameEffect(true, tameable.level, tameable);
 
@@ -54,7 +53,7 @@ public class CertificateItem extends Item {
                     return InteractionResult.SUCCESS;
 
                 } else if (tameable instanceof SimplyCatEntity && !tameable.isTame()) {
-                    player.displayClientMessage(new TranslatableComponent("chat.info.tamed_limit_reached"), true);
+                    player.displayClientMessage(Component.translatable("chat.info.tamed_limit_reached"), true);
                     return InteractionResult.PASS;
                 }
 
@@ -66,7 +65,7 @@ public class CertificateItem extends Item {
                         tameable.setTame(false);
                     tameable.getNavigation().stop();
                     tameable.setOwnerUUID(null);
-                    player.displayClientMessage(new TranslatableComponent("chat.info.release_usage", tameable.getName()), true);
+                    player.displayClientMessage(Component.translatable("chat.info.release_usage", tameable.getName()), true);
                     this.playTameEffect(false, tameable.level, tameable);
 
                     if (!player.isCreative())
@@ -95,6 +94,6 @@ public class CertificateItem extends Item {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(new TranslatableComponent("tooltip.certificate_" + (this.adoption ? "adopt" : "release") + ".desc"));
+        tooltip.add(Component.translatable("tooltip.certificate_" + (this.adoption ? "adopt" : "release") + ".desc"));
     }
 }

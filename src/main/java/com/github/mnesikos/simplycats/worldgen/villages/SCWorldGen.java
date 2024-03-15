@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +34,7 @@ public class SCWorldGen {
         StructureTemplatePool pool = dynamicRegistries.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY).getOptional(new ResourceLocation(villagePool)).orElse(null);
 
         if (pool != null) {
-            List<StructurePoolElement> piecesList = new ArrayList<>(pool.templates);
+            ObjectArrayList<StructurePoolElement> piecesList = new ObjectArrayList<>(pool.templates);
             for (int i = 0; i < weight; i++) {
                 piecesList.add(piece);
             }

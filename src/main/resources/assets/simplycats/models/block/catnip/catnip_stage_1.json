@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/crop",
+  "render_type": "cutout",
   "textures": {
     "crop": "simplycats:block/catnip/catnip_stage_1"
   }

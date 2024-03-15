@@ -15,7 +15,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,7 +56,7 @@ public class LaserPointerItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.getTag() != null)
-            tooltip.add(new TextComponent(stack.getTag().getBoolean("On") ? "On" : "Off").withStyle(ChatFormatting.ITALIC));
+            tooltip.add(Component.literal(stack.getTag().getBoolean("On") ? "On" : "Off").withStyle(ChatFormatting.ITALIC));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 

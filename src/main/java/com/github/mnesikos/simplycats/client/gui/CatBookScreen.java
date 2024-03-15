@@ -3,26 +3,24 @@ package com.github.mnesikos.simplycats.client.gui;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.GameNarrator;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.client.gui.chat.NarratorChatListener;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,7 +47,7 @@ public class CatBookScreen extends Screen {
     }
 
     public CatBookScreen(CompoundTag bookTag, Level world) {
-        super(NarratorChatListener.NO_TITLE);
+        super(GameNarrator.NO_TITLE);
         if (bookTag != null && !bookTag.isEmpty()) {
             ListTag pages = bookTag.getList("pages", 10).copy();
             this.bookPages.addAll(pages);
@@ -113,7 +111,7 @@ public class CatBookScreen extends Screen {
             int nameWidth = this.font.width(cat.getName());
             this.font.draw(matrixStack, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
 
-            TextComponent sex = new TextComponent(new TranslatableComponent(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
+            Component sex = Component.literal(Component.translatable(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
                     + " "
                     + Genetics.Sex.getPrettyName(bookPages.getCompound(this.currPage).getString("Phaeomelanin")).getString());
             this.font.draw(matrixStack, sex, leftX + 66, 14 * 2, 0);
@@ -125,9 +123,9 @@ public class CatBookScreen extends Screen {
             String ownerName;
             if (cat.isTame()) {
                 ownerName = cat.getOwnerName().getString();
-                this.font.draw(matrixStack, new TranslatableComponent("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0);
+                this.font.draw(matrixStack, Component.translatable("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0);
             } else
-                this.font.draw(matrixStack, new TranslatableComponent("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
+                this.font.draw(matrixStack, Component.translatable("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
 
             this.font.drawWordWrap(Genetics.getPhenotypeDescription(bookPages.getCompound(this.currPage), false), leftX + 16, 14 * 7, 120, 0);
 
@@ -153,20 +151,20 @@ public class CatBookScreen extends Screen {
             String white = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("White");
             String bobtail = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Bobtail");
 
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.white", white), leftX + 152, 134 + 5, 0);
-            this.font.draw(matrixStack, new TranslatableComponent("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.white", white), leftX + 152, 134 + 5, 0);
+            this.font.draw(matrixStack, Component.translatable("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0);
 
             //this.font.drawWordWrap("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 
@@ -211,7 +209,7 @@ public class CatBookScreen extends Screen {
         private final boolean isNextButton;
 
         NextPageButton(int x, int y, boolean nextButton, OnPress pressable) {
-            super(x, y, 20, 12, TextComponent.EMPTY, pressable);
+            super(x, y, 20, 12, Component.empty(), pressable);
             isNextButton = nextButton;
         }
 

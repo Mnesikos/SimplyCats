@@ -4,6 +4,7 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.core.particles.ParticleTypes;
@@ -80,7 +81,7 @@ public class CatBirthGoal extends Goal {
             serverWorld.addFreshEntityWithPassengers(child);
             serverWorld.broadcastEntityEvent(this.mother, (byte) 18);
 
-            Random random = this.mother.getRandom();
+            RandomSource random = this.mother.getRandom();
             for (int i = 0; i < 7; ++i) {
                 double d0 = random.nextGaussian() * 0.02D;
                 double d1 = random.nextGaussian() * 0.02D;

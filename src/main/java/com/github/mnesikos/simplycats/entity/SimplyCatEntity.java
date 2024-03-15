@@ -16,8 +16,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -117,7 +115,7 @@ public class SimplyCatEntity extends TamableAnimal {
             EntityType<?> entityType = entity.getType();
             if (entity instanceof TamableAnimal && ((TamableAnimal) entity).isTame())
                 return false;
-            return !(entity instanceof SimplyCatEntity) && !(entity instanceof Player) && !(entity instanceof Enemy) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(entityType.getRegistryName().toString());
+            return !(entity instanceof SimplyCatEntity) && !(entity instanceof Player) && !(entity instanceof Enemy) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(entityType.getDescriptionId());
         }));
     }
 
@@ -600,11 +598,11 @@ public class SimplyCatEntity extends TamableAnimal {
         if (this.getOwner() != null)
             return this.getOwner().getDisplayName();
         else if (!this.entityData.get(OWNER_NAME).isEmpty())
-            return new TextComponent(this.entityData.get(OWNER_NAME));
+            return Component.literal(this.entityData.get(OWNER_NAME));
         else if (this.getOwnerUUID() != null)
-            return new TranslatableComponent("entity.simplycats.cat.unknown_owner");
+            return Component.translatable("entity.simplycats.cat.unknown_owner");
         else
-            return new TranslatableComponent("entity.simplycats.cat.untamed");
+            return Component.translatable("entity.simplycats.cat.untamed");
     }
 
     public void setOwnerName(String name) {
@@ -1122,9 +1120,9 @@ public class SimplyCatEntity extends TamableAnimal {
 
             if (item == Items.BONE && player.isDiscrete()) {
                 if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
-                    player.displayClientMessage(new TranslatableComponent("chat.info.kitten_count", this.getKittens()), true);
+                    player.displayClientMessage(Component.translatable("chat.info.kitten_count", this.getKittens()), true);
                 if (this.isBaby())
-                    player.displayClientMessage(new TextComponent(this.getAge() + " // " + this.getAgeTracker() + " // " + this.getMatureTimer()), true);
+                    player.displayClientMessage(Component.literal(this.getAge() + " // " + this.getAgeTracker() + " // " + this.getMatureTimer()), true);
                 return InteractionResult.CONSUME;
             }
 
@@ -1132,14 +1130,14 @@ public class SimplyCatEntity extends TamableAnimal {
                 if (player.isDiscrete()) {
                     if (this.getHomePos().isPresent()) {
                         this.resetHomePos();
-                        player.displayClientMessage(new TranslatableComponent("chat.info.remove_home", this.getName()), true);
+                        player.displayClientMessage(Component.translatable("chat.info.remove_home", this.getName()), true);
                     } else {
                         this.setHomePos(this.getOnPos());
-                        player.displayClientMessage(new TranslatableComponent("chat.info.set_home", this.getName(), getHomePos().get().getX(), getHomePos().get().getY(), getHomePos().get().getZ()), true);
+                        player.displayClientMessage(Component.translatable("chat.info.set_home", this.getName(), getHomePos().get().getX(), getHomePos().get().getY(), getHomePos().get().getZ()), true);
                     }
                     return InteractionResult.SUCCESS;
                 } else if (this.getHomePos().isPresent())
-                    player.displayClientMessage(new TextComponent(getHomePos().get().getX() + ", " + getHomePos().get().getY() + ", " + getHomePos().get().getZ()), true);
+                    player.displayClientMessage(Component.literal(getHomePos().get().getX() + ", " + getHomePos().get().getY() + ", " + getHomePos().get().getZ()), true);
             }
         }
 

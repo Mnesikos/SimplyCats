@@ -31,7 +31,7 @@ public class SimplyCats {
         }
     };
 
-    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, SimplyCats.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, SimplyCats.MOD_ID);
     public static final RegistryObject<EntityType<SimplyCatEntity>> CAT = ENTITIES.register("cat", () -> EntityType.Builder.of(SimplyCatEntity::new, MobCategory.CREATURE)
             .sized(0.6f, 0.8f)
             .setShouldReceiveVelocityUpdates(true).setTrackingRange(80).setUpdateInterval(1)

@@ -2,8 +2,8 @@ package com.github.mnesikos.simplycats.entity.core;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.RandomSource;
 
 import java.util.Random;
 
@@ -11,7 +11,7 @@ public class Genetics {
     public Genetics() {
     }
 
-    public static TextComponent getPhenotypeDescription(CompoundTag nbt, boolean includeSex) {
+    public static MutableComponent getPhenotypeDescription(CompoundTag nbt, boolean includeSex) {
         Component sex = Sex.getPrettyName(nbt.getString("Phaeomelanin"));
 
         String eumelanin = Eumelanin.getPhenotype(nbt.getString("Eumelanin"));
@@ -20,63 +20,63 @@ public class Genetics {
         String diluteMod = DiluteMod.getPhenotype(nbt.getString("DiluteMod"));
         boolean isRed = phaeomelanin.equals(Phaeomelanin.RED.toString().toLowerCase());
         String redElseBlack = isRed ? phaeomelanin : eumelanin;
-        Component base = new TranslatableComponent("cat.base." + (redElseBlack) + ".name");
+        Component base = Component.translatable("cat.base." + (redElseBlack) + ".name");
         if (dilution.equals(Dilution.DILUTE.toString().toLowerCase())) {
-            base = new TranslatableComponent("cat.base." + (redElseBlack) + "_" + dilution + ".name");
+            base = Component.translatable("cat.base." + (redElseBlack) + "_" + dilution + ".name");
             if (diluteMod.equals(DiluteMod.CARAMELIZED.toString().toLowerCase()))
-                base = new TranslatableComponent("cat.base." + (redElseBlack) + "_" + diluteMod + ".name");
+                base = Component.translatable("cat.base." + (redElseBlack) + "_" + diluteMod + ".name");
         }
 
         String agouti = Agouti.getPhenotype(nbt.getString("Agouti"));
         boolean isAgouti = agouti.equals(Agouti.TABBY.toString().toLowerCase());
         String inhibitor = Inhibitor.getPhenotype(nbt.getString("Inhibitor"));
         if (inhibitor.equals(Inhibitor.SILVER.toString().toLowerCase()))
-            base = new TextComponent(base.getString() + " " + (new TranslatableComponent("cat.base." + inhibitor + (isAgouti ? "" : "_smoke") + ".name")).getString());
+            base = Component.literal(base.getString() + " " + (Component.translatable("cat.base." + inhibitor + (isAgouti ? "" : "_smoke") + ".name")).getString());
         if (phaeomelanin.equals(Phaeomelanin.TORTOISESHELL.toString().toLowerCase()))
-            base = new TextComponent(base.getString() + " " + (new TranslatableComponent("cat.base." + phaeomelanin + ".name")).getString());
+            base = Component.literal(base.getString() + " " + (Component.translatable("cat.base." + phaeomelanin + ".name")).getString());
 
         String tabby1 = Tabby.getPhenotype(nbt.getString("Tabby"));
         String spotted = Spotted.getPhenotype(nbt.getString("Spotted"));
         String ticked = Ticked.getPhenotype(nbt.getString("Ticked"));
-        Component tabby = new TranslatableComponent("");
+        Component tabby = Component.translatable("");
         if (isAgouti || isRed) {
-            tabby = new TranslatableComponent("cat.tabby." + tabby1 + ".name");
+            tabby = Component.translatable("cat.tabby." + tabby1 + ".name");
             if (spotted.equals(Spotted.BROKEN.toString().toLowerCase()) || spotted.equals(Spotted.SPOTTED.toString().toLowerCase()))
-                tabby = new TranslatableComponent("cat.tabby." + spotted + ".name");
+                tabby = Component.translatable("cat.tabby." + spotted + ".name");
             if (ticked.equals(Ticked.TICKED.toString().toLowerCase()))
-                tabby = new TranslatableComponent("cat.tabby." + ticked + ".name");
+                tabby = Component.translatable("cat.tabby." + ticked + ".name");
         }
 
         String colorpoint = Colorpoint.getPhenotype(nbt.getString("Colorpoint"));
-        Component point = new TranslatableComponent("");
+        Component point = Component.translatable("");
         if (!colorpoint.equals(Colorpoint.NOT_POINTED.toString().toLowerCase())) {
-            point = new TranslatableComponent("cat.point." + colorpoint + ".name");
+            point = Component.translatable("cat.point." + colorpoint + ".name");
             if (colorpoint.equals(Colorpoint.ALBINO.toString().toLowerCase())) {
-                Component eyes = new TranslatableComponent("cat.point.red_eyed.name");
+                Component eyes = Component.translatable("cat.point.red_eyed.name");
                 if (nbt.getString("Colorpoint").contains(Colorpoint.BLUE_EYED_ALBINO.getAllele()))
-                    eyes = new TranslatableComponent("cat.point.blue_eyed.name");
-                return new TextComponent(eyes.getString() + " " + point.getString() + (includeSex ? (" " + sex.getString()) : ""));
+                    eyes = Component.translatable("cat.point.blue_eyed.name");
+                return Component.literal(eyes.getString() + " " + point.getString() + (includeSex ? (" " + sex.getString()) : ""));
             }
         }
 
         String white = White.getPhenotype(nbt.getString("White"));
-        Component whiteText = new TranslatableComponent("");
+        Component whiteText = Component.translatable("");
         if (!white.equals(White.NONE.toString().toLowerCase())) {
             if (white.equals(White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
-                whiteText = new TranslatableComponent("cat.white.solid_white.name");
-                return new TextComponent(whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
+                whiteText = Component.translatable("cat.white.solid_white.name");
+                return Component.literal(whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
             }
             if (nbt.getString("White_0").contains("5")) {
-                whiteText = new TranslatableComponent("cat.white.mostly_white.name");
-                return new TextComponent(whiteText.getString() + " " + base.getString() +
+                whiteText = Component.translatable("cat.white.mostly_white.name");
+                return Component.literal(whiteText.getString() + " " + base.getString() +
                         (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
                         (point.getString().equals("") ? "" : " " + point.getString()) +
                         (includeSex ? (" " + sex.getString()) : ""));
             } else
-                whiteText = new TranslatableComponent("cat.white.some_white.name");
+                whiteText = Component.translatable("cat.white.some_white.name");
         }
 
-        return new TextComponent(base.getString() +
+        return Component.literal(base.getString() +
                 (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
                 (point.getString().equals("") ? "" : " " + point.getString()) +
                 " " + whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
@@ -98,11 +98,11 @@ public class Genetics {
 
         public static Component getPrettyName(String phaeomelanin) {
             if (phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
-                return new TranslatableComponent("cat.sex.male.name");
+                return Component.translatable("cat.sex.male.name");
             else if (!phaeomelanin.contains(Phaeomelanin.MALE.getAllele()))
-                return new TranslatableComponent("cat.sex.female.name");
+                return Component.translatable("cat.sex.female.name");
             else
-                return new TextComponent(phaeomelanin);
+                return Component.literal(phaeomelanin);
         }
     }
 
@@ -174,7 +174,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.75f)
                 return SHORT.getAllele(); // 75% chance
@@ -208,7 +208,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.80F)
                 return BLACK.getAllele(); // 80% chance
@@ -250,7 +250,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance1 = rand.nextFloat();
             String allele1;
             if (chance1 <= 0.75f)
@@ -303,7 +303,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.60f)
                 return NON_DILUTE.getAllele(); // 60% chance
@@ -336,7 +336,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.96f)
                 return NON_CARAMEL.getAllele(); // 96% chance
@@ -369,7 +369,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.80f)
                 return SOLID.getAllele(); // 80% chance
@@ -402,7 +402,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.50f)
                 return MACKEREL.getAllele(); // 50% chance
@@ -439,7 +439,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.80f)
                 return NON_SPOTTED.getAllele(); // 80% chance
@@ -475,7 +475,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.96F)
                 return NON_TICKED.getAllele(); // 96% chance
@@ -510,7 +510,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.96f)
                 return NORMAL.getAllele(); // 96% chance
@@ -555,7 +555,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.80F)
                 return NOT_POINTED.getAllele(); // 80% chance
@@ -602,7 +602,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.49F)
                 return NONE.getAllele(); // 49% chance
@@ -645,7 +645,7 @@ public class Genetics {
             return allele;
         }
 
-        public static String init(Random rand) {
+        public static String init(RandomSource rand) {
             float chance = rand.nextFloat();
             if (chance <= 0.98F)
                 return FULL.getAllele(); // 98% chance

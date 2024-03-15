@@ -28,7 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 public class SCVillagers {
-    public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, SimplyCats.MOD_ID);
+    public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, SimplyCats.MOD_ID);
     public static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, SimplyCats.MOD_ID);
 
     public static final RegistryObject<PoiType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PoiType("shelter_worker", PoiType.getBlockStates(SCBlocks.SHELTER_BOOK.get()), 2, 1));

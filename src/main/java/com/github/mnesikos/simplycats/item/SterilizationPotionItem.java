@@ -13,7 +13,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,7 +37,7 @@ public class SterilizationPotionItem extends Item {
                     double d2 = cat.getRandom().nextGaussian() * 0.02D;
                     cat.level.addParticle(ParticleTypes.HAPPY_VILLAGER, cat.getRandomX(1.0D), cat.getRandomY() + 0.5D, cat.getRandomZ(1.0D), d0, d1, d2);
                 }
-                player.displayClientMessage(new TranslatableComponent(cat.getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()), true);
+                player.displayClientMessage(Component.translatable(cat.getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()), true);
 
                 if (!player.isCreative()) {
                     ItemStack emptyBottle = new ItemStack(Items.GLASS_BOTTLE);
@@ -56,6 +55,6 @@ public class SterilizationPotionItem extends Item {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(new TranslatableComponent("tooltip.sterilization_potion.usage"));
+        tooltip.add(Component.translatable("tooltip.sterilization_potion.usage"));
     }
 }

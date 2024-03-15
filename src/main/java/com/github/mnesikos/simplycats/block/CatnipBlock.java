@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.item.SCItems;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.CropBlock;
@@ -53,7 +54,7 @@ public class CatnipBlock extends CropBlock {
     }
 
     @Override
-    public void randomTick(BlockState blockState, ServerLevel serverWorld, BlockPos blockPos, Random random) {
+    public void randomTick(BlockState blockState, ServerLevel serverWorld, BlockPos blockPos, RandomSource random) {
         if (random.nextInt(3) != 0)
             super.randomTick(blockState, serverWorld, blockPos, random);
     }

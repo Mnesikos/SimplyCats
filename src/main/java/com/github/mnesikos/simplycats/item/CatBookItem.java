@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -68,10 +67,10 @@ public class CatBookItem extends Item {
 
             if (!catExists) {
                 tagList.add(catTag);
-                player.displayClientMessage(new TranslatableComponent("chat.book.save_cat_data", cat.getName()), true);
+                player.displayClientMessage(Component.translatable("chat.book.save_cat_data", cat.getName()), true);
             } else {
                 tagList.setTag(catInList, catTag);
-                player.displayClientMessage(new TranslatableComponent("chat.book.update_cat_data", cat.getName()), true);
+                player.displayClientMessage(Component.translatable("chat.book.update_cat_data", cat.getName()), true);
             }
 
             stack.setTag(compound);
@@ -89,7 +88,7 @@ public class CatBookItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         CompoundTag bookTag = player.getItemInHand(hand).getTag();
         if (bookTag == null || bookTag.isEmpty())
-            player.displayClientMessage(new TranslatableComponent("chat.book.empty_book"), true);
+            player.displayClientMessage(Component.translatable("chat.book.empty_book"), true);
         else if (world.isClientSide)
             this.openCatBook(bookTag, world);
 
@@ -104,6 +103,6 @@ public class CatBookItem extends Item {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(new TranslatableComponent("tooltip.cat_book.usage"));
+        tooltip.add(Component.translatable("tooltip.cat_book.usage"));
     }
 }

@@ -8,20 +8,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.Random;
 import java.util.stream.Stream;
 
 public class CatDataFixer {
     @SubscribeEvent
-    public static void joinWorldEvent(EntityJoinWorldEvent event) {
-        if (event.getEntity().getClass() == Cat.class && !event.getWorld().isClientSide) {
+    public static void joinWorldEvent(EntityJoinLevelEvent event) {
+        if (event.getEntity().getClass() == Cat.class && !event.getLevel().isClientSide) {
             Cat vanillaCat = (Cat) event.getEntity();
             if (!vanillaCat.getPersistentData().contains("SimplyCatsSpawn")) {
                 if (vanillaCat.isTame() && SCConfig.replace_tamed_vanilla.get()) {
-                    Level world = event.getWorld();
+                    Level world = event.getLevel();
                     SimplyCatEntity simplyCatEntity = SimplyCats.CAT.get().create(world);
                     simplyCatEntity.load(vanillaCat.saveWithoutId(new CompoundTag()));
                     simplyCatEntity.getAttribute(Attributes.MAX_HEALTH).setBaseValue(14.0D);

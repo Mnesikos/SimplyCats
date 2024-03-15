@@ -3,40 +3,33 @@ package com.github.mnesikos.simplycats.item;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.animal.Rabbit;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
-
-import net.minecraft.Util;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 
 public class PetCarrierItem extends Item {
     public PetCarrierItem() {
@@ -48,7 +41,7 @@ public class PetCarrierItem extends Item {
         if (target instanceof SimplyCatEntity || target instanceof Wolf || target instanceof Parrot) {
             if (((TamableAnimal) target).getOwner() == player) {
                 if (stack.hasTag()) {
-                    player.displayClientMessage(new TranslatableComponent("chat.pet_carrier.full"), true);
+                    player.displayClientMessage(Component.translatable("chat.pet_carrier.full"), true);
                     return InteractionResult.PASS;
                 } else {
                     target.revive();
@@ -64,7 +57,7 @@ public class PetCarrierItem extends Item {
                     if (target.hasCustomName()) tags.putString("DisplayName", target.getDisplayName().getString());
 
                     target.discard();
-                    player.displayClientMessage(new TranslatableComponent("chat.pet_carrier.retrieve_pet"), true);
+                    player.displayClientMessage(Component.translatable("chat.pet_carrier.retrieve_pet"), true);
 
                     ItemStack newStack = new ItemStack(this);
                     newStack.setTag(tags);
@@ -86,7 +79,7 @@ public class PetCarrierItem extends Item {
         Level world = context.getLevel();
         ItemStack item = context.getItemInHand();
         if (!item.hasTag() || item.getDamageValue() == 0) {
-            player.displayClientMessage(new TranslatableComponent("chat.pet_carrier.empty"), true);
+            player.displayClientMessage(Component.translatable("chat.pet_carrier.empty"), true);
             return InteractionResult.PASS;
         }
 
@@ -118,7 +111,7 @@ public class PetCarrierItem extends Item {
 
                         item.shrink(1);
                         player.setItemInHand(context.getHand(), new ItemStack(this));
-                        player.displayClientMessage(new TranslatableComponent("chat.pet_carrier.release_pet"), true);
+                        player.displayClientMessage(Component.translatable("chat.pet_carrier.release_pet"), true);
                     }
                 }
             }
@@ -136,7 +129,7 @@ public class PetCarrierItem extends Item {
             pet = (Parrot) EntityType.PARROT.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
 
         if (pet instanceof SimplyCatEntity && !((SimplyCatEntity) pet).canBeTamed(player)) {
-            player.displayClientMessage(new TranslatableComponent("chat.info.tamed_limit_reached"), true);
+            player.displayClientMessage(Component.translatable("chat.info.tamed_limit_reached"), true);
 
         } else if (pet != null) {
             pet.setOrderedToSit(true);
@@ -147,7 +140,7 @@ public class PetCarrierItem extends Item {
 
             if (pet instanceof SimplyCatEntity) {
                 ((SimplyCatEntity) pet).setHomePos(blockPos);
-                player.displayClientMessage(new TranslatableComponent("chat.info.set_home", pet.getName(), blockPos.getX(), blockPos.getY(), blockPos.getZ()), true);
+                player.displayClientMessage(Component.translatable("chat.info.set_home", pet.getName(), blockPos.getX(), blockPos.getY(), blockPos.getZ()), true);
             }
             pet.getNavigation().stop();
             float health = pet.getMaxHealth();
@@ -169,7 +162,7 @@ public class PetCarrierItem extends Item {
             unlocalizedName += "_empty";
         else
             unlocalizedName += "_full";
-        return new TranslatableComponent(unlocalizedName);
+        return Component.translatable(unlocalizedName);
     }
 
     @Override
@@ -188,20 +181,20 @@ public class PetCarrierItem extends Item {
         CompoundTag nbt = item.getTag();
         if (nbt != null) {
             if (item.getDamageValue() == 3)
-                tooltip.add(new TranslatableComponent("tooltip.pet_carrier.adopt_cat").withStyle(ChatFormatting.ITALIC));
+                tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_cat").withStyle(ChatFormatting.ITALIC));
             else if (item.getDamageValue() == 4)
-                tooltip.add(new TranslatableComponent("tooltip.pet_carrier.adopt_dog").withStyle(ChatFormatting.ITALIC));
+                tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_dog").withStyle(ChatFormatting.ITALIC));
             else if (item.getDamageValue() == 5)
-                tooltip.add(new TranslatableComponent("tooltip.pet_carrier.adopt_parrot").withStyle(ChatFormatting.ITALIC));
+                tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_parrot").withStyle(ChatFormatting.ITALIC));
             else if (item.getDamageValue() == 6)
-                tooltip.add(new TranslatableComponent("tooltip.pet_carrier.adopt_rabbit").withStyle(ChatFormatting.ITALIC));
+                tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_rabbit").withStyle(ChatFormatting.ITALIC));
 
             else if (item.getDamageValue() != 0) {
-                TranslatableComponent species = new TranslatableComponent(Util.makeDescriptionId("entity", new ResourceLocation(nbt.getString("id"))));
+                MutableComponent species = Component.translatable(Util.makeDescriptionId("entity", new ResourceLocation(nbt.getString("id"))));
 
-                TranslatableComponent owner = new TranslatableComponent("tooltip.pet_carrier.owner", nbt.getString("OwnerName"));
+                Component owner = Component.translatable("tooltip.pet_carrier.owner", nbt.getString("OwnerName"));
                 if (nbt.contains("DisplayName"))
-                    tooltip.add(new TextComponent("\"" + nbt.getString("DisplayName") + "\"").withStyle(ChatFormatting.AQUA));
+                    tooltip.add(Component.literal("\"" + nbt.getString("DisplayName") + "\"").withStyle(ChatFormatting.AQUA));
                 else
                     tooltip.add(species.withStyle(ChatFormatting.AQUA));
 
@@ -211,7 +204,7 @@ public class PetCarrierItem extends Item {
                 tooltip.add(owner);
             }
         } else {
-            TranslatableComponent empty = new TranslatableComponent("tooltip.pet_carrier.empty");
+            MutableComponent empty = Component.translatable("tooltip.pet_carrier.empty");
             tooltip.add(empty.withStyle(ChatFormatting.AQUA));
         }
     }
