@@ -36,7 +36,7 @@ public class LitterBoxBlock extends Block {
 
     public LitterBoxBlock() {
         super(Properties.of(Material.STONE).strength(0.2F));
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(LEVEL, 0));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(LEVEL, 1));
     }
 
     public void setLevel(Level world, BlockPos pos, BlockState state, int level) {
