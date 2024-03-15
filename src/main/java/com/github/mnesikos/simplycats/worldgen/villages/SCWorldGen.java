@@ -1,12 +1,16 @@
 package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.SimplyCats;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = SimplyCats.MOD_ID)
 public class SCWorldGen {
