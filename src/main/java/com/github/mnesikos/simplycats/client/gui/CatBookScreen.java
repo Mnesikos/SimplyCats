@@ -51,7 +51,7 @@ public class CatBookScreen extends Screen {
     public CatBookScreen(CompoundTag bookTag, Level world) {
         super(NarratorChatListener.NO_TITLE);
         if (bookTag != null && !bookTag.isEmpty()) {
-            ListTag pages = bookTag.getList("pages", 8).copy();
+            ListTag pages = bookTag.getList("pages", 10).copy();
             this.bookPages.addAll(pages);
             this.world = world;
         }

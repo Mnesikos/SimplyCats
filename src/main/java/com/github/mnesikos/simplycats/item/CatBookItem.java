@@ -46,7 +46,7 @@ public class CatBookItem extends Item {
             boolean catExists = false;
             int catInList = 0;
             if (compound.contains("pages")) {
-                tagList = compound.getList("pages", 8);
+                tagList = compound.getList("pages", 10);
                 for (int i = 0; i < tagList.size(); ++i) {
                     if (tagList.getCompound(i).getUUID("UUID").equals(cat.getUUID())) {
                         catExists = true;
