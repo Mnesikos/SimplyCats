@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.FastColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -76,29 +77,9 @@ public class LayeredTexture extends AbstractTexture {
         for (int i = 0; i < image.getHeight(); ++i) {
             for (int j = 0; j < image.getWidth(); ++j) {
                 int color = image.getPixelRGBA(j, i);
-                blendPixel(base, j, i, combine(getA(color), getB(color), getG(color), getR(color)));
+                blendPixel(base, j, i, FastColor.ABGR32.color(FastColor.ABGR32.alpha(color), FastColor.ABGR32.blue(color), FastColor.ABGR32.green(color), FastColor.ABGR32.red(color)));
             }
         }
-    }
-
-    public static int getA(int color) {
-        return color >> 24 & 255;
-    }
-
-    public static int getR(int color) {
-        return color >> 0 & 255;
-    }
-
-    public static int getG(int color) {
-        return color >> 8 & 255;
-    }
-
-    public static int getB(int color) {
-        return color >> 16 & 255;
-    }
-
-    public static int combine(int a, int b, int g, int r) {
-        return (a & 255) << 24 | (b & 255) << 16 | (g & 255) << 8 | (r & 255) << 0;
     }
 
     private void loadImage(NativeImage image) {
@@ -108,14 +89,14 @@ public class LayeredTexture extends AbstractTexture {
 
     public void blendPixel(NativeImage image, int x, int y, int color) {
         int baseColor = image.getPixelRGBA(x, y);
-        float a = (float) getA(color) / 255.0F;
-        float blue = (float) getB(color);
-        float green = (float) getG(color);
-        float red = (float) getR(color);
-        float baseAlpha = (float) getA(baseColor) / 255.0F;
-        float baseBlue = (float) getB(baseColor);
-        float baseGreen = (float) getG(baseColor);
-        float baseRed = (float) getR(baseColor);
+        float a = (float) FastColor.ABGR32.alpha(color) / 255.0F;
+        float blue = (float) FastColor.ABGR32.blue(color);
+        float green = (float) FastColor.ABGR32.green(color);
+        float red = (float) FastColor.ABGR32.red(color);
+        float baseAlpha = (float) FastColor.ABGR32.alpha(baseColor) / 255.0F;
+        float baseBlue = (float) FastColor.ABGR32.blue(baseColor);
+        float baseGreen = (float) FastColor.ABGR32.green(baseColor);
+        float baseRed = (float) FastColor.ABGR32.red(baseColor);
         float alph = a * a + baseAlpha * (1 - a);
         int finalAlpha = (int) (alph * 255.0F);
         int finalBlue = (int) (blue * a + baseBlue * (1 - a));
@@ -137,6 +118,6 @@ public class LayeredTexture extends AbstractTexture {
             finalRed = 255;
         }
 
-        image.setPixelRGBA(x, y, combine(finalAlpha, finalBlue, finalGreen, finalRed));
+        image.setPixelRGBA(x, y, FastColor.ABGR32.color(finalAlpha, finalBlue, finalGreen, finalRed));
     }
 }
