@@ -19,10 +19,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class SCEvents {
     @SubscribeEvent
     public static void setupCommon(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            SCVillagers.registerTrades();
-            SCVillagers.registerPointOfInterests();
-        });
+        event.enqueueWork(SCVillagers::registerTrades);
     }
 
     @SubscribeEvent

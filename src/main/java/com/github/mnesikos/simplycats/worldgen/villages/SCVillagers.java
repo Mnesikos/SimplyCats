@@ -34,14 +34,6 @@ public class SCVillagers {
     public static final RegistryObject<PoiType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PoiType(ImmutableSet.copyOf(SCBlocks.SHELTER_BOOK.get().getStateDefinition().getPossibleStates()), 2, 1));
     public static final RegistryObject<VillagerProfession> SHELTER_WORKER = PROFESSIONS.register("shelter_worker", () -> new VillagerProfession("shelter_worker", entry -> entry.value().equals(ADOPTION_BOOK.get()), entry -> entry.value().equals(ADOPTION_BOOK.get()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN));
 
-    public static void registerPointOfInterests() {
-        try {
-            ObfuscationReflectionHelper.findMethod(PoiType.class, "registerBlockStates", PoiType.class).invoke(null, ADOPTION_BOOK.get());
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void registerTrades() {
         VillagerTrades.ItemListing[] level1 = new VillagerTrades.ItemListing[]{new VillagerTrades.ItemsForEmeralds(SCItems.CATNIP_SEEDS.get(), 1, 8, 4, 8), new VillagerTrades.EmeraldForItems(SCItems.CATNIP.get(), 20, 16, 2), new VillagerTrades.ItemsForEmeralds(SCItems.STERILIZE_POTION.get(), 1, 8, 4, 16)};
         VillagerTrades.ItemListing[] level2 = new VillagerTrades.ItemListing[]{new ItemsForPetTrade(Items.COD, 3), new ItemsForPetTrade(Items.BONE, 4)};
