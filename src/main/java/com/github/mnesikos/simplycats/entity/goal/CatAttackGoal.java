@@ -18,7 +18,7 @@ public class CatAttackGoal extends Goal {
 
     public CatAttackGoal(Mob cat) {
         this.cat = cat;
-        this.level = cat.level;
+        this.level = cat.level();
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
     }
 

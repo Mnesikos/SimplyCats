@@ -188,7 +188,7 @@ public class SimplyCatEntity extends TamableAnimal {
         entityData = super.finalizeSpawn(world, difficulty, spawnReason, entityData, compound);
         this.setPhenotype();
 
-        if (!this.level.isClientSide)
+        if (!this.level().isClientSide)
             if (this.isTame())
                 this.setOrderedToSit(!this.isOrderedToSit());
         if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed())
@@ -211,7 +211,7 @@ public class SimplyCatEntity extends TamableAnimal {
             this.getLookControl().setLookAt(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 10.0F, (float) this.getHeadRotSpeed());
         }
 
-        if (!this.level.isClientSide && !this.isBaby() && !this.isFixed() && this.getSex() == Genetics.Sex.FEMALE) { //if female & adult & not fixed
+        if (!this.level().isClientSide && !this.isBaby() && !this.isFixed() && this.getSex() == Genetics.Sex.FEMALE) { //if female & adult & not fixed
             if (this.getBreedingStatus("inheat")) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus("ispregnant")) //and not pregnant
@@ -230,12 +230,12 @@ public class SimplyCatEntity extends TamableAnimal {
         }
 
         if (this.tickCount % 40 == 0) {
-            if (!this.level.isClientSide && this.getOwner() != null)
+            if (!this.level().isClientSide && this.getOwner() != null)
                 this.setOwnerName(this.getOwner().getDisplayName().getString());
         }
 
-        if (this.level.isClientSide && this.entityData.isDirty()) {
-            this.entityData.clearDirty();
+        if (this.level().isClientSide && this.entityData.isDirty()) {
+            this.entityData.packDirty();
             this.resetTexturePrefix();
         }
     }
@@ -255,7 +255,7 @@ public class SimplyCatEntity extends TamableAnimal {
                             double d0 = this.random.nextGaussian() * 0.02D;
                             double d1 = this.random.nextGaussian() * 0.02D;
                             double d2 = this.random.nextGaussian() * 0.02D;
-                            this.level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
+                            this.level().addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
                         }
                     }
                 } else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
@@ -269,7 +269,7 @@ public class SimplyCatEntity extends TamableAnimal {
             this.setMateTimer(mateTimer);
         }
 
-        if (!this.level.isClientSide && this.getTarget() == null && this.isAngry())
+        if (!this.level().isClientSide && this.getTarget() == null && this.isAngry())
             this.setAngry(false);
 
         if (this.getHealth() <= 0 && this.isTame() && this.getOwner() == null) {
@@ -283,7 +283,7 @@ public class SimplyCatEntity extends TamableAnimal {
 //        if (this.isTame() && this.getOwner() != null) {
 //            int count = this.getOwner().getPersistentData().getInt("CatCount");
 //            this.getOwner().getPersistentData().putInt("CatCount", count - 1);
-//            if (!level.isClientSide)
+//            if (!level().isClientSide)
 //                CHANNEL.sendTo(new SCNetworking(count - 1), (EntityPlayerMP) this.getOwner());
 //        }
         super.die(cause);
@@ -308,7 +308,7 @@ public class SimplyCatEntity extends TamableAnimal {
             damage *= 3.0F;
         if (this.isCrouching() || this.isSprinting())
             damage *= 2.0F;
-        return entity.hurt(DamageSource.mobAttack(this), damage);
+        return entity.hurt(damageSources().mobAttack(this), damage);
     }
 
     @Override
@@ -960,7 +960,7 @@ public class SimplyCatEntity extends TamableAnimal {
         int catCount = owner.getPersistentData().getInt("CatCount");
         if (tamed) {
 //            owner.getPersistentData().putInt("CatCount", catCount + 1);
-//            if (!level.isClientSide())
+//            if (!level().isClientSide())
 //                CHANNEL.sendTo(new SCNetworking(catCount + 1), (EntityPlayerMP) owner);
             this.setOwnerName(owner.getDisplayName().getString());
             this.setOwnerUUID(owner.getUUID());
@@ -969,7 +969,7 @@ public class SimplyCatEntity extends TamableAnimal {
 
         } else {
 //            owner.getPersistentData().putInt("CatCount", catCount - 1);
-//            if (!level.isClientSide())
+//            if (!level().isClientSide())
 //                CHANNEL.sendTo(new SCNetworking(catCount - 1), (EntityPlayerMP) owner);
             this.setOwnerName("");
         }
@@ -1015,7 +1015,7 @@ public class SimplyCatEntity extends TamableAnimal {
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob parFather) {
         SynchedEntityData father = parFather.getEntityData();
         SynchedEntityData mother = this.getEntityData();
-        SimplyCatEntity child = SimplyCats.CAT.get().create(this.level);
+        SimplyCatEntity child = SimplyCats.CAT.get().create(this.level());
 
         ImmutableList<EntityDataAccessor<String>> parameters = ImmutableList.of(
                 FUR_LENGTH,
@@ -1076,7 +1076,7 @@ public class SimplyCatEntity extends TamableAnimal {
         child.setGenotype(EYE_COLOR, eye);
 
         if (this.isTame() && this.getOwnerUUID() != null) { // checks if mother is tamed & her owner's UUID exists
-            Player owner = this.level.getPlayerByUUID(this.getOwnerUUID()); // grabs owner by UUID
+            Player owner = this.level().getPlayerByUUID(this.getOwnerUUID()); // grabs owner by UUID
             if (owner != null && child.canBeTamed(owner)) { // checks if owner is not null (is online), and is able to tame the kitten OR if the tame limit is disabled
                 child.setTamed(this.isTame(), owner); // sets tamed by owner
                 if (this.getHomePos().isPresent()) // checks mother's home point
@@ -1091,7 +1091,7 @@ public class SimplyCatEntity extends TamableAnimal {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         Item item = stack.getItem();
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             if (this.isTame() && this.isOwnedBy(player))
                 return InteractionResult.SUCCESS;
             else if (item == Items.BONE || (item == SCItems.TREAT_BAG.get() && !this.isTame()))

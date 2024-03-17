@@ -25,7 +25,7 @@ public class CatFollowParentGoal extends Goal {
             SimplyCatEntity parent = this.childAnimal.getFollowParent();
 
             if (parent == null) {
-                List<SimplyCatEntity> list = this.childAnimal.level.getEntitiesOfClass(SimplyCatEntity.class, this.childAnimal.getBoundingBox().inflate(8.0D, 4.0D, 8.0D));
+                List<SimplyCatEntity> list = this.childAnimal.level().getEntitiesOfClass(SimplyCatEntity.class, this.childAnimal.getBoundingBox().inflate(8.0D, 4.0D, 8.0D));
 
                 for (SimplyCatEntity catEntity : list) {
                     if (catEntity.getAge() >= 0) {

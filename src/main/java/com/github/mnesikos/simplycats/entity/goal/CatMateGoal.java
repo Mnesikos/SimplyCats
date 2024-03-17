@@ -23,7 +23,7 @@ public class CatMateGoal extends Goal {
 
     public CatMateGoal(SimplyCatEntity entityCat, double speed) {
         this.cat = entityCat;
-        this.level = entityCat.level;
+        this.level = entityCat.level();
         this.moveSpeed = speed;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }

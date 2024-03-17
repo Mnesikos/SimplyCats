@@ -22,7 +22,7 @@ public class CatBirthGoal extends Goal {
 
     public CatBirthGoal(SimplyCatEntity catEntity) {
         this.mother = catEntity;
-        this.level = catEntity.level;
+        this.level = catEntity.level();
     }
 
     @Override

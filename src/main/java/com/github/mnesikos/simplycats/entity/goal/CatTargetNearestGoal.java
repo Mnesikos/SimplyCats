@@ -18,7 +18,7 @@ public class CatTargetNearestGoal<T extends LivingEntity> extends NearestAttacka
 
     @Override
     public boolean canUse() {
-        if (cat.level.getDifficulty() == Difficulty.PEACEFUL || !SCConfig.attack_ai.get())
+        if (cat.level().getDifficulty() == Difficulty.PEACEFUL || !SCConfig.attack_ai.get())
             return false;
 
         return super.canUse() && target != null && !target.getClass().equals(cat.getClass());

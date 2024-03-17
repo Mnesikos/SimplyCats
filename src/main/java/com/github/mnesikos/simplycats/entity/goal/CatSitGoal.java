@@ -19,7 +19,7 @@ public class CatSitGoal extends SitWhenOrderedToGoal {
             return false;
         else if (this.tameable.isInWater())
             return false;
-        else if (!this.tameable.isOnGround())
+        else if (!this.tameable.onGround())
             return false;
         else {
             LivingEntity owner = this.tameable.getOwner();

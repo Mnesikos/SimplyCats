@@ -12,12 +12,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Matrix4f;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
+import org.joml.Matrix4f;
 
 import java.util.Map;
 
@@ -90,9 +90,9 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
             Font fontRenderer = this.getFont();
             float centeredPos = (float) (-fontRenderer.width(info) / 2);
 
-            fontRenderer.drawInBatch(info, centeredPos, 0, 553648127, false, matrix4f, renderTypeBuffer, catNotSneaking, j, p_225629_5_);
+            fontRenderer.drawInBatch(info, centeredPos, 0, 553648127, false, matrix4f, renderTypeBuffer, catNotSneaking ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, j, p_225629_5_);
             if (catNotSneaking)
-                fontRenderer.drawInBatch(info, centeredPos, 0, -1, false, matrix4f, renderTypeBuffer, false, 0, p_225629_5_);
+                fontRenderer.drawInBatch(info, centeredPos, 0, -1, false, matrix4f, renderTypeBuffer, Font.DisplayMode.NORMAL, 0, p_225629_5_);
 
             matrixStack.popPose();
         }

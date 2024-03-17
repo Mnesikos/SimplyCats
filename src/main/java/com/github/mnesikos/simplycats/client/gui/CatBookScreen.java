@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.GameNarrator;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -15,6 +16,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -30,6 +32,7 @@ public class CatBookScreen extends Screen {
     private static final int bookImageHeight = 182;
     private static final int bookImageWidth = 281;
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(SimplyCats.MOD_ID, "textures/gui/cat_book.png");
+    private static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation("textures/gui/icons.png");
 
     private Level world;
     private int currPage;
@@ -57,8 +60,6 @@ public class CatBookScreen extends Screen {
 
     @Override
     protected void init() {
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-
         int centerX = (width - bookImageWidth) / 2;
         this.buttonNextPage = this.addRenderableWidget(new NextPageButton(centerX + 236, 157, true, (button) -> {
             this.pageForward();
@@ -90,44 +91,39 @@ public class CatBookScreen extends Screen {
     }
 
     @Override
-    public void removed() {
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-    }
-
-    @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         int leftX = (width - bookImageWidth) / 2;
         int leftCenterX = leftX + (bookImageWidth / 4);
 
         RenderSystem.setShaderTexture(0, BG_TEXTURE);
-        blit(matrixStack, leftX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
+        guiGraphics.blit(BG_TEXTURE, leftX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
 
         if (bookPages.get(this.currPage) != null || !bookPages.getCompound(this.currPage).isEmpty() || cat != null) {
-            InventoryScreen.renderEntityInInventory(leftX + 40, 74, 50, (leftX + 51) - mouseX, 50 - mouseY, cat);
+            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftX + 40, 74, 50, (leftX + 51) - mouseX, 50 - mouseY, cat);
 
             int nameWidth = this.font.width(cat.getName());
-            this.font.draw(matrixStack, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
+            guiGraphics.drawString(font, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
 
             Component sex = Component.literal(Component.translatable(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
                     + " "
                     + Genetics.Sex.getPrettyName(bookPages.getCompound(this.currPage).getString("Phaeomelanin")).getString());
-            this.font.draw(matrixStack, sex, leftX + 66, 14 * 2, 0);
+            guiGraphics.drawString(font, sex, leftX + 66, 14 * 2, 0);
 
-            this.renderCatHealth(matrixStack, leftX + 66, 14 * 3);
+            this.renderCatHealth(guiGraphics, leftX + 66, 14 * 3);
 
-            //this.font.draw(matrixStack, "Purrsonality", leftX + 66, 14*4, 0); //todo
+            //guiGraphics.drawString(font, "Purrsonality", leftX + 66, 14*4, 0); //todo
 
             String ownerName;
             if (cat.isTame()) {
                 ownerName = cat.getOwnerName().getString();
-                this.font.draw(matrixStack, Component.translatable("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0);
+                guiGraphics.drawString(font, Component.translatable("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0);
             } else
-                this.font.draw(matrixStack, Component.translatable("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
+                guiGraphics.drawString(font, Component.translatable("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
 
-            this.font.drawWordWrap(Genetics.getPhenotypeDescription(bookPages.getCompound(this.currPage), false), leftX + 16, 14 * 7, 120, 0);
+            guiGraphics.drawWordWrap(font, Genetics.getPhenotypeDescription(bookPages.getCompound(this.currPage), false), leftX + 16, 14 * 7, 120, 0);
 
             /*this.font.drawWordWrap("Vocal Level Bar Here",
                     leftX + 16, 14*9, 120, 0);
@@ -151,20 +147,20 @@ public class CatBookScreen extends Screen {
             String white = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("White");
             String bobtail = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Bobtail");
 
-            this.font.draw(matrixStack, Component.translatable("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.white", white), leftX + 152, 134 + 5, 0);
-            this.font.draw(matrixStack, Component.translatable("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.white", white), leftX + 152, 134 + 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0);
 
             //this.font.drawWordWrap("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 
@@ -173,13 +169,13 @@ public class CatBookScreen extends Screen {
 //        } else
 //            this.font.drawWordWrap(new StringTextComponent("Error page, this should not happen, please report to github issue tracker, thanks."), leftX + 16, 60, 120, 0); //todo remove when done
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    private void renderCatHealth(PoseStack matrixStack, int x, int y) {
+    private void renderCatHealth(GuiGraphics guiGraphics, int x, int y) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
+//        RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
         this.catHealth = Mth.ceil(cat.getHealth());
 
         float maxHealth = (float) cat.getAttributeValue(Attributes.MAX_HEALTH);
@@ -194,13 +190,13 @@ public class CatBookScreen extends Screen {
             int guiX = x + wholeHearts % 10 * 8;
             int guiY = y - j4 * i2;
 
-            this.blit(matrixStack, guiX, guiY, 16 + textureY * 9, 9 * textureY, 9, 9);
+            guiGraphics.blit(GUI_ICONS_LOCATION, guiX, guiY, 16 + textureY * 9, 9 * textureY, 9, 9);
 
             if (wholeHearts * 2 + 1 < catHealth)
-                this.blit(matrixStack, guiX, guiY, textureX + 36, 9 * textureY, 9, 9);
+                guiGraphics.blit(GUI_ICONS_LOCATION, guiX, guiY, textureX + 36, 9 * textureY, 9, 9);
 
             if (wholeHearts * 2 + 1 == catHealth)
-                this.blit(matrixStack, guiX, guiY, textureX + 45, 9 * textureY, 9, 9);
+                guiGraphics.blit(GUI_ICONS_LOCATION, guiX, guiY, textureX + 45, 9 * textureY, 9, 9);
         }
     }
 
@@ -209,15 +205,15 @@ public class CatBookScreen extends Screen {
         private final boolean isNextButton;
 
         NextPageButton(int x, int y, boolean nextButton, OnPress pressable) {
-            super(x, y, 20, 12, Component.empty(), pressable);
+            super(x, y, 20, 12, CommonComponents.EMPTY, pressable, DEFAULT_NARRATION);
             isNextButton = nextButton;
         }
 
         @Override
-        public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (visible) {
-                boolean isButtonPressed = (mouseX >= x && mouseY >= y
-                        && mouseX < x + width && mouseY < y + height);
+                boolean isButtonPressed = (mouseX >= getX() && mouseY >= getY()
+                        && mouseX < getX() + width && mouseY < getY() + height);
 
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -231,7 +227,7 @@ public class CatBookScreen extends Screen {
                 if (!isNextButton)
                     textureY += 13;
 
-                blit(matrixStack, x, y, textureX, textureY, width, height, 288, 256);
+                guiGraphics.blit(BG_TEXTURE, getX(), getY(), textureX, textureY, width, height, 288, 256);
             }
         }
 

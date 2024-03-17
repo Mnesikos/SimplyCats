@@ -13,6 +13,6 @@ public class SCSounds {
     public static RegistryObject<SoundEvent> SHAKE_TREATS = registerSound("shake_treats");
 
     private static RegistryObject<SoundEvent> registerSound(String name) {
-        return REGISTRAR.register(name, () -> new SoundEvent(new ResourceLocation(SimplyCats.MOD_ID, name)));
+        return REGISTRAR.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyCats.MOD_ID, name)));
     }
 }

@@ -68,7 +68,7 @@ public class SCEvents {
         if (event.getTarget() != null && event.getEntityLiving() != null) {
             LivingEntity attackingEntity = event.getEntityLiving();
             if (attackingEntity instanceof WitchEntity)
-                if (!attackingEntity.level.getEntitiesOfClass(SimplyCatEntity.class, attackingEntity.getBoundingBox().inflate(16.0F)).isEmpty())
+                if (!attackingEntity.level().getEntitiesOfClass(SimplyCatEntity.class, attackingEntity.getBoundingBox().inflate(16.0F)).isEmpty())
                     ((WitchEntity) attackingEntity).setTarget(null);
         }
     }*/
