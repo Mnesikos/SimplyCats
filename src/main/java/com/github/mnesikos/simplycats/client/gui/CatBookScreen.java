@@ -105,23 +105,23 @@ public class CatBookScreen extends Screen {
             InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftX + 40, 74, 50, (leftX + 51) - mouseX, 50 - mouseY, cat);
 
             int nameWidth = this.font.width(cat.getName());
-            guiGraphics.drawString(font, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0);
+            guiGraphics.drawString(font, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0, false);
 
             Component sex = Component.literal(Component.translatable(cat.isFixed() ? "cat.fixed.name" : "cat.intact.name").getString()
                     + " "
                     + Genetics.Sex.getPrettyName(bookPages.getCompound(this.currPage).getString("Phaeomelanin")).getString());
-            guiGraphics.drawString(font, sex, leftX + 66, 14 * 2, 0);
+            guiGraphics.drawString(font, sex, leftX + 66, 14 * 2, 0, false);
 
             this.renderCatHealth(guiGraphics, leftX + 66, 14 * 3);
 
-            //guiGraphics.drawString(font, "Purrsonality", leftX + 66, 14*4, 0); //todo
+            //guiGraphics.drawString(font, "Purrsonality", leftX + 66, 14*4, 0, false); //todo
 
             String ownerName;
             if (cat.isTame()) {
                 ownerName = cat.getOwnerName().getString();
-                guiGraphics.drawString(font, Component.translatable("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0);
+                guiGraphics.drawString(font, Component.translatable("tooltip.pet_carrier.owner", ownerName), leftX + 16, 14 * 6, 0, false);
             } else
-                guiGraphics.drawString(font, Component.translatable("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0);
+                guiGraphics.drawString(font, Component.translatable("entity.simplycats.cat.untamed"), leftX + 16, 14 * 6, 0, false);
 
             guiGraphics.drawWordWrap(font, Genetics.getPhenotypeDescription(bookPages.getCompound(this.currPage), false), leftX + 16, 14 * 7, 120, 0);
 
@@ -147,20 +147,20 @@ public class CatBookScreen extends Screen {
             String white = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("White");
             String bobtail = ChatFormatting.GRAY + bookPages.getCompound(this.currPage).getString("Bobtail");
 
-            guiGraphics.drawString(font, Component.translatable("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.white", white), leftX + 152, 134 + 5, 0);
-            guiGraphics.drawString(font, Component.translatable("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.eye_color", eyeColor), leftX + 152, 24 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.fur_length", furLength), leftX + 152, 34 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.eumelanin", eumelanin), leftX + 152, 44 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.phaeomelanin", phaeomelanin), leftX + 152, 54 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.dilute", dilution), leftX + 152, 64 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.dilute_modifier", diluteMod), leftX + 152, 74 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.agouti", agouti), leftX + 152, 84 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.tabby", tabby), leftX + 152, 94 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.spotted", spotted), leftX + 152, 104 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.ticked", ticked), leftX + 152, 114 - 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.inhibitor", inhibitor), leftX + 152, 119, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.colorpoint", colorpoint), leftX + 152, 124 + 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.white", white), leftX + 152, 134 + 5, 0, false);
+            guiGraphics.drawString(font, Component.translatable("book.genetics.bobtail", bobtail), leftX + 152, 144 + 5, 0, false);
 
             //this.font.drawWordWrap("Heritage Data", leftX + 152, 14*11-5, 120, 0); //todo
 
@@ -175,7 +175,6 @@ public class CatBookScreen extends Screen {
     private void renderCatHealth(GuiGraphics guiGraphics, int x, int y) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-//        RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
         this.catHealth = Mth.ceil(cat.getHealth());
 
         float maxHealth = (float) cat.getAttributeValue(Attributes.MAX_HEALTH);
