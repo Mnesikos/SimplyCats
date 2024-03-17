@@ -9,6 +9,7 @@ import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
@@ -30,6 +31,7 @@ public class SimplyCats {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, SimplyCats.MOD_ID);
     public static final RegistryObject<CreativeModeTab> ITEM_GROUP = CREATIVE_MODE_TABS.register(MOD_ID + ".tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+            .title(Component.translatable("itemGroup." + MOD_ID + ".tab"))
             .icon(() -> SCItems.PET_CARRIER.get().getDefaultInstance())
             .displayItems((parameters, output) -> SCItems.REGISTRAR.getEntries().forEach(item -> {
                 ItemStack catCarrier = new ItemStack(SCItems.PET_CARRIER.get(), 1, new CompoundTag());
