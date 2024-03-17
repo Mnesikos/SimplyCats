@@ -1,23 +1,21 @@
 package com.github.mnesikos.simplycats.block;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class ShelterBookBlock extends Block {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -25,7 +23,7 @@ public class ShelterBookBlock extends Block {
     protected static final VoxelShape EAST_WEST = box(3.0F, 0.0F, 1.0F, 13.0F, 2.0F, 15.0F);
 
     public ShelterBookBlock() {
-        super(Properties.of(Material.WOOD));
+        super(Properties.of().noOcclusion().noCollission().strength(1.0F).sound(SoundType.WOOD));
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
 

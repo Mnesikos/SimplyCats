@@ -1,20 +1,19 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,7 +25,7 @@ public class CertificateItem extends Item {
     private final boolean adoption;
 
     public CertificateItem(boolean adoption) {
-        super(new Item.Properties().tab(SimplyCats.ITEM_GROUP));
+        super(new Item.Properties());
         this.adoption = adoption;
     }
 
@@ -44,8 +43,8 @@ public class CertificateItem extends Item {
                     tameable.setOrderedToSit(true);
                     tameable.setHealth(tameable.getMaxHealth());
                     player.displayClientMessage(Component.translatable("chat.info.adopt_usage", tameable.getName()), true);
-                    if (player.level.isClientSide)
-                        this.playTameEffect(true, tameable.level, tameable);
+                    if (player.level().isClientSide)
+                        this.playTameEffect(true, tameable.level(), tameable);
 
                     if (!player.isCreative())
                         stack.shrink(1);
@@ -66,7 +65,7 @@ public class CertificateItem extends Item {
                     tameable.getNavigation().stop();
                     tameable.setOwnerUUID(null);
                     player.displayClientMessage(Component.translatable("chat.info.release_usage", tameable.getName()), true);
-                    this.playTameEffect(false, tameable.level, tameable);
+                    this.playTameEffect(false, tameable.level(), tameable);
 
                     if (!player.isCreative())
                         stack.shrink(1);

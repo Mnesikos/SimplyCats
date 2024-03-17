@@ -1,18 +1,17 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +21,7 @@ import java.util.List;
 
 public class SterilizationPotionItem extends Item {
     public SterilizationPotionItem() {
-        super(new Item.Properties().tab(SimplyCats.ITEM_GROUP));
+        super(new Item.Properties());
     }
 
     @Override
@@ -35,7 +34,7 @@ public class SterilizationPotionItem extends Item {
                     double d0 = cat.getRandom().nextGaussian() * 0.02D;
                     double d1 = cat.getRandom().nextGaussian() * 0.02D;
                     double d2 = cat.getRandom().nextGaussian() * 0.02D;
-                    cat.level.addParticle(ParticleTypes.HAPPY_VILLAGER, cat.getRandomX(1.0D), cat.getRandomY() + 0.5D, cat.getRandomZ(1.0D), d0, d1, d2);
+                    cat.level().addParticle(ParticleTypes.HAPPY_VILLAGER, cat.getRandomX(1.0D), cat.getRandomY() + 0.5D, cat.getRandomZ(1.0D), d0, d1, d2);
                 }
                 player.displayClientMessage(Component.translatable(cat.getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", cat.getName()), true);
 

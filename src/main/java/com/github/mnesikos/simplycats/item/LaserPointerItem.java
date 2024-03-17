@@ -1,22 +1,21 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,11 +23,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * @author SoggyMustache, ported to 1.16.5 by Mnesikos
+ * @author SoggyMustache, ported to 1.16.5+ by Mnesikos
  */
 public class LaserPointerItem extends Item {
     public LaserPointerItem() {
-        super(new Item.Properties().tab(SimplyCats.ITEM_GROUP).stacksTo(1));
+        super(new Item.Properties().stacksTo(1));
     }
 
     @Override

@@ -49,7 +49,7 @@ public class SCBlocks {
 
     private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block) {
         RegistryObject<T> registryObject = REGISTRAR.register(name, block);
-        SCItems.REGISTRAR.register(name, () -> new BlockItem(registryObject.get(), new Item.Properties().tab(SimplyCats.ITEM_GROUP)));
+        SCItems.REGISTRAR.register(name, () -> new BlockItem(registryObject.get(), new Item.Properties()));
         return registryObject;
     }
 }

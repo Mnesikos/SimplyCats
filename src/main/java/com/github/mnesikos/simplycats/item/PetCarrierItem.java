@@ -6,7 +6,6 @@ import com.github.mnesikos.simplycats.entity.core.Genetics;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,7 +18,6 @@ import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -33,7 +31,7 @@ import java.util.List;
 
 public class PetCarrierItem extends Item {
     public PetCarrierItem() {
-        super(new Item.Properties().tab(SimplyCats.ITEM_GROUP).stacksTo(1));
+        super(new Item.Properties().stacksTo(1));
     }
 
     @Override
@@ -45,7 +43,7 @@ public class PetCarrierItem extends Item {
                     return InteractionResult.PASS;
                 } else {
                     target.revive();
-                    if (player.level.isClientSide) return InteractionResult.SUCCESS;
+                    if (player.level().isClientSide) return InteractionResult.SUCCESS;
 
                     CompoundTag tags = new CompoundTag();
                     target.save(tags);
@@ -163,16 +161,6 @@ public class PetCarrierItem extends Item {
         else
             unlocalizedName += "_full";
         return Component.translatable(unlocalizedName);
-    }
-
-    @Override
-    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> itemList) {
-        if (tab == this.getItemCategory()) {
-            ItemStack cat = new ItemStack(SCItems.PET_CARRIER.get(), 1, new CompoundTag());
-            cat.setDamageValue(3);
-            itemList.add(cat);
-            itemList.add(new ItemStack(SCItems.PET_CARRIER.get(), 1));
-        }
     }
 
     @OnlyIn(Dist.CLIENT)

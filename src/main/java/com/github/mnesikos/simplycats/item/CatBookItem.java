@@ -1,6 +1,5 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.client.gui.CatBookScreen;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import net.minecraft.client.Minecraft;
@@ -26,7 +25,7 @@ import java.util.List;
 
 public class CatBookItem extends Item {
     public CatBookItem() {
-        super(new Item.Properties().tab(SimplyCats.ITEM_GROUP).stacksTo(1));
+        super(new Item.Properties().stacksTo(1));
     }
 
     public void addBookmarkedPage(int id) {

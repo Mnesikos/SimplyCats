@@ -1,18 +1,17 @@
 package com.github.mnesikos.simplycats.item;
 
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.event.SCSounds;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
 
 public class TreatBagItem extends Item {
     public TreatBagItem() {
-        super(new Item.Properties().tab(SimplyCats.ITEM_GROUP));
+        super(new Item.Properties());
     }
 
     @Override
