@@ -76,9 +76,29 @@ public class LayeredTexture extends AbstractTexture {
         for (int i = 0; i < image.getHeight(); ++i) {
             for (int j = 0; j < image.getWidth(); ++j) {
                 int color = image.getPixelRGBA(j, i);
-                blendPixel(base, j, i, NativeImage.combine(NativeImage.getA(color), NativeImage.getB(color), NativeImage.getG(color), NativeImage.getR(color)));
+                blendPixel(base, j, i, combine(getA(color), getB(color), getG(color), getR(color)));
             }
         }
+    }
+
+    public static int getA(int color) {
+        return color >> 24 & 255;
+    }
+
+    public static int getR(int color) {
+        return color >> 0 & 255;
+    }
+
+    public static int getG(int color) {
+        return color >> 8 & 255;
+    }
+
+    public static int getB(int color) {
+        return color >> 16 & 255;
+    }
+
+    public static int combine(int a, int b, int g, int r) {
+        return (a & 255) << 24 | (b & 255) << 16 | (g & 255) << 8 | (r & 255) << 0;
     }
 
     private void loadImage(NativeImage image) {
@@ -88,14 +108,14 @@ public class LayeredTexture extends AbstractTexture {
 
     public void blendPixel(NativeImage image, int x, int y, int color) {
         int baseColor = image.getPixelRGBA(x, y);
-        float a = (float) image.getA(color) / 255.0F;
-        float blue = (float) image.getB(color);
-        float green = (float) image.getG(color);
-        float red = (float) image.getR(color);
-        float baseAlpha = (float) image.getA(baseColor) / 255.0F;
-        float baseBlue = (float) image.getB(baseColor);
-        float baseGreen = (float) image.getG(baseColor);
-        float baseRed = (float) image.getR(baseColor);
+        float a = (float) getA(color) / 255.0F;
+        float blue = (float) getB(color);
+        float green = (float) getG(color);
+        float red = (float) getR(color);
+        float baseAlpha = (float) getA(baseColor) / 255.0F;
+        float baseBlue = (float) getB(baseColor);
+        float baseGreen = (float) getG(baseColor);
+        float baseRed = (float) getR(baseColor);
         float alph = a * a + baseAlpha * (1 - a);
         int finalAlpha = (int) (alph * 255.0F);
         int finalBlue = (int) (blue * a + baseBlue * (1 - a));
@@ -117,6 +137,6 @@ public class LayeredTexture extends AbstractTexture {
             finalRed = 255;
         }
 
-        image.setPixelRGBA(x, y, image.combine(finalAlpha, finalBlue, finalGreen, finalRed));
+        image.setPixelRGBA(x, y, combine(finalAlpha, finalBlue, finalGreen, finalRed));
     }
 }
