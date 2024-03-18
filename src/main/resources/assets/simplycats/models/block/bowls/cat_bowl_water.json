@@ -1,0 +1,16 @@
+{
+  "parent": "simplycats:block/bowls/cat_bowl",
+  "textures": {
+    "full": "block/water_still"
+  },
+  "elements": [
+    {
+      "name": "bowlFull",
+      "from": [6.5, 0.7, 6.5],
+      "to": [9.5, 1.7, 9.5],
+      "faces": {
+        "up": {"uv": [0, 0, 3, 3], "texture": "#full", "tintindex": 0}
+      }
+    }
+  ]
+}

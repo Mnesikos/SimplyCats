@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "simplycatsgroup",
+  "pattern": [
+    "C C",
+    " C "
+  ],
+  "key": {
+    "C": [
+      { "item": "minecraft:blue_terracotta" }
+    ]
+  },
+  "result": {
+    "item": "simplycats:blue_cat_bowl"
+  }
+}
