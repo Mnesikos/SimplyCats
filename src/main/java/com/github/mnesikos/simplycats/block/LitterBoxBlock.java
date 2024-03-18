@@ -48,17 +48,17 @@ public class LitterBoxBlock extends Block {
         ItemStack itemStack = player.getItemInHand(hand);
         int level = state.getValue(LEVEL);
 
-        if (level == 0) {
+        if (level == 1) {
             if (itemStack.getItem() != Blocks.SAND.asItem())
                 return InteractionResult.PASS;
 
-            setLevel(world, pos, state, 1);
+            setLevel(world, pos, state, 2);
             if (!player.isCreative())
                 itemStack.shrink(1);
 
-        } else if (level == 1) {
+        } else if (level == 2) {
             if (itemStack.getItem() == Items.BONE)
-                setLevel(world, pos, state, 2);
+                setLevel(world, pos, state, 3);
             else {
                 ItemStack returnSand = new ItemStack(Blocks.SAND);
                 if (!player.isCreative()) {
@@ -68,14 +68,14 @@ public class LitterBoxBlock extends Block {
                         player.drop(returnSand, false);
                 }
 
-                setLevel(world, pos, state, 0);
+                setLevel(world, pos, state, 1);
             }
 
         } else {
             if (itemStack.getItem() != Blocks.SAND.asItem())
                 return InteractionResult.PASS;
 
-            setLevel(world, pos, state, 1);
+            setLevel(world, pos, state, 2);
             if (!player.isCreative())
                 itemStack.shrink(1);
         }
