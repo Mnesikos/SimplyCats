@@ -1,8 +1,7 @@
 {
   "parent": "simplycats:block/bowls/cat_bowl",
   "textures": {
-    "1": "block/white_terracotta",
-    "particle": "block/white_terracotta"
+    "1": "block/white_terracotta"
   }
 }
 
