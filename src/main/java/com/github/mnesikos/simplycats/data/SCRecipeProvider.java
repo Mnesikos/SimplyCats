@@ -153,6 +153,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .pattern("C C")
                 .pattern(" C ")
                 .define('C', terracotta)
+                .group("cat_bowl")
                 .unlockedBy(getHasName(terracotta), has(terracotta)).save(consumer);
     }
 
@@ -162,6 +163,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .pattern("C C")
                 .pattern("CCC")
                 .define('C', terracotta)
+                .group("litter_box")
                 .unlockedBy(getHasName(terracotta), has(terracotta)).save(consumer);
     }
 
@@ -173,6 +175,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .define('P', planks)
                 .define('S', Items.STRING)
                 .define('T', Items.STICK)
+                .group("scratching_post")
                 .unlockedBy(getHasName(planks), has(planks)).save(consumer);
     }
 
@@ -182,6 +185,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .pattern("T T")
                 .define('P', planks)
                 .define('T', Items.STICK)
+                .group("window_perch")
                 .unlockedBy(getHasName(planks), has(planks)).save(consumer);
     }
 
@@ -190,12 +194,14 @@ public class SCRecipeProvider extends RecipeProvider {
                 .pattern("C C")
                 .pattern("CCC")
                 .define('C', carpet)
+                .group("cat_tree_bed")
                 .unlockedBy(getHasName(carpet), has(carpet)).save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, box, 4)
                 .pattern("CCC")
                 .pattern("C C")
                 .pattern("CCC")
                 .define('C', carpet)
+                .group("cat_tree_box")
                 .unlockedBy(getHasName(carpet), has(carpet)).save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, post, 4)
                 .pattern(" C ")
@@ -204,6 +210,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .define('C', carpet)
                 .define('S', Items.STRING)
                 .define('W', Items.STICK)
+                .group("cat_tree_post")
                 .unlockedBy(getHasName(carpet), has(carpet)).save(consumer);
     }
 }
