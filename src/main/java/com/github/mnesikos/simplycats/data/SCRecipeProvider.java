@@ -25,7 +25,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .requires(SCItems.CATNIP.get())
                 .unlockedBy("has_catnip", has(SCItems.CATNIP.get())).unlockedBy("has_book", has(Items.BOOK)).save(consumer);
         oneToOneConversionRecipe(consumer, SCItems.CAT_BOOK.get(), SCItems.CAT_BOOK.get(), "");
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SCBlocks.SHELTER_BOOK.get())
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, SCBlocks.SHELTER_BOOK.get())
                 .requires(SCItems.CAT_BOOK.get())
                 .requires(SCItems.CATNIP.get())
                 .unlockedBy("has_cat_book", has(SCItems.CAT_BOOK.get())).save(consumer);
@@ -149,7 +149,7 @@ public class SCRecipeProvider extends RecipeProvider {
     }
 
     protected static void catBowl(Consumer<FinishedRecipe> consumer, ItemLike bowl, ItemLike terracotta) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, bowl)
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, bowl)
                 .pattern("C C")
                 .pattern(" C ")
                 .define('C', terracotta)
@@ -157,7 +157,7 @@ public class SCRecipeProvider extends RecipeProvider {
     }
 
     protected static void litterBox(Consumer<FinishedRecipe> consumer, ItemLike litterBox, ItemLike terracotta) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, litterBox)
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, litterBox)
                 .pattern("CCC")
                 .pattern("C C")
                 .pattern("CCC")
@@ -166,7 +166,7 @@ public class SCRecipeProvider extends RecipeProvider {
     }
 
     protected static void scratchingPost(Consumer<FinishedRecipe> consumer, ItemLike scratchingPost, ItemLike planks) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, scratchingPost)
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, scratchingPost)
                 .pattern(" P ")
                 .pattern("STS")
                 .pattern("PPP")
@@ -177,7 +177,7 @@ public class SCRecipeProvider extends RecipeProvider {
     }
 
     protected static void windowPerch(Consumer<FinishedRecipe> consumer, ItemLike windowPerch, ItemLike planks) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, windowPerch, 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, windowPerch, 4)
                 .pattern("PPP")
                 .pattern("T T")
                 .define('P', planks)
@@ -186,18 +186,18 @@ public class SCRecipeProvider extends RecipeProvider {
     }
 
     protected static void catTreePieces(Consumer<FinishedRecipe> consumer, ItemLike bed, ItemLike box, ItemLike post, ItemLike carpet) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, bed, 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, bed, 4)
                 .pattern("C C")
                 .pattern("CCC")
                 .define('C', carpet)
                 .unlockedBy(getHasName(carpet), has(carpet)).save(consumer);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, box, 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, box, 4)
                 .pattern("CCC")
                 .pattern("C C")
                 .pattern("CCC")
                 .define('C', carpet)
                 .unlockedBy(getHasName(carpet), has(carpet)).save(consumer);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, post, 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, post, 4)
                 .pattern(" C ")
                 .pattern("SWS")
                 .pattern(" C ")
