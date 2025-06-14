@@ -1037,16 +1037,8 @@ public class SimplyCatEntity extends TamableAnimal {
         );
 
         for (EntityDataAccessor<String> geneParameter : parameters) {
-            if (geneParameter.equals(INHIBITOR)) { // todo: remove this soon!
-                if (father.get(INHIBITOR) == null || father.get(INHIBITOR).isEmpty())
-                    child.setGenotype(INHIBITOR, inheritGene(mother.get(INHIBITOR), "i-i"));
-                else
-                    child.setGenotype(INHIBITOR, inheritGene(mother.get(INHIBITOR), father.get(INHIBITOR)));
-
-            } else {
-                String inherited = inheritGene(mother.get(geneParameter), father.get(geneParameter));
-                child.setGenotype(geneParameter, inherited);
-            }
+            String inherited = inheritGene(mother.get(geneParameter), father.get(geneParameter));
+            child.setGenotype(geneParameter, inherited);
         }
 
         child.selectWhiteMarkings();
