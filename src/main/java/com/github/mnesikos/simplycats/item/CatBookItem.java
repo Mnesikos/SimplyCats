@@ -86,7 +86,7 @@ public class CatBookItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         CompoundTag bookTag = player.getItemInHand(hand).getTag();
-        if (bookTag == null || bookTag.isEmpty())
+        if (bookTag == null || bookTag.isEmpty() || bookTag.getList("pages", 10).isEmpty())
             player.displayClientMessage(Component.translatable("chat.book.empty_book"), true);
         else if (world.isClientSide)
             this.openCatBook(bookTag, world);
