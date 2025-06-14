@@ -95,8 +95,6 @@ public class SimplyCats {
             bus.addListener(this::registerLayerDefinitions);
             bus.addListener(ColorEvents::registerColorHandlerBlocks);
         }
-
-        MinecraftForge.EVENT_BUS.register(CatDataFixer.class);
     }
 
     public void setup(final FMLCommonSetupEvent event) {

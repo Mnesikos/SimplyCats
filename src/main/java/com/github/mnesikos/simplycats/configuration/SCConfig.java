@@ -9,11 +9,11 @@ import java.util.List;
 public class SCConfig {
     public static final ForgeConfigSpec SPEC;
     private static final String PREFIX = "config." + SimplyCats.MOD_ID;
-    public static ForgeConfigSpec.BooleanValue join_message;
+//    public static ForgeConfigSpec.BooleanValue join_message;
     public static ForgeConfigSpec.BooleanValue attack_ai;
     public static ForgeConfigSpec.BooleanValue replace_tamed_vanilla;
     public static ForgeConfigSpec.BooleanValue stop_vanilla_spawns;
-//    public static ForgeConfigSpec.BooleanValue intact_stray_spawns;
+    public static ForgeConfigSpec.BooleanValue intact_stray_spawns;
     public static ForgeConfigSpec.ConfigValue<Double> wander_area_limit;
     public static ForgeConfigSpec.ConfigValue<Integer> tamed_limit;
     public static ForgeConfigSpec.ConfigValue<Integer> breeding_limit;
@@ -32,6 +32,11 @@ public class SCConfig {
 
     private static void setupConfig(ForgeConfigSpec.Builder builder) {
         builder.push("Options");
+        /*join_message = builder
+                .comment(" Enable or disable the initial join message with a player's cat count.")
+                .translation(PREFIX + ".join_message")
+                .define("join_message", false);*/
+
         replace_tamed_vanilla = builder.worldRestart()
                 .comment(" If you have existing tamed vanilla cats in your world and want to change them to Simply Cats, enable this and restart your minecraft instance.")
                 .translation(PREFIX + ".replace_tamed_vanilla")
@@ -42,15 +47,10 @@ public class SCConfig {
                 .translation(PREFIX + ".stop_vanilla_spawns")
                 .define("stop_vanilla_spawns", true);
 
-        /*intact_stray_spawns = builder
-                .comment(" Disable this if you want stray village cats spawning fixed (enabled for intact cat spawns).")
+        intact_stray_spawns = builder
+                .comment(" Disable this if you want ALL stray village cats to be fixed (enable for 10% intact cat spawns).")
                 .translation(PREFIX + ".intact_stray_spawns")
-                .define("intact_stray_spawns", true); todo*/
-
-        join_message = builder
-                .comment(" Enable or disable the initial join message with a player's cat count.")
-                .translation(PREFIX + ".join_message")
-                .define("join_message", false);
+                .define("intact_stray_spawns", true);
 
         attack_ai = builder
                 .comment(" Disabling this will not allow cats to attack entities in their prey list, essentially a peaceful mode for cats.")
