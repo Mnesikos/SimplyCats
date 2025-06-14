@@ -9,6 +9,7 @@ import com.github.mnesikos.simplycats.data.SCBlockLoot;
 import com.github.mnesikos.simplycats.data.SCRecipeProvider;
 import com.github.mnesikos.simplycats.data.SCTags;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
+import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.event.SCSounds;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
@@ -88,6 +89,7 @@ public class SimplyCats {
         bus.addListener(this::gatherData);
 
         MinecraftForge.EVENT_BUS.addListener(SCWorldGen::setupVillageWorldGen);
+        MinecraftForge.EVENT_BUS.addListener(SCEvents::onLivingChangeTargetEvent);
 
         bus.addListener(this::setupClient);
 

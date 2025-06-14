@@ -7,11 +7,17 @@ import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.npc.SimplyCatSpawner;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Witch;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -64,6 +70,10 @@ public class SCEvents {
                     event.setCanceled(true);
                 }
             }
+
+        } else if (event.getEntity() instanceof Creeper) {
+            Creeper creeper = (Creeper) event.getEntity();
+            creeper.goalSelector.addGoal(3, new AvoidEntityGoal<>(creeper, SimplyCatEntity.class, 6.0F, 1.0D, 1.2D));
         }
     }
 
@@ -75,21 +85,12 @@ public class SCEvents {
         }
     }*/
 
-    /*@SubscribeEvent
-    public void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
-        if (event.getEntity() instanceof CreeperEntity) {
-            CreeperEntity creeper = (CreeperEntity) event.getEntity();
-            creeper.goalSelector.addGoal(3, new AvoidEntityGoal<>(creeper, SimplyCatEntity.class, 6.0F, 1.0D, 1.2D));
+    public static void onLivingChangeTargetEvent(LivingChangeTargetEvent event) {
+        if (event.getEntity() instanceof Witch witch && event.getNewTarget() instanceof Player) {
+            if (!witch.level().getEntitiesOfClass(SimplyCatEntity.class, witch.getBoundingBox().inflate(16.0F)).isEmpty()) {
+                event.setCanceled(true);
+                witch.setTarget(null);
+            }
         }
     }
-
-    @SubscribeEvent
-    public void onLivingSetAttackTargetEvent(LivingSetAttackTargetEvent event) {
-        if (event.getTarget() != null && event.getEntityLiving() != null) {
-            LivingEntity attackingEntity = event.getEntityLiving();
-            if (attackingEntity instanceof WitchEntity)
-                if (!attackingEntity.level().getEntitiesOfClass(SimplyCatEntity.class, attackingEntity.getBoundingBox().inflate(16.0F)).isEmpty())
-                    ((WitchEntity) attackingEntity).setTarget(null);
-        }
-    }*/
 }
