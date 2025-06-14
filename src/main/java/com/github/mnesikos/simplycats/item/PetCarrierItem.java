@@ -37,7 +37,7 @@ public class PetCarrierItem extends Item {
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
         if (target instanceof SimplyCatEntity || target instanceof Wolf || target instanceof Parrot) {
-            if (((TamableAnimal) target).getOwner() == player) {
+            if (((TamableAnimal) target).getOwner() == player || player.hasPermissions(2)) {
                 if (stack.hasTag()) {
                     player.displayClientMessage(Component.translatable("chat.pet_carrier.full"), true);
                     return InteractionResult.PASS;
@@ -50,7 +50,7 @@ public class PetCarrierItem extends Item {
 
                     ResourceLocation key = EntityType.getKey(target.getType());
                     tags.putString("id", key.toString());
-                    if (!(target instanceof SimplyCatEntity))
+                    if (!(target instanceof SimplyCatEntity) && ((TamableAnimal) target).isOwnedBy(player))
                         tags.putString("OwnerName", player.getName().getString());
                     if (target.hasCustomName()) tags.putString("DisplayName", target.getDisplayName().getString());
 
