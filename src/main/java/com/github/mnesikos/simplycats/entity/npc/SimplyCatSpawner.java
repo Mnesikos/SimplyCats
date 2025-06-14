@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.entity.npc;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -78,6 +79,11 @@ public class SimplyCatSpawner implements CustomSpawner {
             cat.finalizeSpawn(level, level.getCurrentDifficultyAt(blockPos), MobSpawnType.NATURAL, null, null);
             level.addFreshEntityWithPassengers(cat);
             if (cat.getRandom().nextFloat() < 0.9F) cat.setFixed((byte) 1);
+            if (cat.getRandom().nextFloat() < 0.1F) {
+                int age = cat.getRandom().nextInt(SCConfig.kitten_mature_timer.get());
+                cat.setAge(-age);
+                cat.setMatureTimer((float) age);
+            }
             cat.setHomePos(blockPos);
             return 1;
         }
