@@ -103,7 +103,7 @@ public class PetCarrierItem extends Item {
                     Entity entity = EntityType.loadEntityRecursive(tags, world, entity1 -> entity1);
                     if (entity != null && entity instanceof TamableAnimal) {
                         entity.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, context.getRotation(), 0);
-                        ((TamableAnimal) entity).setOrderedToSit(true);
+                        if (((TamableAnimal) entity).isTame()) ((TamableAnimal) entity).setOrderedToSit(true);
                         entity.setUUID(tags.getUUID("UUID"));
                         world.addFreshEntity(entity);
 
