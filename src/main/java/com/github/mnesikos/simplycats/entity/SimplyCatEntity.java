@@ -11,6 +11,7 @@ import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +24,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -271,11 +273,6 @@ public class SimplyCatEntity extends TamableAnimal {
 
         if (!this.level().isClientSide && this.getTarget() == null && this.isAngry())
             this.setAngry(false);
-
-        if (this.getHealth() <= 0 && this.isTame() && this.getOwner() == null) {
-            this.deathTime = 0;
-            this.setHealth(1);
-        }
     }
 
     @Override
@@ -291,10 +288,10 @@ public class SimplyCatEntity extends TamableAnimal {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source) || (this.isTame() && this.getOwner() == null)) {
+        if (isInvulnerableTo(source)) return false;
+        if (isTame() && getOwner() == null && !source.getEntity().hasPermissions(2))
             return false;
-
-        } else {
+        else {
             this.setOrderedToSit(false);
 
             return super.hurt(source, amount);
