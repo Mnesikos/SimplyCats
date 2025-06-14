@@ -37,7 +37,7 @@ public class PetCarrierItem extends Item {
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
         if (target instanceof SimplyCatEntity || target instanceof Wolf || target instanceof Parrot) {
-            if (((TamableAnimal) target).getOwner() == player || player.hasPermissions(2)) {
+            if (((TamableAnimal) target).getOwner() == player || !((TamableAnimal) target).isTame() || player.hasPermissions(2)) {
                 if (stack.hasTag()) {
                     player.displayClientMessage(Component.translatable("chat.pet_carrier.full"), true);
                     return InteractionResult.PASS;
@@ -180,7 +180,6 @@ public class PetCarrierItem extends Item {
             else if (item.getDamageValue() != 0) {
                 MutableComponent species = Component.translatable(Util.makeDescriptionId("entity", new ResourceLocation(nbt.getString("id"))));
 
-                Component owner = Component.translatable("tooltip.pet_carrier.owner", nbt.getString("OwnerName"));
                 if (nbt.contains("DisplayName"))
                     tooltip.add(Component.literal("\"" + nbt.getString("DisplayName") + "\"").withStyle(ChatFormatting.AQUA));
                 else
@@ -189,7 +188,8 @@ public class PetCarrierItem extends Item {
                 if (item.getDamageValue() == 1)
                     tooltip.add(Genetics.getPhenotypeDescription(nbt, true).withStyle(ChatFormatting.ITALIC));
 
-                tooltip.add(owner);
+                if (nbt.contains("OwnerName"))
+                    tooltip.add(Component.translatable("tooltip.pet_carrier.owner", nbt.getString("OwnerName")));
             }
         } else {
             MutableComponent empty = Component.translatable("tooltip.pet_carrier.empty");
