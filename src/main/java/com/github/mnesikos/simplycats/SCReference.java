@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -12,7 +14,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.*;
 
 public class SCReference {
-
     private static final Map<UUID, String> CUSTOM_CATS = Maps.newHashMap();
 
     private static final List<Item> EDIBLE = new ArrayList<>();
@@ -66,5 +67,10 @@ public class SCReference {
     static {
         CUSTOM_CATS.put(UUID.fromString("9b1ef261-ebc0-42ad-aacb-621b50fb8269"), "penny");
         CUSTOM_CATS.put(UUID.fromString("966ebb69-a63d-4bb2-ac90-ed39d8c64b80"), "spinny");
+    }
+
+    public static boolean isRatEntity(Entity entity) {
+        String entityType = EntityType.getKey(entity.getType()).toString();
+        return entityType.equals("rats:rat")/* || entityType.equals("zawa:brownrat")*/;
     }
 }

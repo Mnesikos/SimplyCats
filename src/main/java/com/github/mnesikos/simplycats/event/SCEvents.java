@@ -1,47 +1,25 @@
 package com.github.mnesikos.simplycats.event;
 
-import com.github.mnesikos.simplycats.SimplyCats;
-import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
-import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
-import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
-import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import com.github.mnesikos.simplycats.entity.npc.SimplyCatSpawner;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
-@Mod.EventBusSubscriber(modid = SimplyCats.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SCEvents {
+    private static SimplyCatSpawner simplyCatSpawner;
+
     @SubscribeEvent
-    public static void setupCommon(FMLCommonSetupEvent event) {
-        event.enqueueWork(SCVillagers::registerTrades);
+    public static void onServerStart(ServerStartingEvent event) {
+        simplyCatSpawner = new SimplyCatSpawner();
     }
 
     @SubscribeEvent
-    public static void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(SimplyCats.CAT.get(), SimplyCatEntity.createAttributes().build());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(SimplyCats.CAT.get(), SimplyCatRenderer::new);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(SimplyCatModel.LAYER_LOCATION, SimplyCatModel::createBodyLayer);
-    }
-
-    public static boolean isRatEntity(Entity entity) {
-        String entityType = EntityType.getKey(entity.getType()).toString();
-        return entityType.equals("rats:rat")/* || entityType.equals("zawa:brownrat")*/;
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
+        if (simplyCatSpawner != null)
+            simplyCatSpawner.tick(ServerLifecycleHooks.getCurrentServer().overworld(), true, true);
     }
 
     /*@SubscribeEvent

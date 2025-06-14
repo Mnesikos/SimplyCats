@@ -14,6 +14,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -25,6 +26,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.StructureTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,6 +36,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.CatVariant;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -188,13 +191,20 @@ public class SimplyCatEntity extends TamableAnimal {
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag compound) {
         entityData = super.finalizeSpawn(world, difficulty, spawnReason, entityData, compound);
-        this.setPhenotype();
+        setPhenotype();
 
-        if (!this.level().isClientSide)
-            if (this.isTame())
-                this.setOrderedToSit(!this.isOrderedToSit());
-        if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed())
-            this.setTimeCycle("end", random.nextInt(SCConfig.heat_cooldown.get()));
+        if (!level().isClientSide)
+            if (isTame())
+                setOrderedToSit(!isOrderedToSit());
+        if (getSex() == Genetics.Sex.FEMALE && !isFixed())
+            setTimeCycle("end", random.nextInt(SCConfig.heat_cooldown.get()));
+
+        ServerLevel serverLevel = world.getLevel();
+        if (serverLevel.structureManager().getStructureWithPieceAt(blockPosition(), StructureTags.CATS_SPAWN_AS_BLACK).isValid()) {
+//            setVariant(BuiltInRegistries.CAT_VARIANT.getOrThrow(CatVariant.ALL_BLACK));
+            setPersistenceRequired();
+//            if (random.nextFloat() < 0.9F) setFixed((byte) 1);
+        }
 
         return entityData;
     }
@@ -301,7 +311,7 @@ public class SimplyCatEntity extends TamableAnimal {
     @Override
     public boolean doHurtTarget(Entity entity) {
         float damage = (int) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-        if (SCEvents.isRatEntity(entity))
+        if (SCReference.isRatEntity(entity))
             damage *= 3.0F;
         if (this.isCrouching() || this.isSprinting())
             damage *= 2.0F;

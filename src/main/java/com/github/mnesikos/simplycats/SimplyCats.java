@@ -2,6 +2,8 @@ package com.github.mnesikos.simplycats;
 
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.client.color.ColorEvents;
+import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
+import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.data.SCBlockLoot;
 import com.github.mnesikos.simplycats.data.SCRecipeProvider;
@@ -11,6 +13,7 @@ import com.github.mnesikos.simplycats.event.SCSounds;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -19,17 +22,24 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
@@ -66,22 +76,45 @@ public class SimplyCats {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SCConfig.SPEC);
 
         ENTITIES.register(bus);
-        SCItems.REGISTRAR.register(bus);
         SCBlocks.REGISTRAR.register(bus);
+        SCItems.REGISTRAR.register(bus);
         CREATIVE_MODE_TABS.register(bus);
         SCSounds.REGISTRAR.register(bus);
-        SCVillagers.PROFESSIONS.register(bus);
         SCVillagers.POI_TYPES.register(bus);
+        SCVillagers.PROFESSIONS.register(bus);
 
+        bus.addListener(this::setup);
+        bus.addListener(this::registerAttributes);
         bus.addListener(this::gatherData);
 
         MinecraftForge.EVENT_BUS.addListener(SCWorldGen::setupVillageWorldGen);
 
+        bus.addListener(this::setupClient);
+
         if (FMLEnvironment.dist == Dist.CLIENT) {
+            bus.addListener(this::registerLayerDefinitions);
             bus.addListener(ColorEvents::registerColorHandlerBlocks);
         }
 
         MinecraftForge.EVENT_BUS.register(CatDataFixer.class);
+    }
+
+    public void setup(final FMLCommonSetupEvent event) {
+        SpawnPlacements.register(CAT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SimplyCatEntity::checkAnimalSpawnRules);
+        event.enqueueWork(SCVillagers::registerTrades);
+    }
+
+    private void setupClient(final FMLClientSetupEvent event) {
+        EntityRenderers.register(SimplyCats.CAT.get(), SimplyCatRenderer::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void registerLayerDefinitions(final EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(SimplyCatModel.LAYER_LOCATION, SimplyCatModel::createBodyLayer);
+    }
+
+    public void registerAttributes(EntityAttributeCreationEvent event) {
+        event.put(SimplyCats.CAT.get(), SimplyCatEntity.createAttributes().build());
     }
 
     private void gatherData(final GatherDataEvent event) {
