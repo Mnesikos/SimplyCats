@@ -7,15 +7,13 @@ import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.github.mnesikos.simplycats.entity.goal.CatSitOnBlockGoal;
 import com.github.mnesikos.simplycats.entity.goal.*;
-import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,7 +23,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.StructureTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +33,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.CatVariant;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -80,8 +76,8 @@ public class SimplyCatEntity extends TamableAnimal {
     private final String[] whitePawTexturesArray = new String[4];
     private String texturePrefix;
     private final String[] catTexturesArray = new String[13];
-
-    private static final EntityDataAccessor<Optional<BlockPos>> HOME_POSITION = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
+    @Nullable
+    BlockPos homePos;
     public static final EntityDataAccessor<String> OWNER_NAME = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Byte> FIXED = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> IN_HEAT = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.BYTE);
@@ -154,7 +150,6 @@ public class SimplyCatEntity extends TamableAnimal {
         this.entityData.define(WHITE_PAWS_2, "");
         this.entityData.define(WHITE_PAWS_3, "");
 
-        this.entityData.define(HOME_POSITION, Optional.empty());
         this.entityData.define(OWNER_NAME, "");
         this.entityData.define(FIXED, (byte) 0);
         this.entityData.define(IN_HEAT, (byte) 0);
@@ -589,16 +584,13 @@ public class SimplyCatEntity extends TamableAnimal {
         return !furLength.isEmpty() && FurLength.getPhenotype(furLength).equalsIgnoreCase(FurLength.LONG.toString());
     }
 
-    public Optional<BlockPos> getHomePos() {
-        return this.entityData.get(HOME_POSITION);
+    @Nullable
+    public BlockPos getHomePos() {
+        return homePos;
     }
 
     public void setHomePos(BlockPos position) {
-        this.entityData.set(HOME_POSITION, Optional.of(position));
-    }
-
-    public void resetHomePos() {
-        this.entityData.set(HOME_POSITION, Optional.empty());
+        homePos = position;
     }
 
     public Component getOwnerName() {
@@ -786,6 +778,8 @@ public class SimplyCatEntity extends TamableAnimal {
         for (int i = 0; i <= 3; i++)
             compound.putString("WhitePaws_" + i, this.getWhitePawTextures(i));
         compound.putString("OwnerName", this.entityData.get(OWNER_NAME));
+        if (getHomePos() != null)
+            compound.put("HomePos", NbtUtils.writeBlockPos(getHomePos()));
 
         compound.putByte("Fixed", this.getIsFixed());
         if (this.getSex() == Genetics.Sex.FEMALE) {
@@ -828,6 +822,8 @@ public class SimplyCatEntity extends TamableAnimal {
         for (int i = 0; i <= 3; i++)
             this.setWhitePawTextures(i, compound.getString("WhitePaws_" + i));
         this.setOwnerName(compound.getString("OwnerName"));
+        if (compound.contains("HomePos"))
+            setHomePos(NbtUtils.readBlockPos(compound.getCompound("HomePos")));
 
         this.setFixed(compound.getByte("Fixed"));
         if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed()) {
@@ -1086,8 +1082,8 @@ public class SimplyCatEntity extends TamableAnimal {
             Player owner = this.level().getPlayerByUUID(this.getOwnerUUID()); // grabs owner by UUID
             if (owner != null && child.canBeTamed(owner)) { // checks if owner is not null (is online), and is able to tame the kitten OR if the tame limit is disabled
                 child.setTamed(this.isTame(), owner); // sets tamed by owner
-                if (this.getHomePos().isPresent()) // checks mother's home point
-                    child.setHomePos(this.getHomePos().get()); // sets kitten's home point to mother's
+                if (this.getHomePos() != null) // checks mother's home point
+                    child.setHomePos(this.getHomePos()); // sets kitten's home point to mother's
             }
         }
 
@@ -1135,16 +1131,16 @@ public class SimplyCatEntity extends TamableAnimal {
 
             if (item == SCItems.TREAT_BAG.get() && player.distanceToSqr(this) < 9.0D && (!this.isTame() || this.isOwnedBy(player))) {
                 if (player.isDiscrete()) {
-                    if (this.getHomePos().isPresent()) {
-                        this.resetHomePos();
+                    if (this.getHomePos() != null) {
+                        homePos = null;
                         player.displayClientMessage(Component.translatable("chat.info.remove_home", this.getName()), true);
                     } else {
                         this.setHomePos(this.getOnPos());
-                        player.displayClientMessage(Component.translatable("chat.info.set_home", this.getName(), getHomePos().get().getX(), getHomePos().get().getY(), getHomePos().get().getZ()), true);
+                        player.displayClientMessage(Component.translatable("chat.info.set_home", this.getName(), getHomePos().getX(), getHomePos().getY(), getHomePos().getZ()), true);
                     }
                     return InteractionResult.SUCCESS;
-                } else if (this.getHomePos().isPresent())
-                    player.displayClientMessage(Component.literal(getHomePos().get().getX() + ", " + getHomePos().get().getY() + ", " + getHomePos().get().getZ()), true);
+                } else if (this.getHomePos() != null)
+                    player.displayClientMessage(Component.literal(getHomePos().getX() + ", " + getHomePos().getY() + ", " + getHomePos().getZ()), true);
             }
         }
 
