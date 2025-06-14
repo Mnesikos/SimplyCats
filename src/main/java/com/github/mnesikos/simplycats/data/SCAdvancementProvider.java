@@ -10,6 +10,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeAdvancementProvider;
 
@@ -27,7 +28,7 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
         @Override
         public void generate(HolderLookup.Provider registries, Consumer<Advancement> saver, ExistingFileHelper existingFileHelper) {
             Advancement adoption = Advancement.Builder.advancement()
-                    .display(SCItems.PET_CARRIER.get(), Component.translatable("advancements.simplycats.adoption"), Component.translatable("advancements.simplycats.adoption.desc"), null, FrameType.TASK, true, true, false)
+                    .display(SCItems.PET_CARRIER.get(), Component.translatable("advancements.simplycats.adoption"), Component.translatable("advancements.simplycats.adoption.desc"), new ResourceLocation("textures/gui/advancements/backgrounds/husbandry.png"), FrameType.TASK, true, true, false)
                     .addCriterion("adoption", TameAnimalTrigger.TriggerInstance.tamedAnimal(EntityPredicate.Builder.entity().of(SimplyCats.CAT.get()).build()))
                     .save(saver, SimplyCats.MOD_ID + ":adoption");
 
@@ -46,15 +47,13 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
                     .addCriterion("sterilize_potion", InventoryChangeTrigger.TriggerInstance.hasItems(SCItems.STERILIZE_POTION.get()))
                     .save(saver, SimplyCats.MOD_ID + ":speuter");
 
-            CompoundTag intact = new CompoundTag();
-            intact.putByte("Fixed", (byte) 0);
             String phaeomelanin = "Phaeomelanin";
             Advancement spay = addCatTagVariants(Advancement.Builder.advancement(), phaeomelanin,
                     List.of(
-                            createTagWithGenes(intact.copy(), Map.of(phaeomelanin, "Xo-Xo")),
-                            createTagWithGenes(intact.copy(), Map.of(phaeomelanin, "Xo-XO")),
-                            createTagWithGenes(intact.copy(), Map.of(phaeomelanin, "XO-Xo")),
-                            createTagWithGenes(intact.copy(), Map.of(phaeomelanin, "XO-XO"))
+                            createTagWithGenes(Map.of(phaeomelanin, "Xo-Xo")),
+                            createTagWithGenes(Map.of(phaeomelanin, "Xo-XO")),
+                            createTagWithGenes(Map.of(phaeomelanin, "XO-Xo")),
+                            createTagWithGenes(Map.of(phaeomelanin, "XO-XO"))
                     )).parent(speuter)
                     .display(SCItems.STERILIZE_POTION.get(), Component.translatable("advancements.simplycats.spay"), Component.translatable("advancements.simplycats.spay.desc"), null, FrameType.GOAL, true, true, false)
                     .requirements(RequirementsStrategy.OR)
@@ -62,8 +61,8 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
 
             Advancement neuter = addCatTagVariants(Advancement.Builder.advancement(), phaeomelanin,
                     List.of(
-                            createTagWithGenes(intact.copy(), Map.of(phaeomelanin, "Xo-Y")),
-                            createTagWithGenes(intact.copy(), Map.of(phaeomelanin, "XO-Y"))
+                            createTagWithGenes(Map.of(phaeomelanin, "Xo-Y")),
+                            createTagWithGenes(Map.of(phaeomelanin, "XO-Y"))
                     )).parent(speuter)
                     .display(SCItems.STERILIZE_POTION.get(), Component.translatable("advancements.simplycats.neuter"), Component.translatable("advancements.simplycats.neuter.desc"), null, FrameType.GOAL, true, true, false)
                     .requirements(RequirementsStrategy.OR)
@@ -82,7 +81,8 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
             return builder;
         }
 
-        private static CompoundTag createTagWithGenes(CompoundTag tag, Map<String, String> genesMap) {
+        private static CompoundTag createTagWithGenes(Map<String, String> genesMap) {
+            CompoundTag tag = new CompoundTag();
             for (var entry : genesMap.entrySet()) {
                 tag.putString(entry.getKey(), entry.getValue());
             }

@@ -1086,6 +1086,27 @@ public class SimplyCatEntity extends TamableAnimal {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         Item item = stack.getItem();
+        if (item == SCItems.STERILIZE_POTION.get() && (!isTame() || (isTame() && isOwnedBy(player))) && player.isCrouching() && !isFixed()) {
+            setFixed((byte) 1);
+            for (int i = 0; i < 7; ++i) {
+                double d0 = getRandom().nextGaussian() * 0.02D;
+                double d1 = getRandom().nextGaussian() * 0.02D;
+                double d2 = getRandom().nextGaussian() * 0.02D;
+                level().addParticle(ParticleTypes.HAPPY_VILLAGER, getRandomX(1.0D), getRandomY() + 0.5D, getRandomZ(1.0D), d0, d1, d2);
+            }
+            player.displayClientMessage(Component.translatable(getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", getName()), true);
+
+            if (!player.isCreative()) {
+                ItemStack emptyBottle = new ItemStack(Items.GLASS_BOTTLE);
+                stack.shrink(1);
+                if (stack.isEmpty())
+                    player.setItemInHand(hand, emptyBottle);
+                else if (!player.getInventory().add(emptyBottle))
+                    player.drop(emptyBottle, false);
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+
         if (this.level().isClientSide) {
             if (this.isTame() && this.isOwnedBy(player))
                 return InteractionResult.SUCCESS;
