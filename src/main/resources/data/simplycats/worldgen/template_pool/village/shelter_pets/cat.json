@@ -1,6 +1,6 @@
 {
   "name": "simplycats:village/shelter_pets/cat",
-  "fallback": "minecraft:empty",
+  "fallback": "simplycats:village/shelter_pets/cat",
   "elements": [
     {
       "weight": 1,
