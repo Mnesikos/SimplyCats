@@ -58,10 +58,10 @@ public class SCConfig {
                 .define("attack_ai", true);
 
         wander_area_limit = builder.worldRestart()
-                .comment(" When a cat's home is set, this is the distance in blocks they are allowed to roam.",
-                        " Default: 400.0")
+                .comment(" When a cat's home is set, this is the radius in blocks they are allowed to roam around it.",
+                        " Default: 32.0")
                 .translation(PREFIX + ".wander_area_limit")
-                .define("wander_area_limit", 400.0D);
+                .define("wander_area_limit", 32.0D);
 
         tamed_limit = builder
                 .comment(" Sets a limit of cats each player is allowed to have tamed, setting this to 0 will disable the limit.")
@@ -113,7 +113,7 @@ public class SCConfig {
         prey_list = builder
                 .comment(" This is a list of entities all cats will attack on sight if cat attack AI is enabled.")
                 .translation(PREFIX + ".prey_list")
-                .define("prey_list", Arrays.asList("minecraft:bat", "minecraft:parrot", "minecraft:chicken", "minecraft:rabbit", "minecraft:parrot",
+                .defineList("prey_list", List.of("minecraft:bat", "minecraft:parrot", "minecraft:chicken", "minecraft:rabbit", "minecraft:parrot",
                         "minecraft:silverfish", "rats:rat", "zawa:brown_rat", "zawa:macaw", "zawa:black_footed_ferret", "zawa:kakapo",
                         "zawa:butterfly", "exoticbirds:woodpecker", "birdwmod:brown_booby",
                         "birdwmod:eastern_bluebird", "birdwmod:eurasian_bullfinch", "birdwmod:great_grey_owl", "birdwmod:green_heron",
