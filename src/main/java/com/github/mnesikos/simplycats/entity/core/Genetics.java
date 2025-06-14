@@ -59,27 +59,27 @@ public class Genetics {
             }
         }
 
-        String white = White.getPhenotype(nbt.getString("White"));
-        Component whiteText = Component.translatable("");
-        if (!white.equals(White.NONE.toString().toLowerCase())) {
-            if (white.equals(White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
-                whiteText = Component.translatable("cat.white.solid_white.name");
-                return Component.literal(whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
+        String whitePh = White.getPhenotype(nbt.getString("White"));
+        Component white = Component.translatable("");
+        if (!whitePh.equals(White.NONE.toString().toLowerCase())) {
+            if (whitePh.equals(White.DOMINANT.toString().toLowerCase()) || nbt.getString("White_0").contains("6")) {
+                white = Component.translatable("cat.white.solid_white.name");
+                return Component.literal(white.getString() + (includeSex ? (" " + sex.getString()) : ""));
             }
             if (nbt.getString("White_0").contains("5")) {
-                whiteText = Component.translatable("cat.white.mostly_white.name");
-                return Component.literal(whiteText.getString() + " " + base.getString() +
+                white = Component.translatable("cat.white.mostly_white.name");
+                return Component.literal(white.getString() + " " + base.getString() +
                         (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
                         (point.getString().equals("") ? "" : " " + point.getString()) +
                         (includeSex ? (" " + sex.getString()) : ""));
             } else
-                whiteText = Component.translatable("cat.white.some_white.name");
+                white = Component.translatable("cat.white.some_white.name");
         }
 
         return Component.literal(base.getString() +
                 (tabby.getString().equals("") ? "" : " " + tabby.getString()) +
                 (point.getString().equals("") ? "" : " " + point.getString()) +
-                " " + whiteText.getString() + (includeSex ? (" " + sex.getString()) : ""));
+                (white.getString().equals("") ? "" : " " + white.getString()) + (includeSex ? (" " + sex.getString()) : ""));
     }
 
     public enum Sex {
