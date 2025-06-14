@@ -5,6 +5,7 @@ import com.github.mnesikos.simplycats.client.color.ColorEvents;
 import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
 import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
+import com.github.mnesikos.simplycats.data.SCAdvancementProvider;
 import com.github.mnesikos.simplycats.data.SCBlockLoot;
 import com.github.mnesikos.simplycats.data.SCRecipeProvider;
 import com.github.mnesikos.simplycats.data.SCTags;
@@ -131,5 +132,6 @@ public class SimplyCats {
         dataGenerator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
                 List.of(new LootTableProvider.SubProviderEntry(SCBlockLoot::new, LootContextParamSets.BLOCK))));
         dataGenerator.addProvider(event.includeServer(), new SCRecipeProvider(packOutput));
+        dataGenerator.addProvider(event.includeServer(), new SCAdvancementProvider(packOutput, event.getLookupProvider(), event.getExistingFileHelper()));
     }
 }
