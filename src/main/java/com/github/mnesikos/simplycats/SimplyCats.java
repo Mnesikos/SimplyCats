@@ -3,7 +3,9 @@ package com.github.mnesikos.simplycats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.client.color.ColorEvents;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
+import com.github.mnesikos.simplycats.data.SCBlockLoot;
 import com.github.mnesikos.simplycats.data.SCRecipeProvider;
+import com.github.mnesikos.simplycats.data.SCTags;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.event.SCSounds;
 import com.github.mnesikos.simplycats.item.SCItems;
@@ -11,6 +13,8 @@ import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -18,6 +22,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -30,6 +35,9 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.Collections;
+import java.util.List;
 
 @Mod(SimplyCats.MOD_ID)
 public class SimplyCats {
@@ -78,6 +86,17 @@ public class SimplyCats {
 
     private void gatherData(final GatherDataEvent event) {
         DataGenerator dataGenerator = event.getGenerator();
-        dataGenerator.addProvider(event.includeServer(), new SCRecipeProvider(dataGenerator.getPackOutput()));
+        PackOutput packOutput = dataGenerator.getPackOutput();
+//        dataGenerator.addProvider(event.includeClient(), new SCBlockModels(packOutput, event.getExistingFileHelper()));
+//        dataGenerator.addProvider(event.includeClient(), new SCBlockStates(packOutput, event.getExistingFileHelper()));
+//        dataGenerator.addProvider(event.includeClient(), new SCItemModels(packOutput, event.getExistingFileHelper()));
+
+//        SCTags.SCBlockTags blockTagsProvider = new SCTags.SCBlockTags(packOutput, event.getLookupProvider(), event.getExistingFileHelper());
+//        dataGenerator.addProvider(event.includeServer(), blockTagsProvider);
+//        dataGenerator.addProvider(event.includeServer(), new SCTags.SCItemTags(packOutput, event.getLookupProvider(), blockTagsProvider, event.getExistingFileHelper()));
+        dataGenerator.addProvider(event.includeServer(), new SCTags.SCPoiTypeTags(packOutput, event.getLookupProvider(), event.getExistingFileHelper()));
+        dataGenerator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
+                List.of(new LootTableProvider.SubProviderEntry(SCBlockLoot::new, LootContextParamSets.BLOCK))));
+        dataGenerator.addProvider(event.includeServer(), new SCRecipeProvider(packOutput));
     }
 }

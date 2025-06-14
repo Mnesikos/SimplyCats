@@ -1,5 +1,6 @@
 package com.github.mnesikos.simplycats.data;
 
+import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.item.SCItems;
 import net.minecraft.data.PackOutput;
@@ -23,8 +24,13 @@ public class SCRecipeProvider extends RecipeProvider {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SCItems.CAT_BOOK.get())
                 .requires(Items.BOOK)
                 .requires(SCItems.CATNIP.get())
+                .group("cat_book")
                 .unlockedBy("has_catnip", has(SCItems.CATNIP.get())).unlockedBy("has_book", has(Items.BOOK)).save(consumer);
-        oneToOneConversionRecipe(consumer, SCItems.CAT_BOOK.get(), SCItems.CAT_BOOK.get(), "");
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SCItems.CAT_BOOK.get())
+                .requires(SCItems.CAT_BOOK.get())
+                .group("cat_book")
+                .unlockedBy("has_cat_book", has(SCItems.CAT_BOOK.get())).save(consumer, modSaveLoc("cat_book_reset"));
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, SCBlocks.SHELTER_BOOK.get())
                 .requires(SCItems.CAT_BOOK.get())
                 .requires(SCItems.CATNIP.get())
@@ -42,11 +48,15 @@ public class SCRecipeProvider extends RecipeProvider {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SCItems.ADOPT_CERTIFICATE.get())
                 .requires(Items.PAPER)
                 .requires(Items.BLACK_DYE)
+                .group("adopt_certificate")
                 .unlockedBy("has_black_dye", has(Items.BLACK_DYE)).unlockedBy("has_paper", has(Items.PAPER)).save(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SCItems.RELEASE_CERTIFICATE.get())
                 .requires(SCItems.ADOPT_CERTIFICATE.get())
                 .unlockedBy("has_adopt_certificate", has(SCItems.ADOPT_CERTIFICATE.get())).save(consumer);
-        oneToOneConversionRecipe(consumer, SCItems.ADOPT_CERTIFICATE.get(), SCItems.RELEASE_CERTIFICATE.get(), "");
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SCItems.ADOPT_CERTIFICATE.get())
+                .requires(SCItems.RELEASE_CERTIFICATE.get())
+                .group("adopt_certificate")
+                .unlockedBy("has_release_certificate", has(SCItems.RELEASE_CERTIFICATE.get())).save(consumer, modSaveLoc("adopt_certificate_from_release_certificate"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, SCItems.LASER_POINTER.get())
                 .pattern(" B")
@@ -61,7 +71,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .pattern(" I")
                 .define('S', Items.STRING)
                 .define('I', Ingredient.of(Items.IRON_INGOT, Items.GOLD_INGOT))
-                .unlockedBy("has_string", has(Items.STRING)).save(consumer);
+                .unlockedBy("has_string", has(Items.STRING)).save(consumer, modSaveLoc("name_tag"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, SCItems.PET_CARRIER.get())
                 .pattern("ISI")
@@ -146,6 +156,10 @@ public class SCRecipeProvider extends RecipeProvider {
         windowPerch(consumer, SCBlocks.WINDOW_PERCHES.get(WoodType.WARPED.name()).get(), Blocks.WARPED_PLANKS);
 //        windowPerch(consumer, SCBlocks.WINDOW_PERCHES.get(WoodType.MANGROVE.name()).get(), Blocks.MANGROVE_PLANKS);
 //        windowPerch(consumer, SCBlocks.WINDOW_PERCHES.get(WoodType.BAMBOO.name()).get(), Blocks.BAMBOO_PLANKS);
+    }
+
+    protected static String modSaveLoc(String name) {
+        return SimplyCats.MOD_ID + ":" + name;
     }
 
     protected static void catBowl(Consumer<FinishedRecipe> consumer, ItemLike bowl, ItemLike terracotta) {
