@@ -59,7 +59,7 @@ public class SimplyCatSpawner implements CustomSpawner {
                 poiTypeHolder.is(PoiTypes.HOME), blockPos, radius, PoiManager.Occupancy.IS_OCCUPIED) > 4L) {
             List<SimplyCatEntity> list = level.getEntitiesOfClass(SimplyCatEntity.class, (new AABB(blockPos)).inflate(radius, 8.0D, radius));
 
-            if (list.size() < 5) return spawnCat(blockPos, level);
+            if (list.size() < 3) return spawnCat(blockPos, level);
         }
 
         return 0;
