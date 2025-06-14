@@ -188,7 +188,7 @@ public class PetCarrierItem extends Item {
                 if (item.getDamageValue() == 1)
                     tooltip.add(Genetics.getPhenotypeDescription(nbt, true).withStyle(ChatFormatting.ITALIC));
 
-                if (nbt.contains("OwnerName"))
+                if (nbt.contains("OwnerName") && !nbt.getString("OwnerName").isEmpty())
                     tooltip.add(Component.translatable("tooltip.pet_carrier.owner", nbt.getString("OwnerName")));
             }
         } else {
