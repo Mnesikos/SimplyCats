@@ -251,13 +251,17 @@
     "chat.book.empty_book": "This book's pages are empty!",
 
     "__comment": "Advancements",
+    "advancements.simplycats.root": "Simply Cats",
+    "advancements.simplycats.root.desc": "Shelter Workers do not get paid enough, spare them some emeralds.",
+    "advancements.simplycats.checklist": "New Cat Checklist",
+    "advancements.simplycats.checklist.desc": "Prepare to welcome your new cat by making sure you have these items on hand.",
     "advancements.simplycats.adoption": "Adopt Don't Shop",
     "advancements.simplycats.adoption.desc": "Where applicable; which is always for cats.",
     "advancements.simplycats.catnip": "Acquire Catnip",
     "advancements.simplycats.catnip.desc": "Logically the first step in all things cats, of course.",
     "advancements.simplycats.catalogue": "CATalogue",
     "advancements.simplycats.catalogue.desc": "Acquire your first Cat Book!",
-    "advancements.simplycats.speuter": "Speuter: Acquire a Sterilize Potion",
+    "advancements.simplycats.speuter": "\"Speuter\": To Spay or Neuter",
     "advancements.simplycats.speuter.desc": "Did you know: Spaying and neutering is actually beneficial to your cat's health.",
     "advancements.simplycats.spay": "Spay a female cat!",
     "advancements.simplycats.spay.desc": "Did you know: There are no benefits to allowing a cat to come into heat or have a litter of kittens.",
@@ -265,8 +269,6 @@
     "advancements.simplycats.neuter.desc": "Did you know: Unneutered cats are more prone to fighting with other cats, urine marking, and roaming.",
     "advancements.simplycats.tnr": "Trap-Neuter-Return Veteran",
     "advancements.simplycats.tnr.desc": "TNR stabilizes feral cat colonies, and improves and protects cats' lives!",
-    "advancements.simplycats.checklist": "New Cat Checklist",
-    "advancements.simplycats.checklist.desc": "Prepare to welcome your new cat by making sure you have these items on hand.",
 
     "__comment": "Subtitles",
     "simplycats.subtitle.shake_treats": "Treat bag shakes"

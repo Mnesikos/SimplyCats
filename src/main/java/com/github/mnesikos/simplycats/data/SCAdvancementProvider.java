@@ -3,6 +3,7 @@ package com.github.mnesikos.simplycats.data;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.item.SCItems;
+import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.RequirementsStrategy;
@@ -28,18 +29,22 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
     public static class SCAdvancementGenerator implements ForgeAdvancementProvider.AdvancementGenerator {
         @Override
         public void generate(HolderLookup.Provider registries, Consumer<Advancement> saver, ExistingFileHelper existingFileHelper) {
-            Advancement adoption = Advancement.Builder.advancement()
-                    .display(SCItems.PET_CARRIER.get(), Component.translatable("advancements.simplycats.adoption"), Component.translatable("advancements.simplycats.adoption.desc"), new ResourceLocation("textures/gui/advancements/backgrounds/husbandry.png"), FrameType.TASK, true, true, false)
+            Advancement root = Advancement.Builder.advancement()
+                    .display(SCItems.PET_CARRIER.get(), Component.translatable("advancements.simplycats.root"), Component.translatable("advancements.simplycats.root.desc"), new ResourceLocation("textures/gui/advancements/backgrounds/husbandry.png"), FrameType.TASK, true, false, false)
+                    .addCriterion("catnip", InventoryChangeTrigger.TriggerInstance.hasItems(SCItems.CATNIP_SEEDS.get()))
+                    .save(saver, SimplyCats.MOD_ID + ":root");
+
+            Advancement checklist = addChecklistCriterion(Advancement.Builder.advancement()).parent(root)
+                    .display(SCItems.TREAT_BAG.get(), Component.translatable("advancements.simplycats.checklist"), Component.translatable("advancements.simplycats.checklist.desc"), null, FrameType.GOAL, true, true, false)
+                    .save(saver, SimplyCats.MOD_ID + ":checklist");
+            Advancement adoption = Advancement.Builder.advancement().parent(checklist)
+                    .display(SCItems.ADOPT_CERTIFICATE.get(), Component.translatable("advancements.simplycats.adoption"), Component.translatable("advancements.simplycats.adoption.desc"), null, FrameType.TASK, true, true, false)
                     .addCriterion("adoption", TameAnimalTrigger.TriggerInstance.tamedAnimal(EntityPredicate.Builder.entity().of(SimplyCats.CAT.get()).build()))
                     .save(saver, SimplyCats.MOD_ID + ":adoption");
 
-            Advancement checklist = addChecklistCriterion(Advancement.Builder.advancement()).parent(adoption)
-                    .display(SCItems.TREAT_BAG.get(), Component.translatable("advancements.simplycats.checklist"), Component.translatable("advancements.simplycats.checklist.desc"), null, FrameType.GOAL, true, true, false)
-                    .save(saver, SimplyCats.MOD_ID + ":checklist");
-
-            Advancement catnip = Advancement.Builder.advancement().parent(adoption)
+            Advancement catnip = Advancement.Builder.advancement().parent(checklist)
                     .display(SCItems.CATNIP.get(), Component.translatable("advancements.simplycats.catnip"), Component.translatable("advancements.simplycats.catnip.desc"), null, FrameType.TASK, true, true, false)
-                    .addCriterion("catnip", InventoryChangeTrigger.TriggerInstance.hasItems(SCItems.CATNIP_SEEDS.get()))
+                    .addCriterion("catnip", InventoryChangeTrigger.TriggerInstance.hasItems(SCItems.CATNIP.get()))
                     .save(saver, SimplyCats.MOD_ID + ":catnip");
             Advancement catalogue = Advancement.Builder.advancement().parent(catnip)
                     .display(SCItems.CAT_BOOK.get(), Component.translatable("advancements.simplycats.catalogue"), Component.translatable("advancements.simplycats.catalogue.desc"), null, FrameType.TASK, true, true, false)
@@ -47,7 +52,7 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
                     .save(saver, SimplyCats.MOD_ID + ":catalogue");
             // todo tea
 
-            Advancement speuter = Advancement.Builder.advancement().parent(adoption)
+            Advancement speuter = Advancement.Builder.advancement().parent(root)
                     .display(SCItems.STERILIZE_POTION.get(), Component.translatable("advancements.simplycats.speuter"), Component.translatable("advancements.simplycats.speuter.desc"), null, FrameType.TASK, true, true, false)
                     .addCriterion("sterilize_potion", InventoryChangeTrigger.TriggerInstance.hasItems(SCItems.STERILIZE_POTION.get()))
                     .save(saver, SimplyCats.MOD_ID + ":speuter");
