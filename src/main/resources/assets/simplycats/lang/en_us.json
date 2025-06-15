@@ -265,6 +265,8 @@
     "advancements.simplycats.neuter.desc": "Did you know: Unneutered cats are more prone to fighting with other cats, urine marking, and roaming.",
     "advancements.simplycats.tnr": "Trap-Neuter-Return Veteran",
     "advancements.simplycats.tnr.desc": "TNR stabilizes feral cat colonies, and improves and protects cats' lives!",
+    "advancements.simplycats.checklist": "New Cat Checklist",
+    "advancements.simplycats.checklist.desc": "Prepare to welcome your new cat by making sure you have these items on hand.",
 
     "__comment": "Subtitles",
     "simplycats.subtitle.shake_treats": "Treat bag shakes"

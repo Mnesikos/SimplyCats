@@ -1,6 +1,7 @@
 package com.github.mnesikos.simplycats.data;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.item.SCItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
@@ -31,6 +32,10 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
                     .display(SCItems.PET_CARRIER.get(), Component.translatable("advancements.simplycats.adoption"), Component.translatable("advancements.simplycats.adoption.desc"), new ResourceLocation("textures/gui/advancements/backgrounds/husbandry.png"), FrameType.TASK, true, true, false)
                     .addCriterion("adoption", TameAnimalTrigger.TriggerInstance.tamedAnimal(EntityPredicate.Builder.entity().of(SimplyCats.CAT.get()).build()))
                     .save(saver, SimplyCats.MOD_ID + ":adoption");
+
+            Advancement checklist = addChecklistCriterion(Advancement.Builder.advancement()).parent(adoption)
+                    .display(SCItems.TREAT_BAG.get(), Component.translatable("advancements.simplycats.checklist"), Component.translatable("advancements.simplycats.checklist.desc"), null, FrameType.GOAL, true, true, false)
+                    .save(saver, SimplyCats.MOD_ID + ":checklist");
 
             Advancement catnip = Advancement.Builder.advancement().parent(adoption)
                     .display(SCItems.CATNIP.get(), Component.translatable("advancements.simplycats.catnip"), Component.translatable("advancements.simplycats.catnip.desc"), null, FrameType.TASK, true, true, false)
@@ -91,11 +96,48 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
                             createTagWithGenes(Map.of("Eumelanin", "b1-b1", phaeomelanin, "Xo-Y", "Dilution", "d-d")),
                             createTagWithGenes(Map.of(phaeomelanin, "XO-Y", "Dilution", "d-d")),
                             createTagWithGenes(Map.of(phaeomelanin, "XO-XO", "Dilution", "d-d")),
-                            createTagWithGenes(Map.of( "White", "Wd-w"))
+                            createTagWithGenes(Map.of("White", "Wd-w"))
                     )).parent(speuter)
                     .display(SCItems.STERILIZE_POTION.get(), Component.translatable("advancements.simplycats.tnr"), Component.translatable("advancements.simplycats.tnr.desc"), null, FrameType.CHALLENGE, true, true, true)
                     .requirements(RequirementsStrategy.AND)
                     .save(saver, SimplyCats.MOD_ID + ":tnr");
+        }
+
+        private static Advancement.Builder addChecklistCriterion(Advancement.Builder builder) {
+            Advancement.Builder bowlsBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
+            SCBlocks.CAT_BOWLS.forEach(((dyeColor, blockRegistryObject) -> bowlsBuilder.addCriterion(dyeColor.getName() + "_bowl", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            String[] bowls = bowlsBuilder.getCriteria().keySet().toArray(String[]::new);
+
+            Advancement.Builder litterBoxesBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
+            SCBlocks.LITTER_BOXES.forEach(((dyeColor, blockRegistryObject) -> litterBoxesBuilder.addCriterion(dyeColor.getName() + "_litter_box", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            String[] litterBoxes = litterBoxesBuilder.getCriteria().keySet().toArray(String[]::new);
+
+            Advancement.Builder treeBedsBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
+            SCBlocks.CAT_TREE_BEDS.forEach(((dyeColor, blockRegistryObject) -> treeBedsBuilder.addCriterion(dyeColor.getName() + "_tree_bed", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            String[] treeBeds = treeBedsBuilder.getCriteria().keySet().toArray(String[]::new);
+
+            Advancement.Builder treePostsBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
+            SCBlocks.CAT_TREE_POSTS.forEach(((dyeColor, blockRegistryObject) -> treePostsBuilder.addCriterion(dyeColor.getName() + "_tree_post", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            String[] treePosts = treePostsBuilder.getCriteria().keySet().toArray(String[]::new);
+
+            Advancement.Builder treeBoxesBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
+            SCBlocks.CAT_TREE_BOXES.forEach(((dyeColor, blockRegistryObject) -> treeBoxesBuilder.addCriterion(dyeColor.getName() + "_tree_box", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            String[] treeBoxes = treeBoxesBuilder.getCriteria().keySet().toArray(String[]::new);
+
+            Advancement.Builder postsBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
+            SCBlocks.SCRATCHING_POSTS.forEach((woodType, blockRegistryObject) -> postsBuilder.addCriterion(woodType + "_post", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get())));
+            String[] posts = postsBuilder.getCriteria().keySet().toArray(String[]::new);
+
+            bowlsBuilder.getCriteria().forEach((builder::addCriterion));
+            litterBoxesBuilder.getCriteria().forEach((builder::addCriterion));
+            treeBedsBuilder.getCriteria().forEach((builder::addCriterion));
+            treePostsBuilder.getCriteria().forEach((builder::addCriterion));
+            treeBoxesBuilder.getCriteria().forEach((builder::addCriterion));
+            postsBuilder.getCriteria().forEach((builder::addCriterion));
+            builder.addCriterion("treat_bag", InventoryChangeTrigger.TriggerInstance.hasItems(SCItems.TREAT_BAG.get()))
+                    .addCriterion("laser_pointer", InventoryChangeTrigger.TriggerInstance.hasItems(SCItems.LASER_POINTER.get()));
+            builder.requirements(new String[][]{bowls, litterBoxes, treeBeds, treePosts, treeBoxes, posts, {"treat_bag"}, {"laser_pointer"}});
+            return builder;
         }
 
         private static Advancement.Builder addCatTagPhaeomelaninVariants(Advancement.Builder builder, List<CompoundTag> tags) {
