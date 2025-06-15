@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -101,17 +102,22 @@ public class SimplyCatEntity extends TamableAnimal {
     protected void registerGoals() {
         TemptGoal temptGoal = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), false);
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new CatSitGoal(this));
-        this.goalSelector.addGoal(3, temptGoal);
-        this.goalSelector.addGoal(4, new CatFollowParentGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new CatSitOnBlockGoal(this, 1.0D, 8));
+//        this.goalSelector.addGoal(1, new PanicGoal(this, 1.5D));
+        this.goalSelector.addGoal(2, new CatSitGoal(this));
+//        this.goalSelector.addGoal(3, new Cat.CatRelaxOnOwnerGoal(this));
+        this.goalSelector.addGoal(4, temptGoal);
+//        this.goalSelector.addGoal(5, new CatLieOnBedGoal(this, 1.1D, 8));
+        this.goalSelector.addGoal(6, new CatFollowParentGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new CatBirthGoal(this));
-        this.goalSelector.addGoal(7, new LeapAtTargetGoal(this, 0.4F));
-        this.goalSelector.addGoal(8, new CatAttackGoal(this));
-        if (!this.isFixed())
-            this.goalSelector.addGoal(9, new CatMateGoal(this, 1.2D));
-        this.goalSelector.addGoal(10, new CatWanderGoal(this, 0.8D, 1.0000001E-5F));
-        this.goalSelector.addGoal(11, new LookAtPlayerGoal(this, LivingEntity.class, 7.0F));
+        this.goalSelector.addGoal(7, new CatSitOnBlockGoal(this, 1.0D, 8));
+        this.goalSelector.addGoal(7, new CatSeekCatnipGoal(this, 1.1D, 8));
+        this.goalSelector.addGoal(8, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(9, new CatAttackGoal(this));
+        if (!isFixed()) {
+            this.goalSelector.addGoal(10, new CatMateGoal(this, 1.2D));
+        }
+        this.goalSelector.addGoal(11, new CatWanderGoal(this, 0.8D, 1.0000001E-5F));
+        this.goalSelector.addGoal(12, new LookAtPlayerGoal(this, LivingEntity.class, 7.0F));
         this.goalSelector.addGoal(12, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new CatTargetNearestGoal<>(this, LivingEntity.class, true, (entity) -> {
             EntityType<?> entityType = entity.getType();
