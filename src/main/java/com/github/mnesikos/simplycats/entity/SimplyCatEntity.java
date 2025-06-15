@@ -109,7 +109,7 @@ public class SimplyCatEntity extends TamableAnimal {
 //        this.goalSelector.addGoal(5, new CatLieOnBedGoal(this, 1.1D, 8));
         this.goalSelector.addGoal(6, new CatFollowParentGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new CatBirthGoal(this));
-        this.goalSelector.addGoal(7, new CatSitOnBlockGoal(this, 1.0D, 8));
+        this.goalSelector.addGoal(7, new CatSitOnBlockGoal(this, 0.8D, 8));
         this.goalSelector.addGoal(7, new CatSeekCatnipGoal(this, 1.1D, 8));
         this.goalSelector.addGoal(8, new LeapAtTargetGoal(this, 0.4F));
         this.goalSelector.addGoal(9, new CatAttackGoal(this));
