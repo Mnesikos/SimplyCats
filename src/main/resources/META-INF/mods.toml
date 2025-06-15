@@ -1,30 +1,29 @@
 modLoader="javafml"
-loaderVersion="[47,)"
-license="All rights reserved"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
 issueTrackerURL="https://github.com/Mnesikos/SimplyCats/issues"
 
 [[mods]]
-    modId="simplycats"
-    version="${file.jarVersion}"
-    displayName="Simply Cats"
+    modId="${mod_id}"
+    version="${mod_version}"
+    displayName="${mod_name}"
     updateJSONURL="https://raw.githubusercontent.com/Mnesikos/SimplyCats/forge/1.16.5/versions.json"
     displayURL="https://github.com/Mnesikos/SimplyCats/wiki"
     logoFile="logo.png"
-    credits="Fisk, Mango, Jamie, Ms. Random, Sekelsta"
-    authors="Mnesikos"
-    description='''
-For a very, very long time the cats of Minecraft have been neglected. This mod aims to change that, breathing a whole new life into the soft little fluff balls of hate.
-    '''
-[[dependencies.simplycats]]
+    credits="${mod_credits}"
+    authors="${mod_authors}"
+    description='''${mod_description}'''
+
+[[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
-    versionRange="[47,)"
+    versionRange="${forge_version_range}"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.simplycats]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20.1,1.21)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
