@@ -2,12 +2,17 @@ package com.github.mnesikos.simplycats.block;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.item.SCItems;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -20,6 +25,7 @@ public class SCBlocks {
     public static final DeferredRegister<Block> REGISTRAR = DeferredRegister.create(ForgeRegistries.BLOCKS, SimplyCats.MOD_ID);
 
     public static final RegistryObject<Block> CATNIP_CROP = REGISTRAR.register("catnip", () -> new CatnipBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT)));
+    public static final RegistryObject<Block> POTTED_CATNIP = REGISTRAR.register("potted_catnip", () -> new FlowerPotBlock(CATNIP_CROP.get(), BlockBehaviour.Properties.copy(Blocks.POTTED_POPPY)));
     public static final RegistryObject<Block> SHELTER_BOOK = register("shelter_book", ShelterBookBlock::new);
 
     public static final Map<DyeColor, RegistryObject<Block>> CAT_BOWLS = new HashMap<>();
@@ -51,5 +57,11 @@ public class SCBlocks {
         RegistryObject<T> registryObject = REGISTRAR.register(name, block);
         SCItems.REGISTRAR.register(name, () -> new BlockItem(registryObject.get(), new Item.Properties()));
         return registryObject;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void setRenderLayers() {
+        RenderType cutout = RenderType.cutout();
+        ItemBlockRenderTypes.setRenderLayer(POTTED_CATNIP.get(), cutout);
     }
 }

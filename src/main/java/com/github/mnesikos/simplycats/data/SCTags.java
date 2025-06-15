@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.PoiTypeTagsProvider;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.PoiTypeTags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -22,7 +23,9 @@ public class SCTags {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
-
+            tag(BlockTags.FLOWER_POTS).add(SCBlocks.POTTED_CATNIP.get());
+            tag(BlockTags.CROPS).add(SCBlocks.CATNIP_CROP.get());
+            tag(BlockTags.MAINTAINS_FARMLAND).add(SCBlocks.CATNIP_CROP.get());
         }
     }
 

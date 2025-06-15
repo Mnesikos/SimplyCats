@@ -5,10 +5,7 @@ import com.github.mnesikos.simplycats.client.color.ColorEvents;
 import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
 import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
-import com.github.mnesikos.simplycats.data.SCAdvancementProvider;
-import com.github.mnesikos.simplycats.data.SCBlockLoot;
-import com.github.mnesikos.simplycats.data.SCRecipeProvider;
-import com.github.mnesikos.simplycats.data.SCTags;
+import com.github.mnesikos.simplycats.data.*;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.event.SCSounds;
@@ -107,6 +104,7 @@ public class SimplyCats {
 
     private void setupClient(final FMLClientSetupEvent event) {
         EntityRenderers.register(SimplyCats.CAT.get(), SimplyCatRenderer::new);
+        SCBlocks.setRenderLayers();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -121,8 +119,8 @@ public class SimplyCats {
     private void gatherData(final GatherDataEvent event) {
         DataGenerator dataGenerator = event.getGenerator();
         PackOutput packOutput = dataGenerator.getPackOutput();
-//        dataGenerator.addProvider(event.includeClient(), new SCBlockModels(packOutput, event.getExistingFileHelper()));
-//        dataGenerator.addProvider(event.includeClient(), new SCBlockStates(packOutput, event.getExistingFileHelper()));
+        dataGenerator.addProvider(event.includeClient(), new SCBlockModels(packOutput, event.getExistingFileHelper()));
+        dataGenerator.addProvider(event.includeClient(), new SCBlockStates(packOutput, event.getExistingFileHelper()));
 //        dataGenerator.addProvider(event.includeClient(), new SCItemModels(packOutput, event.getExistingFileHelper()));
 
 //        SCTags.SCBlockTags blockTagsProvider = new SCTags.SCBlockTags(packOutput, event.getLookupProvider(), event.getExistingFileHelper());

@@ -21,6 +21,7 @@ public class SCBlockLoot extends VanillaBlockLoot {
     protected void generate() {
         LootItemCondition.Builder catnipBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(SCBlocks.CATNIP_CROP.get()).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CatnipBlock.AGE, 3));
         add(SCBlocks.CATNIP_CROP.get(), createCropDrops(SCBlocks.CATNIP_CROP.get(), SCItems.CATNIP.get(), SCItems.CATNIP_SEEDS.get(), catnipBuilder));
+        dropPottedContents(SCBlocks.POTTED_CATNIP.get());
         dropSelf(SCBlocks.SHELTER_BOOK.get());
         dropSelf(SCBlocks.SCRATCHING_POSTS.get(WoodType.OAK.name()).get());
         dropSelf(SCBlocks.SCRATCHING_POSTS.get(WoodType.SPRUCE.name()).get());
