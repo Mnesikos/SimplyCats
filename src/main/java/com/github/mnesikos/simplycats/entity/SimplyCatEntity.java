@@ -45,6 +45,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -116,7 +117,7 @@ public class SimplyCatEntity extends TamableAnimal {
             EntityType<?> entityType = entity.getType();
             if (entity instanceof TamableAnimal && ((TamableAnimal) entity).isTame())
                 return false;
-            return !(entity instanceof SimplyCatEntity) && !(entity instanceof Player) && !(entity instanceof Enemy) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(entityType.getDescriptionId());
+            return !(entity instanceof SimplyCatEntity) && !(entity instanceof Player) && !(entity instanceof Enemy) && !entity.isAlliedTo(this) && SCConfig.prey_list.get().contains(ForgeRegistries.ENTITY_TYPES.getKey(entityType).toString());
         }));
     }
 
