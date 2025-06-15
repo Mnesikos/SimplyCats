@@ -48,7 +48,7 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
                     .save(saver, SimplyCats.MOD_ID + ":speuter");
 
             String phaeomelanin = "Phaeomelanin";
-            Advancement spay = addCatTagVariants(Advancement.Builder.advancement(), phaeomelanin,
+            Advancement spay = addCatTagPhaeomelaninVariants(Advancement.Builder.advancement(),
                     List.of(
                             createTagWithGenes(Map.of(phaeomelanin, "Xo-Xo")),
                             createTagWithGenes(Map.of(phaeomelanin, "Xo-XO")),
@@ -59,7 +59,7 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
                     .requirements(RequirementsStrategy.OR)
                     .save(saver, SimplyCats.MOD_ID + ":spay");
 
-            Advancement neuter = addCatTagVariants(Advancement.Builder.advancement(), phaeomelanin,
+            Advancement neuter = addCatTagPhaeomelaninVariants(Advancement.Builder.advancement(),
                     List.of(
                             createTagWithGenes(Map.of(phaeomelanin, "Xo-Y")),
                             createTagWithGenes(Map.of(phaeomelanin, "XO-Y"))
@@ -68,15 +68,46 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
                     .requirements(RequirementsStrategy.OR)
                     .save(saver, SimplyCats.MOD_ID + ":neuter");
 
-            Advancement tnr = Advancement.Builder.advancement().parent(speuter)
+            Advancement tnr = addManyCatTagVariants(Advancement.Builder.advancement(),
+                    List.of(
+                            createTagWithGenes(Map.of("Eumelanin", "B-B", phaeomelanin, "Xo-Xo", "Dilution", "D-D", "Agouti", "a-a")),
+                            createTagWithGenes(Map.of("Eumelanin", "B-B", phaeomelanin, "Xo-Y", "Dilution", "D-D", "Agouti", "a-a")),
+                            createTagWithGenes(Map.of("Eumelanin", "B-B", phaeomelanin, "Xo-Xo", "Dilution", "D-D", "Agouti", "A-A")),
+                            createTagWithGenes(Map.of("Eumelanin", "B-B", phaeomelanin, "Xo-Y", "Dilution", "D-D", "Agouti", "A-A")),
+                            createTagWithGenes(Map.of("Eumelanin", "b-b", phaeomelanin, "Xo-Xo", "Dilution", "D-D")),
+                            createTagWithGenes(Map.of("Eumelanin", "b-b", phaeomelanin, "Xo-Y", "Dilution", "D-D")),
+                            createTagWithGenes(Map.of("Eumelanin", "b1-b1", phaeomelanin, "Xo-Xo", "Dilution", "D-D")),
+                            createTagWithGenes(Map.of("Eumelanin", "b1-b1", phaeomelanin, "Xo-Y", "Dilution", "D-D")),
+                            createTagWithGenes(Map.of(phaeomelanin, "XO-Y", "Dilution", "D-D")),
+                            createTagWithGenes(Map.of(phaeomelanin, "XO-XO", "Dilution", "D-D")),
+                            createTagWithGenes(Map.of(phaeomelanin, "XO-Xo")),
+                            createTagWithGenes(Map.of("Eumelanin", "B-B", phaeomelanin, "Xo-Xo", "Dilution", "d-d", "Agouti", "a-a")),
+                            createTagWithGenes(Map.of("Eumelanin", "B-B", phaeomelanin, "Xo-Y", "Dilution", "d-d", "Agouti", "a-a")),
+                            createTagWithGenes(Map.of("Eumelanin", "B-B", phaeomelanin, "Xo-Xo", "Dilution", "d-d", "Agouti", "A-A")),
+                            createTagWithGenes(Map.of("Eumelanin", "B-B", phaeomelanin, "Xo-Y", "Dilution", "d-d", "Agouti", "A-A")),
+                            createTagWithGenes(Map.of("Eumelanin", "b-b", phaeomelanin, "Xo-Xo", "Dilution", "d-d")),
+                            createTagWithGenes(Map.of("Eumelanin", "b-b", phaeomelanin, "Xo-Y", "Dilution", "d-d")),
+                            createTagWithGenes(Map.of("Eumelanin", "b1-b1", phaeomelanin, "Xo-Xo", "Dilution", "d-d")),
+                            createTagWithGenes(Map.of("Eumelanin", "b1-b1", phaeomelanin, "Xo-Y", "Dilution", "d-d")),
+                            createTagWithGenes(Map.of(phaeomelanin, "XO-Y", "Dilution", "d-d")),
+                            createTagWithGenes(Map.of(phaeomelanin, "XO-XO", "Dilution", "d-d")),
+                            createTagWithGenes(Map.of( "White", "Wd-w"))
+                    )).parent(speuter)
                     .display(SCItems.STERILIZE_POTION.get(), Component.translatable("advancements.simplycats.tnr"), Component.translatable("advancements.simplycats.tnr.desc"), null, FrameType.CHALLENGE, true, true, true)
-                    .addCriterion("impossible", new ImpossibleTrigger.TriggerInstance()) //todo
+                    .requirements(RequirementsStrategy.AND)
                     .save(saver, SimplyCats.MOD_ID + ":tnr");
         }
 
-        private static Advancement.Builder addCatTagVariants(Advancement.Builder builder, String stringTagKey, List<CompoundTag> tags) {
+        private static Advancement.Builder addCatTagPhaeomelaninVariants(Advancement.Builder builder, List<CompoundTag> tags) {
             tags.forEach(tag ->
-                    builder.addCriterion(tag.getString(stringTagKey), PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(ItemPredicate.Builder.item().of(SCItems.STERILIZE_POTION.get()),
+                    builder.addCriterion(tag.getString("Phaeomelanin"), PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(ItemPredicate.Builder.item().of(SCItems.STERILIZE_POTION.get()),
+                            EntityPredicate.wrap(EntityPredicate.Builder.entity().of(SimplyCats.CAT.get()).nbt(new NbtPredicate(tag)).build()))));
+            return builder;
+        }
+
+        private static Advancement.Builder addManyCatTagVariants(Advancement.Builder builder, List<CompoundTag> tags) {
+            tags.forEach(tag ->
+                    builder.addCriterion(tag.getString("Eumelanin") + tag.getString("Phaeomelanin") + tag.getString("Dilution") + tag.getString("Agouti") + tag.getString("White"), PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(ItemPredicate.Builder.item().of(SCItems.STERILIZE_POTION.get()),
                             EntityPredicate.wrap(EntityPredicate.Builder.entity().of(SimplyCats.CAT.get()).nbt(new NbtPredicate(tag)).build()))));
             return builder;
         }
