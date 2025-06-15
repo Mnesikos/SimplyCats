@@ -26,7 +26,7 @@ public class CatSeekCatnipGoal extends MoveToBlockGoal {
     @Override
     public boolean canUse() {
         gotCatnip = false;
-        return super.canUse() && cat.getRandom().nextInt(5) == 0;
+        return super.canUse() && cat.getRandom().nextInt(3) == 0;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CatSeekCatnipGoal extends MoveToBlockGoal {
 
     private void onReachedTarget() {
         Level level = cat.level();
-        if (gotCatnip && ForgeEventFactory.getMobGriefingEvent(level, cat)) {
+        if (cat.getRandom().nextFloat() <= 0.2F && gotCatnip && ForgeEventFactory.getMobGriefingEvent(level, cat)) {
             BlockState blockState = level.getBlockState(blockPos);
             if (blockState.getBlock() instanceof CatnipBlock) {
                 int age = blockState.getValue(CatnipBlock.AGE);
