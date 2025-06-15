@@ -167,23 +167,22 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
     }
 
     @Override
-    public void setupAnim(T entity, float speed, float walkSpeed, float v2, float headAngleY, float headAngleX) {
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float netHeadPitch) {
         ModelPart head = !entity.isBaby() && entity.isLongFur() ? head2 : head1;
-
-        head.xRot = headAngleX / (180F / (float) Math.PI);
-        head.yRot = headAngleY / (180F / (float) Math.PI);
+        head.xRot = netHeadPitch / (180F / (float) Math.PI);
+        head.yRot = netHeadYaw / (180F / (float) Math.PI);
     }
 
     @Override
-    public void prepareMobModel(T cat, float parSpeed, float parWalkSpeed, float f4) {
-        ModelPart tailType = cat.isBobtail() ? tailBobbed : tail1;
-        ModelPart head = !cat.isBaby() && cat.isLongFur() ? head2 : head1;
+    public void prepareMobModel(T entity, float limbSwing, float limbSwingAmount, float partialTick) {
+        ModelPart tailType = entity.isBobtail() ? tailBobbed : tail1;
+        ModelPart head = !entity.isBaby() && entity.isLongFur() ? head2 : head1;
 
         head.y = 14.0F;
         head.z = -6.5F;
         body1.xRot = 0.0F;
         body1.y = 18.0F;
-        if (cat.isLongFur()) {
+        if (entity.isLongFur()) {
             body2.xRot = 0.0F;
             body2.y = 18.0F;
         }
@@ -191,10 +190,10 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
         backLeftLegPoint.xRot = backRightLegPoint.xRot = 0.0F;
         backLeftLegPoint.y = backRightLegPoint.y = -0.5F;
         frontLeftLegPoint.y = frontRightLegPoint.y = -0.5F;
-        frontLeftLeg.xRot = Mth.cos(parSpeed * 0.6662F) * 0.5F * parWalkSpeed;
-        backRightLeg.xRot = Mth.cos(parSpeed * 0.6662F + 1.5F) * 0.5F * parWalkSpeed;
-        frontRightLeg.xRot = Mth.cos(parSpeed * 0.6662F + 3.0F) * 0.5F * parWalkSpeed;
-        backLeftLeg.xRot = Mth.cos(parSpeed * 0.6662F + 4.5F) * 0.5F * parWalkSpeed;
+        frontLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
+        backRightLeg.xRot = Mth.cos(limbSwing * 0.6662F + 1.5F) * 0.5F * limbSwingAmount;
+        frontRightLeg.xRot = Mth.cos(limbSwing * 0.6662F + 3.0F) * 0.5F * limbSwingAmount;
+        backLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F + 4.5F) * 0.5F * limbSwingAmount;
         tailType.y = 15.0F;
         tail1.xRot = (float) (180 / (180 / Math.PI));
         tail2.xRot = (float) (10 / (180 / Math.PI));
@@ -204,26 +203,28 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
         earRight1.xRot = 0.0F;
         earRight1.yRot = 0.0F;
 
-        if (cat.isAngry() || cat.isCrouching()) {
+        if (entity.isAngry() || entity.isCrouching()) {
             earLeft1.xRot = (float) (67 / (180 / Math.PI));
             earLeft1.yRot = (float) (-145 / (180 / Math.PI));
             earRight1.xRot = (float) (67 / (180 / Math.PI));
             earRight1.yRot = (float) (145 / (180 / Math.PI));
         }
 
-        if (cat.isCrouching()) {
+        if (entity.isCrouching()) {
             head.y += 2.5F;
             body1.y += 2.0F;
-            if (cat.isLongFur()) body2.y += 2.0F;
+            if (entity.isLongFur()) body2.y += 2.0F;
             backLeftLegPoint.y -= 2.0F;
             backRightLegPoint.y -= 2.0F;
             frontLeftLegPoint.y -= 2.0F;
             frontRightLegPoint.y -= 2.0F;
             tailType.y += 2.0F;
             tailType.xRot = ((float) Math.PI / 3F);
-        }
 
-        if (cat.isInSittingPose()) {
+        } else if (entity.isSleeping()) {
+
+
+        } else if (entity.isInSittingPose()) {
             if (young) {
                 float tailScale = ageScale * (1f - 0.35f) + 0.35f;
                 float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
@@ -232,7 +233,7 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
                 tailType.y = 21.5F;
             head.z = -4.5F;
             body1.xRot = (float) (-28 / (180 / Math.PI));
-            if (cat.isLongFur()) body2.xRot = (float) (-24.3 / (180 / Math.PI));
+            if (entity.isLongFur()) body2.xRot = (float) (-24.3 / (180 / Math.PI));
             frontLeftLeg.xRot = frontRightLeg.xRot = (float) (28 / (180 / Math.PI));
             backLeftLegPoint.xRot = backRightLegPoint.xRot = (float) (-62.5 / (180 / Math.PI));
             backLeftLeg.xRot = backRightLeg.xRot = 0.0F;
