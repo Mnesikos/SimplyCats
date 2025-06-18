@@ -63,6 +63,7 @@ public class CertificateItem extends Item {
                     else
                         tameable.setTame(false);
                     tameable.getNavigation().stop();
+                    tameable.setOrderedToSit(false);
                     tameable.setOwnerUUID(null);
                     player.displayClientMessage(Component.translatable("chat.info.release_usage", tameable.getName()), true);
                     this.playTameEffect(false, tameable.level(), tameable);

@@ -5,14 +5,13 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
-import com.github.mnesikos.simplycats.entity.goal.CatSitOnBlockGoal;
 import com.github.mnesikos.simplycats.entity.goal.*;
+import com.github.mnesikos.simplycats.entity.goal.CatSitOnBlockGoal;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -202,13 +201,15 @@ public class SimplyCatEntity extends TamableAnimal {
             setTimeCycle("end", random.nextInt(SCConfig.heat_cooldown.get()));
 
         ServerLevel serverLevel = world.getLevel();
-        if (serverLevel.structureManager().getStructureWithPieceAt(blockPosition(), StructureTags.CATS_SPAWN_AS_BLACK).isValid()) {
-//            setVariant(BuiltInRegistries.CAT_VARIANT.getOrThrow(CatVariant.ALL_BLACK));
+        if (serverLevel.structureManager().getStructureWithPieceAt(blockPosition(), StructureTags.CATS_SPAWN_AS_BLACK).isValid())
             setPersistenceRequired();
-//            if (random.nextFloat() < 0.9F) setFixed((byte) 1);
-        }
 
         return entityData;
+    }
+
+    @Override
+    public boolean removeWhenFarAway(double distance) {
+        return !isTame() && !getServer().overworld().isCloseToVillage(blockPosition(), 2) && tickCount > 2400;
     }
 
     @Override
@@ -1077,14 +1078,13 @@ public class SimplyCatEntity extends TamableAnimal {
 
         child.setGenotype(EYE_COLOR, eye);
 
-        if (this.isTame() && this.getOwnerUUID() != null) { // checks if mother is tamed & her owner's UUID exists
-            Player owner = this.level().getPlayerByUUID(this.getOwnerUUID()); // grabs owner by UUID
-            if (owner != null && child.canBeTamed(owner)) { // checks if owner is not null (is online), and is able to tame the kitten OR if the tame limit is disabled
-                child.setTamed(this.isTame(), owner); // sets tamed by owner
-                if (this.getHomePos() != null) // checks mother's home point
-                    child.setHomePos(this.getHomePos()); // sets kitten's home point to mother's
-            }
+        if (this.isTame() && this.getOwnerUUID() != null) { // child inherits mother's tame/owner status
+            Player owner = this.level().getPlayerByUUID(this.getOwnerUUID());
+            if (owner != null && child.canBeTamed(owner)) child.setTamed(this.isTame(), owner);
+            else setPersistenceRequired(); // tamed cats' kittens shouldn't despawn? todo
         }
+
+        if (this.getHomePos() != null) child.setHomePos(this.getHomePos()); // child inherits mother's home point
 
         return child;
     }
@@ -1095,6 +1095,7 @@ public class SimplyCatEntity extends TamableAnimal {
         Item item = stack.getItem();
         if (item == SCItems.STERILIZE_POTION.get() && (!isTame() || (isTame() && isOwnedBy(player))) && player.isCrouching() && !isFixed()) {
             setFixed((byte) 1);
+            setPersistenceRequired();
             for (int i = 0; i < 7; ++i) {
                 double d0 = getRandom().nextGaussian() * 0.02D;
                 double d1 = getRandom().nextGaussian() * 0.02D;
@@ -1138,6 +1139,7 @@ public class SimplyCatEntity extends TamableAnimal {
             if (isFood(stack) && this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, hand, stack);
                 this.heal(1.0F);
+                setPersistenceRequired();
                 return InteractionResult.CONSUME;
             }
 
@@ -1151,6 +1153,7 @@ public class SimplyCatEntity extends TamableAnimal {
 
             if (item == SCItems.TREAT_BAG.get() && player.distanceToSqr(this) < 9.0D && (!this.isTame() || this.isOwnedBy(player))) {
                 if (player.isDiscrete()) {
+                    setPersistenceRequired();
                     if (this.getHomePos() != null) {
                         homePos = null;
                         player.displayClientMessage(Component.translatable("chat.info.remove_home", this.getName()), true);
@@ -1170,7 +1173,9 @@ public class SimplyCatEntity extends TamableAnimal {
             this.setTarget(null);
         }
 
-        return super.mobInteract(player, hand);
+        InteractionResult interactionResult = super.mobInteract(player, hand);
+        if (interactionResult.consumesAction()) setPersistenceRequired();
+        return interactionResult;
     }
 
     @Override

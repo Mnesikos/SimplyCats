@@ -1,15 +1,15 @@
 package com.github.mnesikos.simplycats.entity.npc;
 
 import com.github.mnesikos.simplycats.SimplyCats;
+import com.github.mnesikos.simplycats.block.CatnipBlock;
+import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.StructureTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
@@ -44,7 +44,20 @@ public class SimplyCatSpawner implements CustomSpawner {
                                 return spawnInVillage(level, blockPos);
 
                             if (level.structureManager().getStructureWithPieceAt(blockPos, StructureTags.CATS_SPAWN_IN).isValid())
-                                return spawnInHut(level, blockPos);
+                                return spawnOneCatWithinRadius(level, blockPos, 16);
+                        }
+
+                        if (level.getBlockState(blockPos).is(SCBlocks.CATNIP_CROP.get()) && level.getBlockState(blockPos).getValue(CatnipBlock.AGE) == 3) {
+                            int horizontalRange = 4;
+                            for (int h = 0; h < horizontalRange; ++h) {
+                                for (int x = 0; x <= h; x = x > 0 ? -x : 1 - x) {
+                                    for (int z = x < h && x > -h ? h : 0; z <= h; z = z > 0 ? -z : 1 - z) {
+                                        BlockPos blockPos2 = blockPos.offset(x, 0, z);
+                                        if (NaturalSpawner.isSpawnPositionOk(SpawnPlacements.Type.ON_GROUND, level, blockPos2, SimplyCats.CAT.get()))
+                                            return spawnOneCatWithinRadius(level, blockPos2, 48);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -57,7 +70,7 @@ public class SimplyCatSpawner implements CustomSpawner {
         int radius = 48;
         if (level.getPoiManager().getCountInRange((poiTypeHolder) ->
                 poiTypeHolder.is(PoiTypes.HOME), blockPos, radius, PoiManager.Occupancy.IS_OCCUPIED) > 4L) {
-            List<SimplyCatEntity> list = level.getEntitiesOfClass(SimplyCatEntity.class, (new AABB(blockPos)).inflate(radius, 8.0D, radius));
+            List<SimplyCatEntity> list = level.getEntitiesOfClass(SimplyCatEntity.class, new AABB(blockPos).inflate(radius, 8.0D, radius));
 
             if (list.size() < 3) return spawnCat(blockPos, level);
         }
@@ -65,9 +78,8 @@ public class SimplyCatSpawner implements CustomSpawner {
         return 0;
     }
 
-    private int spawnInHut(ServerLevel level, BlockPos blockPos) {
-        int radius = 16;
-        List<SimplyCatEntity> list = level.getEntitiesOfClass(SimplyCatEntity.class, (new AABB(blockPos)).inflate(radius, 8.0D, radius));
+    private int spawnOneCatWithinRadius(ServerLevel level, BlockPos blockPos, int radius) {
+        List<SimplyCatEntity> list = level.getEntitiesOfClass(SimplyCatEntity.class, new AABB(blockPos).inflate(radius, 8.0D, radius));
         return list.isEmpty() ? spawnCat(blockPos, level) : 0;
     }
 
