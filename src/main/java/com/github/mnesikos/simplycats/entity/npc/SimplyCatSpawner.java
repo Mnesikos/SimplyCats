@@ -90,7 +90,7 @@ public class SimplyCatSpawner implements CustomSpawner {
             cat.moveTo(blockPos, 0.0F, 0.0F);
             cat.finalizeSpawn(level, level.getCurrentDifficultyAt(blockPos), MobSpawnType.NATURAL, null, null);
             level.addFreshEntityWithPassengers(cat);
-            if (cat.getRandom().nextFloat() < 0.9F || !SCConfig.intact_stray_spawns.get()) cat.setFixed((byte) 1);
+            if (cat.getRandom().nextFloat() < 0.9F || !SCConfig.intact_stray_spawns.get()) cat.setFixed(true);
             if (cat.getRandom().nextFloat() < 0.1F) {
                 int age = cat.getRandom().nextInt(SCConfig.kitten_mature_timer.get());
                 cat.setAge(-age);

@@ -7,7 +7,6 @@ import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.npc.SimplyCatSpawner;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.animal.Cat;
@@ -56,9 +55,9 @@ public class SCEvents {
                     simplyCatEntity.heal(4.0F);
                     simplyCatEntity.setHomePos(simplyCatEntity.blockPosition());
                     simplyCatEntity.setPhenotype();
-                    if (!vanillaCat.isTame() && !SCConfig.intact_stray_spawns.get()) simplyCatEntity.setFixed((byte) 1);
+                    if (!vanillaCat.isTame() && !SCConfig.intact_stray_spawns.get()) simplyCatEntity.setFixed(true);
                     if (simplyCatEntity.getSex() == Genetics.Sex.FEMALE && !simplyCatEntity.isFixed())
-                        simplyCatEntity.setTimeCycle("end", simplyCatEntity.getRandom().nextInt(SCConfig.heat_cooldown.get()));
+                        simplyCatEntity.setHeatCycle(false, simplyCatEntity.getRandom().nextInt(SCConfig.heat_cooldown.get()));
 
                     if (world instanceof ServerLevel)
                         ((ServerLevel) world).addWorldGenChunkEntities(Stream.of(simplyCatEntity));

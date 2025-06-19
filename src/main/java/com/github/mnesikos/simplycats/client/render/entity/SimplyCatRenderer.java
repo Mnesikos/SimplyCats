@@ -83,9 +83,9 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
             float backgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
             int j = (int) (backgroundOpacity * 255.0F) << 24;
 
-            Component info = Component.translatable((cat.getSex() == Genetics.Sex.FEMALE ? (cat.getBreedingStatus("inheat") ? "chat.info.in_heat" : "chat.info.not_in_heat") : "chat.info.male"), cat.getMateTimer());
-            if (cat.getBreedingStatus("ispregnant"))
-                info = Component.translatable(cat.getBreedingStatus("inheat") ? "chat.info.pregnant_heat" : "chat.info.pregnant", cat.getMateTimer());
+            Component info = Component.translatable((cat.getSex() == Genetics.Sex.FEMALE ? (cat.getBreedingStatus(SimplyCatEntity.BreedingStatus.HEAT) ? "chat.info.in_heat" : "chat.info.not_in_heat") : "chat.info.male"), cat.getMateTimer());
+            if (cat.getBreedingStatus(SimplyCatEntity.BreedingStatus.PREGNANT))
+                info = Component.translatable(cat.getBreedingStatus(SimplyCatEntity.BreedingStatus.HEAT) ? "chat.info.pregnant_heat" : "chat.info.pregnant", cat.getMateTimer());
 
             Font fontRenderer = this.getFont();
             float centeredPos = (float) (-fontRenderer.width(info) / 2);

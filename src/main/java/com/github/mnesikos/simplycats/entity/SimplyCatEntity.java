@@ -80,9 +80,6 @@ public class SimplyCatEntity extends TamableAnimal {
     @Nullable
     BlockPos homePos;
     public static final EntityDataAccessor<String> OWNER_NAME = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<Byte> FIXED = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<Byte> IN_HEAT = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<Byte> IS_PREGNANT = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Integer> MATE_TIMER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> KITTENS = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Optional<UUID>> MOTHER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -157,9 +154,6 @@ public class SimplyCatEntity extends TamableAnimal {
         this.entityData.define(WHITE_PAWS_3, "");
 
         this.entityData.define(OWNER_NAME, "");
-        this.entityData.define(FIXED, (byte) 0);
-        this.entityData.define(IN_HEAT, (byte) 0);
-        this.entityData.define(IS_PREGNANT, (byte) 0);
         this.entityData.define(MATE_TIMER, 0);
         this.entityData.define(KITTENS, 0);
         this.entityData.define(MOTHER, Optional.empty());
@@ -198,7 +192,7 @@ public class SimplyCatEntity extends TamableAnimal {
             if (isTame())
                 setOrderedToSit(!isOrderedToSit());
         if (getSex() == Genetics.Sex.FEMALE && !isFixed())
-            setTimeCycle("end", random.nextInt(SCConfig.heat_cooldown.get()));
+            setHeatCycle(false, random.nextInt(SCConfig.heat_cooldown.get()));
 
         ServerLevel serverLevel = world.getLevel();
         if (serverLevel.structureManager().getStructureWithPieceAt(blockPosition(), StructureTags.CATS_SPAWN_AS_BLACK).isValid())
@@ -227,19 +221,19 @@ public class SimplyCatEntity extends TamableAnimal {
         }
 
         if (!this.level().isClientSide && !this.isBaby() && !this.isFixed() && this.getSex() == Genetics.Sex.FEMALE) { //if female & adult & not fixed
-            if (this.getBreedingStatus("inheat")) //if in heat
+            if (this.getBreedingStatus(BreedingStatus.HEAT)) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
-                    if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("end", SCConfig.heat_cooldown.get()); //sets out of heat for 16 (default) minecraft days
+                    if (!this.getBreedingStatus(BreedingStatus.PREGNANT)) //and not pregnant
+                        setHeatCycle(false, SCConfig.heat_cooldown.get()); //sets out of heat for 16 (default) minecraft days
                     else { //or if IS pregnant
-                        setTimeCycle("pregnant", SCConfig.pregnancy_timer.get()); //and heat time runs out, starts pregnancy timer for birth
-                        this.setBreedingStatus("inheat", false); //sets out of heat
+                        setMateTimer(SCConfig.pregnancy_timer.get()); //and heat time runs out, starts pregnancy timer for birth
+                        this.setBreedingStatus(BreedingStatus.HEAT, false); //sets out of heat
                     }
                 }
-            if (!this.getBreedingStatus("inheat")) { //if not in heat
+            if (!this.getBreedingStatus(BreedingStatus.HEAT)) { //if not in heat
                 if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
-                    if (!this.getBreedingStatus("ispregnant")) //and not pregnant
-                        setTimeCycle("start", SCConfig.heat_timer.get()); //sets in heat for 2 minecraft days
+                    if (!this.getBreedingStatus(BreedingStatus.PREGNANT)) //and not pregnant
+                        setHeatCycle(true, SCConfig.heat_timer.get()); //sets in heat for 2 minecraft days
                 }
             }
         }
@@ -262,9 +256,9 @@ public class SimplyCatEntity extends TamableAnimal {
         if (!this.isBaby() && !this.isFixed()) { //if not a child & not fixed
             int mateTimer = this.getMateTimer();
             if (this.getSex() == Genetics.Sex.FEMALE) {
-                if (this.getBreedingStatus("inheat") || this.getBreedingStatus("ispregnant")) {
+                if (this.getBreedingStatus(BreedingStatus.HEAT) || this.getBreedingStatus(BreedingStatus.PREGNANT)) {
                     --mateTimer;
-                    if (this.getBreedingStatus("inheat")) {
+                    if (this.getBreedingStatus(BreedingStatus.HEAT)) {
                         if (mateTimer % 10 == 0) {
 
                             double d0 = this.random.nextGaussian() * 0.02D;
@@ -273,7 +267,7 @@ public class SimplyCatEntity extends TamableAnimal {
                             this.level().addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
                         }
                     }
-                } else if (!this.getBreedingStatus("inheat") && !this.getBreedingStatus("ispregnant"))
+                } else if (!this.getBreedingStatus(BreedingStatus.HEAT) && !this.getBreedingStatus(BreedingStatus.PREGNANT))
                     ++mateTimer;
             } else if (this.getSex() == Genetics.Sex.MALE) {
                 if (mateTimer > 0)
@@ -680,52 +674,9 @@ public class SimplyCatEntity extends TamableAnimal {
         return (UUID) ((Optional) this.entityData.get(FATHER)).orElse(null);
     }
 
-    public void setFixed(byte fixed) { // 1 = fixed, 0 = intact
-        this.entityData.set(FIXED, fixed);
-    }
-
-    public boolean isFixed() {
-        return this.entityData.get(FIXED) == 1;
-    }
-
-    public byte getIsFixed() {
-        return this.entityData.get(FIXED);
-    }
-
-    public void setTimeCycle(String s, int time) {
-        if (s.equals("start")) {
-            this.setBreedingStatus("inheat", true);
-            this.setMateTimer(time);
-        }
-        if (s.equals("end")) {
-            this.setBreedingStatus("inheat", false);
-            this.setMateTimer(-time);
-        }
-        if (s.equals("pregnancy")) {
-            this.setMateTimer(time);
-        }
-    }
-
-    public void setBreedingStatus(String string, boolean parTrue) {
-        if (string.equals("inheat")) {
-            if (parTrue)
-                this.entityData.set(IN_HEAT, (byte) 1);
-            else
-                this.entityData.set(IN_HEAT, (byte) 0);
-        } else if (string.equals("ispregnant")) {
-            if (parTrue)
-                this.entityData.set(IS_PREGNANT, (byte) 1);
-            else
-                this.entityData.set(IS_PREGNANT, (byte) 0);
-        }
-    }
-
-    public boolean getBreedingStatus(String string) {
-        if (string.equals("inheat"))
-            return this.entityData.get(IN_HEAT) == 1;
-        else if (string.equals("ispregnant"))
-            return this.entityData.get(IS_PREGNANT) == 1;
-        return false;
+    public void setHeatCycle(boolean startHeat, int time) {
+        setBreedingStatus(BreedingStatus.HEAT, startHeat);
+        setMateTimer(startHeat ? time : -time);
     }
 
     public void setMateTimer(int time) {
@@ -764,6 +715,42 @@ public class SimplyCatEntity extends TamableAnimal {
         return this.getPersistentData().getCompound("Father" + i);
     }
 
+    public void setFixed(boolean isFixed) {
+        setFlag(8, isFixed);
+    }
+
+    public boolean isFixed() {
+        return getFlag(8);
+    }
+
+    public void setBreedingStatus(BreedingStatus breedingStatus, boolean isTrue) {
+        if (breedingStatus == BreedingStatus.HEAT) setFlag(16, isTrue);
+        else if (breedingStatus == BreedingStatus.PREGNANT) setFlag(32, isTrue);
+    }
+
+    public boolean getBreedingStatus(BreedingStatus breedingStatus) {
+        if (breedingStatus == BreedingStatus.HEAT) return getFlag(16);
+        else if (breedingStatus == BreedingStatus.PREGNANT) return getFlag(32);
+        else return false;
+    }
+
+    public boolean isAngry() {
+        return getFlag(2);
+    }
+
+    public void setAngry(boolean isAngry) {
+        setFlag(2, isAngry);
+    }
+
+    private void setFlag(int flagId, boolean isFlag) {
+        if (isFlag) entityData.set(DATA_FLAGS_ID, (byte) (entityData.get(DATA_FLAGS_ID) | flagId));
+        else entityData.set(DATA_FLAGS_ID, (byte) (entityData.get(DATA_FLAGS_ID) & ~flagId));
+    }
+
+    private boolean getFlag(int flagId) {
+        return (entityData.get(DATA_FLAGS_ID) & flagId) != 0;
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
@@ -789,10 +776,10 @@ public class SimplyCatEntity extends TamableAnimal {
         if (getHomePos() != null)
             compound.put("HomePos", NbtUtils.writeBlockPos(getHomePos()));
 
-        compound.putByte("Fixed", this.getIsFixed());
+        compound.putByte("Fixed", isFixed() ? (byte) 1 : (byte) 0);
         if (this.getSex() == Genetics.Sex.FEMALE) {
-            compound.putBoolean("InHeat", this.getBreedingStatus("inheat"));
-            compound.putBoolean("IsPregnant", this.getBreedingStatus("ispregnant"));
+            compound.putBoolean("InHeat", this.getBreedingStatus(BreedingStatus.HEAT));
+            compound.putBoolean("IsPregnant", this.getBreedingStatus(BreedingStatus.PREGNANT));
             compound.putInt("Kittens", this.getKittens());
             for (int i = 0; i < 5; i++)
                 compound.put("Father" + i, this.getFather(i));
@@ -833,10 +820,10 @@ public class SimplyCatEntity extends TamableAnimal {
         if (compound.contains("HomePos"))
             setHomePos(NbtUtils.readBlockPos(compound.getCompound("HomePos")));
 
-        this.setFixed(compound.getByte("Fixed"));
+        this.setFixed(compound.getByte("Fixed") != (byte) 0);
         if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed()) {
-            this.setBreedingStatus("inheat", compound.getBoolean("InHeat"));
-            this.setBreedingStatus("ispregnant", compound.getBoolean("IsPregnant"));
+            this.setBreedingStatus(BreedingStatus.HEAT, compound.getBoolean("InHeat"));
+            this.setBreedingStatus(BreedingStatus.PREGNANT, compound.getBoolean("IsPregnant"));
             this.setKittens(compound.getInt("Kittens"));
             for (int i = 0; i < 5; i++) {
                 this.setFather(i, compound.get("Father" + i));
@@ -1002,7 +989,7 @@ public class SimplyCatEntity extends TamableAnimal {
             return false;
 
         if ((this.getSex() == Genetics.Sex.MALE && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
-            return (mate.getSex() == Genetics.Sex.FEMALE && mate.getBreedingStatus("inheat")); // returns true if (mate) is female & in heat
+            return (mate.getSex() == Genetics.Sex.FEMALE && mate.getBreedingStatus(BreedingStatus.HEAT)); // returns true if (mate) is female & in heat
         else
             return false;
     }
@@ -1094,7 +1081,7 @@ public class SimplyCatEntity extends TamableAnimal {
         ItemStack stack = player.getItemInHand(hand);
         Item item = stack.getItem();
         if (item == SCItems.STERILIZE_POTION.get() && (!isTame() || (isTame() && isOwnedBy(player))) && player.isCrouching() && !isFixed()) {
-            setFixed((byte) 1);
+            setFixed(true);
             setPersistenceRequired();
             for (int i = 0; i < 7; ++i) {
                 double d0 = getRandom().nextGaussian() * 0.02D;
@@ -1144,7 +1131,7 @@ public class SimplyCatEntity extends TamableAnimal {
             }
 
             if (item == Items.BONE && player.isDiscrete()) {
-                if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus("ispregnant"))
+                if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus(BreedingStatus.PREGNANT))
                     player.displayClientMessage(Component.translatable("chat.info.kitten_count", this.getKittens()), true);
                 if (this.isBaby())
                     player.displayClientMessage(Component.literal(this.getAge() + " // " + this.getAgeTracker() + " // " + this.getMatureTimer()), true);
@@ -1181,19 +1168,6 @@ public class SimplyCatEntity extends TamableAnimal {
     @Override
     public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
         return false;
-    }
-
-    public boolean isAngry() {
-        return ((this.entityData.get(DATA_FLAGS_ID)) & 2) != 0;
-    }
-
-    public void setAngry(boolean angry) {
-        byte b0 = this.entityData.get(DATA_FLAGS_ID);
-
-        if (angry)
-            this.entityData.set(DATA_FLAGS_ID, (byte) (b0 | 2));
-        else
-            this.entityData.set(DATA_FLAGS_ID, (byte) (b0 & -3));
     }
 
     @Nullable
@@ -1250,7 +1224,7 @@ public class SimplyCatEntity extends TamableAnimal {
                         cat.setGenotype(BOBTAIL, "Jb-Jb");
                         cat.selectWhiteMarkings();
                         cat.setGenotype(EYE_COLOR, "green");
-                        cat.setFixed((byte) 1);
+                        cat.setFixed(true);
 
                     case "spinny":
                         cat.setGenotype(FUR_LENGTH, "L-l");
@@ -1272,5 +1246,10 @@ public class SimplyCatEntity extends TamableAnimal {
             }
         }
         super.setCustomName(name);
+    }
+
+    public enum BreedingStatus {
+        HEAT,
+        PREGNANT;
     }
 }

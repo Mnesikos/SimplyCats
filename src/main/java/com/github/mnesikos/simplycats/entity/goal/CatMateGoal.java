@@ -42,7 +42,7 @@ public class CatMateGoal extends Goal {
             return false;
 
         target = getNearbyMate();
-        if (target != null && cat.getSensing().hasLineOfSight(target) && target.getBreedingStatus("inheat")) {
+        if (target != null && cat.getSensing().hasLineOfSight(target) && target.getBreedingStatus(SimplyCatEntity.BreedingStatus.HEAT)) {
             if (!target.isTame()) return true;
             LivingEntity targetOwner = target.getOwner();
             return !ownerExceedsLimit(target, targetOwner) && !ownerIsOffline(target, targetOwner);
@@ -57,7 +57,7 @@ public class CatMateGoal extends Goal {
             return false;
 
         boolean maleCooldownCheck = cat.getSex() == Genetics.Sex.MALE && cat.getMateTimer() == 0;
-        boolean femaleHeatCheck = target.getSex() == Genetics.Sex.FEMALE && target.getBreedingStatus("inheat");
+        boolean femaleHeatCheck = target.getSex() == Genetics.Sex.FEMALE && target.getBreedingStatus(SimplyCatEntity.BreedingStatus.HEAT);
 
         nearbyCats = level.getEntitiesOfClass(cat.getClass(), cat.getBoundingBox().inflate(NEARBY_RADIUS_CHECK));
 
@@ -119,13 +119,13 @@ public class CatMateGoal extends Goal {
         } else {
             litterSize = level.random.nextInt(6 - target.getKittens()) + 1; // max of 6, minus already accrued kittens
         }
-        target.setBreedingStatus("ispregnant", true);
+        target.setBreedingStatus(SimplyCatEntity.BreedingStatus.PREGNANT, true);
         target.setKittens(litterSize);
         target.addFather(cat, target.getKittens()); // save father nbt data to mother cat for each kitten added to litterSize
 
         if (litterSize == 6 || target.getKittens() == 6 || level.random.nextInt(4) == 0) { // full litter OR 25% chance ends heat
-            target.setBreedingStatus("inheat", false);
-            target.setTimeCycle("pregnancy", SCConfig.pregnancy_timer.get()); // starts pregnancy timer
+            target.setBreedingStatus(SimplyCatEntity.BreedingStatus.HEAT, false);
+            target.setMateTimer(SCConfig.pregnancy_timer.get()); // starts pregnancy timer
         }
     }
 }

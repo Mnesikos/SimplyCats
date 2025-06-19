@@ -4,16 +4,14 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.entity.core.Genetics;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.MinecraftForge;
-
-import java.util.Random;
 
 public class CatBirthGoal extends Goal {
     private final SimplyCatEntity mother;
@@ -27,7 +25,7 @@ public class CatBirthGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (this.mother.getSex() != Genetics.Sex.FEMALE || !this.mother.getBreedingStatus("ispregnant") || this.mother.getBreedingStatus("inheat"))
+        if (this.mother.getSex() != Genetics.Sex.FEMALE || !this.mother.getBreedingStatus(SimplyCatEntity.BreedingStatus.PREGNANT) || this.mother.getBreedingStatus(SimplyCatEntity.BreedingStatus.HEAT))
             return false;
 
         else if (this.mother.getMateTimer() >= 0)
@@ -38,7 +36,7 @@ public class CatBirthGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return this.mother.getBreedingStatus("ispregnant");
+        return this.mother.getBreedingStatus(SimplyCatEntity.BreedingStatus.PREGNANT);
     }
 
     @Override
@@ -57,8 +55,8 @@ public class CatBirthGoal extends Goal {
         }
 
         this.mother.setKittens(0); // resets kitten counter
-        this.mother.setBreedingStatus("ispregnant", false); // ends pregnancy
-        this.mother.setTimeCycle("end", SCConfig.heat_cooldown.get()); // sets out of heat timer
+        this.mother.setBreedingStatus(SimplyCatEntity.BreedingStatus.PREGNANT, false); // ends pregnancy
+        this.mother.setHeatCycle(false, SCConfig.heat_cooldown.get()); // sets out of heat timer
     }
 
     private void spawnBaby(SimplyCatEntity father) {
