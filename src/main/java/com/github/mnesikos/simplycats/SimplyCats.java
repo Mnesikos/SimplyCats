@@ -10,6 +10,7 @@ import com.github.mnesikos.simplycats.data.*;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.event.SCSounds;
+import com.github.mnesikos.simplycats.item.SCComposting;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
@@ -103,7 +104,10 @@ public class SimplyCats {
 
     public void setup(final FMLCommonSetupEvent event) {
         SpawnPlacements.register(CAT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SimplyCatEntity::checkAnimalSpawnRules);
-        event.enqueueWork(SCVillagers::registerTrades);
+        event.enqueueWork(() -> {
+            SCVillagers.registerTrades();
+            SCComposting.registerCompostables();
+        });
     }
 
     private void setupClient(final FMLClientSetupEvent event) {
