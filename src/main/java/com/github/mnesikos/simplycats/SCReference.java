@@ -9,14 +9,23 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
 public class SCReference {
     private static final Map<UUID, String> CUSTOM_CATS = Maps.newHashMap();
-
     private static final List<Item> EDIBLE = new ArrayList<>();
+
+    public static boolean isFarmersRespiteLoaded() {
+        return ModList.get().isLoaded("farmersrespite");
+    }
+
+    public static boolean isRatEntity(Entity entity) {
+        String entityType = EntityType.getKey(entity.getType()).toString();
+        return entityType.equals("rats:rat")/* || entityType.equals("zawa:brownrat")*/;
+    }
 
     public static void registerCatFoods() { //todo
         // add vanilla raw meats
@@ -67,10 +76,5 @@ public class SCReference {
     static {
         CUSTOM_CATS.put(UUID.fromString("9b1ef261-ebc0-42ad-aacb-621b50fb8269"), "penny");
         CUSTOM_CATS.put(UUID.fromString("966ebb69-a63d-4bb2-ac90-ed39d8c64b80"), "spinny");
-    }
-
-    public static boolean isRatEntity(Entity entity) {
-        String entityType = EntityType.getKey(entity.getType()).toString();
-        return entityType.equals("rats:rat")/* || entityType.equals("zawa:brownrat")*/;
     }
 }
