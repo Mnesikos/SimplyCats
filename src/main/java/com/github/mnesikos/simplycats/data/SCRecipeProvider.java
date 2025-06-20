@@ -3,7 +3,7 @@ package com.github.mnesikos.simplycats.data;
 import com.github.mnesikos.simplycats.SCReference;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
-import com.github.mnesikos.simplycats.compat.farmersrespite.FarmersRespiteCompat;
+import com.github.mnesikos.simplycats.compat.FarmersRespiteCompat;
 import com.github.mnesikos.simplycats.item.SCItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;

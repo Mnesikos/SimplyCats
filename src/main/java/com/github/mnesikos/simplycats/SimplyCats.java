@@ -4,7 +4,7 @@ import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.client.color.ColorEvents;
 import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
 import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
-import com.github.mnesikos.simplycats.compat.farmersrespite.FarmersRespiteCompat;
+import com.github.mnesikos.simplycats.compat.FarmersRespiteCompat;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.data.*;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
