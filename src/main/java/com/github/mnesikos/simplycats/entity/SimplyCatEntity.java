@@ -225,50 +225,49 @@ public class SimplyCatEntity extends TamableAnimal {
     @Override
     public void tick() {
         super.tick();
-        if (this.getNearestLaser() != null) {
-            if (this.isOrderedToSit()) this.setOrderedToSit(false);
-            this.getNavigation().moveTo(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 1.2D);
-            this.getLookControl().setLookAt(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 10.0F, (float) this.getHeadRotSpeed());
-        }
-
-        if (!this.level().isClientSide && !this.isBaby() && !this.isFixed() && this.getSex() == Sex.FEMALE) { //if female & adult & not fixed
-            if (this.getBreedingStatus(BreedingStatus.HEAT)) //if in heat
-                if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
-                    if (!this.getBreedingStatus(BreedingStatus.PREGNANT)) //and not pregnant
-                        setHeatCycle(false, SCConfig.heat_cooldown.get()); //sets out of heat for 16 (default) minecraft days
-                    else { //or if IS pregnant
-                        setMateTimer(SCConfig.pregnancy_timer.get()); //and heat time runs out, starts pregnancy timer for birth
-                        this.setBreedingStatus(BreedingStatus.HEAT, false); //sets out of heat
-                    }
-                }
-            if (!this.getBreedingStatus(BreedingStatus.HEAT)) { //if not in heat
-                if (this.getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
-                    if (!this.getBreedingStatus(BreedingStatus.PREGNANT)) //and not pregnant
-                        setHeatCycle(true, SCConfig.heat_timer.get()); //sets in heat for 2 minecraft days
-                }
-            }
-        }
-
-        if (this.tickCount % 40 == 0) {
-            if (!this.level().isClientSide && this.getOwner() != null)
-                this.setOwnerName(this.getOwner().getDisplayName().getString());
-        }
-
-        if (this.level().isClientSide && this.entityData.isDirty()) {
-            this.entityData.packDirty();
-            this.resetTexturePrefix();
-        }
-
-        if (isResting() && tickCount % 5 == 0) {
-            playSound(SoundEvents.CAT_PURR, 0.6F + 0.4F * (random.nextFloat() - random.nextFloat()), 1.0F);
+        if (level().isClientSide && entityData.isDirty()) {
+            entityData.packDirty();
+            resetTexturePrefix();
         }
 
         if (isEffectiveAi()) {
+            if (getNearestLaser() != null) {
+                setOrderedToSit(false);
+                setRestingState(RestingState.AWAKE.ordinal());
+                getNavigation().moveTo(getNearestLaser().x, getNearestLaser().y, getNearestLaser().z, 1.2D);
+                getLookControl().setLookAt(getNearestLaser().x, getNearestLaser().y, getNearestLaser().z, 10.0F, (float) getHeadRotSpeed());
+            }
+
+            if (!isBaby() && !isFixed() && getSex() == Sex.FEMALE) { //if female & adult & not fixed
+                if (getBreedingStatus(BreedingStatus.HEAT)) //if in heat
+                    if (getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
+                        if (!getBreedingStatus(BreedingStatus.PREGNANT)) //and not pregnant
+                            setHeatCycle(false, SCConfig.heat_cooldown.get()); //sets out of heat for 16 (default) minecraft days
+                        else { //or if IS pregnant
+                            setMateTimer(SCConfig.pregnancy_timer.get()); //and heat time runs out, starts pregnancy timer for birth
+                            setBreedingStatus(BreedingStatus.HEAT, false); //sets out of heat
+                        }
+                    }
+                if (!getBreedingStatus(BreedingStatus.HEAT)) { //if not in heat
+                    if (getMateTimer() >= 0) { //and timer is finished (reaching 0 after being in negatives)
+                        if (!getBreedingStatus(BreedingStatus.PREGNANT)) //and not pregnant
+                            setHeatCycle(true, SCConfig.heat_timer.get()); //sets in heat for 2 minecraft days
+                    }
+                }
+            }
+
+            if (tickCount % 40 == 0 && getOwner() != null) setOwnerName(getOwner().getDisplayName().getString());
+
             boolean inWater = isInWater();
             if (inWater || isOrderedToSit() || getTarget() != null || level().isThundering())
                 setRestingState(SimplyCatEntity.RestingState.AWAKE.ordinal());
             if (inWater || isResting()) setOrderedToSit(false);
         }
+
+        if (isResting() && tickCount % 5 == 0)
+            playSound(SoundEvents.CAT_PURR, 0.6F + 0.4F * (random.nextFloat() - random.nextFloat()), 1.0F);
+        if (temptGoal != null && temptGoal.isRunning() && tickCount % 100 == 0)
+            playSound(SoundEvents.CAT_BEG_FOR_FOOD, 1.0F, 1.0F);
     }
 
     @Override
