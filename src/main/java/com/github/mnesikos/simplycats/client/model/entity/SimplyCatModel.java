@@ -206,7 +206,7 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
         backLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F + 4.5F) * 0.5F * limbSwingAmount;
         tailType.setPos(0.0F, 15.0F, 7.6F);
         tail1.setRotation((float) Math.toRadians(180), 0.0F, 0.0F);
-        tail2.xRot = (float) Math.toRadians(10);
+        tail2.setRotation((float) Math.toRadians(10), 0.0F, 0.0F);
         tailBobbed.xRot = (float) Math.toRadians(135);
         earLeft1.setRotation(0.0F, 0.0F, 0.0F);
         earRight1.setRotation(0.0F, 0.0F, 0.0F);

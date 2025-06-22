@@ -5,7 +5,6 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.github.mnesikos.simplycats.entity.goal.*;
-import com.github.mnesikos.simplycats.entity.goal.SCSitOnBlockGoal;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -247,6 +246,16 @@ public class SimplyCatEntity extends TamableAnimal {
         if (this.level().isClientSide && this.entityData.isDirty()) {
             this.entityData.packDirty();
             this.resetTexturePrefix();
+        }
+
+        if (isResting() && tickCount % 5 == 0) {
+            playSound(SoundEvents.CAT_PURR, 0.6F + 0.4F * (random.nextFloat() - random.nextFloat()), 1.0F);
+        }
+
+        if (isEffectiveAi()) {
+            boolean inWater = isInWater();
+            if (inWater || isOrderedToSit() || getTarget() != null || level().isThundering()) setRestingState(0);
+            if (inWater || isResting()) setOrderedToSit(false);
         }
     }
 
