@@ -131,9 +131,9 @@ public class SimplyCats {
         dataGenerator.addProvider(event.includeClient(), new SCBlockStates(packOutput, event.getExistingFileHelper()));
 //        dataGenerator.addProvider(event.includeClient(), new SCItemModels(packOutput, event.getExistingFileHelper()));
 
-//        SCTags.SCBlockTags blockTagsProvider = new SCTags.SCBlockTags(packOutput, event.getLookupProvider(), event.getExistingFileHelper());
-//        dataGenerator.addProvider(event.includeServer(), blockTagsProvider);
-//        dataGenerator.addProvider(event.includeServer(), new SCTags.SCItemTags(packOutput, event.getLookupProvider(), blockTagsProvider, event.getExistingFileHelper()));
+        SCTags.SCBlockTags blockTagsProvider = new SCTags.SCBlockTags(packOutput, event.getLookupProvider(), event.getExistingFileHelper());
+        dataGenerator.addProvider(event.includeServer(), blockTagsProvider);
+        dataGenerator.addProvider(event.includeServer(), new SCTags.SCItemTags(packOutput, event.getLookupProvider(), blockTagsProvider, event.getExistingFileHelper()));
         dataGenerator.addProvider(event.includeServer(), new SCTags.SCPoiTypeTags(packOutput, event.getLookupProvider(), event.getExistingFileHelper()));
         dataGenerator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
                 List.of(new LootTableProvider.SubProviderEntry(SCBlockLoot::new, LootContextParamSets.BLOCK))));
