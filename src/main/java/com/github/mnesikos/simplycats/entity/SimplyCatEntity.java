@@ -1208,20 +1208,15 @@ public class SimplyCatEntity extends TamableAnimal {
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        if (this.isAngry()) {
-            return this.random.nextInt(10) == 0 ? SoundEvents.CAT_HISS : null;
-        } else if (this.isInLove() /*|| this.PURR*/) {
-            return SoundEvents.CAT_PURR;
-        } else {
-            if (this.isTame())
-                return this.random.nextInt(10) == 0 ? SoundEvents.CAT_PURREOW : SoundEvents.CAT_AMBIENT;
-            return SoundEvents.CAT_STRAY_AMBIENT;
-        }
+        if (isAngry()) return SoundEvents.CAT_HISS;
+        else if (isInLove()) return SoundEvents.CAT_PURR;
+        else if (isTame()) return random.nextInt(5) == 0 ? SoundEvents.CAT_PURREOW : SoundEvents.CAT_AMBIENT;
+        return SoundEvents.CAT_STRAY_AMBIENT;
     }
 
     @Override
     public int getAmbientSoundInterval() {
-        return 240;
+        return 900;
     }
 
     @Nullable
