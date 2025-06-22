@@ -180,12 +180,15 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
     public void prepareMobModel(T entity, float limbSwing, float limbSwingAmount, float partialTick) {
         ModelPart tailType = entity.isBobtail() ? tailBobbed : tail1;
         ModelPart head = !entity.isBaby() && entity.isLongFur() ? head2 : head1;
-        ModelPart body = !entity.isBaby() && entity.isLongFur() ? body2 : body1;
 
         head.zRot = 0.0F;
         head.setPos(0.0F, 14.0F, -6.5F);
-        body.setRotation(0.0F, 0.0F, 0.0F);
-        body.y = 18.0F;
+        body1.setRotation(0.0F, 0.0F, 0.0F);
+        body1.y = 18.0F;
+        if (entity.isLongFur()) {
+            body2.setRotation(0.0F, 0.0F, 0.0F);
+            body2.y = 18.0F;
+        }
         frontLeftLegPoint.setRotation(0.0F, 0.0F, 0.0F);
         frontRightLegPoint.setRotation(0.0F, 0.0F, 0.0F);
         frontLeftLegPoint.y = frontRightLegPoint.y = -0.5F;
@@ -196,11 +199,13 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
         backLeftLegPoint.x = 1.7F;
         backRightLegPoint.x = -1.7F;
         frontLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
+        frontLeftLeg.zRot = 0.0F;
         backRightLeg.xRot = Mth.cos(limbSwing * 0.6662F + 1.5F) * 0.5F * limbSwingAmount;
         frontRightLeg.xRot = Mth.cos(limbSwing * 0.6662F + 3.0F) * 0.5F * limbSwingAmount;
+        frontRightLeg.zRot = 0.0F;
         backLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F + 4.5F) * 0.5F * limbSwingAmount;
         tailType.setPos(0.0F, 15.0F, 7.6F);
-        tail1.xRot = (float) Math.toRadians(180);
+        tail1.setRotation((float) Math.toRadians(180), 0.0F, 0.0F);
         tail2.xRot = (float) Math.toRadians(10);
         tailBobbed.xRot = (float) Math.toRadians(135);
         earLeft1.setRotation(0.0F, 0.0F, 0.0F);
@@ -215,7 +220,8 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
 
         if (entity.isCrouching()) {
             head.y += 2.5F;
-            body.y += 2.0F;
+            body1.y += 2.0F;
+            if (entity.isLongFur()) body2.y += 2.0F;
             backLeftLegPoint.y -= 2.0F;
             backRightLegPoint.y -= 2.0F;
             frontLeftLegPoint.y -= 2.0F;
@@ -223,72 +229,78 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
             tailType.y += 2.0F;
             tailType.xRot = ((float) Math.PI / 3F);
 
-        } else if (entity.isSleeping/*isResting*/()) {
-            // loaf todo
-            body.y = 23F;
-            head.xRot = (float) Math.toRadians(16);
-            head.y = 19F;
-            head.z = -4.5F;
-            frontRightLegPoint.setRotation((float) Math.toRadians(96), (float) Math.toRadians(8), 0.0F);
-            frontRightLegPoint.y = 0F;
-            frontLeftLegPoint.setRotation((float) Math.toRadians(96), (float) Math.toRadians(-8), 0.0F);
-            frontLeftLegPoint.y = 0F;
-            backRightLegPoint.setRotation((float) Math.toRadians(-86), (float) Math.toRadians(-8), 0.0F);
-            backRightLegPoint.x = -2.10F;
-            backRightLegPoint.y = 0F;
-            backLeftLegPoint.setRotation((float) Math.toRadians(-86), (float) Math.toRadians(8), 0.0F);
-            backLeftLegPoint.x = 2.10F;
-            backLeftLegPoint.y = 0F;
-            tailType.y = 20F;
-            tail1.xRot = (float) Math.toRadians(67);
-            tail2.xRot = (float) Math.toRadians(12);
+        } else if (entity.isResting()) {
+            body1.y = 23F;
+            if (entity.isLongFur()) body2.y = 23F;
 
-            // lay pose 1 todo
-            body.y = 23F;
-            head.xRot = (float) Math.toRadians(12);
-            head.y = 19F;
-            frontRightLegPoint.xRot = (float) Math.toRadians(-85);
-            frontLeftLegPoint.xRot = (float) Math.toRadians(-85);
-            backRightLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(20), 0.0F);
-            backLeftLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(-20), 0.0F);
-            tailType.y = 20F;
-            tail1.xRot = (float) Math.toRadians(67);
-            tail2.xRot = (float) Math.toRadians(18);
+            if (entity.getRestingState() == SimplyCatEntity.RestingState.RESTING) {
+                head.xRot = (float) Math.toRadians(12);
+                head.y = 19F;
+                frontRightLegPoint.xRot = (float) Math.toRadians(-85);
+                frontLeftLegPoint.xRot = (float) Math.toRadians(-85);
+                backRightLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(20), 0.0F);
+                backLeftLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(-20), 0.0F);
+                tailType.y = 20F;
+                tail1.xRot = (float) Math.toRadians(67);
+                tail2.xRot = (float) Math.toRadians(18);
 
-            // lay pose 2 todo
-            body.zRot = (float) Math.toRadians(-45);
-            body.y = 23F;
-            head.setRotation((float) Math.toRadians(18), (float) Math.toRadians(-8), (float) Math.toRadians(-8));
-            head.x = -3F;
-            head.y = 20.5F;
-            frontRightLegPoint.setRotation((float) Math.toRadians(-82), (float) Math.toRadians(-12), 0.0F);
-            frontRightLegPoint.z = 0.3F;
-            frontLeftLegPoint.setRotation((float) Math.toRadians(-40), 0.0F, (float) Math.toRadians(-24));
-            backRightLegPoint.setRotation((float) Math.toRadians(-32), 0.0F, (float) Math.toRadians(-50));
-            backLeftLegPoint.setRotation((float) Math.toRadians(-8), 0.0F, (float) Math.toRadians(-29));
-            tailType.x = -2F;
-            tailType.y = 21F;
-            tail1.setRotation((float) Math.toRadians(50), 0.0F, (float) Math.toRadians(-66));
-            tail2.xRot = (float) Math.toRadians(18);
+            } else if (entity.getRestingState() == SimplyCatEntity.RestingState.LOAFING) {
+                head.xRot = (float) Math.toRadians(16);
+                head.y = 19F;
+                head.z = -4.5F;
+                frontRightLegPoint.setRotation((float) Math.toRadians(96), (float) Math.toRadians(8), 0.0F);
+                frontRightLegPoint.y = 0F;
+                frontLeftLegPoint.setRotation((float) Math.toRadians(96), (float) Math.toRadians(-8), 0.0F);
+                frontLeftLegPoint.y = 0F;
+                backRightLegPoint.setRotation((float) Math.toRadians(-86), (float) Math.toRadians(-8), 0.0F);
+                backRightLegPoint.x = -2.10F;
+                backRightLegPoint.y = 0F;
+                backLeftLegPoint.setRotation((float) Math.toRadians(-86), (float) Math.toRadians(8), 0.0F);
+                backLeftLegPoint.x = 2.10F;
+                backLeftLegPoint.y = 0F;
+                tailType.y = 20F;
+                tail1.xRot = (float) Math.toRadians(67);
+                tail2.xRot = (float) Math.toRadians(12);
 
-            // roll pose todo
-            body.zRot = (float) Math.toRadians(180);
-            body.y = 20F;
-            head.setRotation(0.0F, (float) Math.toRadians(20), (float) Math.toRadians(180));
-            head.y = 22F;
-            earLeft1.setRotation((float) Math.toRadians(86), (float) Math.toRadians(-56), 0.0F);
-            earRight1.setRotation((float) Math.toRadians(86), (float) Math.toRadians(56), 0.0F);
-            frontRightLegPoint.xRot = (float) Math.toRadians(-85);
-            frontRightLeg.setRotation((float) Math.toRadians(8), 0.0F, (float) Math.toRadians(32));
-            frontLeftLegPoint.xRot = (float) Math.toRadians(-85);
-            frontLeftLeg.setRotation((float) Math.toRadians(-4), 0.0F, (float) Math.toRadians(-5));
-            backRightLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(20), 0.0F);
-            backRightLeg.xRot = (float) Math.toRadians(4);
-            backLeftLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(-20), 0.0F);
-            backLeftLeg.xRot = (float) Math.toRadians(12);
-            tailType.y = 23F;
-            tail1.setRotation((float) Math.toRadians(90), (float) Math.toRadians(-16), (float) Math.toRadians(180));
-            tail2.zRot = (float) Math.toRadians(-12);
+            } else if (entity.getRestingState() == SimplyCatEntity.RestingState.LOUNGING) {
+                body1.zRot = (float) Math.toRadians(-45);
+                if (entity.isLongFur()) body2.zRot = (float) Math.toRadians(-45);
+                head.setRotation((float) Math.toRadians(18), (float) Math.toRadians(-8), (float) Math.toRadians(-8));
+                head.x = -3F;
+                head.y = 20.5F;
+                frontRightLegPoint.setRotation((float) Math.toRadians(-82), (float) Math.toRadians(-12), 0.0F);
+                frontRightLegPoint.z = 0.3F;
+                frontLeftLegPoint.setRotation((float) Math.toRadians(-40), 0.0F, (float) Math.toRadians(-24));
+                backRightLegPoint.setRotation((float) Math.toRadians(-32), 0.0F, (float) Math.toRadians(-50));
+                backLeftLegPoint.setRotation((float) Math.toRadians(-8), 0.0F, (float) Math.toRadians(-29));
+                tailType.x = -2F;
+                tailType.y = 21F;
+                tail1.setRotation((float) Math.toRadians(50), 0.0F, (float) Math.toRadians(-66));
+                tail2.xRot = (float) Math.toRadians(18);
+
+            } else if (entity.getRestingState() == SimplyCatEntity.RestingState.ROLLING) {
+                body1.zRot = (float) Math.toRadians(180);
+                body1.y = 20F;
+                if (entity.isLongFur()) {
+                    body2.zRot = (float) Math.toRadians(180);
+                    body2.y = 20F;
+                }
+                head.setRotation(0.0F, (float) Math.toRadians(20), (float) Math.toRadians(180));
+                head.y = 22F;
+                earLeft1.setRotation((float) Math.toRadians(86), (float) Math.toRadians(-56), 0.0F);
+                earRight1.setRotation((float) Math.toRadians(86), (float) Math.toRadians(56), 0.0F);
+                frontRightLegPoint.xRot = (float) Math.toRadians(-85);
+                frontRightLeg.setRotation((float) Math.toRadians(8), 0.0F, (float) Math.toRadians(32));
+                frontLeftLegPoint.xRot = (float) Math.toRadians(-85);
+                frontLeftLeg.setRotation((float) Math.toRadians(-4), 0.0F, (float) Math.toRadians(-5));
+                backRightLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(20), 0.0F);
+                backRightLeg.xRot = (float) Math.toRadians(4);
+                backLeftLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(-20), 0.0F);
+                backLeftLeg.xRot = (float) Math.toRadians(12);
+                tailType.y = 23F;
+                tail1.setRotation((float) Math.toRadians(90), (float) Math.toRadians(-16), (float) Math.toRadians(180));
+                tail2.zRot = (float) Math.toRadians(-12);
+            }
 
         } else if (entity.isInSittingPose()) {
             if (young) {

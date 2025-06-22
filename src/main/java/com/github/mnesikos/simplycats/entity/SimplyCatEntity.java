@@ -3,10 +3,9 @@ package com.github.mnesikos.simplycats.entity;
 import com.github.mnesikos.simplycats.SCReference;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
-import com.github.mnesikos.simplycats.entity.core.Genetics;
 import com.github.mnesikos.simplycats.entity.core.Genetics.*;
 import com.github.mnesikos.simplycats.entity.goal.*;
-import com.github.mnesikos.simplycats.entity.goal.CatSitOnBlockGoal;
+import com.github.mnesikos.simplycats.entity.goal.SCSitOnBlockGoal;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -86,6 +85,7 @@ public class SimplyCatEntity extends TamableAnimal {
     private static final EntityDataAccessor<Optional<UUID>> FATHER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> AGE_TRACKER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> MATURE_TIMER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DATA_RESTING_STATE = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
 
     private SimplyCatEntity followParent;
     private Vec3 nearestLaser;
@@ -102,10 +102,10 @@ public class SimplyCatEntity extends TamableAnimal {
         this.goalSelector.addGoal(2, new CatSitGoal(this));
 //        this.goalSelector.addGoal(3, new Cat.CatRelaxOnOwnerGoal(this));
         this.goalSelector.addGoal(4, temptGoal);
-//        this.goalSelector.addGoal(5, new CatLieOnBedGoal(this, 1.1D, 8));
+        this.goalSelector.addGoal(5, new SCLieOnBedGoal(this, 1.1D, 8));
         this.goalSelector.addGoal(6, new CatFollowParentGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new CatBirthGoal(this));
-        this.goalSelector.addGoal(7, new CatSitOnBlockGoal(this, 0.8D, 8));
+        this.goalSelector.addGoal(7, new SCSitOnBlockGoal(this, 0.8D, 8));
         this.goalSelector.addGoal(7, new CatSeekCatnipGoal(this, 1.1D, 8));
         this.goalSelector.addGoal(8, new LeapAtTargetGoal(this, 0.4F));
         this.goalSelector.addGoal(9, new CatAttackGoal(this));
@@ -160,6 +160,7 @@ public class SimplyCatEntity extends TamableAnimal {
         this.entityData.define(FATHER, Optional.empty());
         this.entityData.define(AGE_TRACKER, 0);
         this.entityData.define(MATURE_TIMER, 168000f);
+        this.entityData.define(DATA_RESTING_STATE, 0);
     }
 
     @Override
@@ -191,7 +192,7 @@ public class SimplyCatEntity extends TamableAnimal {
         if (!level().isClientSide)
             if (isTame())
                 setOrderedToSit(!isOrderedToSit());
-        if (getSex() == Genetics.Sex.FEMALE && !isFixed())
+        if (getSex() == Sex.FEMALE && !isFixed())
             setHeatCycle(false, random.nextInt(SCConfig.heat_cooldown.get()));
 
         ServerLevel serverLevel = world.getLevel();
@@ -220,7 +221,7 @@ public class SimplyCatEntity extends TamableAnimal {
             this.getLookControl().setLookAt(this.getNearestLaser().x, this.getNearestLaser().y, this.getNearestLaser().z, 10.0F, (float) this.getHeadRotSpeed());
         }
 
-        if (!this.level().isClientSide && !this.isBaby() && !this.isFixed() && this.getSex() == Genetics.Sex.FEMALE) { //if female & adult & not fixed
+        if (!this.level().isClientSide && !this.isBaby() && !this.isFixed() && this.getSex() == Sex.FEMALE) { //if female & adult & not fixed
             if (this.getBreedingStatus(BreedingStatus.HEAT)) //if in heat
                 if (this.getMateTimer() <= 0) { //and timer is finished (reaching 0 after being in positives)
                     if (!this.getBreedingStatus(BreedingStatus.PREGNANT)) //and not pregnant
@@ -255,7 +256,7 @@ public class SimplyCatEntity extends TamableAnimal {
 
         if (!this.isBaby() && !this.isFixed()) { //if not a child & not fixed
             int mateTimer = this.getMateTimer();
-            if (this.getSex() == Genetics.Sex.FEMALE) {
+            if (this.getSex() == Sex.FEMALE) {
                 if (this.getBreedingStatus(BreedingStatus.HEAT) || this.getBreedingStatus(BreedingStatus.PREGNANT)) {
                     --mateTimer;
                     if (this.getBreedingStatus(BreedingStatus.HEAT)) {
@@ -269,7 +270,7 @@ public class SimplyCatEntity extends TamableAnimal {
                     }
                 } else if (!this.getBreedingStatus(BreedingStatus.HEAT) && !this.getBreedingStatus(BreedingStatus.PREGNANT))
                     ++mateTimer;
-            } else if (this.getSex() == Genetics.Sex.MALE) {
+            } else if (this.getSex() == Sex.MALE) {
                 if (mateTimer > 0)
                     --mateTimer;
                 else if (mateTimer <= 0)
@@ -734,12 +735,12 @@ public class SimplyCatEntity extends TamableAnimal {
         else return false;
     }
 
-    public boolean isAngry() {
-        return getFlag(2);
-    }
-
     public void setAngry(boolean isAngry) {
         setFlag(2, isAngry);
+    }
+
+    public boolean isAngry() {
+        return getFlag(2);
     }
 
     private void setFlag(int flagId, boolean isFlag) {
@@ -749,6 +750,18 @@ public class SimplyCatEntity extends TamableAnimal {
 
     private boolean getFlag(int flagId) {
         return (entityData.get(DATA_FLAGS_ID) & flagId) != 0;
+    }
+
+    public void setRestingState(int i) {
+        entityData.set(DATA_RESTING_STATE, i);
+    }
+
+    public RestingState getRestingState() {
+        return RestingState.fromOrdinal(entityData.get(DATA_RESTING_STATE));
+    }
+
+    public boolean isResting() {
+        return getRestingState() != RestingState.AWAKE;
     }
 
     @Override
@@ -775,9 +788,10 @@ public class SimplyCatEntity extends TamableAnimal {
         compound.putString("OwnerName", this.entityData.get(OWNER_NAME));
         if (getHomePos() != null)
             compound.put("HomePos", NbtUtils.writeBlockPos(getHomePos()));
+        compound.putInt("Resting", getRestingState().ordinal());
 
         compound.putByte("Fixed", isFixed() ? (byte) 1 : (byte) 0);
-        if (this.getSex() == Genetics.Sex.FEMALE) {
+        if (this.getSex() == Sex.FEMALE) {
             compound.putBoolean("InHeat", this.getBreedingStatus(BreedingStatus.HEAT));
             compound.putBoolean("IsPregnant", this.getBreedingStatus(BreedingStatus.PREGNANT));
             compound.putInt("Kittens", this.getKittens());
@@ -819,9 +833,10 @@ public class SimplyCatEntity extends TamableAnimal {
         this.setOwnerName(compound.getString("OwnerName"));
         if (compound.contains("HomePos"))
             setHomePos(NbtUtils.readBlockPos(compound.getCompound("HomePos")));
+        setRestingState(compound.getInt("Resting"));
 
         this.setFixed(compound.getByte("Fixed") != (byte) 0);
-        if (this.getSex() == Genetics.Sex.FEMALE && !this.isFixed()) {
+        if (this.getSex() == Sex.FEMALE && !this.isFixed()) {
             this.setBreedingStatus(BreedingStatus.HEAT, compound.getBoolean("InHeat"));
             this.setBreedingStatus(BreedingStatus.PREGNANT, compound.getBoolean("IsPregnant"));
             this.setKittens(compound.getInt("Kittens"));
@@ -988,8 +1003,8 @@ public class SimplyCatEntity extends TamableAnimal {
         if (mate.isFixed() || this.isFixed())
             return false;
 
-        if ((this.getSex() == Genetics.Sex.MALE && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
-            return (mate.getSex() == Genetics.Sex.FEMALE && mate.getBreedingStatus(BreedingStatus.HEAT)); // returns true if (mate) is female & in heat
+        if ((this.getSex() == Sex.MALE && this.getMateTimer() == 0)) // if (this) is male & not on a cooldown
+            return (mate.getSex() == Sex.FEMALE && mate.getBreedingStatus(BreedingStatus.HEAT)); // returns true if (mate) is female & in heat
         else
             return false;
     }
@@ -1089,7 +1104,7 @@ public class SimplyCatEntity extends TamableAnimal {
                 double d2 = getRandom().nextGaussian() * 0.02D;
                 level().addParticle(ParticleTypes.HAPPY_VILLAGER, getRandomX(1.0D), getRandomY() + 0.5D, getRandomZ(1.0D), d0, d1, d2);
             }
-            player.displayClientMessage(Component.translatable(getSex() == Genetics.Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", getName()), true);
+            player.displayClientMessage(Component.translatable(getSex() == Sex.FEMALE ? "chat.info.success_fixed_female" : "chat.info.success_fixed_male", getName()), true);
 
             if (!player.isCreative()) {
                 ItemStack emptyBottle = new ItemStack(Items.GLASS_BOTTLE);
@@ -1131,7 +1146,7 @@ public class SimplyCatEntity extends TamableAnimal {
             }
 
             if (item == Items.BONE && player.isDiscrete()) {
-                if (this.getSex() == Genetics.Sex.FEMALE && this.getBreedingStatus(BreedingStatus.PREGNANT))
+                if (this.getSex() == Sex.FEMALE && this.getBreedingStatus(BreedingStatus.PREGNANT))
                     player.displayClientMessage(Component.translatable("chat.info.kitten_count", this.getKittens()), true);
                 if (this.isBaby())
                     player.displayClientMessage(Component.literal(this.getAge() + " // " + this.getAgeTracker() + " // " + this.getMatureTimer()), true);
@@ -1251,5 +1266,24 @@ public class SimplyCatEntity extends TamableAnimal {
     public enum BreedingStatus {
         HEAT,
         PREGNANT;
+    }
+
+    public enum RestingState {
+        AWAKE,
+        RESTING,
+        LOAFING,
+        LOUNGING,
+        ROLLING;
+
+        public static RestingState fromOrdinal(int ordinal) {
+            return switch (ordinal) {
+                case 0 -> AWAKE;
+                case 1 -> RESTING;
+                case 2 -> LOAFING;
+                case 3 -> LOUNGING;
+                case 4 -> ROLLING;
+                default -> throw new IllegalStateException("Unexpected value: " + ordinal);
+            };
+        }
     }
 }

@@ -16,10 +16,10 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 
-public class CatSitOnBlockGoal extends MoveToBlockGoal {
+public class SCSitOnBlockGoal extends MoveToBlockGoal {
     private final SimplyCatEntity cat;
 
-    public CatSitOnBlockGoal(SimplyCatEntity cat, double speed, int length) {
+    public SCSitOnBlockGoal(SimplyCatEntity cat, double speed, int length) {
         super(cat, speed, length);
         this.cat = cat;
     }
