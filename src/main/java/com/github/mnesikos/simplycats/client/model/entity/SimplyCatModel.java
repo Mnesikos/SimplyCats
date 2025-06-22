@@ -8,7 +8,10 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -106,9 +109,9 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
         PartDefinition backLeftLegDef = backLeftLegPointDef.addOrReplaceChild("backLeftLeg", CubeListBuilder.create().texOffs(1, 22).addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2), PartPose.offset(0.0F, -1.5F, 0.0F));
         PartDefinition backRightLegPointDef = body1Def.addOrReplaceChild("backRightLegPoint", CubeListBuilder.create().texOffs(9, 22).addBox(-1.0F, -1.5F, -1.0F, 0, 0, 0), PartPose.offset(-1.7F, -0.5F, 11.5F));
         PartDefinition backRightLegDef = backRightLegPointDef.addOrReplaceChild("backRightLeg", CubeListBuilder.create().texOffs(9, 22).addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2), PartPose.offset(0.0F, -1.5F, 0.0F));
-        PartDefinition tail1Def = partDefinition.addOrReplaceChild("tail1", CubeListBuilder.create().texOffs(20, 22).addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2), PartPose.offsetAndRotation(0.0F, 15.0F, 7.6F, (float) (180 / (180 / Math.PI)), -0.0F, 0.0F));
-        PartDefinition tailBobbedDef = partDefinition.addOrReplaceChild("tailBobbed", CubeListBuilder.create().texOffs(20, 22).addBox(-1.0F, 0.0F, -1.0F, 2, 2, 2), PartPose.offsetAndRotation(0.0F, 15.0F, 7.6F, (float) (135 / (180 / Math.PI)), -0.0F, 0.0F));
-        PartDefinition tail2Def = tail1Def.addOrReplaceChild("tail2", CubeListBuilder.create().texOffs(28, 22).addBox(-1.0F, 0.0F, -1.0F, 2, 3, 2), PartPose.offsetAndRotation(0.0F, 7.8F, 0.0F, (float) (10 / (180 / Math.PI)), -0.0F, 0.0F));
+        PartDefinition tail1Def = partDefinition.addOrReplaceChild("tail1", CubeListBuilder.create().texOffs(20, 22).addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2), PartPose.offsetAndRotation(0.0F, 15.0F, 7.6F, (float) Math.toRadians(180), -0.0F, 0.0F));
+        PartDefinition tailBobbedDef = partDefinition.addOrReplaceChild("tailBobbed", CubeListBuilder.create().texOffs(20, 22).addBox(-1.0F, 0.0F, -1.0F, 2, 2, 2), PartPose.offsetAndRotation(0.0F, 15.0F, 7.6F, (float) Math.toRadians(135), -0.0F, 0.0F));
+        PartDefinition tail2Def = tail1Def.addOrReplaceChild("tail2", CubeListBuilder.create().texOffs(28, 22).addBox(-1.0F, 0.0F, -1.0F, 2, 3, 2), PartPose.offsetAndRotation(0.0F, 7.8F, 0.0F, (float) Math.toRadians(10), -0.0F, 0.0F));
 
         return LayerDefinition.create(meshDefinition, 64, 32);
     }
@@ -169,51 +172,50 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float netHeadPitch) {
         ModelPart head = !entity.isBaby() && entity.isLongFur() ? head2 : head1;
-        head.xRot = netHeadPitch / (180F / (float) Math.PI);
-        head.yRot = netHeadYaw / (180F / (float) Math.PI);
+        head.xRot = netHeadPitch * ((float) Math.PI / 180F);
+        head.yRot = netHeadYaw * ((float) Math.PI / 180F);
     }
 
     @Override
     public void prepareMobModel(T entity, float limbSwing, float limbSwingAmount, float partialTick) {
         ModelPart tailType = entity.isBobtail() ? tailBobbed : tail1;
         ModelPart head = !entity.isBaby() && entity.isLongFur() ? head2 : head1;
+        ModelPart body = !entity.isBaby() && entity.isLongFur() ? body2 : body1;
 
-        head.y = 14.0F;
-        head.z = -6.5F;
-        body1.xRot = 0.0F;
-        body1.y = 18.0F;
-        if (entity.isLongFur()) {
-            body2.xRot = 0.0F;
-            body2.y = 18.0F;
-        }
-        frontLeftLegPoint.xRot = frontRightLegPoint.xRot = 0.0F;
-        backLeftLegPoint.xRot = backRightLegPoint.xRot = 0.0F;
-        backLeftLegPoint.y = backRightLegPoint.y = -0.5F;
+        head.zRot = 0.0F;
+        head.setPos(0.0F, 14.0F, -6.5F);
+        body.setRotation(0.0F, 0.0F, 0.0F);
+        body.y = 18.0F;
+        frontLeftLegPoint.setRotation(0.0F, 0.0F, 0.0F);
+        frontRightLegPoint.setRotation(0.0F, 0.0F, 0.0F);
         frontLeftLegPoint.y = frontRightLegPoint.y = -0.5F;
+        frontRightLegPoint.z = -0.7F;
+        backLeftLegPoint.setRotation(0.0F, 0.0F, 0.0F);
+        backRightLegPoint.setRotation(0.0F, 0.0F, 0.0F);
+        backLeftLegPoint.y = backRightLegPoint.y = -0.5F;
+        backLeftLegPoint.x = 1.7F;
+        backRightLegPoint.x = -1.7F;
         frontLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
         backRightLeg.xRot = Mth.cos(limbSwing * 0.6662F + 1.5F) * 0.5F * limbSwingAmount;
         frontRightLeg.xRot = Mth.cos(limbSwing * 0.6662F + 3.0F) * 0.5F * limbSwingAmount;
         backLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F + 4.5F) * 0.5F * limbSwingAmount;
-        tailType.y = 15.0F;
-        tail1.xRot = (float) (180 / (180 / Math.PI));
-        tail2.xRot = (float) (10 / (180 / Math.PI));
-        tailBobbed.xRot = (float) (135 / (180 / Math.PI));
-        earLeft1.xRot = 0.0F;
-        earLeft1.yRot = 0.0F;
-        earRight1.xRot = 0.0F;
-        earRight1.yRot = 0.0F;
+        tailType.setPos(0.0F, 15.0F, 7.6F);
+        tail1.xRot = (float) Math.toRadians(180);
+        tail2.xRot = (float) Math.toRadians(10);
+        tailBobbed.xRot = (float) Math.toRadians(135);
+        earLeft1.setRotation(0.0F, 0.0F, 0.0F);
+        earRight1.setRotation(0.0F, 0.0F, 0.0F);
 
         if (entity.isAngry() || entity.isCrouching()) {
-            earLeft1.xRot = (float) (67 / (180 / Math.PI));
-            earLeft1.yRot = (float) (-145 / (180 / Math.PI));
-            earRight1.xRot = (float) (67 / (180 / Math.PI));
-            earRight1.yRot = (float) (145 / (180 / Math.PI));
+            earLeft1.xRot = (float) Math.toRadians(67);
+            earLeft1.yRot = (float) Math.toRadians(-145);
+            earRight1.xRot = (float) Math.toRadians(67);
+            earRight1.yRot = (float) Math.toRadians(145);
         }
 
         if (entity.isCrouching()) {
             head.y += 2.5F;
-            body1.y += 2.0F;
-            if (entity.isLongFur()) body2.y += 2.0F;
+            body.y += 2.0F;
             backLeftLegPoint.y -= 2.0F;
             backRightLegPoint.y -= 2.0F;
             frontLeftLegPoint.y -= 2.0F;
@@ -221,8 +223,72 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
             tailType.y += 2.0F;
             tailType.xRot = ((float) Math.PI / 3F);
 
-        } else if (entity.isSleeping()) {
+        } else if (entity.isSleeping/*isResting*/()) {
+            // loaf todo
+            body.y = 23F;
+            head.xRot = (float) Math.toRadians(16);
+            head.y = 19F;
+            head.z = -4.5F;
+            frontRightLegPoint.setRotation((float) Math.toRadians(96), (float) Math.toRadians(8), 0.0F);
+            frontRightLegPoint.y = 0F;
+            frontLeftLegPoint.setRotation((float) Math.toRadians(96), (float) Math.toRadians(-8), 0.0F);
+            frontLeftLegPoint.y = 0F;
+            backRightLegPoint.setRotation((float) Math.toRadians(-86), (float) Math.toRadians(-8), 0.0F);
+            backRightLegPoint.x = -2.10F;
+            backRightLegPoint.y = 0F;
+            backLeftLegPoint.setRotation((float) Math.toRadians(-86), (float) Math.toRadians(8), 0.0F);
+            backLeftLegPoint.x = 2.10F;
+            backLeftLegPoint.y = 0F;
+            tailType.y = 20F;
+            tail1.xRot = (float) Math.toRadians(67);
+            tail2.xRot = (float) Math.toRadians(12);
 
+            // lay pose 1 todo
+            body.y = 23F;
+            head.xRot = (float) Math.toRadians(12);
+            head.y = 19F;
+            frontRightLegPoint.xRot = (float) Math.toRadians(-85);
+            frontLeftLegPoint.xRot = (float) Math.toRadians(-85);
+            backRightLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(20), 0.0F);
+            backLeftLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(-20), 0.0F);
+            tailType.y = 20F;
+            tail1.xRot = (float) Math.toRadians(67);
+            tail2.xRot = (float) Math.toRadians(18);
+
+            // lay pose 2 todo
+            body.zRot = (float) Math.toRadians(-45);
+            body.y = 23F;
+            head.setRotation((float) Math.toRadians(18), (float) Math.toRadians(-8), (float) Math.toRadians(-8));
+            head.x = -3F;
+            head.y = 20.5F;
+            frontRightLegPoint.setRotation((float) Math.toRadians(-82), (float) Math.toRadians(-12), 0.0F);
+            frontRightLegPoint.z = 0.3F;
+            frontLeftLegPoint.setRotation((float) Math.toRadians(-40), 0.0F, (float) Math.toRadians(-24));
+            backRightLegPoint.setRotation((float) Math.toRadians(-32), 0.0F, (float) Math.toRadians(-50));
+            backLeftLegPoint.setRotation((float) Math.toRadians(-8), 0.0F, (float) Math.toRadians(-29));
+            tailType.x = -2F;
+            tailType.y = 21F;
+            tail1.setRotation((float) Math.toRadians(50), 0.0F, (float) Math.toRadians(-66));
+            tail2.xRot = (float) Math.toRadians(18);
+
+            // roll pose todo
+            body.zRot = (float) Math.toRadians(180);
+            body.y = 20F;
+            head.setRotation(0.0F, (float) Math.toRadians(20), (float) Math.toRadians(180));
+            head.y = 22F;
+            earLeft1.setRotation((float) Math.toRadians(86), (float) Math.toRadians(-56), 0.0F);
+            earRight1.setRotation((float) Math.toRadians(86), (float) Math.toRadians(56), 0.0F);
+            frontRightLegPoint.xRot = (float) Math.toRadians(-85);
+            frontRightLeg.setRotation((float) Math.toRadians(8), 0.0F, (float) Math.toRadians(32));
+            frontLeftLegPoint.xRot = (float) Math.toRadians(-85);
+            frontLeftLeg.setRotation((float) Math.toRadians(-4), 0.0F, (float) Math.toRadians(-5));
+            backRightLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(20), 0.0F);
+            backRightLeg.xRot = (float) Math.toRadians(4);
+            backLeftLegPoint.setRotation((float) Math.toRadians(-85), (float) Math.toRadians(-20), 0.0F);
+            backLeftLeg.xRot = (float) Math.toRadians(12);
+            tailType.y = 23F;
+            tail1.setRotation((float) Math.toRadians(90), (float) Math.toRadians(-16), (float) Math.toRadians(180));
+            tail2.zRot = (float) Math.toRadians(-12);
 
         } else if (entity.isInSittingPose()) {
             if (young) {
@@ -232,12 +298,12 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
             } else
                 tailType.y = 21.5F;
             head.z = -4.5F;
-            body1.xRot = (float) (-28 / (180 / Math.PI));
-            if (entity.isLongFur()) body2.xRot = (float) (-24.3 / (180 / Math.PI));
-            frontLeftLeg.xRot = frontRightLeg.xRot = (float) (28 / (180 / Math.PI));
-            backLeftLegPoint.xRot = backRightLegPoint.xRot = (float) (-62.5 / (180 / Math.PI));
+            body1.xRot = (float) Math.toRadians(-28);
+            if (entity.isLongFur()) body2.xRot = (float) Math.toRadians(-24.3);
+            frontLeftLeg.xRot = frontRightLeg.xRot = (float) Math.toRadians(28);
+            backLeftLegPoint.xRot = backRightLegPoint.xRot = (float) Math.toRadians(-62.5);
             backLeftLeg.xRot = backRightLeg.xRot = 0.0F;
-            tailType.xRot = (float) (79 / (180 / Math.PI));
+            tailType.xRot = (float) Math.toRadians(79);
         }
     }
 }
