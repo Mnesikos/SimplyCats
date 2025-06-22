@@ -99,7 +99,7 @@ public class SimplyCatEntity extends TamableAnimal {
         this.goalSelector.addGoal(1, new FloatGoal(this));
 //        this.goalSelector.addGoal(1, new PanicGoal(this, 1.5D));
         this.goalSelector.addGoal(2, new CatSitGoal(this));
-//        this.goalSelector.addGoal(3, new Cat.CatRelaxOnOwnerGoal(this));
+        this.goalSelector.addGoal(3, new SCRelaxOnOwnerGoal(this));
         this.goalSelector.addGoal(4, temptGoal);
         this.goalSelector.addGoal(5, new SCLieOnBedGoal(this, 1.1D, 8));
         this.goalSelector.addGoal(6, new CatFollowParentGoal(this, 1.0D));
@@ -254,7 +254,7 @@ public class SimplyCatEntity extends TamableAnimal {
 
         if (isEffectiveAi()) {
             boolean inWater = isInWater();
-            if (inWater || isOrderedToSit() || getTarget() != null || level().isThundering()) setRestingState(0);
+            if (inWater || isOrderedToSit() || getTarget() != null || level().isThundering()) setRestingState(SimplyCatEntity.RestingState.AWAKE.ordinal());
             if (inWater || isResting()) setOrderedToSit(false);
         }
     }

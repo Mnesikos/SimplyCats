@@ -17,7 +17,7 @@ public class SCLieOnBedGoal extends MoveToBlockGoal {
     public SCLieOnBedGoal(SimplyCatEntity cat, double speed, int searchRange) {
         super(cat, speed, searchRange, 6);
         this.cat = cat;
-//        this.verticalSearchStart = -2;
+        this.verticalSearchStart = -2;
         this.setFlags(EnumSet.of(Goal.Flag.JUMP, Goal.Flag.MOVE));
     }
 
