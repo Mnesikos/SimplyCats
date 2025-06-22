@@ -55,11 +55,11 @@ public class FarmersRespiteCompat {
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, SimplyCats.MOD_ID);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, SimplyCats.MOD_ID);
 
-    public static final RegistryObject<FluidType> CATNIP_TEA_FLUID = FLUID_TYPES.register("catnip_tea_type", () -> new TeaFluidType(-12493357));
+    public static final RegistryObject<FluidType> CATNIP_TEA_FLUID = FLUID_TYPES.register("catnip_tea_type", () -> new TeaFluidType(0xffecc358));
     public static final RegistryObject<FlowingFluid> CATNIP_TEA_SOURCE = FLUIDS.register("catnip_tea", () -> new ForgeFlowingFluid.Source(FarmersRespiteCompat.CATNIP_TEA_FLUID_PROPERTIES));
     public static final RegistryObject<FlowingFluid> CATNIP_TEA_FLOWING = FLUIDS.register("flowing_catnip_tea", () -> new ForgeFlowingFluid.Flowing(FarmersRespiteCompat.CATNIP_TEA_FLUID_PROPERTIES));
     public static final ForgeFlowingFluid.Properties CATNIP_TEA_FLUID_PROPERTIES = new ForgeFlowingFluid.Properties(FarmersRespiteCompat.CATNIP_TEA_FLUID, FarmersRespiteCompat.CATNIP_TEA_SOURCE, FarmersRespiteCompat.CATNIP_TEA_FLOWING);
-    public static final RegistryObject<FluidType> LONG_CATNIP_TEA_FLUID = FLUID_TYPES.register("long_catnip_tea_type", () -> new TeaFluidType(-12493357));
+    public static final RegistryObject<FluidType> LONG_CATNIP_TEA_FLUID = FLUID_TYPES.register("long_catnip_tea_type", () -> new TeaFluidType(0xffecc358));
     public static final RegistryObject<FlowingFluid> LONG_CATNIP_TEA_SOURCE = FLUIDS.register("long_catnip_tea", () -> new ForgeFlowingFluid.Source(FarmersRespiteCompat.LONG_CATNIP_TEA_FLUID_PROPERTIES));
     public static final RegistryObject<FlowingFluid> LONG_CATNIP_TEA_FLOWING = FLUIDS.register("flowing_long_catnip_tea", () -> new ForgeFlowingFluid.Flowing(FarmersRespiteCompat.LONG_CATNIP_TEA_FLUID_PROPERTIES));
     public static final ForgeFlowingFluid.Properties LONG_CATNIP_TEA_FLUID_PROPERTIES = new ForgeFlowingFluid.Properties(FarmersRespiteCompat.LONG_CATNIP_TEA_FLUID, FarmersRespiteCompat.LONG_CATNIP_TEA_SOURCE, FarmersRespiteCompat.LONG_CATNIP_TEA_FLOWING);
