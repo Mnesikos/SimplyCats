@@ -144,7 +144,7 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:15.20.0.106")
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-
+    implementation fg.deobf("curse.maven:jade-324717:6271651")
     compileOnly fg.deobf("curse.maven:farmers-delight-398521:6597298")
     compileOnly fg.deobf("curse.maven:farmers-respite-551453:5543547")
     compileOnly fg.deobf("curse.maven:create-328085:6641603")

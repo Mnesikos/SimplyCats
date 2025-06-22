@@ -231,6 +231,7 @@
     "config.simplycats.prey_list.tooltip": "This is a list of entities all cats will attack on sight if cat attack AI is enabled.",
 
     "__comment": "Player Messages",
+    "config.jade.plugin_simplycats.cat_timers": "Cat Timers",
     "chat.join.cat_count": "You have %d tamed cats!",
     "chat.pet_carrier.empty": "This carrier is empty.",
     "chat.pet_carrier.full": "This carrier is already full!",
