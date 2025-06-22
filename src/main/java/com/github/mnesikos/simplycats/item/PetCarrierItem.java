@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.Wolf;
@@ -36,7 +37,7 @@ public class PetCarrierItem extends Item {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
-        if (target instanceof SimplyCatEntity || target instanceof Wolf || target instanceof Parrot) {
+        if (target instanceof SimplyCatEntity || target instanceof Cat || target instanceof Wolf || target instanceof Parrot) {
             if (((TamableAnimal) target).getOwner() == player || !((TamableAnimal) target).isTame() || player.hasPermissions(2)) {
                 if (stack.hasTag()) {
                     player.displayClientMessage(Component.translatable("chat.pet_carrier.full"), true);
@@ -120,11 +121,11 @@ public class PetCarrierItem extends Item {
     private void newPet(ItemStack item, Player player, Level world, BlockPos blockPos) {
         TamableAnimal pet = null;
         if (item.getDamageValue() == 3)
-            pet = (SimplyCatEntity) SimplyCats.CAT.get().spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
+            pet = SimplyCats.CAT.get().spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
         else if (item.getDamageValue() == 4)
-            pet = (Wolf) EntityType.WOLF.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
+            pet = EntityType.WOLF.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
         else if (item.getDamageValue() == 5)
-            pet = (Parrot) EntityType.PARROT.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
+            pet = EntityType.PARROT.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
 
         if (pet instanceof SimplyCatEntity && !((SimplyCatEntity) pet).canBeTamed(player)) {
             player.displayClientMessage(Component.translatable("chat.info.tamed_limit_reached"), true);
@@ -145,7 +146,7 @@ public class PetCarrierItem extends Item {
             pet.setHealth(health);
 
         } else if (item.getDamageValue() == 6) {
-            Rabbit rabbit = (Rabbit) EntityType.RABBIT.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
+            Rabbit rabbit = EntityType.RABBIT.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
             if (rabbit != null) {
                 rabbit.getNavigation().stop();
                 rabbit.setHealth(rabbit.getMaxHealth());
