@@ -85,7 +85,9 @@ public class SimplyCatEntity extends TamableAnimal {
     private static final EntityDataAccessor<Integer> AGE_TRACKER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> MATURE_TIMER = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_RESTING_STATE = SynchedEntityData.defineId(SimplyCatEntity.class, EntityDataSerializers.INT);
-
+    @Nullable
+    private SCTemptGoal temptGoal;
+    private SCAvoidEntityGoal<Player> avoidPlayersGoal;
     private SimplyCatEntity followParent;
     private Vec3 nearestLaser;
 
@@ -95,9 +97,9 @@ public class SimplyCatEntity extends TamableAnimal {
 
     @Override
     protected void registerGoals() {
-        TemptGoal temptGoal = new TemptGoal(this, 1.2D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), false);
+        temptGoal = new SCTemptGoal(this, isTame() ? 1.2D : 0.6D, Ingredient.of(SCItems.CATNIP.get(), SCItems.TREAT_BAG.get()), true);
         this.goalSelector.addGoal(1, new FloatGoal(this));
-//        this.goalSelector.addGoal(1, new PanicGoal(this, 1.5D));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 1.5D));
         this.goalSelector.addGoal(2, new CatSitGoal(this));
         this.goalSelector.addGoal(3, new SCRelaxOnOwnerGoal(this));
         this.goalSelector.addGoal(4, temptGoal);
@@ -207,6 +209,15 @@ public class SimplyCatEntity extends TamableAnimal {
     }
 
     @Override
+    protected void reassessTameGoals() {
+        if (avoidPlayersGoal == null)
+            avoidPlayersGoal = new SCAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
+
+        goalSelector.removeGoal(avoidPlayersGoal);
+        if (!isTame()) goalSelector.addGoal(4, avoidPlayersGoal);
+    }
+
+    @Override
     public float getScale() { //setScaleForAge ?
         return this.isBaby() ? 0.7F : 1.0F;
     }
@@ -254,7 +265,8 @@ public class SimplyCatEntity extends TamableAnimal {
 
         if (isEffectiveAi()) {
             boolean inWater = isInWater();
-            if (inWater || isOrderedToSit() || getTarget() != null || level().isThundering()) setRestingState(SimplyCatEntity.RestingState.AWAKE.ordinal());
+            if (inWater || isOrderedToSit() || getTarget() != null || level().isThundering())
+                setRestingState(SimplyCatEntity.RestingState.AWAKE.ordinal());
             if (inWater || isResting()) setOrderedToSit(false);
         }
     }
