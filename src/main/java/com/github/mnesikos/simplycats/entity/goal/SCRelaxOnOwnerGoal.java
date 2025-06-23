@@ -44,7 +44,7 @@ public class SCRelaxOnOwnerGoal extends Goal {
                 owner = (Player) living;
                 if (!living.isSleeping()) return false;
 
-                if (cat.distanceToSqr(owner) > 100.0D) return false;
+                if (cat.distanceToSqr(owner) > 12.0D) return false;
 
                 BlockPos blockpos = owner.blockPosition();
                 BlockState blockstate = cat.level().getBlockState(blockpos);
