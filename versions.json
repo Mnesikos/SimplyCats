@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/simply-cats/files/all",
   "1.20.1": {
+    "1.20.1-0.3.0": "Lots of fun little changes.",
     "1.20.1-0.2.3": "Fixed litter box crash & added back cat bowls!",
     "1.20.1-0.2.2": "Initial port! Nothing new yet."
   },
@@ -23,8 +24,8 @@
     "1.12.2-0.2.0": "Added Color inhibitor gene (silver tabbies and smokes), blue-eyed and red-eyed albino alleles (true albino cats)"
   },
   "promos": {
-    "1.20.1-latest": "1.20.1-0.2.3",
-    "1.20.1-recommended": "1.20.1-0.2.3",
+    "1.20.1-latest": "1.20.1-0.3.0",
+    "1.20.1-recommended": "1.20.1-0.3.0",
     "1.19.2-latest": "1.19.2-0.2.3",
     "1.19.2-recommended": "1.19.2-0.2.3",
     "1.18.2-latest": "1.18.2-0.2.3",
