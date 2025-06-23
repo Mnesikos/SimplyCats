@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/Mnesikos/SimplyCats/issues"
 
 [[mods]]
     modId="${mod_id}"
-    version="${mod_version}"
+    version="${minecraft_version}-${mod_version}"
     displayName="${mod_name}"
     updateJSONURL="https://raw.githubusercontent.com/Mnesikos/SimplyCats/forge/1.16.5/versions.json"
     displayURL="https://github.com/Mnesikos/SimplyCats/wiki"
