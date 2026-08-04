@@ -5,6 +5,7 @@ import com.github.mnesikos.simplycats.block.CatnipBlock;
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.item.SCItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
@@ -17,6 +18,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SCBlockLoot extends VanillaBlockLoot {
+    public SCBlockLoot(HolderLookup.Provider registries) {
+        super(registries);
+    }
+
     @Override
     protected void generate() {
         LootItemCondition.Builder catnipBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(SCBlocks.CATNIP_CROP.get()).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CatnipBlock.AGE, 3));

@@ -3,8 +3,11 @@ package com.github.mnesikos.simplycats.data;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.item.SCItems;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -15,12 +18,12 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import java.util.function.Consumer;
 
 public class SCRecipeProvider extends RecipeProvider {
-    public SCRecipeProvider(PackOutput packOutput) {
-        super(packOutput);
+    public SCRecipeProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+        super(packOutput, registries);
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(RecipeOutput consumer) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SCItems.CAT_BOOK.get())
                 .requires(Items.BOOK)
                 .requires(SCItems.CATNIP.get())
@@ -162,7 +165,7 @@ public class SCRecipeProvider extends RecipeProvider {
         return SimplyCats.MOD_ID + ":" + name;
     }
 
-    protected static void catBowl(Consumer<FinishedRecipe> consumer, ItemLike bowl, ItemLike terracotta) {
+    protected static void catBowl(RecipeOutput consumer, ItemLike bowl, ItemLike terracotta) {
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, bowl)
                 .pattern("C C")
                 .pattern(" C ")
@@ -171,7 +174,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .unlockedBy(getHasName(terracotta), has(terracotta)).save(consumer);
     }
 
-    protected static void litterBox(Consumer<FinishedRecipe> consumer, ItemLike litterBox, ItemLike terracotta) {
+    protected static void litterBox(RecipeOutput consumer, ItemLike litterBox, ItemLike terracotta) {
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, litterBox)
                 .pattern("CCC")
                 .pattern("C C")
@@ -181,7 +184,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .unlockedBy(getHasName(terracotta), has(terracotta)).save(consumer);
     }
 
-    protected static void scratchingPost(Consumer<FinishedRecipe> consumer, ItemLike scratchingPost, ItemLike planks) {
+    protected static void scratchingPost(RecipeOutput consumer, ItemLike scratchingPost, ItemLike planks) {
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, scratchingPost)
                 .pattern(" P ")
                 .pattern("STS")
@@ -193,7 +196,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .unlockedBy(getHasName(planks), has(planks)).save(consumer);
     }
 
-    protected static void windowPerch(Consumer<FinishedRecipe> consumer, ItemLike windowPerch, ItemLike planks) {
+    protected static void windowPerch(RecipeOutput consumer, ItemLike windowPerch, ItemLike planks) {
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, windowPerch, 4)
                 .pattern("PPP")
                 .pattern("T T")
@@ -203,7 +206,7 @@ public class SCRecipeProvider extends RecipeProvider {
                 .unlockedBy(getHasName(planks), has(planks)).save(consumer);
     }
 
-    protected static void catTreePieces(Consumer<FinishedRecipe> consumer, ItemLike bed, ItemLike box, ItemLike post, ItemLike carpet) {
+    protected static void catTreePieces(RecipeOutput consumer, ItemLike bed, ItemLike box, ItemLike post, ItemLike carpet) {
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, bed, 4)
                 .pattern("C C")
                 .pattern("CCC")

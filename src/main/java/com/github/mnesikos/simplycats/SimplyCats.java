@@ -22,7 +22,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -34,13 +34,13 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -57,7 +57,7 @@ public class SimplyCats {
             .title(Component.translatable("itemGroup." + MOD_ID + ".tab"))
             .icon(() -> SCItems.PET_CARRIER.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
-                ItemStack catCarrier = new ItemStack(SCItems.PET_CARRIER.get(), 1, new CompoundTag());
+                ItemStack catCarrier = new ItemStack(SCItems.PET_CARRIER.get());
                 catCarrier.setDamageValue(3);
                 output.accept(catCarrier);
                 SCItems.REGISTRAR.getEntries().forEach(item -> output.accept(item.get()));
@@ -69,10 +69,8 @@ public class SimplyCats {
             .setShouldReceiveVelocityUpdates(true).setTrackingRange(80).setUpdateInterval(1)
             .build("cat"));
 
-    public SimplyCats() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SCConfig.SPEC);
+    public SimplyCats(IEventBus bus, ModContainer modContainer) {
+        modContainer.registerConfig(ModConfig.Type.COMMON, SCConfig.SPEC);
 
         ENTITIES.register(bus);
         SCBlocks.REGISTRAR.register(bus);
@@ -83,6 +81,7 @@ public class SimplyCats {
         SCVillagers.PROFESSIONS.register(bus);
 
         bus.addListener(this::setup);
+        bus.addListener(this::registerSpawnPlacements);
         bus.addListener(this::registerAttributes);
         bus.addListener(this::gatherData);
 
@@ -98,7 +97,6 @@ public class SimplyCats {
     }
 
     public void setup(final FMLCommonSetupEvent event) {
-        SpawnPlacements.register(CAT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SimplyCatEntity::checkAnimalSpawnRules);
         event.enqueueWork(() -> {
             SCVillagers.registerTrades();
             SCComposting.registerCompostables();
@@ -113,6 +111,10 @@ public class SimplyCats {
     @OnlyIn(Dist.CLIENT)
     public void registerLayerDefinitions(final EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(SimplyCatModel.LAYER_LOCATION, SimplyCatModel::createBodyLayer);
+    }
+
+    public void registerSpawnPlacements(final RegisterSpawnPlacementsEvent event) {
+        event.register(CAT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SimplyCatEntity::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
     public void registerAttributes(EntityAttributeCreationEvent event) {
@@ -131,8 +133,8 @@ public class SimplyCats {
         dataGenerator.addProvider(event.includeServer(), new SCTags.SCItemTags(packOutput, event.getLookupProvider(), blockTagsProvider, event.getExistingFileHelper()));
         dataGenerator.addProvider(event.includeServer(), new SCTags.SCPoiTypeTags(packOutput, event.getLookupProvider(), event.getExistingFileHelper()));
         dataGenerator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(SCBlockLoot::new, LootContextParamSets.BLOCK))));
-        dataGenerator.addProvider(event.includeServer(), new SCRecipeProvider(packOutput));
+                List.of(new LootTableProvider.SubProviderEntry(SCBlockLoot::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
+        dataGenerator.addProvider(event.includeServer(), new SCRecipeProvider(packOutput, event.getLookupProvider()));
         dataGenerator.addProvider(event.includeServer(), new SCAdvancementProvider(packOutput, event.getLookupProvider(), event.getExistingFileHelper()));
     }
 }
