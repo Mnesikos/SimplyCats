@@ -32,7 +32,9 @@ public class CatBookScreen extends Screen {
     private static final int bookImageHeight = 182;
     private static final int bookImageWidth = 281;
     private static final ResourceLocation BG_TEXTURE = ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "textures/gui/cat_book.png");
-    private static final ResourceLocation GUI_ICONS_LOCATION = ResourceLocation.parse("textures/gui/icons.png");
+    private static final ResourceLocation HEART_CONTAINER_SPRITE = ResourceLocation.parse("hud/heart/container");
+    private static final ResourceLocation HEART_FULL_SPRITE = ResourceLocation.parse("hud/heart/full");
+    private static final ResourceLocation HEART_HALF_SPRITE = ResourceLocation.parse("hud/heart/half");
 
     private Level world;
     private int currPage;
@@ -185,20 +187,17 @@ public class CatBookScreen extends Screen {
         int i2 = Math.max(10 - (l1 - 2), 3);
 
         for (int wholeHearts = Mth.ceil((maxHealth) / 2.0F) - 1; wholeHearts >= 0; --wholeHearts) {
-            int textureX = 16;
-            int textureY = 0;
-
             int j4 = Mth.ceil((float) (wholeHearts + 1) / 10.0F) - 1;
             int guiX = x + wholeHearts % 10 * 8;
             int guiY = y - j4 * i2;
 
-            guiGraphics.blit(GUI_ICONS_LOCATION, guiX, guiY, 16 + textureY * 9, 9 * textureY, 9, 9);
+            guiGraphics.blitSprite(HEART_CONTAINER_SPRITE, guiX, guiY, 9, 9);
 
             if (wholeHearts * 2 + 1 < catHealth)
-                guiGraphics.blit(GUI_ICONS_LOCATION, guiX, guiY, textureX + 36, 9 * textureY, 9, 9);
+                guiGraphics.blitSprite(HEART_FULL_SPRITE, guiX, guiY, 9, 9);
 
             if (wholeHearts * 2 + 1 == catHealth)
-                guiGraphics.blit(GUI_ICONS_LOCATION, guiX, guiY, textureX + 45, 9 * textureY, 9, 9);
+                guiGraphics.blitSprite(HEART_HALF_SPRITE, guiX, guiY, 9, 9);
         }
     }
 
