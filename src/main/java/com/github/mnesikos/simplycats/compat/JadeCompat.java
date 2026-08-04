@@ -41,7 +41,7 @@ public class JadeCompat implements IWailaPlugin {
 
             iTooltip.add(Component.translatable(catIsFemale ? "cat.sex.female.name" : "cat.sex.male.name")
                     .append(cat.isFixed() && entityAccessor.showDetails() ? Component.literal(", ").append(Component.translatable("cat.fixed.name")) : Component.empty())
-                    .append(!cat.isFixed() && !cat.isBaby() && entityAccessor.showDetails() ? Component.literal(", ").append(Component.translatable(timerInfo, IThemeHelper.get().seconds(timer))) : Component.empty()));
+                    .append(!cat.isFixed() && !cat.isBaby() && entityAccessor.showDetails() ? Component.literal(", ").append(Component.translatable(timerInfo, IThemeHelper.get().seconds(timer, entityAccessor.tickRate()))) : Component.empty()));
         }
 
         @Override

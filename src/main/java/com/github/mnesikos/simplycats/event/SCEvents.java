@@ -24,7 +24,7 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.stream.Stream;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber
 public class SCEvents {
     private static SimplyCatSpawner simplyCatSpawner;
 
@@ -85,7 +85,7 @@ public class SCEvents {
     }*/
 
     public static void onLivingChangeTargetEvent(LivingChangeTargetEvent event) {
-        if (event.getEntity() instanceof Witch witch && event.getNewTarget() instanceof Player) {
+        if (event.getEntity() instanceof Witch witch && event.getNewAboutToBeSetTarget() instanceof Player) {
             if (!witch.level().getEntitiesOfClass(SimplyCatEntity.class, witch.getBoundingBox().inflate(16.0F)).isEmpty()) {
                 event.setCanceled(true);
                 witch.setTarget(null);

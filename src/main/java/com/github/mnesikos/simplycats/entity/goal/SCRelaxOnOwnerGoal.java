@@ -96,7 +96,7 @@ public class SCRelaxOnOwnerGoal extends Goal {
         mutableBlockPos.set(cat.isLeashed() ? cat.getLeashHolder().blockPosition() : cat.blockPosition());
         cat.randomTeleport((mutableBlockPos.getX() + random.nextInt(11) - 5), (mutableBlockPos.getY() + random.nextInt(5) - 2), (mutableBlockPos.getZ() + random.nextInt(11) - 5), false);
         mutableBlockPos.set(cat.blockPosition());
-        LootTable lootTable = cat.level().getServer().getLootData().getLootTable(BuiltInLootTables.CAT_MORNING_GIFT);
+        LootTable lootTable = cat.level().getServer().reloadableRegistries().getLootTable(BuiltInLootTables.CAT_MORNING_GIFT);
         LootParams lootParams = new LootParams.Builder((ServerLevel) cat.level()).withParameter(LootContextParams.ORIGIN, cat.position()).withParameter(LootContextParams.THIS_ENTITY, cat).create(LootContextParamSets.GIFT);
 
         for (ItemStack itemStack : lootTable.getRandomItems(lootParams)) {

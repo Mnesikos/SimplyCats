@@ -87,7 +87,7 @@ public class SimplyCatSpawner implements CustomSpawner {
         if (cat == null) return 0;
         else {
             cat.moveTo(blockPos, 0.0F, 0.0F);
-            cat.finalizeSpawn(level, level.getCurrentDifficultyAt(blockPos), MobSpawnType.NATURAL, null, null);
+            cat.finalizeSpawn(level, level.getCurrentDifficultyAt(blockPos), MobSpawnType.NATURAL, null);
             level.addFreshEntityWithPassengers(cat);
             if (cat.getRandom().nextFloat() < 0.9F || !SCConfig.intact_stray_spawns.get()) cat.setFixed(true);
             if (cat.getRandom().nextFloat() < 0.1F) {

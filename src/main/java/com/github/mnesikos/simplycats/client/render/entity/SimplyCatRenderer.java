@@ -66,8 +66,8 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
     }
 
     @Override
-    protected void renderNameTag(SimplyCatEntity cat, Component textComponent, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, int p_225629_5_) { // todo
-        super.renderNameTag(cat, textComponent, matrixStack, renderTypeBuffer, p_225629_5_);
+    protected void renderNameTag(SimplyCatEntity cat, Component textComponent, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, int p_225629_5_, float partialTick) { // todo
+        super.renderNameTag(cat, textComponent, matrixStack, renderTypeBuffer, p_225629_5_, partialTick);
 
         double distance = this.entityRenderDispatcher.distanceToSqr(cat);
         if (ClientHooks.isNameplateInRenderDistance(cat, distance) && this.entityRenderDispatcher.camera.getEntity().isShiftKeyDown() && !cat.isFixed() && !cat.isBaby()) {

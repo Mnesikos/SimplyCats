@@ -64,7 +64,8 @@ public class CatBirthGoal extends Goal {
         SimplyCatEntity child = (SimplyCatEntity) this.mother.getBreedOffspring(serverWorld, father);
 
         final net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent event = new net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent(mother, father, child);
-        final boolean cancelled = NeoForge.EVENT_BUS.post(event);
+        NeoForge.EVENT_BUS.post(event);
+        final boolean cancelled = event.isCanceled();
         child = (SimplyCatEntity) event.getChild();
 
         if (cancelled) {

@@ -3,6 +3,7 @@ package com.github.mnesikos.simplycats.item;
 import com.github.mnesikos.simplycats.client.gui.CatBookScreen;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -38,7 +40,7 @@ public class CatBookItem extends Item {
             SimplyCatEntity cat = (SimplyCatEntity) target;
             stack = player.getItemInHand(hand);
 
-            CompoundTag compound = stack.getOrCreateTag();
+            CompoundTag compound = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
             ListTag tagList;
             boolean catExists = false;
@@ -72,7 +74,7 @@ public class CatBookItem extends Item {
                 player.displayClientMessage(Component.translatable("chat.book.update_cat_data", cat.getName()), true);
             }
 
-            stack.setTag(compound);
+            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compound));
 
             /*if (player.level.isClientSide) // todo ???
                 Minecraft.getInstance().setScreen(new CatBookScreen(compound, player.level, catInList));*/
@@ -85,8 +87,8 @@ public class CatBookItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        CompoundTag bookTag = player.getItemInHand(hand).getTag();
-        if (bookTag == null || bookTag.isEmpty() || bookTag.getList("pages", 10).isEmpty())
+        CompoundTag bookTag = player.getItemInHand(hand).getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        if (bookTag.isEmpty() || bookTag.getList("pages", 10).isEmpty())
             player.displayClientMessage(Component.translatable("chat.book.empty_book"), true);
         else if (world.isClientSide)
             this.openCatBook(bookTag, world);
@@ -101,7 +103,7 @@ public class CatBookItem extends Item {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.translatable("tooltip.cat_book.usage"));
     }
 }

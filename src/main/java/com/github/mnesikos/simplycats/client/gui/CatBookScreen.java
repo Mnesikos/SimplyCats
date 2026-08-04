@@ -92,7 +92,7 @@ public class CatBookScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         int leftX = (width - bookImageWidth) / 2;
@@ -102,7 +102,7 @@ public class CatBookScreen extends Screen {
         guiGraphics.blit(BG_TEXTURE, leftX, 2, 0, 0, bookImageWidth, bookImageHeight, 288, 256);
 
         if (bookPages.get(this.currPage) != null || !bookPages.getCompound(this.currPage).isEmpty() || cat != null) {
-            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftX + 40, 74, 50, (leftX + 51) - mouseX, 50 - mouseY, cat);
+            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftX + 15, 24, leftX + 65, 124, 50, 0.0625F, mouseX, mouseY, cat);
 
             int nameWidth = this.font.width(cat.getName());
             guiGraphics.drawString(font, cat.getName(), leftCenterX - (nameWidth / 2), 14, 0, false);

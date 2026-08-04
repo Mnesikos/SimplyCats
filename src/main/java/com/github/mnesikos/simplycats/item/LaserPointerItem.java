@@ -2,8 +2,8 @@ package com.github.mnesikos.simplycats.item;
 
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -33,16 +34,12 @@ public class LaserPointerItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
-        if (stack.getTag() == null) {//Check if we do NOT have NBT data
-            stack.setTag(new CompoundTag()); //Give the item new data and set it to true since this would be the first right click
-            stack.getTag().putBoolean("On", true);
-        } else {
-            //If we already have data just flip the On tag
-            stack.getTag().putBoolean("On", !stack.getTag().getBoolean("On"));
-        }
+        //Flip the On tag; a stack without data turns on with the first right click
+        boolean on = !stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getBoolean("On");
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean("On", on));
 
         //After we set the value above we check if its off
-        if (!stack.getTag().getBoolean("On")) {
+        if (!on) {
             //If the pointer is off we want to get the cats within the area + a little more than whats defined below
             //and set the nearest pointer to null
             List<SimplyCatEntity> cats = worldIn.getEntitiesOfClass(SimplyCatEntity.class, playerIn.getBoundingBox().inflate(14.0D));
@@ -53,17 +50,18 @@ public class LaserPointerItem extends Item {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (stack.getTag() != null)
-            tooltip.add(Component.literal(stack.getTag().getBoolean("On") ? "On" : "Off").withStyle(ChatFormatting.ITALIC));
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        if (data != null)
+            tooltip.add(Component.literal(data.copyTag().getBoolean("On") ? "On" : "Off").withStyle(ChatFormatting.ITALIC));
+        super.appendHoverText(stack, context, tooltip, flagIn);
     }
 
     @Override
     public void inventoryTick(ItemStack stack, Level worldIn, Entity e, int itemSlot, boolean isSelected) {
         if (isSelected) {
-            if (stack.getTag() != null) {
-                if (stack.getTag().getBoolean("On")) {
+            {
+                if (stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getBoolean("On")) {
                     //Get all cats within a 2 block radius of the player
 //					List<SimplyCatEntity> cats = worldIn.getEntitiesWithinAABB(SimplyCatEntity.class, e.getEntityBoundingBox().grow(2.0D));
 

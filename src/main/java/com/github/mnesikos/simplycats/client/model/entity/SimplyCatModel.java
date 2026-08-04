@@ -117,7 +117,7 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack matrixStack, VertexConsumer iVertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStack, VertexConsumer iVertexBuilder, int packedLightIn, int packedOverlayIn, int color) {
         ModelPart tailType = isBobtail ? tailBobbed : tail1;
         if (young) {
             float bodyScale = ageScale * (1f - 0.5f) + 0.5f;
@@ -127,7 +127,7 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
             float zHeadOffset = 2.5f * (1f - bodyScale) / 16F;
             matrixStack.translate(0.0f, yHeadOffset, zHeadOffset);
             matrixStack.scale(headScale, headScale, headScale);
-            head1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            head1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, color);
             matrixStack.popPose();
 
             float tailScale = ageScale * (1f - 0.35f) + 0.35f;
@@ -136,36 +136,36 @@ public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
             float zTailOffset = 0.8f * (1f - tailScale) / 16F;
             matrixStack.translate(0.0f, yTailOffset, zTailOffset);
             matrixStack.scale(tailScale, tailScale, tailScale);
-            tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, color);
             matrixStack.popPose();
 
             matrixStack.pushPose();
             matrixStack.translate(0.0f, 24f * (1f - bodyScale) / 16F, 0.0f);
             matrixStack.scale(bodyScale, bodyScale, ageScale * (1f - 0.4f) + 0.4f);
-            body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, color);
             matrixStack.popPose();
         } else {
             ModelPart head = isLongFur ? head2 : head1;
             matrixStack.pushPose();
             matrixStack.scale(1.01F, 1.01F, 1.01F);
-            head.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            head.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, color);
             matrixStack.popPose();
-            body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            body1.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, color);
             if (isLongFur) {
                 matrixStack.pushPose();
                 matrixStack.translate(body2.x / 16F, body2.y / 16F, body2.z / 16F);
                 matrixStack.scale(1.02F, 1.2F, 1.01F);
                 matrixStack.translate(-body2.x / 16F, -body2.y / 16F, -body2.z / 16F);
-                body2.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                body2.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, color);
                 matrixStack.popPose();
                 matrixStack.pushPose();
                 matrixStack.translate(tailType.x / 16F, tailType.y / 16F, tailType.z / 16F);
                 matrixStack.scale(1.25F, 1.0F, 1.25F);
                 matrixStack.translate(-tailType.x / 16F, -tailType.y / 16F, -tailType.z / 16F);
-                tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, color);
                 matrixStack.popPose();
             } else
-                tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                tailType.render(matrixStack, iVertexBuilder, packedLightIn, packedOverlayIn, color);
         }
     }
 
