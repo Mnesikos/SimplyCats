@@ -15,8 +15,6 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
-import java.util.function.Consumer;
-
 public class SCRecipeProvider extends RecipeProvider {
     public SCRecipeProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
         super(packOutput, registries);
