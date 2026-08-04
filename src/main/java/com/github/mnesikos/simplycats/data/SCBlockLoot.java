@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -132,7 +132,7 @@ public class SCBlockLoot extends VanillaBlockLoot {
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return ForgeRegistries.BLOCKS.getEntries().stream()
+        return BuiltInRegistries.BLOCK.entrySet().stream()
                 .filter(e -> e.getKey().location().getNamespace().equals(SimplyCats.MOD_ID))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());

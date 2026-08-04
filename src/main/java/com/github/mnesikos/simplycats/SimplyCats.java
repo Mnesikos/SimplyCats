@@ -43,7 +43,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Collections;
@@ -53,7 +52,7 @@ import java.util.List;
 public class SimplyCats {
     public static final String MOD_ID = "simplycats";
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, SimplyCats.MOD_ID);
-    public static final DeferredHolder<CreativeModeTab> ITEM_GROUP = CREATIVE_MODE_TABS.register(MOD_ID + ".tab", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEM_GROUP = CREATIVE_MODE_TABS.register(MOD_ID + ".tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .title(Component.translatable("itemGroup." + MOD_ID + ".tab"))
             .icon(() -> SCItems.PET_CARRIER.get().getDefaultInstance())
@@ -64,8 +63,8 @@ public class SimplyCats {
                 SCItems.REGISTRAR.getEntries().forEach(item -> output.accept(item.get()));
             }).build());
 
-    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, SimplyCats.MOD_ID);
-    public static final DeferredHolder<EntityType<SimplyCatEntity>> CAT = ENTITIES.register("cat", () -> EntityType.Builder.of(SimplyCatEntity::new, MobCategory.CREATURE)
+    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, SimplyCats.MOD_ID);
+    public static final DeferredHolder<EntityType<?>, EntityType<SimplyCatEntity>> CAT = ENTITIES.register("cat", () -> EntityType.Builder.of(SimplyCatEntity::new, MobCategory.CREATURE)
             .sized(0.6f, 0.8f)
             .setShouldReceiveVelocityUpdates(true).setTrackingRange(80).setUpdateInterval(1)
             .build("cat"));

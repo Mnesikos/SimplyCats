@@ -4,15 +4,15 @@ import com.github.mnesikos.simplycats.SimplyCats;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class SCSounds {
-    public static final DeferredRegister<SoundEvent> REGISTRAR = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, SimplyCats.MOD_ID);
+    public static final DeferredRegister<SoundEvent> REGISTRAR = DeferredRegister.create(Registries.SOUND_EVENT, SimplyCats.MOD_ID);
 
-    public static DeferredHolder<SoundEvent> SHAKE_TREATS = registerSound("shake_treats");
+    public static DeferredHolder<SoundEvent, SoundEvent> SHAKE_TREATS = registerSound("shake_treats");
 
-    private static DeferredHolder<SoundEvent> registerSound(String name) {
+    private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
         return REGISTRAR.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyCats.MOD_ID, name)));
     }
 }

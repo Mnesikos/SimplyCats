@@ -1,6 +1,8 @@
 package com.github.mnesikos.simplycats;
 
 import com.google.common.collect.Maps;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -9,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.*;
 
@@ -36,18 +37,26 @@ public class SCReference {
         EDIBLE.add(Items.COOKED_PORKCHOP);
         EDIBLE.add(Items.COOKED_BEEF);
 
-        EDIBLE.addAll(ForgeRegistries.ITEMS.tags().getTag(ItemTags.FISHES).stream().toList());
+        addTagItems(ItemTags.FISHES);
 
         // todo double check tag naming && fix this
-        TagKey<Item> meatsRawTag = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation("forge", "meats/raw"));
-        EDIBLE.addAll(ForgeRegistries.ITEMS.tags().getTag(meatsRawTag).stream().toList());
-        TagKey<Item> meatsCookedTag = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation("forge", "meats/cooked"));
-        EDIBLE.addAll(ForgeRegistries.ITEMS.tags().getTag(meatsCookedTag).stream().toList());
-        TagKey<Item> meatsTag = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation("forge", "meats"));
-        EDIBLE.addAll(ForgeRegistries.ITEMS.tags().getTag(meatsTag).stream().toList());
+        addTagItems(itemTag("forge", "meats/raw"));
+        addTagItems(itemTag("forge", "meats/cooked"));
+        addTagItems(itemTag("forge", "meats"));
 
-        TagKey<Item> tofuTag = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation("forge", "tofus"));
-        EDIBLE.removeAll(ForgeRegistries.ITEMS.tags().getTag(tofuTag).stream().toList());
+        removeTagItems(itemTag("forge", "tofus"));
+    }
+
+    private static TagKey<Item> itemTag(String namespace, String path) {
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(namespace, path));
+    }
+
+    private static void addTagItems(TagKey<Item> tag) {
+        BuiltInRegistries.ITEM.getTag(tag).ifPresent(holders -> holders.forEach(holder -> EDIBLE.add(holder.value())));
+    }
+
+    private static void removeTagItems(TagKey<Item> tag) {
+        BuiltInRegistries.ITEM.getTag(tag).ifPresent(holders -> holders.forEach(holder -> EDIBLE.remove(holder.value())));
     }
 
     public static boolean catFoodItems(ItemStack stack) {

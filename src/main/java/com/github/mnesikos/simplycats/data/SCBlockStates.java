@@ -8,7 +8,7 @@ import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class SCBlockStates extends BlockStateProvider {
     public SCBlockStates(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -21,7 +21,7 @@ public class SCBlockStates extends BlockStateProvider {
     }
 
     public void block(Block block) {
-        ModelFile model = models().getExistingFile(ForgeRegistries.BLOCKS.getKey(block));
+        ModelFile model = models().getExistingFile(BuiltInRegistries.BLOCK.getKey(block));
         getVariantBuilder(block).partialState().addModels(new ConfiguredModel(model));
     }
 }
