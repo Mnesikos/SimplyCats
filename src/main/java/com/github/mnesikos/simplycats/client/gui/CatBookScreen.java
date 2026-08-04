@@ -169,7 +169,10 @@ public class CatBookScreen extends Screen {
 //        } else
 //            this.font.drawWordWrap(new StringTextComponent("Error page, this should not happen, please report to github issue tracker, thanks."), leftX + 16, 60, 120, 0); //todo remove when done
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        // Render widgets directly; super.render would run renderBackground again,
+        // and in 1.21 that applies the blur post-effect over the already-drawn book.
+        for (var renderable : this.renderables)
+            renderable.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     private void renderCatHealth(GuiGraphics guiGraphics, int x, int y) {
