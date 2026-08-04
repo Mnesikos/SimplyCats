@@ -40,11 +40,6 @@ public class CatnipBlock extends CropBlock {
     }
 
     @Override
-    public BlockState getPlant(BlockGetter world, BlockPos pos) {
-        return SCBlocks.CATNIP_CROP.get().defaultBlockState();
-    }
-
-    @Override
     protected ItemLike getBaseSeedId() {
         return SCItems.CATNIP_SEEDS.get();
     }

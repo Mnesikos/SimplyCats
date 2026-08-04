@@ -24,8 +24,8 @@ import java.util.function.Supplier;
 public class SCBlocks {
     public static final DeferredRegister<Block> REGISTRAR = DeferredRegister.create(Registries.BLOCK, SimplyCats.MOD_ID);
 
-    public static final DeferredHolder<Block, Block> CATNIP_CROP = REGISTRAR.register("catnip", () -> new CatnipBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT)));
-    public static final DeferredHolder<Block, Block> POTTED_CATNIP = REGISTRAR.register("potted_catnip", () -> new FlowerPotBlock(CATNIP_CROP.get(), BlockBehaviour.Properties.copy(Blocks.POTTED_POPPY)));
+    public static final DeferredHolder<Block, Block> CATNIP_CROP = REGISTRAR.register("catnip", () -> new CatnipBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));
+    public static final DeferredHolder<Block, Block> POTTED_CATNIP = REGISTRAR.register("potted_catnip", () -> new FlowerPotBlock(CATNIP_CROP.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_POPPY)));
     public static final DeferredHolder<Block, Block> SHELTER_BOOK = register("shelter_book", ShelterBookBlock::new);
 
     public static final Map<DyeColor, DeferredHolder<Block, Block>> CAT_BOWLS = new HashMap<>();

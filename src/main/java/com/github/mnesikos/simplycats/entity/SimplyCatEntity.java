@@ -846,7 +846,7 @@ public class SimplyCatEntity extends TamableAnimal {
             this.setWhitePawTextures(i, compound.getString("WhitePaws_" + i));
         this.setOwnerName(compound.getString("OwnerName"));
         if (compound.contains("HomePos"))
-            setHomePos(NbtUtils.readBlockPos(compound.getCompound("HomePos")));
+            NbtUtils.readBlockPos(compound, "HomePos").ifPresent(this::setHomePos);
         setRestingState(compound.getInt("Resting"));
 
         this.setFixed(compound.getByte("Fixed") != (byte) 0);

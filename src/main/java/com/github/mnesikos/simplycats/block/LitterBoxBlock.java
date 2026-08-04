@@ -3,7 +3,7 @@ package com.github.mnesikos.simplycats.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -41,13 +41,12 @@ public class LitterBoxBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
-        ItemStack itemStack = player.getItemInHand(hand);
+    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         int level = state.getValue(LEVEL);
 
         if (level == 1) {
             if (itemStack.getItem() != Blocks.SAND.asItem())
-                return InteractionResult.PASS;
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
             setLevel(world, pos, state, 2);
             if (!player.isCreative())
@@ -70,14 +69,14 @@ public class LitterBoxBlock extends Block {
 
         } else {
             if (itemStack.getItem() != Blocks.SAND.asItem())
-                return InteractionResult.PASS;
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
             setLevel(world, pos, state, 2);
             if (!player.isCreative())
                 itemStack.shrink(1);
         }
 
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Nullable

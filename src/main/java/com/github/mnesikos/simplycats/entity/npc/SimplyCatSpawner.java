@@ -16,7 +16,6 @@ import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class SimplyCatSpawner implements CustomSpawner {
                     BlockPos blockPos = player.blockPosition().offset(xOffset, 0, zOffset);
                     int chunkRadius = 10;
                     if (level.hasChunksAt(blockPos.getX() - chunkRadius, blockPos.getZ() - chunkRadius, blockPos.getX() + chunkRadius, blockPos.getZ() + chunkRadius)) {
-                        if (NaturalSpawner.isSpawnPositionOk(SpawnPlacements.Type.ON_GROUND, level, blockPos, SimplyCats.CAT.get())) {
+                        if (SpawnPlacements.isSpawnPositionOk(SimplyCats.CAT.get(), level, blockPos)) {
                             if (level.isCloseToVillage(blockPos, 2))
                                 return spawnInVillage(level, blockPos);
 
@@ -53,7 +52,7 @@ public class SimplyCatSpawner implements CustomSpawner {
                                 for (int x = 0; x <= h; x = x > 0 ? -x : 1 - x) {
                                     for (int z = x < h && x > -h ? h : 0; z <= h; z = z > 0 ? -z : 1 - z) {
                                         BlockPos blockPos2 = blockPos.offset(x, 0, z);
-                                        if (NaturalSpawner.isSpawnPositionOk(SpawnPlacements.Type.ON_GROUND, level, blockPos2, SimplyCats.CAT.get()))
+                                        if (SpawnPlacements.isSpawnPositionOk(SimplyCats.CAT.get(), level, blockPos2))
                                             return spawnOneCatWithinRadius(level, blockPos2, 48);
                                     }
                                 }

@@ -17,6 +17,7 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
@@ -52,7 +53,7 @@ public class SCVillagers {
         private final Item itemCost;
 
         private ItemsForPetTrade(ItemLike itemCost, int setDamageValue) {
-            ItemStack carrierItem = new ItemStack(SCItems.PET_CARRIER.get(), 1, new CompoundTag());
+            ItemStack carrierItem = new ItemStack(SCItems.PET_CARRIER.get());
             carrierItem.setDamageValue(setDamageValue);
             this.petCarrierItem = carrierItem;
             this.itemCost = itemCost.asItem();
@@ -62,8 +63,7 @@ public class SCVillagers {
         @Override
         public MerchantOffer getOffer(Entity entity, RandomSource random) {
             int j = Math.min(8 + random.nextInt(9), 16);
-            ItemStack price = new ItemStack(this.itemCost, j);
-            return new MerchantOffer(price, this.petCarrierItem, 2, 16, 0.2f);
+            return new MerchantOffer(new ItemCost(this.itemCost, j), this.petCarrierItem, 2, 16, 0.2f);
         }
     }
 }
