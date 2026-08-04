@@ -116,11 +116,6 @@ dependencies {
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     implementation "curse.maven:jade-324717:7545219"
-    compileOnly "curse.maven:farmers-delight-398521:8083481"
-    compileOnly "curse.maven:create-328085:7963363"
-    // Farmer's Respite has no 1.21.1 build — upstream stops at 1.20.1 (Forge only).
-    // FarmersRespiteCompat.java cannot compile until it ships one.
-    // compileOnly "curse.maven:farmers-respite-551453:5543547"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${minecraft_version}-${coolmod_version}.jar

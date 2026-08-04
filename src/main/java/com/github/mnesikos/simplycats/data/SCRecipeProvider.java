@@ -1,9 +1,7 @@
 package com.github.mnesikos.simplycats.data;
 
-import com.github.mnesikos.simplycats.SCReference;
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
-import com.github.mnesikos.simplycats.compat.FarmersRespiteCompat;
 import com.github.mnesikos.simplycats.item.SCItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -23,7 +21,6 @@ public class SCRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
-        if (SCReference.isFarmersRespiteLoaded()) FarmersRespiteCompat.buildRecipes(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SCItems.CAT_BOOK.get())
                 .requires(Items.BOOK)
                 .requires(SCItems.CATNIP.get())

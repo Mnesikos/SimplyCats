@@ -10,10 +10,6 @@
     "item.simplycats.catnip_seeds": "Catnip Seeds",
     "item.simplycats.laser_pointer": "Laser Pointer",
     "item.simplycats.sterilization_potion": "Sterilization Potion",
-    "item.simplycats.catnip_tea": "Catnip Tea",
-    "item.simplycats.long_catnip_tea": "Catnip Tea",
-    "fluid_type.simplycats.catnip_tea_type": "Catnip Tea",
-    "fluid_type.simplycats.long_catnip_tea_type": "Catnip Tea",
 
     "__comment": "Item Tooltips",
     "tooltip.cat_book.usage": "Sneak and use on a cat to save their info to this book!",

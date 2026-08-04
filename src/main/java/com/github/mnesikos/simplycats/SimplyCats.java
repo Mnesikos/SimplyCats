@@ -4,7 +4,6 @@ import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.client.color.ColorEvents;
 import com.github.mnesikos.simplycats.client.model.entity.SimplyCatModel;
 import com.github.mnesikos.simplycats.client.render.entity.SimplyCatRenderer;
-import com.github.mnesikos.simplycats.compat.FarmersRespiteCompat;
 import com.github.mnesikos.simplycats.configuration.SCConfig;
 import com.github.mnesikos.simplycats.data.*;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
@@ -63,8 +62,6 @@ public class SimplyCats {
                 catCarrier.setDamageValue(3);
                 output.accept(catCarrier);
                 SCItems.REGISTRAR.getEntries().forEach(item -> output.accept(item.get()));
-                if (SCReference.isFarmersRespiteLoaded())
-                    FarmersRespiteCompat.ITEMS.getEntries().forEach(item -> output.accept(item.get()));
             }).build());
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, SimplyCats.MOD_ID);
@@ -81,7 +78,6 @@ public class SimplyCats {
         ENTITIES.register(bus);
         SCBlocks.REGISTRAR.register(bus);
         SCItems.REGISTRAR.register(bus);
-        if (SCReference.isFarmersRespiteLoaded()) FarmersRespiteCompat.register(bus);
         CREATIVE_MODE_TABS.register(bus);
         SCSounds.REGISTRAR.register(bus);
         SCVillagers.POI_TYPES.register(bus);

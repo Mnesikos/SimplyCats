@@ -9,7 +9,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
@@ -17,10 +16,6 @@ import java.util.*;
 public class SCReference {
     private static final Map<UUID, String> CUSTOM_CATS = Maps.newHashMap();
     private static final List<Item> EDIBLE = new ArrayList<>();
-
-    public static boolean isFarmersRespiteLoaded() {
-        return ModList.get().isLoaded("farmersrespite");
-    }
 
     public static boolean isRatEntity(Entity entity) {
         String entityType = EntityType.getKey(entity.getType()).toString();
