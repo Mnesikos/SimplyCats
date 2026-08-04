@@ -111,17 +111,16 @@ configurations {
 }
 
 dependencies {
-    // Example optional mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    // compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime.
     // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    // localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
-    // annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-    // implementation "curse.maven:jade-324717:6271651"
-    // compileOnly "curse.maven:farmers-delight-398521:6597298"
+    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+    implementation "curse.maven:jade-324717:7545219"
+    compileOnly "curse.maven:farmers-delight-398521:8083481"
+    compileOnly "curse.maven:create-328085:7963363"
+    // Farmer's Respite has no 1.21.1 build — upstream stops at 1.20.1 (Forge only).
+    // FarmersRespiteCompat.java cannot compile until it ships one.
     // compileOnly "curse.maven:farmers-respite-551453:5543547"
-    // compileOnly "curse.maven:create-328085:6641603"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${minecraft_version}-${coolmod_version}.jar
