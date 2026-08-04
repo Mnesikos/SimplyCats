@@ -9,6 +9,7 @@ import com.github.mnesikos.simplycats.data.*;
 import com.github.mnesikos.simplycats.entity.SimplyCatEntity;
 import com.github.mnesikos.simplycats.event.SCEvents;
 import com.github.mnesikos.simplycats.event.SCSounds;
+import com.github.mnesikos.simplycats.item.PetCarrierItem;
 import com.github.mnesikos.simplycats.item.SCComposting;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
@@ -58,7 +59,7 @@ public class SimplyCats {
             .icon(() -> SCItems.PET_CARRIER.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 ItemStack catCarrier = new ItemStack(SCItems.PET_CARRIER.get());
-                catCarrier.setDamageValue(3);
+                PetCarrierItem.setCarrierType(catCarrier, 3);
                 output.accept(catCarrier);
                 SCItems.REGISTRAR.getEntries().forEach(item -> output.accept(item.get()));
             }).build());

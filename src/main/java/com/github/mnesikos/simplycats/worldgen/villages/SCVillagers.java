@@ -2,6 +2,7 @@ package com.github.mnesikos.simplycats.worldgen.villages;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
+import com.github.mnesikos.simplycats.item.PetCarrierItem;
 import com.github.mnesikos.simplycats.item.SCItems;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -52,9 +53,9 @@ public class SCVillagers {
         private final ItemStack petCarrierItem;
         private final Item itemCost;
 
-        private ItemsForPetTrade(ItemLike itemCost, int setDamageValue) {
+        private ItemsForPetTrade(ItemLike itemCost, int carrierType) {
             ItemStack carrierItem = new ItemStack(SCItems.PET_CARRIER.get());
-            carrierItem.setDamageValue(setDamageValue);
+            PetCarrierItem.setCarrierType(carrierItem, carrierType);
             this.petCarrierItem = carrierItem;
             this.itemCost = itemCost.asItem();
         }

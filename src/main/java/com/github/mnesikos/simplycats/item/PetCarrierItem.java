@@ -33,8 +33,19 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class PetCarrierItem extends Item {
+    /** Carrier state, formerly the stack's damage value: 0 empty, 1 simplycats cat, 2 other pet, 3-6 adoption variants. */
+    private static final String CARRIER_TYPE = "CarrierType";
+
     public PetCarrierItem() {
         super(new Item.Properties().stacksTo(1));
+    }
+
+    public static int getCarrierType(ItemStack stack) {
+        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getInt(CARRIER_TYPE);
+    }
+
+    public static void setCarrierType(ItemStack stack, int type) {
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(CARRIER_TYPE, type));
     }
 
     @Override
@@ -60,12 +71,9 @@ public class PetCarrierItem extends Item {
                     target.discard();
                     player.displayClientMessage(Component.translatable("chat.pet_carrier.retrieve_pet"), true);
 
+                    tags.putInt(CARRIER_TYPE, target instanceof SimplyCatEntity ? 1 : 2);
                     ItemStack newStack = new ItemStack(this);
                     newStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tags));
-                    if (target instanceof SimplyCatEntity)
-                        newStack.setDamageValue(1);
-                    else
-                        newStack.setDamageValue(2);
 
                     player.setItemInHand(hand, newStack);
                 }
@@ -79,12 +87,13 @@ public class PetCarrierItem extends Item {
         Player player = context.getPlayer();
         Level world = context.getLevel();
         ItemStack item = context.getItemInHand();
-        if (!item.has(DataComponents.CUSTOM_DATA) || item.getDamageValue() == 0) {
+        int carrierType = getCarrierType(item);
+        if (!item.has(DataComponents.CUSTOM_DATA) || carrierType == 0) {
             player.displayClientMessage(Component.translatable("chat.pet_carrier.empty"), true);
             return InteractionResult.PASS;
         }
 
-        /*if (item.getDamageValue() == 3 && player.capabilities.isCreativeMode && player.isSneaking()) {
+        /*if (carrierType == 3 && player.capabilities.isCreativeMode && player.isSneaking()) {
             BlockPos blockpos = pos.offset(facing);
             player.openGui(SimplyCats.instance, GUI_ID, player.world, blockpos.getX(), blockpos.getY(), blockpos.getZ());
         }*/
@@ -92,7 +101,7 @@ public class PetCarrierItem extends Item {
         if (!world.isClientSide) {
             BlockPos blockPos = new BlockPos(context.getClickedPos()).relative(context.getClickedFace());
 
-            if (item.getDamageValue() >= 3 && item.getDamageValue() <= 6) {
+            if (carrierType >= 3 && carrierType <= 6) {
 //                if (!(player.capabilities.isCreativeMode && player.isSneaking())) {
                 newPet(item, player, world, blockPos);
                 if (!player.isCreative())
@@ -101,7 +110,7 @@ public class PetCarrierItem extends Item {
             } else {
                 CompoundTag tags = item.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
-                if (item.getDamageValue() == 1 || item.getDamageValue() == 2) {
+                if (carrierType == 1 || carrierType == 2) {
                     Entity entity = EntityType.loadEntityRecursive(tags, world, entity1 -> entity1);
                     if (entity != null && entity instanceof TamableAnimal) {
                         entity.absMoveTo(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, context.getRotation(), 0);
@@ -120,12 +129,13 @@ public class PetCarrierItem extends Item {
     }
 
     private void newPet(ItemStack item, Player player, Level world, BlockPos blockPos) {
+        int carrierType = getCarrierType(item);
         TamableAnimal pet = null;
-        if (item.getDamageValue() == 3)
+        if (carrierType == 3)
             pet = SimplyCats.CAT.get().spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
-        else if (item.getDamageValue() == 4)
+        else if (carrierType == 4)
             pet = EntityType.WOLF.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
-        else if (item.getDamageValue() == 5)
+        else if (carrierType == 5)
             pet = EntityType.PARROT.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
 
         if (pet instanceof SimplyCatEntity && !((SimplyCatEntity) pet).canBeTamed(player)) {
@@ -146,7 +156,7 @@ public class PetCarrierItem extends Item {
             float health = pet.getMaxHealth();
             pet.setHealth(health);
 
-        } else if (item.getDamageValue() == 6) {
+        } else if (carrierType == 6) {
             Rabbit rabbit = EntityType.RABBIT.spawn((ServerLevel) world, null, player, blockPos, MobSpawnType.SPAWN_EGG, false, false);
             if (rabbit != null) {
                 rabbit.getNavigation().stop();
@@ -158,7 +168,7 @@ public class PetCarrierItem extends Item {
     @Override
     public Component getName(ItemStack item) {
         String unlocalizedName = super.getName(item).getString();
-        if (!item.has(DataComponents.CUSTOM_DATA) || item.getDamageValue() == 0)
+        if (!item.has(DataComponents.CUSTOM_DATA) || getCarrierType(item) == 0)
             unlocalizedName += "_empty";
         else
             unlocalizedName += "_full";
@@ -171,16 +181,17 @@ public class PetCarrierItem extends Item {
         CustomData data = item.get(DataComponents.CUSTOM_DATA);
         if (data != null) {
             CompoundTag nbt = data.copyTag();
-            if (item.getDamageValue() == 3)
+            int carrierType = nbt.getInt(CARRIER_TYPE);
+            if (carrierType == 3)
                 tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_cat").withStyle(ChatFormatting.ITALIC));
-            else if (item.getDamageValue() == 4)
+            else if (carrierType == 4)
                 tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_dog").withStyle(ChatFormatting.ITALIC));
-            else if (item.getDamageValue() == 5)
+            else if (carrierType == 5)
                 tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_parrot").withStyle(ChatFormatting.ITALIC));
-            else if (item.getDamageValue() == 6)
+            else if (carrierType == 6)
                 tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_rabbit").withStyle(ChatFormatting.ITALIC));
 
-            else if (item.getDamageValue() != 0) {
+            else if (carrierType != 0) {
                 MutableComponent species = Component.translatable(Util.makeDescriptionId("entity", ResourceLocation.parse(nbt.getString("id"))));
 
                 if (nbt.contains("DisplayName"))
@@ -188,7 +199,7 @@ public class PetCarrierItem extends Item {
                 else
                     tooltip.add(species.withStyle(ChatFormatting.AQUA));
 
-                if (item.getDamageValue() == 1)
+                if (carrierType == 1)
                     tooltip.add(Genetics.getPhenotypeDescription(nbt, true).withStyle(ChatFormatting.ITALIC));
 
                 if (nbt.contains("OwnerName") && !nbt.getString("OwnerName").isEmpty())
