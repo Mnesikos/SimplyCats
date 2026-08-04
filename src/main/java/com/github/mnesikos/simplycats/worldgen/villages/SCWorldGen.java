@@ -13,11 +13,14 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SCWorldGen {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceLocation desertShelterStructure = ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "village/desert_shelter_1");
     private static final ResourceLocation plainsShelterStructure = ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "village/plains_shelter_1");
     private static final ResourceLocation savannaShelterStructure = ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "village/savanna_shelter_1");
@@ -37,11 +40,15 @@ public class SCWorldGen {
     }
 
     private static <T extends StructurePoolElement> void addStructureToVillage(StructureTemplatePool pool, T piece, int weight) {
-        if (pool == null) return;
+        if (pool == null) {
+            LOGGER.warn("Simply Cats village injection: pool not found, skipping {}", piece);
+            return;
+        }
 
         for (int i = 0; i < weight; i++) {
             pool.templates.add(piece);
         }
+        LOGGER.debug("Simply Cats village injection: added {} x{}, pool now has {} templates", piece, weight, pool.templates.size());
 
         List<Pair<StructurePoolElement, Integer>> listOfPieceEntries = new ArrayList<>(pool.rawTemplates);
         listOfPieceEntries.add(Pair.of(piece, weight));
