@@ -19,7 +19,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SimplyCatModel<T extends SimplyCatEntity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(SimplyCats.MOD_ID, "cat"), "cat");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "cat"), "cat");
     public ModelPart body1;
     public ModelPart body2;
     public ModelPart head1;

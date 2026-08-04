@@ -179,7 +179,7 @@ public class PetCarrierItem extends Item {
                 tooltip.add(Component.translatable("tooltip.pet_carrier.adopt_rabbit").withStyle(ChatFormatting.ITALIC));
 
             else if (item.getDamageValue() != 0) {
-                MutableComponent species = Component.translatable(Util.makeDescriptionId("entity", new ResourceLocation(nbt.getString("id"))));
+                MutableComponent species = Component.translatable(Util.makeDescriptionId("entity", ResourceLocation.parse(nbt.getString("id"))));
 
                 if (nbt.contains("DisplayName"))
                     tooltip.add(Component.literal("\"" + nbt.getString("DisplayName") + "\"").withStyle(ChatFormatting.AQUA));

@@ -13,6 +13,6 @@ public class SCSounds {
     public static DeferredHolder<SoundEvent, SoundEvent> SHAKE_TREATS = registerSound("shake_treats");
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
-        return REGISTRAR.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyCats.MOD_ID, name)));
+        return REGISTRAR.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, name)));
     }
 }

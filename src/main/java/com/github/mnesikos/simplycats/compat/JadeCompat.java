@@ -12,7 +12,7 @@ import snownee.jade.api.theme.IThemeHelper;
 
 @WailaPlugin
 public class JadeCompat implements IWailaPlugin {
-    public static final ResourceLocation CAT_TIMERS = new ResourceLocation(SimplyCats.MOD_ID, "cat_timers");
+    public static final ResourceLocation CAT_TIMERS = ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "cat_timers");
 
     @Override
     public void register(IWailaCommonRegistration registration) {

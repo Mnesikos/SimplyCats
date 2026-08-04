@@ -30,7 +30,7 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
         @Override
         public void generate(HolderLookup.Provider registries, Consumer<Advancement> saver, ExistingFileHelper existingFileHelper) {
             Advancement root = Advancement.Builder.advancement()
-                    .display(SCItems.PET_CARRIER.get(), Component.translatable("advancements.simplycats.root"), Component.translatable("advancements.simplycats.root.desc"), new ResourceLocation(SimplyCats.MOD_ID,"textures/gui/advancements/backgrounds/simply_cats.png"), FrameType.TASK, true, false, false)
+                    .display(SCItems.PET_CARRIER.get(), Component.translatable("advancements.simplycats.root"), Component.translatable("advancements.simplycats.root.desc"), ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "textures/gui/advancements/backgrounds/simply_cats.png"), FrameType.TASK, true, false, false)
                     .addCriterion("catnip", InventoryChangeTrigger.TriggerInstance.hasItems(SCItems.CATNIP_SEEDS.get()))
                     .save(saver, SimplyCats.MOD_ID + ":root");
 

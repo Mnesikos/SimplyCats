@@ -31,8 +31,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 public class CatBookScreen extends Screen {
     private static final int bookImageHeight = 182;
     private static final int bookImageWidth = 281;
-    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(SimplyCats.MOD_ID, "textures/gui/cat_book.png");
-    private static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation("textures/gui/icons.png");
+    private static final ResourceLocation BG_TEXTURE = ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "textures/gui/cat_book.png");
+    private static final ResourceLocation GUI_ICONS_LOCATION = ResourceLocation.parse("textures/gui/icons.png");
 
     private Level world;
     private int currPage;

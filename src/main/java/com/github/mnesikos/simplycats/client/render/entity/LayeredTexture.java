@@ -66,7 +66,7 @@ public class LayeredTexture extends AbstractTexture {
             return null;
 
         try {
-            Resource resource = manager.getResource(new ResourceLocation(layer)).orElseThrow();
+            Resource resource = manager.getResource(ResourceLocation.parse(layer)).orElseThrow();
             return NativeImage.read(resource.open());
         } catch (IOException exception) {
             throw new IllegalStateException("Couldn't load texture layers.", exception);

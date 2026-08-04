@@ -49,7 +49,7 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
             if (entity.getOwnerUUID() != null) {
                 String name = SCReference.getCustomCats().get(entity.getOwnerUUID());
                 if (name != null && name.equalsIgnoreCase(entity.getCustomName().getString()))
-                    return new ResourceLocation(SimplyCats.MOD_ID, "textures/entity/cat/custom/" + name + ".png");
+                    return ResourceLocation.fromNamespaceAndPath(SimplyCats.MOD_ID, "textures/entity/cat/custom/" + name + ".png");
             }
         }
 
@@ -57,7 +57,7 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
         ResourceLocation resourceLocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourceLocation == null) {
-            resourceLocation = new ResourceLocation(s);
+            resourceLocation = ResourceLocation.parse(s);
             Minecraft.getInstance().getTextureManager().register(resourceLocation, new LayeredTexture(entity.getTexturePaths()));
             LAYERED_LOCATION_CACHE.put(s, resourceLocation);
         }
