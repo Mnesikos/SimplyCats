@@ -13,8 +13,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeAdvancementProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ForgeAdvancementProvider;
 
 import java.util.List;
 import java.util.Map;
@@ -110,27 +110,27 @@ public class SCAdvancementProvider extends ForgeAdvancementProvider {
 
         private static Advancement.Builder addChecklistCriterion(Advancement.Builder builder) {
             Advancement.Builder bowlsBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
-            SCBlocks.CAT_BOWLS.forEach(((dyeColor, blockRegistryObject) -> bowlsBuilder.addCriterion(dyeColor.getName() + "_bowl", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            SCBlocks.CAT_BOWLS.forEach(((dyeColor, blockDeferredHolder) -> bowlsBuilder.addCriterion(dyeColor.getName() + "_bowl", InventoryChangeTrigger.TriggerInstance.hasItems(blockDeferredHolder.get()))));
             String[] bowls = bowlsBuilder.getCriteria().keySet().toArray(String[]::new);
 
             Advancement.Builder litterBoxesBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
-            SCBlocks.LITTER_BOXES.forEach(((dyeColor, blockRegistryObject) -> litterBoxesBuilder.addCriterion(dyeColor.getName() + "_litter_box", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            SCBlocks.LITTER_BOXES.forEach(((dyeColor, blockDeferredHolder) -> litterBoxesBuilder.addCriterion(dyeColor.getName() + "_litter_box", InventoryChangeTrigger.TriggerInstance.hasItems(blockDeferredHolder.get()))));
             String[] litterBoxes = litterBoxesBuilder.getCriteria().keySet().toArray(String[]::new);
 
             Advancement.Builder treeBedsBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
-            SCBlocks.CAT_TREE_BEDS.forEach(((dyeColor, blockRegistryObject) -> treeBedsBuilder.addCriterion(dyeColor.getName() + "_tree_bed", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            SCBlocks.CAT_TREE_BEDS.forEach(((dyeColor, blockDeferredHolder) -> treeBedsBuilder.addCriterion(dyeColor.getName() + "_tree_bed", InventoryChangeTrigger.TriggerInstance.hasItems(blockDeferredHolder.get()))));
             String[] treeBeds = treeBedsBuilder.getCriteria().keySet().toArray(String[]::new);
 
             Advancement.Builder treePostsBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
-            SCBlocks.CAT_TREE_POSTS.forEach(((dyeColor, blockRegistryObject) -> treePostsBuilder.addCriterion(dyeColor.getName() + "_tree_post", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            SCBlocks.CAT_TREE_POSTS.forEach(((dyeColor, blockDeferredHolder) -> treePostsBuilder.addCriterion(dyeColor.getName() + "_tree_post", InventoryChangeTrigger.TriggerInstance.hasItems(blockDeferredHolder.get()))));
             String[] treePosts = treePostsBuilder.getCriteria().keySet().toArray(String[]::new);
 
             Advancement.Builder treeBoxesBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
-            SCBlocks.CAT_TREE_BOXES.forEach(((dyeColor, blockRegistryObject) -> treeBoxesBuilder.addCriterion(dyeColor.getName() + "_tree_box", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get()))));
+            SCBlocks.CAT_TREE_BOXES.forEach(((dyeColor, blockDeferredHolder) -> treeBoxesBuilder.addCriterion(dyeColor.getName() + "_tree_box", InventoryChangeTrigger.TriggerInstance.hasItems(blockDeferredHolder.get()))));
             String[] treeBoxes = treeBoxesBuilder.getCriteria().keySet().toArray(String[]::new);
 
             Advancement.Builder postsBuilder = Advancement.Builder.advancement().requirements(RequirementsStrategy.OR);
-            SCBlocks.SCRATCHING_POSTS.forEach((woodType, blockRegistryObject) -> postsBuilder.addCriterion(woodType + "_post", InventoryChangeTrigger.TriggerInstance.hasItems(blockRegistryObject.get())));
+            SCBlocks.SCRATCHING_POSTS.forEach((woodType, blockDeferredHolder) -> postsBuilder.addCriterion(woodType + "_post", InventoryChangeTrigger.TriggerInstance.hasItems(blockDeferredHolder.get())));
             String[] posts = postsBuilder.getCriteria().keySet().toArray(String[]::new);
 
             bowlsBuilder.getCriteria().forEach((builder::addCriterion));

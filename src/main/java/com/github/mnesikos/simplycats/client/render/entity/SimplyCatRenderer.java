@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.joml.Matrix4f;
 
 import java.util.Map;
@@ -70,7 +70,7 @@ public class SimplyCatRenderer extends MobRenderer<SimplyCatEntity, SimplyCatMod
         super.renderNameTag(cat, textComponent, matrixStack, renderTypeBuffer, p_225629_5_);
 
         double distance = this.entityRenderDispatcher.distanceToSqr(cat);
-        if (ForgeHooksClient.isNameplateInRenderDistance(cat, distance) && this.entityRenderDispatcher.camera.getEntity().isShiftKeyDown() && !cat.isFixed() && !cat.isBaby()) {
+        if (ClientHooks.isNameplateInRenderDistance(cat, distance) && this.entityRenderDispatcher.camera.getEntity().isShiftKeyDown() && !cat.isFixed() && !cat.isBaby()) {
             boolean catNotSneaking = !cat.isDiscrete();
             float height = cat.getBbHeight() + 0.62F;
 

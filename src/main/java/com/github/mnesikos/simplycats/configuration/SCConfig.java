@@ -1,36 +1,36 @@
 package com.github.mnesikos.simplycats.configuration;
 
 import com.github.mnesikos.simplycats.SimplyCats;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SCConfig {
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec SPEC;
     private static final String PREFIX = "config." + SimplyCats.MOD_ID;
-//    public static ForgeConfigSpec.BooleanValue join_message;
-    public static ForgeConfigSpec.BooleanValue attack_ai;
-    public static ForgeConfigSpec.BooleanValue replace_tamed_vanilla;
-    public static ForgeConfigSpec.BooleanValue stop_vanilla_spawns;
-    public static ForgeConfigSpec.BooleanValue intact_stray_spawns;
-    public static ForgeConfigSpec.ConfigValue<Double> wander_area_limit;
-    public static ForgeConfigSpec.ConfigValue<Integer> tamed_limit;
-    public static ForgeConfigSpec.ConfigValue<Integer> breeding_limit;
-    public static ForgeConfigSpec.ConfigValue<Integer> kitten_mature_timer;
-    public static ForgeConfigSpec.ConfigValue<Integer> pregnancy_timer;
-    public static ForgeConfigSpec.ConfigValue<Integer> heat_timer;
-    public static ForgeConfigSpec.ConfigValue<Integer> heat_cooldown;
-    public static ForgeConfigSpec.ConfigValue<Integer> male_cooldown;
-    public static ForgeConfigSpec.ConfigValue<List<? extends String>> prey_list;
+//    public static ModConfigSpec.BooleanValue join_message;
+    public static ModConfigSpec.BooleanValue attack_ai;
+    public static ModConfigSpec.BooleanValue replace_tamed_vanilla;
+    public static ModConfigSpec.BooleanValue stop_vanilla_spawns;
+    public static ModConfigSpec.BooleanValue intact_stray_spawns;
+    public static ModConfigSpec.ConfigValue<Double> wander_area_limit;
+    public static ModConfigSpec.ConfigValue<Integer> tamed_limit;
+    public static ModConfigSpec.ConfigValue<Integer> breeding_limit;
+    public static ModConfigSpec.ConfigValue<Integer> kitten_mature_timer;
+    public static ModConfigSpec.ConfigValue<Integer> pregnancy_timer;
+    public static ModConfigSpec.ConfigValue<Integer> heat_timer;
+    public static ModConfigSpec.ConfigValue<Integer> heat_cooldown;
+    public static ModConfigSpec.ConfigValue<Integer> male_cooldown;
+    public static ModConfigSpec.ConfigValue<List<? extends String>> prey_list;
 
     static {
-        ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder configBuilder = new ModConfigSpec.Builder();
         setupConfig(configBuilder);
         SPEC = configBuilder.build();
     }
 
-    private static void setupConfig(ForgeConfigSpec.Builder builder) {
+    private static void setupConfig(ModConfigSpec.Builder builder) {
         builder.push("Options");
         /*join_message = builder
                 .comment(" Enable or disable the initial join message with a player's cat count.")

@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 public class CatBirthGoal extends Goal {
     private final SimplyCatEntity mother;
@@ -63,8 +63,8 @@ public class CatBirthGoal extends Goal {
         ServerLevel serverWorld = (ServerLevel) level;
         SimplyCatEntity child = (SimplyCatEntity) this.mother.getBreedOffspring(serverWorld, father);
 
-        final net.minecraftforge.event.entity.living.BabyEntitySpawnEvent event = new net.minecraftforge.event.entity.living.BabyEntitySpawnEvent(mother, father, child);
-        final boolean cancelled = MinecraftForge.EVENT_BUS.post(event);
+        final net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent event = new net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent(mother, father, child);
+        final boolean cancelled = NeoForge.EVENT_BUS.post(event);
         child = (SimplyCatEntity) event.getChild();
 
         if (cancelled) {

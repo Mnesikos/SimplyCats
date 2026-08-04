@@ -19,10 +19,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
@@ -31,8 +31,8 @@ public class SCVillagers {
     public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, SimplyCats.MOD_ID);
     public static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, SimplyCats.MOD_ID);
 
-    public static final RegistryObject<PoiType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PoiType(ImmutableSet.copyOf(SCBlocks.SHELTER_BOOK.get().getStateDefinition().getPossibleStates()), 2, 1));
-    public static final RegistryObject<VillagerProfession> SHELTER_WORKER = PROFESSIONS.register("shelter_worker", () -> new VillagerProfession("shelter_worker", entry -> entry.value().equals(ADOPTION_BOOK.get()), entry -> entry.value().equals(ADOPTION_BOOK.get()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN));
+    public static final DeferredHolder<PoiType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PoiType(ImmutableSet.copyOf(SCBlocks.SHELTER_BOOK.get().getStateDefinition().getPossibleStates()), 2, 1));
+    public static final DeferredHolder<VillagerProfession> SHELTER_WORKER = PROFESSIONS.register("shelter_worker", () -> new VillagerProfession("shelter_worker", entry -> entry.value().equals(ADOPTION_BOOK.get()), entry -> entry.value().equals(ADOPTION_BOOK.get()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN));
 
     public static void registerTrades() {
         VillagerTrades.ItemListing[] level1 = new VillagerTrades.ItemListing[]{new VillagerTrades.ItemsForEmeralds(SCItems.CATNIP_SEEDS.get(), 1, 8, 4, 8), new VillagerTrades.EmeraldForItems(SCItems.CATNIP.get(), 20, 16, 2), new VillagerTrades.ItemsForEmeralds(SCItems.STERILIZE_POTION.get(), 1, 8, 4, 16)};

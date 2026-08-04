@@ -11,11 +11,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,18 +24,18 @@ import java.util.function.Supplier;
 public class SCBlocks {
     public static final DeferredRegister<Block> REGISTRAR = DeferredRegister.create(ForgeRegistries.BLOCKS, SimplyCats.MOD_ID);
 
-    public static final RegistryObject<Block> CATNIP_CROP = REGISTRAR.register("catnip", () -> new CatnipBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT)));
-    public static final RegistryObject<Block> POTTED_CATNIP = REGISTRAR.register("potted_catnip", () -> new FlowerPotBlock(CATNIP_CROP.get(), BlockBehaviour.Properties.copy(Blocks.POTTED_POPPY)));
-    public static final RegistryObject<Block> SHELTER_BOOK = register("shelter_book", ShelterBookBlock::new);
+    public static final DeferredHolder<Block> CATNIP_CROP = REGISTRAR.register("catnip", () -> new CatnipBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT)));
+    public static final DeferredHolder<Block> POTTED_CATNIP = REGISTRAR.register("potted_catnip", () -> new FlowerPotBlock(CATNIP_CROP.get(), BlockBehaviour.Properties.copy(Blocks.POTTED_POPPY)));
+    public static final DeferredHolder<Block> SHELTER_BOOK = register("shelter_book", ShelterBookBlock::new);
 
-    public static final Map<DyeColor, RegistryObject<Block>> CAT_BOWLS = new HashMap<>();
-    public static final Map<DyeColor, RegistryObject<Block>> LITTER_BOXES = new HashMap<>();
-    public static final Map<DyeColor, RegistryObject<Block>> CAT_TREE_BEDS = new HashMap<>();
-    public static final Map<DyeColor, RegistryObject<Block>> CAT_TREE_POSTS = new HashMap<>();
-    public static final Map<DyeColor, RegistryObject<Block>> CAT_TREE_BOXES = new HashMap<>();
+    public static final Map<DyeColor, DeferredHolder<Block>> CAT_BOWLS = new HashMap<>();
+    public static final Map<DyeColor, DeferredHolder<Block>> LITTER_BOXES = new HashMap<>();
+    public static final Map<DyeColor, DeferredHolder<Block>> CAT_TREE_BEDS = new HashMap<>();
+    public static final Map<DyeColor, DeferredHolder<Block>> CAT_TREE_POSTS = new HashMap<>();
+    public static final Map<DyeColor, DeferredHolder<Block>> CAT_TREE_BOXES = new HashMap<>();
 
-    public static final Map<String, RegistryObject<Block>> SCRATCHING_POSTS = new HashMap<>();
-    public static final Map<String, RegistryObject<Block>> WINDOW_PERCHES = new HashMap<>();
+    public static final Map<String, DeferredHolder<Block>> SCRATCHING_POSTS = new HashMap<>();
+    public static final Map<String, DeferredHolder<Block>> WINDOW_PERCHES = new HashMap<>();
 
     static {
         for (DyeColor color : DyeColor.values()) {
@@ -53,8 +53,8 @@ public class SCBlocks {
         }
     }
 
-    private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block) {
-        RegistryObject<T> registryObject = REGISTRAR.register(name, block);
+    private static <T extends Block> DeferredHolder<T> register(String name, Supplier<T> block) {
+        DeferredHolder<T> registryObject = REGISTRAR.register(name, block);
         SCItems.REGISTRAR.register(name, () -> new BlockItem(registryObject.get(), new Item.Properties()));
         return registryObject;
     }

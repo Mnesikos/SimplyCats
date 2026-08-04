@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class CatSeekCatnipGoal extends MoveToBlockGoal {
     private final SimplyCatEntity cat;
@@ -64,7 +64,7 @@ public class CatSeekCatnipGoal extends MoveToBlockGoal {
 
     private void onReachedTarget() {
         Level level = cat.level();
-        if (cat.getRandom().nextFloat() <= 0.2F && gotCatnip && ForgeEventFactory.getMobGriefingEvent(level, cat)) {
+        if (cat.getRandom().nextFloat() <= 0.2F && gotCatnip && EventHooks.getMobGriefingEvent(level, cat)) {
             BlockState blockState = level.getBlockState(blockPos);
             if (blockState.getBlock() instanceof CatnipBlock) {
                 int age = blockState.getValue(CatnipBlock.AGE);

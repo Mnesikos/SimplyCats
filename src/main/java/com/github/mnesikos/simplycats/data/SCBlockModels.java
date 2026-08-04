@@ -3,8 +3,8 @@ package com.github.mnesikos.simplycats.data;
 import com.github.mnesikos.simplycats.SimplyCats;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.BlockModelProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class SCBlockModels extends BlockModelProvider {
     public SCBlockModels(PackOutput output, ExistingFileHelper existingFileHelper) {
