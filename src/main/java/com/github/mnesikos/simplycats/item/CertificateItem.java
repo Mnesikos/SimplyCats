@@ -61,7 +61,7 @@ public class CertificateItem extends Item {
                     if (tameable instanceof SimplyCatEntity)
                         ((SimplyCatEntity) tameable).setTamed(false, player);
                     else
-                        tameable.setTame(false);
+                        tameable.setTame(false, true);
                     tameable.getNavigation().stop();
                     tameable.setOrderedToSit(false);
                     tameable.setOwnerUUID(null);

@@ -40,7 +40,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.Team;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -129,39 +128,39 @@ public class SimplyCatEntity extends TamableAnimal {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(EYE_COLOR, EyeColor.COPPER.toString());
-        this.entityData.define(FUR_LENGTH, "L-L");
-        this.entityData.define(EUMELANIN, "B-B");
-        this.entityData.define(PHAEOMELANIN, "Xo-Xo");
-        this.entityData.define(DILUTION, "D-D");
-        this.entityData.define(DILUTE_MOD, "dm-dm");
-        this.entityData.define(AGOUTI, "a-a");
-        this.entityData.define(TABBY, "Mc-Mc");
-        this.entityData.define(SPOTTED, "sp-sp");
-        this.entityData.define(TICKED, "ta-ta");
-        this.entityData.define(INHIBITOR, "i-i");
-        this.entityData.define(COLORPOINT, "C-C");
-        this.entityData.define(WHITE, "w-w");
-        this.entityData.define(BOBTAIL, "Jb-Jb");
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(EYE_COLOR, EyeColor.COPPER.toString());
+        builder.define(FUR_LENGTH, "L-L");
+        builder.define(EUMELANIN, "B-B");
+        builder.define(PHAEOMELANIN, "Xo-Xo");
+        builder.define(DILUTION, "D-D");
+        builder.define(DILUTE_MOD, "dm-dm");
+        builder.define(AGOUTI, "a-a");
+        builder.define(TABBY, "Mc-Mc");
+        builder.define(SPOTTED, "sp-sp");
+        builder.define(TICKED, "ta-ta");
+        builder.define(INHIBITOR, "i-i");
+        builder.define(COLORPOINT, "C-C");
+        builder.define(WHITE, "w-w");
+        builder.define(BOBTAIL, "Jb-Jb");
 
-        this.entityData.define(WHITE_0, "");
-        this.entityData.define(WHITE_1, "");
-        this.entityData.define(WHITE_2, "");
-        this.entityData.define(WHITE_PAWS_0, "");
-        this.entityData.define(WHITE_PAWS_1, "");
-        this.entityData.define(WHITE_PAWS_2, "");
-        this.entityData.define(WHITE_PAWS_3, "");
+        builder.define(WHITE_0, "");
+        builder.define(WHITE_1, "");
+        builder.define(WHITE_2, "");
+        builder.define(WHITE_PAWS_0, "");
+        builder.define(WHITE_PAWS_1, "");
+        builder.define(WHITE_PAWS_2, "");
+        builder.define(WHITE_PAWS_3, "");
 
-        this.entityData.define(OWNER_NAME, "");
-        this.entityData.define(MATE_TIMER, 0);
-        this.entityData.define(KITTENS, 0);
-        this.entityData.define(MOTHER, Optional.empty());
-        this.entityData.define(FATHER, Optional.empty());
-        this.entityData.define(AGE_TRACKER, 0);
-        this.entityData.define(MATURE_TIMER, 168000f);
-        this.entityData.define(DATA_RESTING_STATE, 0);
+        builder.define(OWNER_NAME, "");
+        builder.define(MATE_TIMER, 0);
+        builder.define(KITTENS, 0);
+        builder.define(MOTHER, Optional.empty());
+        builder.define(FATHER, Optional.empty());
+        builder.define(AGE_TRACKER, 0);
+        builder.define(MATURE_TIMER, 168000f);
+        builder.define(DATA_RESTING_STATE, 0);
     }
 
     @Override
@@ -186,8 +185,8 @@ public class SimplyCatEntity extends TamableAnimal {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag compound) {
-        entityData = super.finalizeSpawn(world, difficulty, spawnReason, entityData, compound);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+        entityData = super.finalizeSpawn(world, difficulty, spawnReason, entityData);
         setPhenotype();
 
         if (!level().isClientSide)
@@ -209,7 +208,7 @@ public class SimplyCatEntity extends TamableAnimal {
     }
 
     @Override
-    protected void reassessTameGoals() {
+    protected void applyTamingSideEffects() {
         if (avoidPlayersGoal == null)
             avoidPlayersGoal = new SCAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
 
@@ -344,11 +343,6 @@ public class SimplyCatEntity extends TamableAnimal {
             this.setAngry(false);
         else if (!this.isTame())
             this.setAngry(true);
-    }
-
-    @Override
-    public Team getTeam() {
-        return super.getTeam();
     }
 
     @Override
@@ -989,7 +983,7 @@ public class SimplyCatEntity extends TamableAnimal {
      * @param owner - the EntityPlayer who is taming the cat.
      */
     public void setTamed(boolean tamed, Player owner) {
-        this.setTame(tamed);
+        this.setTame(tamed, true);
         int catCount = owner.getPersistentData().getInt("CatCount");
         if (tamed) {
 //            owner.getPersistentData().putInt("CatCount", catCount + 1);
