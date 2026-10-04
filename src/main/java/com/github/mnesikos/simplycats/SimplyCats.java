@@ -24,7 +24,7 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +43,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -85,6 +86,7 @@ public class SimplyCats {
         SCVillagers.PROFESSIONS.register(bus);
 
         bus.addListener(this::setup);
+        bus.addListener(this::registerSpawnPlacements);
         bus.addListener(this::registerAttributes);
         bus.addListener(this::gatherData);
 
@@ -99,8 +101,11 @@ public class SimplyCats {
         }
     }
 
+    public void registerSpawnPlacements(final RegisterSpawnPlacementsEvent event) {
+        event.register(CAT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SimplyCatEntity::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+    }
+
     public void setup(final FMLCommonSetupEvent event) {
-        SpawnPlacements.register(CAT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SimplyCatEntity::checkAnimalSpawnRules);
         event.enqueueWork(() -> {
             SCVillagers.registerTrades();
             SCComposting.registerCompostables();
