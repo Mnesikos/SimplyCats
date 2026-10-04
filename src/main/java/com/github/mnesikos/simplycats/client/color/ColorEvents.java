@@ -3,7 +3,7 @@ package com.github.mnesikos.simplycats.client.color;
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 public class ColorEvents {
     public static void registerColorHandlerBlocks(final RegisterColorHandlersEvent.Block event) {

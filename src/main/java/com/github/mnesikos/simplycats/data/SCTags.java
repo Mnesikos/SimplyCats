@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.PoiTypeTags;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -29,8 +29,8 @@ public class SCTags {
             tag(BlockTags.FLOWER_POTS).add(SCBlocks.POTTED_CATNIP.get());
             tag(BlockTags.CROPS).add(SCBlocks.CATNIP_CROP.get());
             tag(BlockTags.MAINTAINS_FARMLAND).add(SCBlocks.CATNIP_CROP.get());
-            tag(BlockTags.create(new ResourceLocation("sereneseasons", "spring_crops"))).add(SCBlocks.CATNIP_CROP.get());
-            tag(BlockTags.create(new ResourceLocation("sereneseasons", "autumn_crops"))).add(SCBlocks.CATNIP_CROP.get());
+            tag(BlockTags.create(ResourceLocation.fromNamespaceAndPath("sereneseasons", "spring_crops"))).add(SCBlocks.CATNIP_CROP.get());
+            tag(BlockTags.create(ResourceLocation.fromNamespaceAndPath("sereneseasons", "autumn_crops"))).add(SCBlocks.CATNIP_CROP.get());
         }
     }
 
@@ -41,8 +41,8 @@ public class SCTags {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
-            tag(ItemTags.create(new ResourceLocation("sereneseasons", "spring_crops"))).add(SCItems.CATNIP_SEEDS.get());
-            tag(ItemTags.create(new ResourceLocation("sereneseasons", "autumn_crops"))).add(SCItems.CATNIP_SEEDS.get());
+            tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("sereneseasons", "spring_crops"))).add(SCItems.CATNIP_SEEDS.get());
+            tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("sereneseasons", "autumn_crops"))).add(SCItems.CATNIP_SEEDS.get());
         }
     }
 

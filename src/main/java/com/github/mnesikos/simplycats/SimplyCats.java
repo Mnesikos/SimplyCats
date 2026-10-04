@@ -15,11 +15,12 @@ import com.github.mnesikos.simplycats.item.SCItems;
 import com.github.mnesikos.simplycats.worldgen.villages.SCVillagers;
 import com.github.mnesikos.simplycats.worldgen.villages.SCWorldGen;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -29,23 +30,21 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,12 +53,12 @@ import java.util.List;
 public class SimplyCats {
     public static final String MOD_ID = "simplycats";
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, SimplyCats.MOD_ID);
-    public static final RegistryObject<CreativeModeTab> ITEM_GROUP = CREATIVE_MODE_TABS.register(MOD_ID + ".tab", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEM_GROUP = CREATIVE_MODE_TABS.register(MOD_ID + ".tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .title(Component.translatable("itemGroup." + MOD_ID + ".tab"))
             .icon(() -> SCItems.PET_CARRIER.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
-                ItemStack catCarrier = new ItemStack(SCItems.PET_CARRIER.get(), 1, new CompoundTag());
+                ItemStack catCarrier = new ItemStack(SCItems.PET_CARRIER, 1, DataComponentPatch.EMPTY);
                 catCarrier.setDamageValue(3);
                 output.accept(catCarrier);
                 SCItems.REGISTRAR.getEntries().forEach(item -> output.accept(item.get()));
@@ -67,16 +66,14 @@ public class SimplyCats {
                     FarmersRespiteCompat.ITEMS.getEntries().forEach(item -> output.accept(item.get()));
             }).build());
 
-    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, SimplyCats.MOD_ID);
-    public static final RegistryObject<EntityType<SimplyCatEntity>> CAT = ENTITIES.register("cat", () -> EntityType.Builder.of(SimplyCatEntity::new, MobCategory.CREATURE)
+    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, SimplyCats.MOD_ID);
+    public static final DeferredHolder<EntityType<?>, EntityType<SimplyCatEntity>> CAT = ENTITIES.register("cat", () -> EntityType.Builder.of(SimplyCatEntity::new, MobCategory.CREATURE)
             .sized(0.6f, 0.8f)
             .setShouldReceiveVelocityUpdates(true).setTrackingRange(80).setUpdateInterval(1)
             .build("cat"));
 
-    public SimplyCats() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SCConfig.SPEC);
+    public SimplyCats(IEventBus bus, ModContainer modContainer) {
+        modContainer.registerConfig(ModConfig.Type.COMMON, SCConfig.SPEC);
 
         ENTITIES.register(bus);
         SCBlocks.REGISTRAR.register(bus);
@@ -91,8 +88,8 @@ public class SimplyCats {
         bus.addListener(this::registerAttributes);
         bus.addListener(this::gatherData);
 
-        MinecraftForge.EVENT_BUS.addListener(SCWorldGen::setupVillageWorldGen);
-        MinecraftForge.EVENT_BUS.addListener(SCEvents::onLivingChangeTargetEvent);
+        NeoForge.EVENT_BUS.addListener(SCWorldGen::setupVillageWorldGen);
+        NeoForge.EVENT_BUS.addListener(SCEvents::onLivingChangeTargetEvent);
 
         bus.addListener(this::setupClient);
 
@@ -136,8 +133,8 @@ public class SimplyCats {
         dataGenerator.addProvider(event.includeServer(), new SCTags.SCItemTags(packOutput, event.getLookupProvider(), blockTagsProvider, event.getExistingFileHelper()));
         dataGenerator.addProvider(event.includeServer(), new SCTags.SCPoiTypeTags(packOutput, event.getLookupProvider(), event.getExistingFileHelper()));
         dataGenerator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(SCBlockLoot::new, LootContextParamSets.BLOCK))));
-        dataGenerator.addProvider(event.includeServer(), new SCRecipeProvider(packOutput));
+                List.of(new LootTableProvider.SubProviderEntry(SCBlockLoot::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
+        dataGenerator.addProvider(event.includeServer(), new SCRecipeProvider(packOutput, event.getLookupProvider()));
         dataGenerator.addProvider(event.includeServer(), new SCAdvancementProvider(packOutput, event.getLookupProvider(), event.getExistingFileHelper()));
     }
 }

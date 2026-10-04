@@ -1,22 +1,25 @@
 package com.github.mnesikos.simplycats.data;
 
-import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.CatnipBlock;
 import com.github.mnesikos.simplycats.block.SCBlocks;
 import com.github.mnesikos.simplycats.item.SCItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
-import net.minecraft.data.loot.packs.VanillaBlockLoot;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
-public class SCBlockLoot extends VanillaBlockLoot {
+public class SCBlockLoot extends BlockLootSubProvider {
+    public SCBlockLoot(HolderLookup.Provider registries) {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
+    }
+
     @Override
     protected void generate() {
         LootItemCondition.Builder catnipBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(SCBlocks.CATNIP_CROP.get()).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CatnipBlock.AGE, 3));
@@ -132,9 +135,8 @@ public class SCBlockLoot extends VanillaBlockLoot {
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return ForgeRegistries.BLOCKS.getEntries().stream()
-                .filter(e -> e.getKey().location().getNamespace().equals(SimplyCats.MOD_ID))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+        return SCBlocks.REGISTRAR.getEntries().stream()
+                .map(holder -> (Block) holder.get())
+                .toList();
     }
 }

@@ -2,13 +2,13 @@ package com.github.mnesikos.simplycats.data;
 
 import com.github.mnesikos.simplycats.SimplyCats;
 import com.github.mnesikos.simplycats.block.SCBlocks;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class SCBlockStates extends BlockStateProvider {
     public SCBlockStates(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -21,7 +21,7 @@ public class SCBlockStates extends BlockStateProvider {
     }
 
     public void block(Block block) {
-        ModelFile model = models().getExistingFile(ForgeRegistries.BLOCKS.getKey(block));
+        ModelFile model = models().getExistingFile(BuiltInRegistries.BLOCK.getKey(block));
         getVariantBuilder(block).partialState().addModels(new ConfiguredModel(model));
     }
 }

@@ -7,7 +7,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -17,22 +18,20 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
 
 public class SCVillagers {
-    public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, SimplyCats.MOD_ID);
-    public static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, SimplyCats.MOD_ID);
+    public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(BuiltInRegistries.VILLAGER_PROFESSION, SimplyCats.MOD_ID);
+    public static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(BuiltInRegistries.POINT_OF_INTEREST_TYPE, SimplyCats.MOD_ID);
 
-    public static final RegistryObject<PoiType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PoiType(ImmutableSet.copyOf(SCBlocks.SHELTER_BOOK.get().getStateDefinition().getPossibleStates()), 2, 1));
-    public static final RegistryObject<VillagerProfession> SHELTER_WORKER = PROFESSIONS.register("shelter_worker", () -> new VillagerProfession("shelter_worker", entry -> entry.value().equals(ADOPTION_BOOK.get()), entry -> entry.value().equals(ADOPTION_BOOK.get()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN));
+    public static final DeferredHolder<PoiType, PoiType> ADOPTION_BOOK = POI_TYPES.register("adoption_book", () -> new PoiType(ImmutableSet.copyOf(SCBlocks.SHELTER_BOOK.get().getStateDefinition().getPossibleStates()), 2, 1));
+    public static final DeferredHolder<VillagerProfession, VillagerProfession> SHELTER_WORKER = PROFESSIONS.register("shelter_worker", () -> new VillagerProfession("shelter_worker", entry -> entry.value().equals(ADOPTION_BOOK.get()), entry -> entry.value().equals(ADOPTION_BOOK.get()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN));
 
     public static void registerTrades() {
         VillagerTrades.ItemListing[] level1 = new VillagerTrades.ItemListing[]{new VillagerTrades.ItemsForEmeralds(SCItems.CATNIP_SEEDS.get(), 1, 8, 4, 8), new VillagerTrades.EmeraldForItems(SCItems.CATNIP.get(), 20, 16, 2), new VillagerTrades.ItemsForEmeralds(SCItems.STERILIZE_POTION.get(), 1, 8, 4, 16)};
@@ -52,7 +51,7 @@ public class SCVillagers {
         private final Item itemCost;
 
         private ItemsForPetTrade(ItemLike itemCost, int setDamageValue) {
-            ItemStack carrierItem = new ItemStack(SCItems.PET_CARRIER.get(), 1, new CompoundTag());
+            ItemStack carrierItem = new ItemStack(SCItems.PET_CARRIER, 1, DataComponentPatch.EMPTY);
             carrierItem.setDamageValue(setDamageValue);
             this.petCarrierItem = carrierItem;
             this.itemCost = itemCost.asItem();
@@ -62,7 +61,7 @@ public class SCVillagers {
         @Override
         public MerchantOffer getOffer(Entity entity, RandomSource random) {
             int j = Math.min(8 + random.nextInt(9), 16);
-            ItemStack price = new ItemStack(this.itemCost, j);
+            ItemCost price = new ItemCost(this.itemCost, j);
             return new MerchantOffer(price, this.petCarrierItem, 2, 16, 0.2f);
         }
     }

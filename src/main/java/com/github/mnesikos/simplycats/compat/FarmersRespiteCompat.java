@@ -7,6 +7,7 @@ import com.simibubi.create.content.fluids.transfer.EmptyingRecipe;
 import com.simibubi.create.content.fluids.transfer.FillingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,14 +20,14 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import umpaz.farmersrespite.common.fluid.TeaFluidType;
 import umpaz.farmersrespite.common.tag.FRTags;
 import umpaz.farmersrespite.data.builder.KettlePouringRecipeBuilder;
@@ -64,7 +65,7 @@ public class FarmersRespiteCompat {
     public static final RegistryObject<FlowingFluid> LONG_CATNIP_TEA_FLOWING = FLUIDS.register("flowing_long_catnip_tea", () -> new ForgeFlowingFluid.Flowing(FarmersRespiteCompat.LONG_CATNIP_TEA_FLUID_PROPERTIES));
     public static final ForgeFlowingFluid.Properties LONG_CATNIP_TEA_FLUID_PROPERTIES = new ForgeFlowingFluid.Properties(FarmersRespiteCompat.LONG_CATNIP_TEA_FLUID, FarmersRespiteCompat.LONG_CATNIP_TEA_SOURCE, FarmersRespiteCompat.LONG_CATNIP_TEA_FLOWING);
 
-    public static void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public static void buildRecipes(RecipeOutput consumer) {
         SCKettleRecipeBuilder.kettleRecipe(new FluidStack(Fluids.WATER, 1000), new FluidStack(FarmersRespiteCompat.CATNIP_TEA_SOURCE.get(), 1000), 2400, 0.35F).addIngredient(SCItems.CATNIP.get()).addIngredient(FRTags.TEA_LEAVES).build(consumer);
         SCKettleRecipeBuilder.kettleRecipe(new FluidStack(FarmersRespiteCompat.CATNIP_TEA_SOURCE.get(), 1000), new FluidStack(FarmersRespiteCompat.LONG_CATNIP_TEA_SOURCE.get(), 1000), 2400, 0.35F).addIngredient(ForgeTags.MILK).build(consumer);
         SCKettlePouringRecipeBuilder.kettlePouringRecipe(Items.GLASS_BOTTLE, FarmersRespiteCompat.CATNIP_TEA_SOURCE.get(), 250, FarmersRespiteCompat.CATNIP_TEA.get(), consumer);
@@ -99,7 +100,7 @@ public class FarmersRespiteCompat {
             return this;
         }
 
-        public void build(Consumer<FinishedRecipe> consumer) {
+        public void build(RecipeOutput consumer) {
             ResourceLocation baseFluidLocation = ForgeRegistries.FLUIDS.getKey(fluidIn.getFluid());
             ResourceLocation resultFluidLocation = ForgeRegistries.FLUIDS.getKey(fluidOut.getFluid());
             ResourceLocation id = new ResourceLocation(SimplyCats.MOD_ID + ":brewing/" + resultFluidLocation.getPath() + "_from_" + baseFluidLocation.getPath());
@@ -120,11 +121,11 @@ public class FarmersRespiteCompat {
             this.output = output;
         }
 
-        public static void kettlePouringRecipe(ItemLike container, Fluid fluid, int amount, ItemLike output, Consumer<FinishedRecipe> consumer) {
+        public static void kettlePouringRecipe(ItemLike container, Fluid fluid, int amount, ItemLike output, RecipeOutput consumer) {
             new SCKettlePouringRecipeBuilder(container.asItem().getDefaultInstance(), fluid, amount, output.asItem().getDefaultInstance()).build(consumer);
         }
 
-        public void build(Consumer<FinishedRecipe> consumer) {
+        public void build(RecipeOutput consumer) {
             ResourceLocation id = new ResourceLocation(SimplyCats.MOD_ID + ":pouring/" + ForgeRegistries.ITEMS.getKey(output.getItem()).getPath());
             consumer.accept(new KettlePouringRecipeBuilder.Result(id, container, fluid, amount, output));
             if (ModList.get().isLoaded("create")) {

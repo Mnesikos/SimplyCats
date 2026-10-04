@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.ForgeEventFactory;
 
 public class CatSeekCatnipGoal extends MoveToBlockGoal {
     private final SimplyCatEntity cat;
